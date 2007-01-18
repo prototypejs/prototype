@@ -1,0 +1,337 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Prototype Unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../dist/prototype.js" type="text/javascript"></script>
+  <script src="../lib/unittest.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="../test.css" type="text/css" />
+  <style type="text/css" media="screen">
+  /* <![CDATA[ */
+    #testcss1 { font-size:11px; color: #f00; }
+    #testcss2 { font-size:12px; color: #0f0; display: none; }
+  /* ]]> */
+  </style>
+</head>
+<body>
+<h1>Prototype Unit test file</h1>
+<p>
+  Test of utility functions in string.js
+</p>
+
+<!-- Log output -->
+<div id="testlog"> </div>
+
+<!-- Tests follow -->
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+  var evalScriptsCounter = 0,
+      largeTextEscaped = '&lt;span&gt;test&lt;/span&gt;', 
+      largeTextUnescaped = '<span>test</span>';
+  (2048).times(function(){ 
+    largeTextEscaped += ' ABC';
+    largeTextUnescaped += ' ABC';
+  });
+  
+  new Test.Unit.Runner({
+    testInterpret: function(){with(this) {
+      assertIdentical('true', String.interpret(true));
+      assertIdentical('123',  String.interpret(123));
+      assertIdentical('foo bar', String.interpret('foo bar'));
+      assertIdentical(
+        'object string',
+        String.interpret({ toString: function(){ return 'object string' } }));
+
+      assertIdentical('0', String.interpret(0));
+      assertIdentical('false', String.interpret(false));
+      assertIdentical('', String.interpret(undefined));
+      assertIdentical('', String.interpret(null));
+      assertIdentical('', String.interpret(''));
+    }},
+
+    testGsubWithReplacementFunction: function() {with(this) {
+      var source = 'foo boo boz';
+      
+      assertEqual('Foo Boo BoZ',
+        source.gsub(/[^o]+/, function(match) {
+          return match[0].toUpperCase()
+        }));
+      assertEqual('f2 b2 b1z',
+        source.gsub(/o+/, function(match) {
+          return match[0].length;
+        }));
+      assertEqual('f0 b0 b1z',
+        source.gsub(/o+/, function(match) {
+          return match[0].length % 2;
+        }));
+
+    }},
+    
+    testGsubWithReplacementString: function() {with(this) {
+      var source = 'foo boo boz';
+      
+      assertEqual('foobooboz',
+        source.gsub(/\s+/, ''));
+      assertEqual('  z', 
+        source.gsub(/(.)(o+)/, ''));
+    }},
+    
+    testGsubWithReplacementTemplateString: function() {with(this) {
+      var source = 'foo boo boz';
+      
+      assertEqual('-oo-#{1}- -oo-#{1}- -o-#{1}-z',
+        source.gsub(/(.)(o+)/, '-#{2}-\\#{1}-'));
+      assertEqual('-foo-f- -boo-b- -bo-b-z',
+        source.gsub(/(.)(o+)/, '-#{0}-#{1}-'));
+      assertEqual('-oo-f- -oo-b- -o-b-z',
+        source.gsub(/(.)(o+)/, '-#{2}-#{1}-'));
+      assertEqual('  z',
+        source.gsub(/(.)(o+)/, '#{3}'));      
+    }},
+    
+    testSubWithReplacementFunction: function() {with(this) {
+      var source = 'foo boo boz';
+
+      assertEqual('Foo boo boz',
+        source.sub(/[^o]+/, function(match) {
+          return match[0].toUpperCase()
+        }), 1);
+      assertEqual('Foo Boo boz',
+        source.sub(/[^o]+/, function(match) {
+          return match[0].toUpperCase()
+        }, 2), 2);
+      assertEqual(source,
+        source.sub(/[^o]+/, function(match) {
+          return match[0].toUpperCase()
+        }, 0), 0);
+      assertEqual(source,
+        source.sub(/[^o]+/, function(match) {
+          return match[0].toUpperCase()
+        }, -1), -1);
+    }},
+    
+    testSubWithReplacementString: function() {with(this) {
+      var source = 'foo boo boz';
+      
+      assertEqual('oo boo boz',
+        source.sub(/[^o]+/, ''));
+      assertEqual('oooo boz',
+        source.sub(/[^o]+/, '', 2));
+      assertEqual('-f-oo boo boz',
+        source.sub(/[^o]+/, '-#{0}-'));
+      assertEqual('-f-oo- b-oo boz',
+        source.sub(/[^o]+/, '-#{0}-', 2));
+    }},
+    
+    testScan: function() {with(this) {
+      var source = 'foo boo boz', results = [];
+      source.scan(/[o]+/, function(match) {
+        results.push(match[0].length);
+      });
+      assertEnumEqual([2, 2, 1], results);
+      assertEqual(source, source.scan(/x/, fail));
+    }},
+    
+    testToArray: function() {with(this) {
+      assertEnumEqual([],''.toArray());
+      assertEnumEqual(['a'],'a'.toArray());
+      assertEnumEqual(['a','b'],'ab'.toArray());
+      assertEnumEqual(['f','o','o'],'foo'.toArray());
+    }},
+    
+    /* 
+      Note that camelize() differs from its Rails counterpart,
+      as it is optimized for dealing with JavaScript object
+      properties in conjunction with CSS property names:
+       - Looks for dashes, not underscores
+       - CamelCases first word if there is a front dash
+    */
+    testCamelize: function() {with(this) {
+      assertEqual('', ''.camelize());
+      assertEqual('', '-'.camelize());
+      assertEqual('foo', 'foo'.camelize());
+      assertEqual('foo_bar', 'foo_bar'.camelize());
+      assertEqual('FooBar', '-foo-bar'.camelize());
+      assertEqual('FooBar', 'FooBar'.camelize());
+      
+      assertEqual('fooBar', 'foo-bar'.camelize());
+      assertEqual('borderBottomWidth', 'border-bottom-width'.camelize());
+      
+      assertEqual('classNameTest','class-name-test'.camelize());
+      assertEqual('classNameTest','className-test'.camelize());
+      assertEqual('classNameTest','class-nameTest'.camelize());
+      
+      /* benchmark(function(){
+        'class-name-test'.camelize();
+      },10000); */
+    }},
+
+    testCapitalize: function() {with(this) {
+      assertEqual('',''.capitalize());
+      assertEqual('Ä','ä'.capitalize());
+      assertEqual('A','A'.capitalize());
+      assertEqual('Hello','hello'.capitalize());
+      assertEqual('Hello','HELLO'.capitalize());
+      assertEqual('Hello','Hello'.capitalize());
+      assertEqual('Hello world','hello WORLD'.capitalize());
+    }},  
+      
+    testUnderscore: function() {with(this) {
+      assertEqual('', ''.underscore());
+      assertEqual('_', '-'.underscore());
+      assertEqual('foo', 'foo'.underscore());
+      assertEqual('foo', 'Foo'.underscore());
+      assertEqual('foo_bar', 'foo_bar'.underscore());
+      assertEqual('border_bottom', 'borderBottom'.underscore());
+      assertEqual('border_bottom_width', 'borderBottomWidth'.underscore());
+      assertEqual('border_bottom_width', 'border-Bottom-Width'.underscore());      
+    }},
+    
+    testDasherize: function() {with(this) {
+      assertEqual('', ''.dasherize());
+      assertEqual('foo', 'foo'.dasherize());
+      assertEqual('Foo', 'Foo'.dasherize());
+      assertEqual('foo-bar', 'foo-bar'.dasherize());
+      assertEqual('border-bottom-width', 'border_bottom_width'.dasherize());
+    }},
+    
+    testTruncate: function() {with(this) {
+      var source = 'foo boo boz foo boo boz foo boo boz foo boo boz';
+      assertEqual(source, source.truncate(source.length));
+      assertEqual('foo boo boz foo boo boz foo...', source.truncate(0));
+      assertEqual('fo...', source.truncate(5));
+      assertEqual('foo b', source.truncate(5, ''));
+    }},
+    
+    testStrip: function() {with(this) {
+      assertEqual('hello world', '   hello world  '.strip());
+      assertEqual('hello world', 'hello world'.strip());
+      assertEqual('hello  \n  world', '  hello  \n  world  '.strip());
+      assertEqual('', ' '.strip());
+    }},
+    
+    testStripTags: function() {with(this) {
+      assertEqual('hello world', 'hello world'.stripTags());
+      assertEqual('hello world', 'hello <span>world</span>'.stripTags());
+      assertEqual('hello world', '<a href="#" onclick="moo!">hello</a> world'.stripTags());
+      assertEqual('hello world', 'h<b><em>e</em></b>l<i>l</i>o w<span class="moo" id="x"><b>o</b></span>rld'.stripTags());
+    }},
+    
+    testStripScripts: function() {with(this) {
+      assertEqual('foo bar', 'foo bar'.stripScripts());
+      assertEqual('foo bar', ('foo <script>boo();<'+'/script>bar').stripScripts());
+      assertEqual('foo bar', ('foo <script type="text/javascript">boo();\nmoo();<'+'/script>bar').stripScripts());
+    }},
+    
+    testExtractScripts: function() {with(this) {
+      assertEnumEqual([], 'foo bar'.extractScripts());
+      assertEnumEqual(['boo();'], ('foo <script>boo();<'+'/script>bar').extractScripts());
+      assertEnumEqual(['boo();','boo();\nmoo();'], 
+        ('foo <script>boo();<'+'/script><script type="text/javascript">boo();\nmoo();<'+'/script>bar').extractScripts());
+      assertEnumEqual(['boo();','boo();\nmoo();'], 
+        ('foo <script>boo();<'+'/script>blub\nblub<script type="text/javascript">boo();\nmoo();<'+'/script>bar').extractScripts());
+    }},
+    
+    testEvalScripts: function() {with(this) {
+      assertEqual(0, evalScriptsCounter);
+      
+      ('foo <script>evalScriptsCounter++<'+'/script>bar').evalScripts();
+      assertEqual(1, evalScriptsCounter);
+      
+      var stringWithScripts = '';
+      (3).times(function(){ stringWithScripts += 'foo <script>evalScriptsCounter++<'+'/script>bar' });
+      stringWithScripts.evalScripts();
+      assertEqual(4, evalScriptsCounter);
+    }},
+    
+    testEscapeHTML: function() {with(this) {
+      assertEqual('foo bar', 'foo bar'.escapeHTML());
+      assertEqual('foo &lt;span&gt;bar&lt;/span&gt;', 'foo <span>bar</span>'.escapeHTML());
+      assertEqual('foo ß bar', 'foo ß bar'.escapeHTML());
+      
+      assertEqual('a&lt;a href="blah"&gt;blub&lt;/a&gt;b&lt;span&gt;&lt;div&gt;&lt;/div&gt;&lt;/span&gt;cdef&lt;strong&gt;!!!!&lt;/strong&gt;g',
+                  'a<a href="blah">blub</a>b<span><div></div></span>cdef<strong>!!!!</strong>g'.escapeHTML());
+      
+      assertEqual(largeTextEscaped, largeTextUnescaped.escapeHTML());
+    }},
+    
+    testUnescapeHTML: function() {with(this) {
+      assertEqual('foo bar', 'foo bar'.unescapeHTML());
+      assertEqual('foo <span>bar</span>', 'foo &lt;span&gt;bar&lt;/span&gt;'.unescapeHTML());
+      assertEqual('foo ß bar', 'foo ß bar'.unescapeHTML());
+      
+      assertEqual('a<a href="blah">blub</a>b<span><div></div></span>cdef<strong>!!!!</strong>g',
+        'a&lt;a href="blah"&gt;blub&lt;/a&gt;b&lt;span&gt;&lt;div&gt;&lt;/div&gt;&lt;/span&gt;cdef&lt;strong&gt;!!!!&lt;/strong&gt;g'.unescapeHTML());
+      
+      assertEqual(largeTextUnescaped, largeTextEscaped.unescapeHTML());
+    }},
+    
+    testTemplateEvaluation: function() {with(this) {
+      var source = '<tr><td>#{name}</td><td>#{age}</td></tr>';
+      var person = {name: 'Sam', age: 21};
+      var template = new Template(source);
+      
+      assertEqual('<tr><td>Sam</td><td>21</td></tr>',
+        template.evaluate(person));
+      assertEqual('<tr><td></td><td></td></tr>',
+        template.evaluate({}));
+    }},
+
+    testTemplateEvaluationWithFalses: function() {with(this) {
+      var source = '<tr><td>#{zero}</td><td>#{false_}</td><td>#{undef}</td><td>#{null_}</td><td>#{empty}</td></tr>';
+      var falses = {zero:0, false_:false, undef:undefined, null_:null, empty:""};
+      var template = new Template(source);
+      
+      assertEqual('<tr><td>0</td><td>false</td><td></td><td></td><td></td></tr>',
+        template.evaluate(falses));
+    }},
+    
+    testToQueryParams: function() {with(this) {
+      assertEnumEqual([], Object.keys(''.toQueryParams()));
+      assertEnumEqual([], Object.keys('foo?'.toQueryParams()));
+      
+      assertEnumEqual(['a', 'b'], Object.keys('foo?a&b'.toQueryParams()));
+      assertEnumEqual(['a', 'b'], Object.keys('foo?a&b#fragment'.toQueryParams()));
+      assertEnumEqual(['a', 'b'], Object.keys('a;b'.toQueryParams(';')));
+      
+      var result = 'a'.toQueryParams();
+      assertEqual(undefined, result['a']);
+      assert(result.hasOwnProperty('a'));
+      
+      result = 'a&b=c'.toQueryParams();
+      assertEqual(undefined, result['a']);
+      assert(result.hasOwnProperty('a'));
+      assertEqual('c', result['b']);
+      
+      result = 'a%20b=c&d=e%20f&g=h'.toQueryParams();
+      assertEqual('c', result['a b']);
+      assertEqual('e f', result['d']);
+      assertEqual('h', result['g']);
+      
+      result = 'color=r&color=g&color=b'.toQueryParams();
+      assertEnumEqual(['r', 'g', 'b'], result['color']);
+      assertEnumEqual(['r', 'b'], 'c=r&c=&c=b'.toQueryParams()['c']);
+      assertEqual('blue', 'c=&c=blue'.toQueryParams()['c']);
+      assertEqual('blue', 'c=blue&c='.toQueryParams()['c']);
+    }},
+    
+    testInspect: function() {with(this) {
+      assertEqual('\'\'', ''.inspect());
+      assertEqual('\'test\'', 'test'.inspect());
+      assertEqual('\'test \\\'test\\\' "test"\'', 'test \'test\' "test"'.inspect());
+    }},
+    
+    testSucc: function() {with(this) {
+      assertEqual('b', 'a'.succ());
+      assertEqual('B', 'A'.succ());
+      assertEqual('1', '0'.succ());
+      assertEqual('abce', 'abcd'.succ());
+      assertEqual('{', 'z'.succ());
+      assertEqual(':', '9'.succ());
+    }}
+  }, 'testlog');
+// ]]>
+</script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+*SVN*
+
+* Add test to ensure Content-type header is set for simulated verbs.  [sam]
+
+* Fix Content-Type header for HTTP methods simulated with POST not defaulting to application/x-www-form-urlencoded.  [Thomas Fuchs]
+
+* Simplify form serialization and add support for fields with the same name as Hash methods.  Closes #6649.  [Mislav Marohnić]
+
+* Fix attribute selectors for IE.  Closes #5170.  [Tobie Langel, Andrew Dupont]
+
+* A slew of dom.js improvements.  Closes #4217, #6589, #7001.  [Tobie]
+  - Fix Element.getDimensions() for hidden elements, make Element.getHeight() use .getDimensions()
+  - Add Element.getWidth()
+  - Make Element.replace() call .toString() on the html argument (alike .update())
+  - Fix an issue with Element.get/setStyle() and Safari with 'float'
+  - Add a bunch of missing unit tests 
+
+* Fix an issue with Element.setStyle({opacity:''}) setting the opacity to 0 instead of removing the set inline opacity style.  [Thomas Fuchs]
+
+* Ensure Ajax.Request's evalResponse is called before onComplete so that onComplete can reference any elements created during the response.  Closes #6727.  [jonathan]
+
+* Ensure the WEBrick test runner sets the correct Content-Type for tests and fixtures. [sam]
+
+* Form.serialize once again works with non-form elements.  This is a temporary change to prevent the Rails link_to_remote regression described in #6898.  Prototype 1.5.1 will introduce an API for working with collections of arbitrary form elements.  References #6887.  Closes #6898.  [sam]
+
+* Make selectors match forms that have an element with name="id" correctly, fixes #5759 [mislav]
+
+* Remove support for HTTP authorization in Ajax calls introduced with #6366.  Closes #6638 [jmecham]
+
+* Add Enumerable.size() to count elements in an enumerable and the corresponding Array.size() method, fixes #6710 [ZenCocoon]
+
+* Add String.succ() method to allow for String ranges, fixes #6037 [Cory Hudson, mislav]
+  Examples:
+    'abcd'.succ();                                   -> 'abce'
+    $R('a','d').map(function(char){ return char; }); -> ['a','b','c','d']
+
+* Make Element.scrollTo() correctly consider offsets of parent DOM nodes, fixes #6625 [ohader, savetheclocktower]
+
+* Fix Enumerable.inGroupsOf() to correctly work with fill values that evaluate to false, fixes #6782 [hawk]
+
+* Remove/cleanup redundant $() calls in dom.js, fixes #6817 [Tobie]
+
+* Don't cache files in automatic unit tests, fixes #6218 [voidlock]
+
+* Add $w() to easily create arrays from strings like Ruby's %w, fixes #5682 [glazedginger, brendon.aaron]
+
+* Add Element.toggleClassName() to toggle CSS classes on elements, fixes #6759 [Tobie]
+
+* Make Form.getInputs always return an array for consistency, fixes #6475 [Justin Gehtland, savetheclocktower]
+
+* Make TimedObserver work correctly for SELECT MULTIPLE elements, fixes #6593 [clemos, tdd]
+
+* Fix Template.prototype.evaluate to correctly interpret 0 and false values, add String.interpret() for safely interpreting and converting values to strings, fixes #6675 [hawk]
+
+* Make Element.getStyle() work with camelCased argument, fixes #6686 [Tobie]
+
+* Fix a redundant check in Array.prototype.compact, fixes #4739 [wlodarcz, mislav]
+
+* Fix $() to correctly pass back the results of document.getElementById(), notably returning "null" on elements not found, fixes #6582 [adsmart]
+
+* Change/add assertNull, assertUndefined, assertNullOrUndefined and not-* variants in unittest.js, fixes #6582 [adsmart]
+
+* Cleanup String.prototype.camelize, fix an issue with String.prototype.underscore, fixes #4714, #6685 [Tobie, Thomas Fuchs]
+
+* Add String.prototype.capitalize, which returns a string with the first character in upper case, fixes #6666 [Tobie]
+
+* Make Element.getStyle() and Element.setStyle() handle the CSS 'opacity' property transparently in IE, fixes #6093 [brandon.aaron, Tobie]
+
+* Fix handling of CSS 'float' property for Element.getStyle() and Element.setStyle(), fixes #4160 [Thomas Fuchs, ericf]
+
+* Fix that onComplete would be called twice with synchronous Ajax requests on Safari (provides units tests for #5756) [Thomas Fuchs]
+
+* Fix Form.Field.activate to not select text on buttons in IE, fixes #2653 [sutch, mislav, Thomas Fuchs]
+
+* Fix String.unescapeHTML() on Firefox for strings that are longer than 2048 bytes, fixes #5789 [Paul Moers, Thomas Fuchs]
+
+* Redefine Array.prototype.concat for Opera, as the native implemenation doesn't work correctly [Thomas Fuchs]
+
+* Add unit tests for Function.prototype.bind() [Thomas Fuchs]
+
+* Add String.prototype.underscore and String.prototype.dasherize [Thomas Fuchs]
+  Examples:
+    'Hello_World'.dasherize()                    -> 'Hello-World'
+    'borderBottomWidth'.underscore()             -> 'border_bottom_width'
+    'borderBottomWidth'.underscore().dasherize() -> 'border-bottom-width'
+
+*1.5.0_rc2* (November 11, 2006)
+
+* Ensure that existing DOM properties take precedence over extended element methods in all browsers.  Closes #5115.  [Sean Kleinjung, sam]
+
+* Add Element.Methods.readAttribute as a simple wrapper around getAttribute (which isn't a "real" function and doesn't have .apply or .call in Safari and IE).  Useful in conjunction with Enumerable.invoke for extracting the values of a custom attribute from a collection of elements.  [sam]
+  Example:
+    <div id="widgets">
+      <div class="widget" widget_id="7">...</div>
+      <div class="widget" widget_id="8">...</div>
+      <div class="widget" widget_id="9">...</div>
+    </div>
+    
+    $$('div.widget').invoke('readAttribute', 'widget_id')
+    // ["7", "8", "9"]
+
+* Add Element.Methods.immediateDescendants, like $A($(element).childNodes) but without text nodes.  [sam]
+
+* More consistency.  Closes #6573.  [Bob Silva]
+
+* String.prototype.toQueryParams and Hash.prototype.toQueryString now properly serialize arrays as multiple values.  Closes #4436.  [mislav, altblue, L`OcuS]
+
+* Fix Form.serialize for options with empty values.  Closes #5033. [tdd, Thomas Fuchs, sam]
+
+* Add Element.Methods.Simulated for simulating HTMLElement methods in lesser browsers.  Add hasAttribute as the first simulated method.  [tdd, Thomas Fuchs, sam]
+
+* Add a "retry with throw" button for test error messages. [sam]
+
+* rake test now runs test/unit/*.html by default.  Additionally, you can specify individual tests to run with the TESTS environment variable, and you can restrict the tests to particular browsers using the BROWSERS environment variable. [sam]
+
+  Examples:
+    % BROWSERS=safari,firefox rake test
+    % TESTS=dom rake test
+
+* Element.hasClassName now bypasses the Element.ClassNames API for performance.  [sam]
+
+* Pick some low-hanging performance and DRYness fruit.  [sam]
+  - Inline length property accesses in for loops
+  - Enumerable-ize for loops where it makes sense
+  - Make better use of Element.Methods and Form.Methods/Form.Element.Methods
+
+* A slew of Ajax improvements.  Closes #6366.  [mislav, sam]
+  
+  Public-facing changes include:
+  - HTTP method can be specified in either lowercase or uppercase, and uppercase is always used when opening the XHR connection
+  - Added 'encoding' option (for POST) with a default of 'UTF-8'
+  - Ajax.Request now recognizes all the JavaScript MIME types we're aware of
+  - PUT body support with the 'postBody' option
+  - HTTP authentication support with the 'username' and 'password' options
+  - Query parameters can be passed as a string or as a hash
+  - Fixed both String.toQueryParams and Hash.toQueryString when handling empty values
+  - Request headers can now be specified as a hash with the 'requestHeaders' option
+
+* Improve performance of the common case where $ is called with a single argument. Closes #6347. [sam, rvermillion, mislav]
+
+* Fix Object.inspect to correctly distinguish between null and undefined, fixes #5941 [tdd, mislav]
+
+* Don't serialize disabled form elements, fixes #4586 [tdd]
+
+* Make HTML element classes extension mechanism for Safari not throw errors on WebKit beta versions [Thomas Fuchs]
+
+* Add support for using Element.update() with no or a non-string parameter [Thomas Fuchs]
+
+  Example:
+    $('empty_me').update()          -> clears the element
+    $('easy_as').update(123)        -> set element content to '123'
+
+* Add unit tests for hashes, fixes #6344 [Tobie Langel]
+
+* Add clone() method to arrays, fixes #6338 [Tobie Langel]
+
+* Backing out of [5194] (Element.clear) because of issues with IE on certain elements, #6051
+
+* Add Element.clear for easily emptying out elements, fixes #6051 [brandon.aaron@gmail.com]
+
+* Enumerable.each now returns the enumerable to allow for method chaining, fixes #6250 [eventualbuddha]
+
+* Make makeClipping and undoClipping always return their element to stay chainable
+
+* Fix an issue with certain Element chain calls not correctly extending elements with Prototype element methods on IE [Thomas Fuchs]
+
+* Add Enumerable.eachSlice and Enumerable.inGroupsOf, fixes #6046 [rails@tddsworld.com, Thomas Fuchs]
+
+  Example:
+    [1,2,3,4,5].inGroupsOf(3)       -> [[1,2,3],[4,5,null]]
+    [1,2,3].inGroupsOf(4,'x')       -> [[1,2,3,'x']]
+
+* Complete unit tests for array.js and string.js [Thomas Fuchs]
+
+* Performance improvements for document.getElementsByClassName, including querying with XPath in supported browsers. [Andrew Dupont]
+
+* Make Form.getElements() return elements in the correct order, fix broken Form.serialize return, fixes #4249, #6172 [lars@pinds.com, Thomas Fuchs, john]
+
+* Add various DOM unit tests, fixes #6176, #6177 [tdd]
+
+* Split Form.serialize into Form.serialize and Form.serializeElements. The latter can be used stand-alone to serialize an array of elements you pass in, instead of the entire form [DHH]
+
+* Form.Element.disable() and .enable() will now work correctly, fixes #6034 [dresselm@businesslogic.com]
+
+* Fix IE and Safari issues with Position.positionedOffset, add position.html unit tests, fixes #5621 [renggli@iam.unibe.ch]
+
+* Fix an issue with Element.undoClipping and IE [Thomas Fuchs]
+
+* Element.cleanWhitespace now correctly removes consecutive empty text nodes, fixes #3209 [livier.duroselle@gmail.com]
+
+* Element.extend now does not try to extend text nodes, fixes #4642 [siegfried.puchbauer@gmail.com]
+
+*1.5.0_rc1* (September 4, 2006)
+
+* bindAsEventListener now passes along any provided arguments after the event argument.  Closes #5508.  [todd.fisher@revolution.com]
+
+* Fix makeClipping and undoClipping with local overflow style values other than visible and hidden, fixes #3672  [Thomas Fuchs]
+
+* Add Element.up, Element.down, Element.previous, and Element.next for easily traversing the DOM.  (Inspired by Thomas Fuchs' original implementation of Element.up: http://pastie.caboo.se/7702) [sam]
+
+  Examples:
+    <div id="sidebar">                  -> $('nav').up() or $('menu').up('div') 
+      <ul id="nav">                     -> $('sidebar').down()  or $('sidebar').down('ul') or $('menu').previous()
+        <li>...</li>                    -> $('sidebar').down(1) or $('sidebar').down('li')
+        <li>...</li>                    -> $('sidebar').down(2) or $('sidebar').down('li', 2) or $('sidebar').down('li').next('li')
+        <li class="selected">...</li>   -> $('sidebar').down('li.selected')
+      </ul>                             
+      <ul id="menu">                    -> $('sidebar').down('ul').next()
+        ...
+
+* Refactor $$ and Element.getElementsBySelector into Selector.findChildElements. [sam]
+
+* Add Element.match, which takes a single CSS selector expression and returns true if it matches the element. [sam]
+
+* Add Element.ancestors, Element.descendants, Element.previousSiblings, Element.nextSiblings, and Element.siblings. [sam]
+
+* Add Element.inspect for better DOM debugging. [sam]
+
+* Add an optional boolean argument to String.prototype.inspect which, when true, makes the string double-quoted instead of single-quoted. [sam]
+
+* Add the uniq() method to Arrays, which returns a new Array with duplicates removed, fixes #3810 [secondlife]
+
+* Add stop() method to PeriodicalExecutor, fixes #4801 [Jon Evans]
+
+* Fix issues with Enumerable.any, ObjectRange.toArray, added unit tests, fixes #4419 [miyamuko, Thomas Fuchs]
+
+* Fix two instances of unneccesarily redeclared variables, fixes #5229 [Thomas Fuchs]
+
+* Fix a loop in Element.extend to properly use local variable, fixes #5128 [arrix]
+
+* Add constants for additional keys in Event, fixes #5411, #5795 [simone_b]
+
+* Workaround a DOM API bug in Opera in Position.page(), fixes #2407, #5848 [Thomas Fuchs]
+
+* Remove duplicate definition of Position.clone(), fixes #3765 [Thomas Fuchs]
+
+* Make destructive Element, Form, and Form.Element methods return their first argument, so that multiple calls can be chained together. [sam]
+
+  ex. $("sidebar").addClassName("selected").show();
+
+  The following methods now return their first argument: Element.toggle, Element.hide, Element.show, Element.remove, Element.update, Element.replace, Element.addClassName, Element.removeClassName, Element.observe, Element.stopObserving, Element.cleanWhitespace, Element.scrollTo, Element.setStyle, Element.makePositioned, Element.undoPositioned, Element.makeClipping, Element.undoClipping, Form.reset, Form.disable, Form.enable, Form.focusFirstElement, Form.Element.focus, Form.Element.select, Form.Element.clear, Form.Element.activate, Form.Element.disable, Form.Element.enable.
+
+* For consistency, Element.toggle, Element.show, Element.hide, Field.clear, and Field.present no longer take an arbitrary number of arguments. [sam]
+  
+  !! BACKWARDS COMPATIBILITY CHANGE !!
+  
+  If you have code that looks like this:
+    Element.show('page', 'sidebar', 'content');
+  You need to replace it with code like this:
+    ['page', 'sidebar', 'content'].each(Element.show);
+
+* Mix in Form and Form.Element methods to forms and form field elements with $() and $$(). Closes #4448. [Dan Webb, sam]
+
+* Add Object.clone [sam]
+
+* Add Form.Element.disable and Form.Element.enable. Closes #4943. [jan@prima.de]
+
+* Field is now simply an alias for Form.Element. [sam]
+
+* Add Element.Methods.getElementsByClassName and Element.Methods.getElementsBySelector. Closes #4669. [Andrew Dupont, DHH, sam]
+
+* Avoid race condition when stopping an Ajax.PeriodicalUpdater. Closes #4809. [e98cuenc@gmail.com]
+
+* Improve support for synchronous requests. Closes #5916. [sam, jthrom@gmail.com]
+
+* Add serialization and observation support for input type=search. Closes #4096. [rpnielsen@gmail.com]
+
+* Properly decode query components in String.prototype.toQueryParams. Closes #3487. [sam]
+
+* Add Array.prototype.reduce [sam]:
+  [1, 2].reduce()   // [1, 2]
+  [1].reduce()      // 1
+  [].reduce()       // undefined
+
+* Add Object.keys and Object.values [sam]
+
+* Simulate non-GET/POST requests by POSTing with a _method parameter set to the actual verb [DHH]
+
+* Make Element.update() handle TABLE-related elements with the DOM API because of IE's missing .innerHTML property on them [Thomas Fuchs, thx to Rick Olson]
+
+* Sync to script.aculo.us unittest.js library as of 2006/08/29 [Thomas Fuchs]
+
+* Add additional unit tests to test/unit/dom.html for testing Element.update and $().update in various enviroments [Thomas Fuchs]
+
+* Prevent possible exceptions on unloading the page in IE [Thomas Fuchs]
+
+*1.5.0_rc0* (April 5, 2006)
+
+* Modify HTMLElement.prototype and short-circuit Element.extend where possible. Closes #4477. [Thomas Fuchs]
+
+* Only observe window.onunload in IE for Mozilla bfcache support. Closes #3726. [Mike A. Owens]
+
+* Don't redefine Array.prototype.shift. Closes #4138. [leeo]
+
+* Prevent redefining Array.prototype.reverse more than once. Closes #3951. [brettdgibson@gmail.com]
+
+* Fix Enumerable.min/Enumerable.max to recognize the value 0. Closes #3847, #4190. [rubyonrails@brainsick.com, Martin Bialasinski]
+
+* Change Ajax.getTransport to prefer XMLHttpRequest in anticipation of IE 7. Closes #3688. [jschrab@malicstower.org, sam]
+
+* Make Array.prototype.flatten more robust. Closes #3453. [Martin Bialasinski, sam]
+
+* Fix evalScripts from crashing Firefox if script includes 'var'. Closes #3288, #4165. [rahul@ntag.com, sam]
+
+* Scope iterators locally. Closes #4589. [sam]
+
+* Support Insertion.Before/Insertion.After for <tr> elements in IE. Closes #3925. [rails-venkatp@sneakemail.com]
+
+* Add a contentType option for overriding application/x-www-form-urlencoded in Ajax.Request. Closes #3564. [avif@arc90.com, sam]
+
+* Surround values in the X-JSON header in parenthesis for better compatibility with Firefox. Closes #4118. [bigsmoke@gmail.com]
+
+* Fix Form.serialize to properly encode option values in multiple selects in IE. Closes #3291. [rubyonrails@brainsick.com]
+
+* Cache methods added to DOM elements with Element.extend to prevent memory leaks in IE. Closes #4465. [jaen@laborint.com, sam]
+
+* 1.5.0_pre1* (March 26, 2006)
+
+* Add attribute selector support for Selector (and $$). Closes #4368. [devslashnull@gmail.com]
+  Example:
+    $$('form#foo input[type=text]').each(function(input) {
+      input.setStyle({color: 'red'});
+    });
+  
+* Send Accept header containing 'text/javascript, text/html, application/xml, text/xml */*'' to inform Rails that we prefer RJS, but we'll take HTML or XML or whatever if you can't deliver the goods [DHH]
+
+* Make $$ work in IE. Closes #3715. [rubyonrails@brainsick.com]
+
+* Add test/browser.html, which provides a simple object browser for the Prototype source (Firefox/Safari only). [sam]
+
+* Add Element.extend, which mixes Element methods into a single HTML element.  This means you can now write $('foo').show() instead of Element.show('foo').  $, $$ and document.getElementsByClassName automatically call Element.extend on any returned elements. [sam]
+
+* Add Element.replace as a cross-browser implementation of the "outerHTML" property. References #3246. [tom@craz8.com]
+
+* Fix Enumerable.zip iterator behavior. [Marcin Kaszynski, sam]
+
+*1.5.0_pre0* (January 18, 2006)
+
+* Add String.prototype.truncate to complement the Action View truncate helper. [sam]
+
+* Add String.prototype.gsub, String.prototype.sub, and String.prototype.scan, all of which take a pattern and an iterator (or a pattern and a replacement template string in the case of gsub and sub). [sam]
+
+* Add a Template class for interpolating named keys from an object in a string. [sam]
+
+* Add the $$ function for finding DOM elements by simple CSS selector strings. [sam]
+  Example: Find all <img> elements inside <p> elements with class "summary", all inside
+           the <div> with id "page". Hide each matched <img> tag.
+             $$('div#page p.summary img').each(Element.hide)
+     
+* Add a Selector class for matching elements by single CSS selector tokens. [sam]
+
+* Add Test.Unit.Assertions.assertEnumEqual for comparing Enumerables in tests. [sam]
+
+* Add Element.childOf(element, ancestor) which returns true when element is a child of ancestor. [sam]
+
+* Fix escaping in String.prototype.inspect. [sam]
+
+* Add String.prototype.strip to remove leading and trailing whitespace from a string. [sam]
+
+* Move Prototype to Rails SVN. [sam]
+  http://dev.rubyonrails.org/svn/rails/spinoffs/prototype/
+  
+* Make the console nicer. [sam]
+
+* Prune the source tree. [sam]

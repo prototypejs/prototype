@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Prototype Unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../dist/prototype.js" type="text/javascript"></script>
+  <script src="../lib/unittest.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="../test.css" type="text/css" />
+  <style type="text/css" media="screen">
+  /* <![CDATA[ */
+    #testcss1 { font-size:11px; color: #f00; }
+    #testcss2 { font-size:12px; color: #0f0; display: none; }
+  /* ]]> */
+  </style>
+</head>
+<body>
+<h1>Prototype Unit test file</h1>
+<p>
+  Test of utility functions in base.js
+</p>
+
+<!-- Log output -->
+<div id="testlog"> </div>
+
+<!-- Tests follow -->
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+
+
+  var peEventCount = 0;
+  // peEventFired will stop the PeriodicalExecuter after 3 callbacks
+  function peEventFired(pe) {
+    if (++peEventCount>2) {
+      pe.stop();
+    }
+  }
+  
+  var arg1 = 1;
+  var arg2 = 2;
+  var arg3 = 3;
+  function TestObj(){}
+  TestObj.prototype.assertingEventHandler = 
+    function( event, assertEvent, assert1, assert2, assert3, a1, a2, a3 ){
+      assertEvent(event);
+      assert1(a1);
+      assert2(a2);
+      assert3(a3);
+    }
+    
+  var globalBindTest = null;
+
+  new Test.Unit.Runner({
+    
+    testFunctionBind: function() { with(this) {
+      function methodWithoutArguments(){
+        globalBindTest = this.hi;
+      }
+      function methodWithArguments(){
+        globalBindTest = this.hi + ',' + $A(arguments).join(',');
+      }
+      function methodWithBindArguments(){
+        globalBindTest = this.hi + ',' + $A(arguments).join(',');
+      }
+      function methodWithBindArgumentsAndArguments(){
+        globalBindTest = this.hi + ',' + $A(arguments).join(',');
+      }
+      
+      methodWithoutArguments.bind({hi:'without'})();
+      assertEqual('without', globalBindTest);
+      
+      methodWithArguments.bind({hi:'with'})('arg1','arg2');
+      assertEqual('with,arg1,arg2', globalBindTest);
+      
+      methodWithBindArguments.bind({hi:'withBindArgs'},'arg1','arg2')();
+      assertEqual('withBindArgs,arg1,arg2', globalBindTest);
+      
+      methodWithBindArgumentsAndArguments.bind({hi:'withBindArgsAndArgs'},'arg1','arg2')('arg3','arg4');
+      assertEqual('withBindArgsAndArgs,arg1,arg2,arg3,arg4', globalBindTest);
+    }},
+
+    testObjectInspect: function() { with(this) {
+      assertEqual('undefined', Object.inspect());
+      assertEqual('undefined', Object.inspect(undefined));
+      assertEqual('null', Object.inspect(null));
+      assertEqual("'foo\\\\b\\\'ar'", Object.inspect('foo\\b\'ar'));
+      assertEqual('[]', Object.inspect([]));
+    }},
+    
+    // sanity check
+    testDoesntExtendObjectPrototype: function() {with(this) {
+      // for-in is supported with objects
+      var iterations = 0, obj = { a: 1, b: 2, c: 3 };
+      for(property in obj) iterations++;
+      assertEqual(3, iterations);
+      
+      // for-in is not supported with arrays
+      iterations = 0;
+      var arr = [1,2,3];
+      for(property in arr) iterations++;
+      assert(iterations > 3);
+    }},
+    
+    testPeriodicalExecuterStop: function() {with(this) {
+      new PeriodicalExecuter(peEventFired, 0.1);
+      
+      wait(1000, function() {
+          assertEqual(3, peEventCount);
+      });
+    }},
+
+    testBindAsEventListener: function() {
+      for( var i = 0; i < 10; ++i ){
+        var div = document.createElement('div');
+        div.setAttribute('id','test-'+i);
+        document.body.appendChild(div);
+        var tobj = new TestObj();
+        var eventTest = {test:true};
+        var call = tobj.assertingEventHandler.bindAsEventListener(tobj,
+          this.assertEqual.bind(this,eventTest),
+          this.assertEqual.bind(this,arg1),
+          this.assertEqual.bind(this,arg2),
+          this.assertEqual.bind(this,arg3), arg1, arg2, arg3 );
+        call(eventTest);
+      }
+    }
+
+  }, 'testlog');
+
+// ]]>
+</script>
+</body>
+</html>
