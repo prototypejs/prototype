@@ -132,10 +132,12 @@ Form.Element.Methods = {
   
   activate: function(element) {
     element = $(element);
-    element.focus();
-    if (element.select && ( element.tagName.toLowerCase() != 'input' ||
-      !['button', 'reset', 'submit'].include(element.type) ) )
-      element.select();
+    try {
+      element.focus();
+      if (element.select && (element.tagName.toLowerCase() != 'input' ||
+        !['button', 'reset', 'submit'].include(element.type)))
+        element.select();
+    } catch (e) {}
     return element;
   },
   

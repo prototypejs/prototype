@@ -86,6 +86,10 @@
   <input type="text" name="focus_text" id="focus_text" value="Hello" />
 </form>
 
+<form id="form_focus_hidden" style="display: none">
+  <input type="text" />
+</form>
+
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
@@ -209,13 +213,18 @@
       Form.focusFirstElement('form_focus');
       if(document.selection) assertEqual('', getSelection(element));
       
-      // Form.Field.activate shouldn't select text on buttons
+      // Form.Element.activate shouldn't select text on buttons
       element = $('focus_text');
       assertEqual('', getSelection(element));
         
-      // Form.Field.activate should select text on text input elements
+      // Form.Element.activate should select text on text input elements
       element.activate();
       assertEqual('Hello', getSelection(element));
+
+      // Form.Element.activate shouldn't raise an exception when the form or field is hidden
+      assertNothingRaised(function() {
+        $('form_focus_hidden').focusFirstElement();
+      });
     }},
     
     testFormGetElements: function() {with(this) {
