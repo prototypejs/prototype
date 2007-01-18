@@ -64,10 +64,10 @@
       assertEqual(2, result);
     }},
     
-    testEachContinue: function() {with(this) {
+    testEachReturnActsAsContinue: function() {with(this) {
       var results = [];
       [1, 2, 3].each(function(value) {
-        if (value == 2) throw $continue;
+        if (value == 2) return;
         results.push(value);
       });
       

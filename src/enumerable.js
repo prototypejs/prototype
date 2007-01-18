@@ -6,11 +6,7 @@ var Enumerable = {
     var index = 0;
     try {
       this._each(function(value) {
-        try {
-          iterator(value, index++);
-        } catch (e) {
-          if (e != $continue) throw e;
-        }
+        iterator(value, index++);
       });
     } catch (e) {
       if (e != $break) throw e;
