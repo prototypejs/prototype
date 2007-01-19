@@ -1,5 +1,7 @@
 *SVN*
 
+* Make setStyle() with opacity: 0 in Internet Explorer work correctly.  [Thomas Fuchs]
+
 * Form.Element.activate shouldn't raise an exception when the form or field is hidden.  [sam]
 
 * Remove support for "throw $continue" in Enumerable.  Use "return" instead.  [sam]

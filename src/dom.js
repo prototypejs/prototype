@@ -333,7 +333,7 @@ Element.Methods = {
             !/Konqueror|Safari|KHTML/.test(navigator.userAgent)) ? 0.999999 : 1.0;
           if(/MSIE/.test(navigator.userAgent) && !window.opera)
             element.style.filter = element.getStyle('filter').replace(/alpha\([^\)]*\)/gi,'');
-        } else if(value == '') {
+        } else if(value === '') {
           if(/MSIE/.test(navigator.userAgent) && !window.opera)
             element.style.filter = element.getStyle('filter').replace(/alpha\([^\)]*\)/gi,'');
         } else {

@@ -610,9 +610,11 @@
       $('style_test_3').setStyle({ opacity: 0.5 });
       assertEqual(0.5, $('style_test_3').getStyle('opacity'));
       
-      // should remove opacity
       $('style_test_3').setStyle({ opacity: '' });
       assertEqual(1, $('style_test_3').getStyle('opacity'));
+      
+      $('style_test_3').setStyle({ opacity: 0 });
+      assertEqual(0, $('style_test_3').getStyle('opacity'));
     }},
     
     testElementGetStyle: function() { with(this) {
