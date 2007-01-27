@@ -280,7 +280,27 @@
     testFormSerializeWorksWithNonFormElements: function() {with(this) {
       assertEqual('nvm%5B%5D=One&nvm%5B%5D=Three&evu=&evm%5B%5D=&evm%5B%5D=Three', Form.serialize('form_fieldset'));
       assertEqual('vu=1&vm%5B%5D=1&vm%5B%5D=3&nvu=One&nvm%5B%5D=One&nvm%5B%5D=Three&evu=&evm%5B%5D=&evm%5B%5D=Three', Form.serialize('form_wrapper'));
-    }} 
+    }},
+    
+    testFormMethodsOnExtendedElements: function() {with(this) {
+      assertEqual(Form.serialize('form'), $('form').serialize());
+      assertEqual(Form.Element.serialize('input_enabled'), $('input_enabled').serialize());
+      assertNotEqual($('form').serialize, $('input_enabled').serialize);
+      
+      Element.addMethods('INPUT',  { anInputMethod: function(input)  { return 'input'  } });
+      Element.addMethods('SELECT', { aSelectMethod: function(select) { return 'select' } });
+
+      document.getElementById('tf_text')._extended = false;
+      document.getElementById('tf_selectOne')._extended = false;
+
+      assert($('tf_text').anInputMethod);
+      assert(!$('tf_text').aSelectMethod);
+      assertEqual('input', $('tf_text').anInputMethod());
+
+      assert($('tf_selectOne').aSelectMethod);
+      assert(!$('tf_selectOne').anInputMethod);      
+      assertEqual('select', $('tf_selectOne').aSelectMethod());
+    }}
     
   }, 'testlog');
 // ]]>

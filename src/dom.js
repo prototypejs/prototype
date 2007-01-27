@@ -41,26 +41,31 @@ document.getElementsByClassName = function(className, parentElement) {
 if (!window.Element)
   var Element = new Object();
 
+
 Element.extend = function(element) {
-  if (!element || _nativeExtensions || element.nodeType == 3) return element;
-  
-  if (!element._extended && element.tagName && element != window) {
-    var methods = Object.clone(Element.Methods), cache = Element.extend.cache;
-    
-    if (element.tagName == 'FORM')
-      Object.extend(methods, Form.Methods);
-    if (['INPUT', 'TEXTAREA', 'SELECT'].include(element.tagName)) 
-      Object.extend(methods, Form.Element.Methods);
-    
-    Object.extend(methods, Element.Methods.Simulated);
-      
-    for (var property in methods) {
-      var value = methods[property];
-      if (typeof value == 'function' && !(property in element))
-        element[property] = cache.findOrStore(value);
-    }
+  var F = Prototype.BrowserFeatures;
+  if (!element || !element.tagName || element.nodeType == 3 || 
+   element._extended || F.SpecificElementExtensions || element == window) 
+    return element;
+
+  var methods = {}, tagName = element.tagName, cache = Element.extend.cache, 
+   T = Element.Methods.ByTag;
+
+  // extend methods for all tags (Safari doesn't need this)
+  if (!F.ElementExtensions) {
+    Object.extend(methods, Element.Methods), 
+    Object.extend(methods, Element.Methods.Simulated);      
   }
-  
+
+  // extend methods for specific tags
+  if (T[tagName]) Object.extend(methods, T[tagName]);
+
+  for (var property in methods) {
+    var value = methods[property];
+    if (typeof value == 'function' && !(property in element))
+      element[property] = cache.findOrStore(value);
+  }
+
   element._extended = true;
   return element;
 };
@@ -471,6 +476,8 @@ Element.Methods.Simulated = {
   }
 };
 
+Element.Methods.ByTag = {};
+
 // IE is missing .innerHTML support for TABLE-related elements
 if (document.all && !window.opera){
   Element.Methods.update = function(element, html) {
@@ -510,19 +517,36 @@ if (document.all && !window.opera){
 
 Object.extend(Element, Element.Methods);
 
-var _nativeExtensions = false;
-
-if(/Konqueror|Safari|KHTML/.test(navigator.userAgent))
-  ['', 'Form', 'Input', 'TextArea', 'Select'].each(function(tag) {
-    var className = 'HTML' + tag + 'Element';
-    if(window[className]) return;
-    var klass = window[className] = {};
-    klass.prototype = document.createElement(tag ? tag.toLowerCase() : 'div').__proto__;
-  });
+if (!Prototype.BrowserFeatures.ElementExtensions && 
+ document.createElement('div').__proto__) {
+  window.HTMLElement = {};
+  window.HTMLElement.prototype = document.createElement('div').__proto__;
+  Prototype.BrowserFeatures.ElementExtensions = true;
+}
 
 Element.addMethods = function(methods) {
-  Object.extend(Element.Methods, methods || {});
+  var F = Prototype.BrowserFeatures, T = Element.Methods.ByTag;
+  if (arguments.length == 2) {
+    var tagName = methods;
+    methods = arguments[1];
+  }
   
+  if (!tagName)
+    Object.extend(Element.Methods, methods || {});  
+  else {
+    if (tagName.constructor == Array) {
+      tagName.each(extend);
+    }
+    else extend(tagName);
+  }
+  
+  function extend(tagName) {
+    tagName = tagName.toUpperCase();
+    if (!Element.Methods.ByTag[tagName])
+      Element.Methods.ByTag[tagName] = {};
+    Object.extend(Element.Methods.ByTag[tagName], methods);
+  }
+
   function copy(methods, destination, onlyIfAbsent) {
     onlyIfAbsent = onlyIfAbsent || false;
     var cache = Element.extend.cache;
@@ -533,16 +557,44 @@ Element.addMethods = function(methods) {
     }
   }
   
-  if (typeof HTMLElement != 'undefined') {
+  function findDOMClass(tagName) {
+    var klass;
+    var trans = {       
+      "OPTGROUP": "OptGroup", "TEXTAREA": "TextArea", "P": "Paragraph", 
+      "FIELDSET": "FieldSet", "UL": "UList", "OL": "OList", "DL": "DList",
+      "DIR": "Directory", "H1": "Heading", "H2": "Heading", "H3": "Heading",
+      "H4": "Heading", "H5": "Heading", "H6": "Heading", "Q": "Quote", 
+      "INS": "Mod", "DEL": "Mod", "A": "Anchor", "IMG": "Image", "CAPTION": 
+      "TableCaption", "COL": "TableCol", "COLGROUP": "TableCol", "THEAD": 
+      "TableSection", "TFOOT": "TableSection", "TBODY": "TableSection", "TR":
+      "TableRow", "TH": "TableCell", "TD": "TableCell", "FRAMESET": 
+      "FrameSet", "IFRAME": "IFrame"
+    };
+    if (trans[tagName]) klass = 'HTML' + trans[tagName] + 'Element';
+    if (window[klass]) return window[klass];
+    klass = 'HTML' + tagName + 'Element';
+    if (window[klass]) return window[klass];
+    klass = 'HTML' + tagName.capitalize() + 'Element';
+    if (window[klass]) return window[klass];
+    
+    window[klass] = {};
+    window[klass].prototype = document.createElement(tagName).__proto__;
+    return window[klass];
+  }
+  
+  if (F.ElementExtensions) {
     copy(Element.Methods, HTMLElement.prototype);
     copy(Element.Methods.Simulated, HTMLElement.prototype, true);
-    copy(Form.Methods, HTMLFormElement.prototype);
-    [HTMLInputElement, HTMLTextAreaElement, HTMLSelectElement].each(function(klass) {
-      copy(Form.Element.Methods, klass.prototype);
-    });
-    _nativeExtensions = true;
   }
-}
+  
+  if (F.SpecificElementExtensions) {
+    for (var tag in Element.Methods.ByTag) {
+      var klass = findDOMClass(tag);
+      if (typeof klass == "undefined") continue;
+      copy(T[tag], klass.prototype);
+    }
+  }  
+};
 
 var Toggle = new Object();
 Toggle.display = Element.toggle;

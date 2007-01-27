@@ -156,6 +156,15 @@ Form.Element.Methods = {
 }
 
 Object.extend(Form.Element, Form.Element.Methods);
+Object.extend(Element.Methods.ByTag, {
+  "FORM":     Object.clone(Form.Methods),
+  "INPUT":    Object.clone(Form.Element.Methods),
+  "SELECT":   Object.clone(Form.Element.Methods),
+  "TEXTAREA": Object.clone(Form.Element.Methods)
+});
+
+/*--------------------------------------------------------------------------*/
+
 var Field = Form.Element;
 var $F = Form.Element.getValue;
 
@@ -304,4 +313,3 @@ Form.EventObserver.prototype = Object.extend(new Abstract.EventObserver(), {
     return Form.serialize(this.element);
   }
 });
-

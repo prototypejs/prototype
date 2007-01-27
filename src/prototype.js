@@ -3,7 +3,11 @@
 var Prototype = {
   Version: '<%= PROTOTYPE_VERSION %>',
   BrowserFeatures: {
-    XPath: !!document.evaluate
+    XPath: !!document.evaluate,
+    ElementExtensions: !!window.HTMLElement,
+    SpecificElementExtensions: 
+      (document.createElement('div').__proto__ !== 
+       document.createElement('form').__proto__)
   },
   
   ScriptFragment: '(?:<script.*?>)((\n|\r|.)*?)(?:<\/script>)',

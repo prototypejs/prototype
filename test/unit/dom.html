@@ -256,6 +256,18 @@
 
   var testVar = 'to be updated';
 
+  Element.addMethods("LI", {
+    pancakes: function(element) { return "pancakes"; }
+  });
+  
+  Element.addMethods("DIV", {
+    waffles: function(element) { return "waffles"; }
+  });
+  
+  Element.addMethods($w("li div"), {
+    orangeJuice: function(element) { return "orange juice"; }
+  });
+
   new Test.Unit.Runner({
 
     testDollarFunction: function() { with(this) {
@@ -271,6 +283,7 @@
       var elt = $('testdiv');
       assertIdentical(elt, $(elt));
       assertRespondsTo('hide', elt);
+      assertRespondsTo('childOf', elt);
     }},
     
     testGetElementsByClassName: function() {with(this) {
@@ -282,7 +295,7 @@
     
     testInsertWithTR: function() {with(this) {
       new Insertion.After('second_row', '<tr id="third_row"><td>Third Row</td></tr>');
-      assert($('second_row').childOf('table'));
+      assert($('second_row').descendantOf('table'));
     }},
     
     testElementVisible: function(){with(this) {
@@ -801,8 +814,27 @@
       elem.scrollTo();
       assertEqual(Position.page(elem)[1], 0);      
       window.scrollTo(0, 0);
-    }}
+    }},
     
+    testSpecificElementMethods: function() {with(this) {
+      var elem = $('navigation_test_f');
+      
+      assert(Element.Methods.ByTag[elem.tagName]);
+      assertRespondsTo('pancakes', elem);
+      assertEqual("pancakes", elem.pancakes());
+      
+      var elem2 = $('test-visible');
+
+      assert(Element.Methods.ByTag[elem2.tagName]);
+      assertUndefined(elem2.pancakes);
+      assertRespondsTo('waffles', elem2);
+      assertEqual("waffles", elem2.waffles());
+      
+      assertRespondsTo('orangeJuice', elem);
+      assertRespondsTo('orangeJuice', elem2);
+      assertEqual("orange juice", elem.orangeJuice());
+      assertEqual("orange juice", elem2.orangeJuice());
+    }}    
   }, 'testlog');
 
 // ]]>
