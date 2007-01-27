@@ -95,7 +95,7 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
     
     // when GET, append parameters to URL
     if (this.method == 'get' && params)
-      this.url += (this.url.indexOf('?') > -1 ? '&' : '?') + params;
+      this.url += (this.url.include('?') ? '&' : '?') + params;
       
     try {
       Ajax.Responders.dispatch('onCreate', this, this.transport);

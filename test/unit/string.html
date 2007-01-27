@@ -322,6 +322,29 @@
       assertEqual('\'test \\\'test\\\' "test"\'', 'test \'test\' "test"'.inspect());
     }},
     
+    testInclude: function() {with(this) {
+      assert('hello world'.include('h'));
+      assert('hello world'.include('hello'));
+      assert('hello world'.include('llo w'));
+      assert('hello world'.include('world'));      
+      assert(!'hello world'.include('bye'));
+      assert(!''.include('bye'));
+    }},
+    
+    testStartsWith: function() {with(this) {
+      assert('hello world'.startsWith('h'));
+      assert('hello world'.startsWith('hello'));
+      assert(!'hello world'.startsWith('bye'));
+      assert(!''.startsWith('bye'));
+    }},
+    
+    testEndsWith: function() {with(this) {
+      assert('hello world'.endsWith('d'));
+      assert('hello world'.endsWith(' world'));
+      assert(!'hello world'.endsWith('planet'));
+      assert(!''.endsWith('planet'));
+    }},
+    
     testSucc: function() {with(this) {
       assertEqual('b', 'a'.succ());
       assertEqual('B', 'A'.succ());

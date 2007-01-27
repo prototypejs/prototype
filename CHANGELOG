@@ -1,5 +1,7 @@
 *SVN*
 
+* Add String.prototype.startsWith, String.prototype.endsWith, and String.prototype.include.  Closes #7075.  [Tobie Langel]
+
 * Improve performance of String.prototype.escapeHTML by using a cached div and text node.  Closes #6937.  [altblue]
 
 * Make setStyle() with opacity: 0 in Internet Explorer work correctly.  [Thomas Fuchs]

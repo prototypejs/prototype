@@ -140,6 +140,18 @@ Object.extend(String.prototype, {
       return '"' + escapedString.replace(/"/g, '\\"') + '"';
     else
       return "'" + escapedString.replace(/'/g, '\\\'') + "'";
+  },
+
+  include: function(pattern){
+    return this.indexOf(pattern) > -1;
+  },
+
+  startsWith: function(pattern){
+    return this.indexOf(pattern) == 0;
+  },
+
+  endsWith: function(pattern){
+    return this.indexOf(pattern) == (this.length - pattern.length);
   }
 });
 
