@@ -66,10 +66,9 @@ Object.extend(String.prototype, {
   },
 
   escapeHTML: function() {
-    var div = document.createElement('div');
-    var text = document.createTextNode(this);
-    div.appendChild(text);
-    return div.innerHTML;
+    var self = arguments.callee;
+    self.text.data = this;
+    return self.div.innerHTML;
   },
 
   unescapeHTML: function() {
@@ -151,6 +150,13 @@ String.prototype.gsub.prepareReplacement = function(replacement) {
 }
 
 String.prototype.parseQuery = String.prototype.toQueryParams;
+
+Object.extend(String.prototype.escapeHTML, {
+  div:  document.createElement('div'),
+  text: document.createTextNode('')
+});
+
+with (String.prototype.escapeHTML) div.appendChild(text);
 
 var Template = Class.create();
 Template.Pattern = /(^|.|\r|\n)(#\{(.*?)\})/;

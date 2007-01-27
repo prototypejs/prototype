@@ -1,5 +1,7 @@
 *SVN*
 
+* Improve performance of String.prototype.escapeHTML by using a cached div and text node.  Closes #6937.  [altblue]
+
 * Make setStyle() with opacity: 0 in Internet Explorer work correctly.  [Thomas Fuchs]
 
 * Form.Element.activate shouldn't raise an exception when the form or field is hidden.  [sam]
