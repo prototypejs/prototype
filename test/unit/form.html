@@ -23,14 +23,14 @@
 <!-- Log output -->
 <div id="testlog"> </div>
 
-<form id="form">
+<form id="form" method="get" action="fixtures/empty.js">
   <input type="text" name="val1" id="input_enabled" value="4" />
   <div>This is not a form element</div>
   <input type="text" name="val2" id="input_disabled" disabled="disabled" value="5" />
   <input type="submit" />
 </form>
 <div id="form_wrapper">
-  <form id="form_selects">
+  <form id="form_selects" action="fixtures/empty.js">
     <select name="vu">
        <option value="1" selected="selected">One</option>
        <option value="2">Two</option>
@@ -300,6 +300,29 @@
       assert($('tf_selectOne').aSelectMethod);
       assert(!$('tf_selectOne').anInputMethod);      
       assertEqual('select', $('tf_selectOne').aSelectMethod());
+    }},
+    
+    testFormRequest: function() {with(this) {
+      var request = $("form_selects").request();
+      assert(!$("form_selects").hasAttribute("method"));
+      assert(request.url.endsWith("fixtures/empty.js"));
+      assertEqual("post", request.method);
+      assertEqual("vu=1&vm%5B%5D=1&vm%5B%5D=3&nvu=One&nvm%5B%5D=One&nvm%5B%5D=Three&evu=&evm%5B%5D=&evm%5B%5D=Three", Hash.toQueryString(request.options.parameters));
+
+      request = $("form_selects").request({method: "put", parameters: {val2: "hello", val3: "world"}});
+      assertEqual("post", request.method);
+      assertEqual("put", request.parameters['_method']);
+      assertEqual("vu=1&vm%5B%5D=1&vm%5B%5D=3&nvu=One&nvm%5B%5D=One&nvm%5B%5D=Three&evu=&evm%5B%5D=&evm%5B%5D=Three&val2=hello&val3=world", Hash.toQueryString(request.options.parameters));
+      
+      request = $("form").request();
+      assert($("form").hasAttribute("method"));
+      assert(request.url.endsWith("fixtures/empty.js?val1=4"));
+      assertEqual("get", request.method);
+      
+      request = $("form").request({method: "post"});
+      assert(request.url.endsWith("fixtures/empty.js"));
+      assertEqual("val1=4", Hash.toQueryString(request.options.parameters));
+      assertEqual("post", request.method);
     }}
     
   }, 'testlog');

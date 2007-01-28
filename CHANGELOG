@@ -1,5 +1,11 @@
 *SVN*
 
+* Add Form.Methods.request as a convenience method for serializing and submitting a form via Ajax.Request to the URL in the form's action attribute.  [sam]
+
+  Options passed to request() are intelligently merged with the underlying Ajax.Request options:
+  - If the form has a method attribute, its value is used for the Ajax.Request method option.  If a method option is passed to request(), it takes precedence over the form's method attribute.  If neither is specified, method defaults to "post".
+  - Key/value pairs specified in the parameters option (either as a query string or as a hash) will be merged with (and take precedence over) the serialized form parameters.
+
 * Fix $(form).serialize() in Safari and add support for extending specific tags to Element.addMethods.  Closes #7358.  [Andrew Dupont]
 
 * Add String.prototype.startsWith, String.prototype.endsWith, and String.prototype.include.  Closes #7075.  [Tobie Langel]

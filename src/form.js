@@ -82,6 +82,23 @@ Form.Methods = {
     form = $(form);
     form.findFirstElement().activate();
     return form;
+  },
+  
+  request: function(form, options) {
+    form = $(form), options = Object.clone(options || {});
+
+    var params = options.parameters;
+    options.parameters = form.serialize(true);
+    
+    if (params) {
+      if (typeof params == 'string') params = params.toQueryParams();
+      Object.extend(options.parameters, params);
+    }
+    
+    if (form.hasAttribute('method') && !options.method)
+      options.method = form.method;
+    
+    return new Ajax.Request(form.action, options);
   }
 }
 
