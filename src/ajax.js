@@ -94,7 +94,7 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
 
     if (params = Hash.toQueryString(params)) {
       // when GET, append parameters to URL
-      if (this.method == 'get' && params)
+      if (this.method == 'get')
         this.url += (this.url.include('?') ? '&' : '?') + params;
       else if (/Konqueror|Safari|KHTML/.test(navigator.userAgent))
         params += '&_=';
