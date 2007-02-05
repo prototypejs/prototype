@@ -68,9 +68,11 @@ Object.extend(Array.prototype, {
     return this.length > 1 ? this : this[0];
   },
   
-  uniq: function() {
-    return this.inject([], function(array, value) {
-      return array.include(value) ? array : array.concat([value]);
+  uniq: function(sorted) {
+    return this.inject([], function(array, value, index) {
+      if (0 == index || (sorted ? array.last() != value : !array.include(value)))
+        array.push(value);
+      return array;
     });
   },
   

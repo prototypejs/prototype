@@ -127,6 +127,7 @@
       assertEnumEqual([1], [1].uniq());
       assertEnumEqual([], [].uniq());
       assertEnumEqual([0, 1, 2, 3], [0, 1, 2, 2, 3, 0, 2].uniq());
+      assertEnumEqual([0, 1, 2, 3], [0, 0, 1, 1, 2, 3, 3, 3].uniq(true));
     }},
     
     testWithout: function(){ with(this) {
