@@ -1,5 +1,7 @@
 *SVN*
 
+* String.prototype.endsWith should not fail on multiple occurrences.  Closes #7416.  [Christophe Porteneuve]
+
 * Add Form.Methods.request as a convenience method for serializing and submitting a form via Ajax.Request to the URL in the form's action attribute.  [sam]
 
   Options passed to request() are intelligently merged with the underlying Ajax.Request options:

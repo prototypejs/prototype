@@ -343,6 +343,7 @@
       assert('hello world'.endsWith(' world'));
       assert(!'hello world'.endsWith('planet'));
       assert(!''.endsWith('planet'));
+      assert('hello world world'.endsWith(' world'));
     }},
     
     testSucc: function() {with(this) {

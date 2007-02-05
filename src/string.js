@@ -151,7 +151,7 @@ Object.extend(String.prototype, {
   },
 
   endsWith: function(pattern){
-    return this.indexOf(pattern) == (this.length - pattern.length);
+    return this.lastIndexOf(pattern) == (this.length - pattern.length);
   }
 });
 
