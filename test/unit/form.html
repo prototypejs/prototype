@@ -323,6 +323,17 @@
       assert(request.url.endsWith("fixtures/empty.js"));
       assertEqual("val1=4", Hash.toQueryString(request.options.parameters));
       assertEqual("post", request.method);
+    }},
+    
+    testFormElementMethodsChaining: function(){ with(this) {
+      var methods = $w('clear activate disable enable'),
+        formElements = $('form_getelements').getElements();
+      methods.each(function(method){
+        formElements.each(function(element){
+          var returned = element[method]();
+          assertIdentical(element, returned);
+        });
+      });
     }}
     
   }, 'testlog');
