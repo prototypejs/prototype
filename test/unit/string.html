@@ -346,6 +346,22 @@
       assert('hello world world'.endsWith(' world'));
     }},
     
+    testBlank: function() { with(this) {
+      assert(''.blank());
+      assert(' '.blank());
+      assert('\t\r\n '.blank());
+      assert(!'a'.blank());
+      assert(!'\t y \n'.blank());
+    }},
+    
+    testEmpty: function() { with(this) {
+      assert(''.empty());
+      assert(!' '.empty());
+      assert(!'\t\r\n '.empty());
+      assert(!'a'.empty());
+      assert(!'\t y \n'.empty());
+    }},
+    
     testSucc: function() {with(this) {
       assertEqual('b', 'a'.succ());
       assertEqual('B', 'A'.succ());

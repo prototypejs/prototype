@@ -282,7 +282,7 @@ Element.Methods = {
   },
   
   empty: function(element) {
-    return $(element).innerHTML.match(/^\s*$/);
+    return $(element).innerHTML.blank();
   },
   
   descendantOf: function(element, ancestor) {

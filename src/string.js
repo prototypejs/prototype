@@ -1,4 +1,4 @@
-String.interpret = function(value){
+String.interpret = function(value) {
   return value == null ? '' : String(value);
 }
 
@@ -122,7 +122,7 @@ Object.extend(String.prototype, {
     return camelized;
   },
   
-  capitalize: function(){
+  capitalize: function() {
     return this.charAt(0).toUpperCase() + this.substring(1).toLowerCase();
   },
   
@@ -142,16 +142,24 @@ Object.extend(String.prototype, {
       return "'" + escapedString.replace(/'/g, '\\\'') + "'";
   },
 
-  include: function(pattern){
+  include: function(pattern) {
     return this.indexOf(pattern) > -1;
   },
 
-  startsWith: function(pattern){
+  startsWith: function(pattern) {
     return this.indexOf(pattern) == 0;
   },
 
-  endsWith: function(pattern){
+  endsWith: function(pattern) {
     return this.lastIndexOf(pattern) == (this.length - pattern.length);
+  },
+  
+  empty: function() {
+    return this == '';
+  },
+  
+  blank: function() {
+    return /^\s*$/.test(this);
   }
 });
 

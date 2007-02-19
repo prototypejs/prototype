@@ -1,5 +1,7 @@
 *SVN*
 
+* Add String.prototype.empty and String.prototype.blank (tests if empty or whitespace-only).  Closes #7016.  [Jonathan Viney, Thomas Fuchs]
+
 * Update README to reflect new URLs, update LICENSE copyright years.  Closes #7426.  [Tobie Langel]
 
 * Array.prototype.uniq optimization.  Closes #7417.  [Christophe Porteneuve]
