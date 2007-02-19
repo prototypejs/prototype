@@ -83,8 +83,7 @@ Object.extend(Event, {
     useCapture = useCapture || false;
     
     if (name == 'keypress' &&
-        (navigator.appVersion.match(/Konqueror|Safari|KHTML/)
-        || element.attachEvent))
+      (Prototype.Browser.WebKit || element.attachEvent))
       name = 'keydown';
     
     Event._observeAndCache(element, name, observer, useCapture);
@@ -95,8 +94,7 @@ Object.extend(Event, {
     useCapture = useCapture || false;
     
     if (name == 'keypress' &&
-        (navigator.appVersion.match(/Konqueror|Safari|KHTML/)
-        || element.detachEvent))
+        (Prototype.Browser.WebKit || element.attachEvent))
       name = 'keydown';
     
     if (element.removeEventListener) {
@@ -110,5 +108,5 @@ Object.extend(Event, {
 });
 
 /* prevent memory leaks in IE */
-if (navigator.appVersion.match(/\bMSIE\b/))
+if (Prototype.Browser.IE)
   Event.observe(window, 'unload', Event.unloadCache, false);

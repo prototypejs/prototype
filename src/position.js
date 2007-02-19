@@ -110,7 +110,7 @@ var Position = {
       valueL += element.offsetLeft || 0;
 
       // Safari fix
-      if (element.offsetParent==document.body)
+      if (element.offsetParent == document.body)
         if (Element.getStyle(element,'position')=='absolute') break;
 
     } while (element = element.offsetParent);
@@ -206,7 +206,7 @@ var Position = {
 // Safari returns margins on body which is incorrect if the child is absolutely
 // positioned.  For performance reasons, redefine Position.cumulativeOffset for
 // KHTML/WebKit only.
-if (/Konqueror|Safari|KHTML/.test(navigator.userAgent)) {
+if (Prototype.Browser.WebKit) {
   Position.cumulativeOffset = function(element) {
     var valueT = 0, valueL = 0;
     do {

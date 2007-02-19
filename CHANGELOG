@@ -1,5 +1,7 @@
 *SVN*
 
+* Add unified Browser detection by providing Prototype.Browser.(IE|Gecko|WebKit|Opera) booleans.  Closes #6800.  [savetheclocktower]
+
 * Add String.prototype.empty and String.prototype.blank (tests if empty or whitespace-only).  Closes #7016.  [Jonathan Viney, Thomas Fuchs]
 
 * Update README to reflect new URLs, update LICENSE copyright years.  Closes #7426.  [Tobie Langel]

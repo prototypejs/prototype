@@ -96,7 +96,7 @@ function $w(string){
   return string ? string.split(/\s+/) : [];
 }
 
-if(window.opera){
+if(Prototype.Browser.Opera){
   Array.prototype.concat = function(){
     var array = [];
     for(var i = 0, length = this.length; i < length; i++) array.push(this[i]);

@@ -479,7 +479,7 @@ Element.Methods.Simulated = {
 Element.Methods.ByTag = {};
 
 // IE is missing .innerHTML support for TABLE-related elements
-if (document.all && !window.opera){
+if (Prototype.Browser.IE){
   Element.Methods.update = function(element, html) {
     element = $(element);
     html = typeof html == 'undefined' ? '' : html.toString();
