@@ -1,5 +1,7 @@
 *SVN*
 
+* Update README to reflect new URLs, update LICENSE copyright years.  Closes #7426.  [Tobie Langel]
+
 * Array.prototype.uniq optimization.  Closes #7417.  [Christophe Porteneuve]
 
 * String.prototype.endsWith should not fail on multiple occurrences.  Closes #7416.  [Christophe Porteneuve]

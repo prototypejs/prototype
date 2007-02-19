@@ -16,7 +16,7 @@ Prototype currently targets the following platforms:
 == Using Prototype
 
 To use Prototype in your application, download the latest release from the 
-Prototype web site (http://prototype.conio.net/) and copy 
+Prototype web site (http://prototypejs.org/download) and copy 
 <tt>dist/prototype.js</tt> to a suitable location. Then include it in your HTML
 like so:
 
@@ -43,13 +43,13 @@ From the root Prototype directory,
 == Contributing to Prototype
 
 Check out the Prototype source with 
-  $ svn co http://dev.rubyonrails.org/svn/rails/spinoffs/prototype/
+  $ svn co http://svn.rubyonrails.org/rails/spinoffs/prototype/trunk/ prototype
 
-Modify the files in <tt>src/</tt>, add tests in <tt>test/</tt> if possible, 
-and post a patch to http://dev.rubyonrails.org/newticket (please make sure 
-to pick "Prototype" as the component).
+Find out how to contribute:
+  http://prototypejs.org/contribute
 
 == Documentation
 
-Please see the Prototype documentation on the script.aculo.us wiki:
-  http://wiki.script.aculo.us/scriptaculous/show/Prototype
+Please see the online Prototype API:
+  http://prototypejs.org/api
+
