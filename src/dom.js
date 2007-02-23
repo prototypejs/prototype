@@ -321,7 +321,7 @@ Element.Methods = {
       if (Element.getStyle(element, 'position') == 'static') value = 'auto';
     if(style == 'opacity') {
       if(value) return parseFloat(value);
-      if(value = (element.getStyle('filter') || '').match(/alpha\(opacity=(.*)\)/))  
+      if(value = (element.getStyle('filter') || '').match(/alpha\(opacity=(.*)\)/))
         if(value[1]) return parseFloat(value[1]) / 100;  
       return 1.0; 
     }
@@ -330,26 +330,22 @@ Element.Methods = {
   
   setStyle: function(element, style) {
     element = $(element);
+    var elementStyle = element.style;
     for (var name in style) {
       var value = style[name];
-      if(name == 'opacity') {
-        if (value == 1) {
-          value = (/Gecko/.test(navigator.userAgent) &&
-            !/Konqueror|Safari|KHTML/.test(navigator.userAgent)) ? 0.999999 : 1.0;
-          if(/MSIE/.test(navigator.userAgent) && !window.opera)
-            element.style.filter = element.getStyle('filter').replace(/alpha\([^\)]*\)/gi,'');
-        } else if(value === '') {
-          if(/MSIE/.test(navigator.userAgent) && !window.opera)
-            element.style.filter = element.getStyle('filter').replace(/alpha\([^\)]*\)/gi,'');
-        } else {
-          if(value < 0.00001) value = 0;  
-          if(/MSIE/.test(navigator.userAgent) && !window.opera)
-            element.style.filter = element.getStyle('filter').replace(/alpha\([^\)]*\)/gi,'') +
-              'alpha(opacity='+value*100+')';
-        }
-      } else if(['float','cssFloat'].include(name)) name = (typeof element.style.styleFloat != 'undefined') ? 'styleFloat' : 'cssFloat';
-      element.style[name.camelize()] = value;
+      if (name == 'opacity') element.setOpacity(value);
+      if (name == 'float' || name == 'cssFloat') {
+        name = (typeof elementStyle.styleFloat != 'undefined') ?
+          'styleFloat' : 'cssFloat';
+      }
+      elementStyle[name.camelize()] = value;
     }
+    return element;
+  },
+  
+  setOpacity: function(element, value) {
+    element = $(element);
+    element.style.opacity = (value < 0.00001) ? 0 : value;
     return element;
   },
   
@@ -424,6 +420,31 @@ Element.Methods = {
 };
 
 Object.extend(Element.Methods, {childOf: Element.Methods.descendantOf});
+
+if (Prototype.Browser.IE) {
+  Element.Methods.setOpacity = function(element, value) {
+    element = $(element);
+    var filter = element.getStyle('filter'), style = element.style;
+    if (value == 1 || value === '') {
+      style.filter = filter.replace(/alpha\([^\)]*\)/gi,'');
+      return element;
+    } else if (value < 0.00001) value = 0;
+    style.filter = filter.replace(/alpha\([^\)]*\)/gi, '') +
+      'alpha(opacity=' + (value * 100) + ')';
+    return element;   
+  };
+}
+
+if (Prototype.Browser.Gecko) {
+  Element.Methods.setOpacity = function(element, value) {
+    element = $(element);
+    var style = element.style;
+    if (value == 1) value = 0.999999;
+    else if (value < 0.00001) value = 0;
+    style.opacity = value;
+    return element;
+  };
+}
 
 Element._attributeTranslations = {};
 

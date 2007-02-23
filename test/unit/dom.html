@@ -630,6 +630,22 @@
       assertEqual(0, $('style_test_3').getStyle('opacity'));
     }},
     
+    testElementSetOpacity: function() { with(this) {
+      [0,0.1,0.5,0.999].each(function(opacity){
+        $('style_test_3').setOpacity(opacity);
+        // b/c of rounding issues on IE special case
+        assert($('style_test_3').getStyle('opacity').toString().startsWith(opacity));
+      });
+      
+      assertEqual(0,
+        $('style_test_3').setOpacity(0.0000001).getStyle('opacity'));
+      
+      // for Firefox, we don't set to 1, because of flickering
+      assert(
+        $('style_test_3').setOpacity(0.9999999).getStyle('opacity') > 0.999
+      );
+    }},
+    
     testElementGetStyle: function() { with(this) {
       assertEqual("none",
         $('style_test_1').getStyle('display'));
@@ -681,10 +697,15 @@
       assertEqual(0.3, $('op2').getStyle('opacity'));
       assertEqual(0.3, $('op3').getStyle('opacity'));
       
+      $('op3').setStyle({opacity: 0});
+      assertEqual(0, $('op3').getStyle('opacity'));
+      
       if(navigator.appVersion.match(/MSIE/)) {
         assertEqual('alpha(opacity=30)', $('op1').getStyle('filter'));
         assertEqual('progid:DXImageTransform.Microsoft.Blur(strength=10)alpha(opacity=30)', $('op2').getStyle('filter'));
-        assertEqual('alpha(opacity=30)', $('op3').getStyle('filter'));
+        $('op2').setStyle({opacity:''});
+        assertEqual('progid:DXImageTransform.Microsoft.Blur(strength=10)', $('op2').getStyle('filter'));
+        assertEqual('alpha(opacity=0)', $('op3').getStyle('filter'));
         assertEqual(0.3, $('op4-ie').getStyle('opacity'));
       }
       // verify that value is stil found when using camelized
