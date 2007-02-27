@@ -301,51 +301,40 @@ Element.Methods = {
   
   getStyle: function(element, style) {
     element = $(element);
-    if (['float','cssFloat'].include(style))
-      style = (typeof element.style.styleFloat != 'undefined' ? 'styleFloat' : 'cssFloat');
-    style = style.camelize();
+    style = style == 'float' ? 'cssFloat' : style.camelize();
     var value = element.style[style];
     if (!value) {
-      if (document.defaultView && document.defaultView.getComputedStyle) {
-        var css = document.defaultView.getComputedStyle(element, null);
-        value = css ? css[style] : null;
-      } else if (element.currentStyle) {
-        value = element.currentStyle[style];
-      }
+      var css = document.defaultView.getComputedStyle(element, null);
+      value = css ? css[style] : null;
     }
-    
-    if((value == 'auto') && ['width','height'].include(style) && (element.getStyle('display') != 'none'))
-      value = element['offset'+style.capitalize()] + 'px';
-    
-    if (window.opera && ['left', 'top', 'right', 'bottom'].include(style))
-      if (Element.getStyle(element, 'position') == 'static') value = 'auto';
-    if(style == 'opacity') {
-      if(value) return parseFloat(value);
-      if(value = (element.getStyle('filter') || '').match(/alpha\(opacity=(.*)\)/))
-        if(value[1]) return parseFloat(value[1]) / 100;  
-      return 1.0; 
-    }
+    if (style == 'opacity') return value ? parseFloat(value) : 1.0;
     return value == 'auto' ? null : value;
   },
   
-  setStyle: function(element, style) {
+  getOpacity: function(element) {
+    return $(element).getStyle('opacity');
+  },
+  
+  setStyle: function(element, styles) {
     element = $(element);
     var elementStyle = element.style;
-    for (var name in style) {
-      var value = style[name];
-      if (name == 'opacity') element.setOpacity(value);
-      if (name == 'float' || name == 'cssFloat') {
-        name = (typeof elementStyle.styleFloat != 'undefined') ?
-          'styleFloat' : 'cssFloat';
+    for (var property in styles) {
+      var value = styles[property];
+      if (property == 'opacity') {
+        element.setOpacity(value)
+      } else {
+        property = (property == 'float' || property == 'cssFloat') ?
+          ((elementStyle.styleFloat === undefined) ? 'cssFloat' : 'styleFloat') : property.camelize();
+        elementStyle[property] = value;
       }
-      elementStyle[name.camelize()] = value;
     }
     return element;
   },
   
   setOpacity: function(element, value) {
     element = $(element);
-    element.style.opacity = (value < 0.00001) ? 0 : value;
+    element.style.opacity = (value == 1 || value === '') ? '' : 
+      (value < 0.00001) ? 0 : value;
     return element;
   },
   
@@ -421,7 +410,41 @@ Element.Methods = {
 
 Object.extend(Element.Methods, {childOf: Element.Methods.descendantOf});
 
+if (Prototype.Browser.Opera) { 
+  Element.Methods._getStyle = Element.Methods.getStyle; 
+  Element.Methods.getStyle = function(element, style) { 
+    switch(style) { 
+      case 'left': 
+      case 'top': 
+      case 'right': 
+      case 'bottom': 
+        if(Element._getStyle(element, 'position') == 'static') return null; 
+      default: return Element._getStyle(element, style); 
+    } 
+  }; 
+}
+
 if (Prototype.Browser.IE) {
+  Element.Methods.getStyle = function(element, style) {
+    element = $(element);
+    style = (style == 'float' || style == 'cssFloat') ? 'styleFloat' : style.camelize();
+    var value = element.style[style];
+    if (!value && element.currentStyle) value = element.currentStyle[style];
+
+    if (style == 'opacity') {
+      if (value = (element.getStyle('filter') || '').match(/alpha\(opacity=(.*)\)/))
+        if (value[1]) return parseFloat(value[1]) / 100;
+      return 1.0;
+    }
+
+    if (value == 'auto') {
+      if ((style == 'width' || style == 'height') && (element.getStyle('display') != 'none'))
+        return element['offset'+style.capitalize()] + 'px';
+      return null;
+    }
+    return value;
+  };
+  
   Element.Methods.setOpacity = function(element, value) {
     element = $(element);
     var filter = element.getStyle('filter'), style = element.style;
@@ -438,10 +461,8 @@ if (Prototype.Browser.IE) {
 if (Prototype.Browser.Gecko) {
   Element.Methods.setOpacity = function(element, value) {
     element = $(element);
-    var style = element.style;
-    if (value == 1) value = 0.999999;
-    else if (value < 0.00001) value = 0;
-    style.opacity = value;
+    element.style.opacity = (value == 1) ? 0.999999 : 
+      (value === '') ? '' : (value < 0.00001) ? 0 : value;
     return element;
   };
 }

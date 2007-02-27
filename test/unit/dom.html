@@ -714,6 +714,10 @@
       assertEqual("12px", $('style_test_1').getStyle('fontSize'));
     }},
     
+    testElementGetOpacity: function() {with(this) {
+      assertEqual(0.45, $('op1').setOpacity(0.45).getOpacity());
+    }},
+    
     testElementReadAttribute: function() {with(this) {
       assertEqual('test.html' , $('attributes_with_issues_1').readAttribute('href'));
       assertEqual('L' , $('attributes_with_issues_1').readAttribute('accesskey'));
