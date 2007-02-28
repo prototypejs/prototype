@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix a bug in the simulated hasAttribute for IE due to getAttributeNode sometimes returning null.  [sam]
+
 * Optimize Element.getStyle and add new Element.getOpacity method. Special case IE and Opera getStyle methods.  Closes #7648.  [Tobie Langel, Thomas Fuchs]
 
 * Optimize Element.setStyle and add new Element.setOpacity method, special case IE and Gecko opacity methods.  Closes #7585.  [savetheclocktower]

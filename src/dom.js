@@ -512,9 +512,10 @@ Object.extend(Element._attributeTranslations.values, {
 
 Element.Methods.Simulated = {
   hasAttribute: function(element, attribute) {
-    var t = Element._attributeTranslations;
+    var t = Element._attributeTranslations, node;
     attribute = t.names[attribute] || attribute;
-    return $(element).getAttributeNode(attribute).specified;
+    node = $(element).getAttributeNode(attribute);
+    return node && node.specified;
   }
 };
 
