@@ -315,7 +315,7 @@ Element.Methods = {
     return $(element).getStyle('opacity');
   },
   
-  setStyle: function(element, styles) {
+  setStyle: function(element, styles, camelized) {
     element = $(element);
     var elementStyle = element.style;
 
@@ -323,7 +323,8 @@ Element.Methods = {
       if (property == 'opacity') element.setOpacity(styles[property])
       else 
         elementStyle[(property == 'float' || property == 'cssFloat') ?
-          (elementStyle.styleFloat === undefined ? 'cssFloat' : 'styleFloat') : property.camelize()] = styles[property];
+          (elementStyle.styleFloat === undefined ? 'cssFloat' : 'styleFloat') : 
+          (camelized ? property : property.camelize())] = styles[property];
 
     return element;
   },

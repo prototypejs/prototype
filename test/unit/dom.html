@@ -630,6 +630,15 @@
       assertEqual(0, $('style_test_3').getStyle('opacity'));
     }},
     
+    testElementSetStyleCamelized: function() { with(this) {
+      $('style_test_3').setStyle({ marginTop: '30px'}, true);
+      assertEqual('30px', $('style_test_3').style.marginTop);
+      
+      // This would work if camelized parameter is false
+      $('style_test_3').setStyle({ 'margin-top': '20px'}, true);
+      assertEqual('30px', $('style_test_3').style.marginTop);
+    }},
+    
     testElementSetOpacity: function() { with(this) {
       [0,0.1,0.5,0.999].each(function(opacity){
         $('style_test_3').setOpacity(opacity);

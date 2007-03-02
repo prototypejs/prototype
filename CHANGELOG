@@ -1,5 +1,7 @@
 *SVN*
 
+* Add optional third parameter "camlized" to Element.setStyle, for optimized performance if style names are known to be camelCased.  [Thomas Fuchs]
+
 * Fix a bug in the simulated hasAttribute for IE due to getAttributeNode sometimes returning null.  [sam]
 
 * Optimize Element.getStyle and add new Element.getOpacity method. Special case IE and Opera getStyle methods.  Closes #7648.  [Tobie Langel, Thomas Fuchs]
