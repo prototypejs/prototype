@@ -18,29 +18,24 @@ if (Prototype.BrowserFeatures.XPath) {
       results.push(query.snapshotItem(i));
     return results;
   };
-}
-
-document.getElementsByClassName = function(className, parentElement) {
-  if (Prototype.BrowserFeatures.XPath) {
+  document.getElementsByClassName = function(className, parentElement) {
     var q = ".//*[contains(concat(' ', @class, ' '), ' " + className + " ')]";
     return document._getElementsByXPath(q, parentElement);
-  } else {
-    var children = ($(parentElement) || document.body).getElementsByTagName('*');
-    var elements = [], child;
-    for (var i = 0, length = children.length; i < length; i++) {
-      child = children[i];
-      if (Element.hasClassName(child, className))
-        elements.push(Element.extend(child));
-    }
-    return elements;
   }
+} else document.getElementsByClassName = function(className, parentElement) {
+  var children = ($(parentElement) || document.body).getElementsByTagName('*');
+  var elements = [], child;
+  for (var i = 0, length = children.length; i < length; i++) {
+    child = children[i];
+    if (Element.hasClassName(child, className))
+      elements.push(Element.extend(child));
+  }
+  return elements;
 };
 
 /*--------------------------------------------------------------------------*/
 
-if (!window.Element)
-  var Element = new Object();
-
+if (!window.Element) var Element = {};
 
 Element.extend = function(element) {
   var F = Prototype.BrowserFeatures;
@@ -421,8 +416,7 @@ if (Prototype.Browser.Opera) {
     } 
   }; 
 }
-
-if (Prototype.Browser.IE) {
+else if (Prototype.Browser.IE) {
   Element.Methods.getStyle = function(element, style) {
     element = $(element);
     style = (style == 'float' || style == 'cssFloat') ? 'styleFloat' : style.camelize();
@@ -454,73 +448,8 @@ if (Prototype.Browser.IE) {
       'alpha(opacity=' + (value * 100) + ')';
     return element;   
   };
-}
 
-if (Prototype.Browser.Gecko) {
-  Element.Methods.setOpacity = function(element, value) {
-    element = $(element);
-    element.style.opacity = (value == 1) ? 0.999999 : 
-      (value === '') ? '' : (value < 0.00001) ? 0 : value;
-    return element;
-  };
-}
-
-Element._attributeTranslations = {};
-
-Element._attributeTranslations.names = {
-  colspan:   "colSpan",
-  rowspan:   "rowSpan",
-  valign:    "vAlign",
-  datetime:  "dateTime",
-  accesskey: "accessKey",
-  tabindex:  "tabIndex",
-  enctype:   "encType",
-  maxlength: "maxLength",
-  readonly:  "readOnly",
-  longdesc:  "longDesc"
-};
-
-Element._attributeTranslations.values = {
-  _getAttr: function(element, attribute) {
-    return element.getAttribute(attribute, 2);
-  },
-  
-  _flag: function(element, attribute) {
-    return $(element).hasAttribute(attribute) ? attribute : null;
-  },
-  
-  style: function(element) {
-    return element.style.cssText.toLowerCase();
-  },
-  
-  title: function(element) {
-    var node = element.getAttributeNode('title');
-    return node.specified ? node.nodeValue : null;
-  }
-};
-
-Object.extend(Element._attributeTranslations.values, {
-  href: Element._attributeTranslations.values._getAttr,
-  src:  Element._attributeTranslations.values._getAttr,
-  disabled: Element._attributeTranslations.values._flag,
-  checked:  Element._attributeTranslations.values._flag,
-  readonly: Element._attributeTranslations.values._flag,
-  multiple: Element._attributeTranslations.values._flag
-});
-
-Element.Methods.Simulated = {
-  hasAttribute: function(element, attribute) {
-    var t = Element._attributeTranslations, node;
-    attribute = t.names[attribute] || attribute;
-    node = $(element).getAttributeNode(attribute);
-    return node && node.specified;
-  }
-};
-
-Element.Methods.ByTag = {};
-
-// IE is missing .innerHTML support for TABLE-related elements
-if (Prototype.Browser.IE){
+  // IE is missing .innerHTML support for TABLE-related elements
   Element.Methods.update = function(element, html) {
     element = $(element);
     html = typeof html == 'undefined' ? '' : html.toString();
@@ -554,7 +483,67 @@ if (Prototype.Browser.IE){
     setTimeout(function() {html.evalScripts()}, 10);
     return element;
   }
+}
+else if (Prototype.Browser.Gecko) {
+  Element.Methods.setOpacity = function(element, value) {
+    element = $(element);
+    element.style.opacity = (value == 1) ? 0.999999 : 
+      (value === '') ? '' : (value < 0.00001) ? 0 : value;
+    return element;
+  };
+}
+
+Element._attributeTranslations = {
+  names: {
+    colspan:   "colSpan",
+    rowspan:   "rowSpan",
+    valign:    "vAlign",
+    datetime:  "dateTime",
+    accesskey: "accessKey",
+    tabindex:  "tabIndex",
+    enctype:   "encType",
+    maxlength: "maxLength",
+    readonly:  "readOnly",
+    longdesc:  "longDesc"
+  },
+  values: {
+    _getAttr: function(element, attribute) {
+      return element.getAttribute(attribute, 2);
+    },
+    _flag: function(element, attribute) {
+      return $(element).hasAttribute(attribute) ? attribute : null;
+    },
+    style: function(element) {
+      return element.style.cssText.toLowerCase();
+    },
+    title: function(element) {
+      var node = element.getAttributeNode('title');
+      return node.specified ? node.nodeValue : null;
+    }
+  }
 };
+
+with (Element._attributeTranslations.values) {
+  Object.extend(this, {
+    href: _getAttr,
+    src:  _getAttr,
+    disabled: _flag,
+    checked:  _flag,
+    readonly: _flag,
+    multiple: _flag
+  });
+};
+
+Element.Methods.Simulated = {
+  hasAttribute: function(element, attribute) {
+    var t = Element._attributeTranslations, node;
+    attribute = t.names[attribute] || attribute;
+    node = $(element).getAttributeNode(attribute);
+    return node && node.specified;
+  }
+};
+
+Element.Methods.ByTag = {};
 
 Object.extend(Element, Element.Methods);
 
@@ -572,12 +561,9 @@ Element.addMethods = function(methods) {
     methods = arguments[1];
   }
   
-  if (!tagName)
-    Object.extend(Element.Methods, methods || {});  
+  if (!tagName) Object.extend(Element.Methods, methods || {});  
   else {
-    if (tagName.constructor == Array) {
-      tagName.each(extend);
-    }
+    if (tagName.constructor == Array) tagName.each(extend);
     else extend(tagName);
   }
   
@@ -637,8 +623,7 @@ Element.addMethods = function(methods) {
   }  
 };
 
-var Toggle = new Object();
-Toggle.display = Element.toggle;
+var Toggle = { display: Element.toggle };
 
 /*--------------------------------------------------------------------------*/
 

@@ -1,6 +1,8 @@
 *SVN*
 
-* Fix an issue with serializing empty array inputs, fixes #7516.  [stakadush, Mislav Marohnić]
+* Optimize document.getElementsByClassName and finalize DOM performance optimization refactoring.  Closes #6696.  [Mislav Marohnić]
+
+* Fix an issue with serializing empty array inputs.  Closes #7516.  [stakadush, Mislav Marohnić]
 
 * Add optional third parameter "camelized" to Element.setStyle, for optimized performance if style names are known to be camelCased.  [Thomas Fuchs]
 

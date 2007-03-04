@@ -631,11 +631,8 @@
     }},
     
     testElementSetStyleCamelized: function() { with(this) {
+      assertNotEqual('30px', $('style_test_3').style.marginTop);
       $('style_test_3').setStyle({ marginTop: '30px'}, true);
-      assertEqual('30px', $('style_test_3').style.marginTop);
-      
-      // This would work if camelized parameter is false
-      $('style_test_3').setStyle({ 'margin-top': '20px'}, true);
       assertEqual('30px', $('style_test_3').style.marginTop);
     }},
     
@@ -728,7 +725,11 @@
     }},
     
     testElementReadAttribute: function() {with(this) {
-      assertEqual('test.html' , $('attributes_with_issues_1').readAttribute('href'));
+      assertEqual('test.html' , $('attributes_with_issues_1').readAttribute('href'),
+        'NOTE: Due to a bug in IE\'s proprietary iFlags extension to getAttribute(), '+
+        '"href" attribute lookup fails to grab the exact attribute value for protocols '+
+        'other than http(s), which makes this test fail when run locally (file protocol).');
+      
       assertEqual('L' , $('attributes_with_issues_1').readAttribute('accesskey'));
       assertEqual('50' , $('attributes_with_issues_1').readAttribute('tabindex'));
       assertEqual('a link' , $('attributes_with_issues_1').readAttribute('title'));
