@@ -64,18 +64,18 @@
   new Test.Unit.Runner({
     
     testKeys: function(){ with(this) {
-      assertEnumEqual([],               $H({}).keys())
-      assertEnumEqual(['a'],            $H(Fixtures.one).keys())
-      assertEnumEqual($w('a b c d'),    $H(Fixtures.many).keys())
-      assertEnumEqual($w('alpha beta'), $H(Fixtures.functions).keys())
+      assertEnumEqual([],               $H({}).keys());
+      assertEnumEqual(['a'],            $H(Fixtures.one).keys());
+      assertEnumEqual($w('a b c d'),    $H(Fixtures.many).keys());
+      assertEnumEqual($w('alpha beta'), $H(Fixtures.functions).keys());
     }},
     
     testValues: function(){ with(this) {
-      assertEnumEqual([],             $H({}).values())
-      assertEnumEqual(['A#'],         $H(Fixtures.one).values())
-      assertEnumEqual($w('A B C D#'), $H(Fixtures.many).values())
-      assertEqual('function', typeof $H(Fixtures.functions).values()[1])
-      assertEqual(2, $H(Fixtures.functions).beta(1))
+      assertEnumEqual([],             $H({}).values());
+      assertEnumEqual(['A#'],         $H(Fixtures.one).values());
+      assertEnumEqual($w('A B C D#'), $H(Fixtures.many).values());
+      assertEqual('function', typeof $H(Fixtures.functions).values()[1]);
+      assertEqual(2, $H(Fixtures.functions).beta(1));
     }},  
       
     testMerge: function(){ with(this) {
@@ -86,25 +86,25 @@
     }},
 
     testRemove: function(){ with(this) {
-      var hash = $H(Fixtures.many)
-      var values = hash.remove('b', 'c')
-      assertEnumEqual($w('a d'), hash.keys())
-      assertEnumEqual($w('B C'), values)
+      var hash = $H(Fixtures.many);
+      var values = hash.remove('b', 'c');
+      assertEnumEqual($w('a d'), hash.keys());
+      assertEnumEqual($w('B C'), values);
     }},
     
     testToQueryString: function(){ with(this) {
-      assertEqual('',                        $H({}).toQueryString())
-      assertEqual('a=A%23',                  $H(Fixtures.one).toQueryString())
-      assertEqual('a=A&b=B&c=C&d=D%23',      $H(Fixtures.many).toQueryString())
-      assertEqual("a=b&c=",                  $H(Fixtures.value_undefined).toQueryString())
-      assertEqual("a=b&c=",                  $H(Fixtures.value_null).toQueryString())
-      assertEqual("a=b&c=0",                 $H(Fixtures.value_zero).toQueryString())
-      assertEqual("color=r&color=g&color=b", $H(Fixtures.multiple).toQueryString())
-      assertEqual("color=r&color=g&color=0", $H(Fixtures.multiple_nil).toQueryString())
-      assertEqual("color=",                  $H(Fixtures.multiple_all_nil).toQueryString())
-      assertEqual("color=",                  $H(Fixtures.multiple_empty).toQueryString())
+      assertEqual('',                        $H({}).toQueryString());
+      assertEqual('a=A%23',                  $H(Fixtures.one).toQueryString());
+      assertEqual('a=A&b=B&c=C&d=D%23',      $H(Fixtures.many).toQueryString());
+      assertEqual("a=b&c=",                  $H(Fixtures.value_undefined).toQueryString());
+      assertEqual("a=b&c=",                  $H(Fixtures.value_null).toQueryString());
+      assertEqual("a=b&c=0",                 $H(Fixtures.value_zero).toQueryString());
+      assertEqual("color=r&color=g&color=b", $H(Fixtures.multiple).toQueryString());
+      assertEqual("color=r&color=g&color=0", $H(Fixtures.multiple_nil).toQueryString());
+      assertEqual("color=",                  $H(Fixtures.multiple_all_nil).toQueryString());
+      assertEqual("color=",                  $H(Fixtures.multiple_empty).toQueryString());
       
-      assertEqual("_each=E&map=M&keys=K&values=V&collect=C&inject=I", Hash.toQueryString(Fixtures.dangerous))
+      assertEqual("_each=E&map=M&keys=K&values=V&collect=C&inject=I", Hash.toQueryString(Fixtures.dangerous));
     }},
     
     testInspect: function(){ with(this) {
