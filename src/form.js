@@ -8,8 +8,8 @@ var Form = {
     var data = elements.inject({}, function(result, element) {
       if (!element.disabled && element.name) {
         var key = element.name, value = $(element).getValue();
-        if (value != undefined) {
-          if (result[key]) {
+        if (value != null) { 
+         	if (key in result) {
             if (result[key].constructor != Array) result[key] = [result[key]];
             result[key].push(value);
           }

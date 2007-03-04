@@ -1,6 +1,8 @@
 *SVN*
 
-* Add optional third parameter "camlized" to Element.setStyle, for optimized performance if style names are known to be camelCased.  [Thomas Fuchs]
+* Fix an issue with serializing empty array inputs, fixes #7516.  [stakadush, Mislav Marohnić]
+
+* Add optional third parameter "camelized" to Element.setStyle, for optimized performance if style names are known to be camelCased.  [Thomas Fuchs]
 
 * Fix a bug in the simulated hasAttribute for IE due to getAttributeNode sometimes returning null.  [sam]
 
