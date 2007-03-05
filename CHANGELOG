@@ -1,5 +1,7 @@
 *SVN*
 
+* Form.Element.disable() will now call blur(), removed blur() call from Form.Element.enable().  Closes #6034.  [tdd]
+
 * Optimize document.getElementsByClassName and finalize DOM performance optimization refactoring.  Closes #6696.  [Mislav Marohnić]
 
 * Fix an issue with serializing empty array inputs.  Closes #7516.  [stakadush, Mislav Marohnić]

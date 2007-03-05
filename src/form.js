@@ -160,13 +160,13 @@ Form.Element.Methods = {
   
   disable: function(element) {
     element = $(element);
+    element.blur();
     element.disabled = true;
     return element;
   },
   
   enable: function(element) {
     element = $(element);
-    element.blur();
     element.disabled = false;
     return element;
   }
