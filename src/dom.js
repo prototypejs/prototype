@@ -524,14 +524,14 @@ Element._attributeTranslations = {
 };
 
 (function() {
-	Object.extend(this, {
-	  href: this._getAttr,
-	  src:  this._getAttr,
-	  disabled: this._flag,
-	  checked:  this._flag,
-	  readonly: this._flag,
-	  multiple: this._flag
-	});
+  Object.extend(this, {
+    href: this._getAttr,
+    src:  this._getAttr,
+    disabled: this._flag,
+    checked:  this._flag,
+    readonly: this._flag,
+    multiple: this._flag
+  });
 }).call(Element._attributeTranslations.values);
 
 Element.Methods.Simulated = {
