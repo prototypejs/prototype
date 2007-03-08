@@ -210,9 +210,18 @@
 <a id="attributes_with_issues_1" href="test.html" accesskey="L" tabindex="50" title="a link"></a>
 <a id="attributes_with_issues_2" href="" accesskey="" tabindex="" title=""></a>
 <a id="attributes_with_issues_3"></a>
+<form id="attributes_with_issues_form" method="post" action="blah">
+  <input type="checkbox" id="attributes_with_issues_checked" name="a" checked="checked"/>
+  <input type="checkbox" id="attributes_with_issues_disabled" name="b" checked="checked" disabled="disabled"/>
+  <input type="text" id="attributes_with_issues_readonly" name="c" readonly="readonly" value="blech"/>
+  <select id="attributes_with_issues_multiple" name="e" multiple="multiple">
+    <option>blech</option>
+    <option>blah</option>
+  </select>
+</form>
 
 <div id="dom_attribute_precedence">
-  <form>
+  <form action="blech" method="post">
     <input type="submit" id="update" />
   </form>
 </div>
@@ -725,17 +734,18 @@
     }},
     
     testElementReadAttribute: function() {with(this) {
-      assertEqual('test.html' , $('attributes_with_issues_1').readAttribute('href'),
-        'NOTE: Due to a bug in IE\'s proprietary iFlags extension to getAttribute(), '+
-        '"href" attribute lookup fails to grab the exact attribute value for protocols '+
-        'other than http(s), which makes this test fail when run locally (file protocol).');
+      assertEqual('test.html' , $('attributes_with_issues_1').readAttribute('href'));
       
       assertEqual('L' , $('attributes_with_issues_1').readAttribute('accesskey'));
       assertEqual('50' , $('attributes_with_issues_1').readAttribute('tabindex'));
       assertEqual('a link' , $('attributes_with_issues_1').readAttribute('title'));
 
       ['href', 'accesskey', 'accesskey', 'title'].each(function(attr){
-          assertEqual('' , $('attributes_with_issues_2').readAttribute(attr));
+        assertEqual('' , $('attributes_with_issues_2').readAttribute(attr));
+      });
+      
+      ['checked','disabled','readonly','multiple'].each(function(attr){
+        assertEqual(attr, $('attributes_with_issues_'+attr).readAttribute(attr));
       });
     
       var elements = $('custom_attributes').immediateDescendants();
