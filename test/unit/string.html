@@ -26,6 +26,7 @@
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
+  var attackTarget;
   var evalScriptsCounter = 0,
       largeTextEscaped = '&lt;span&gt;test&lt;/span&gt;', 
       largeTextUnescaped = '<span>test</span>';
@@ -320,6 +321,11 @@
       assertEqual('\'\'', ''.inspect());
       assertEqual('\'test\'', 'test'.inspect());
       assertEqual('\'test \\\'test\\\' "test"\'', 'test \'test\' "test"'.inspect());
+      assertEqual('\"test \'test\' \\"test\\"\"', 'test \'test\' "test"'.inspect(true));
+      assertEqual('\'\\b\\t\\n\\f\\r"\\\\\'', '\b\t\n\f\r"\\'.inspect());
+      assertEqual('\"\\b\\t\\n\\f\\r\\"\\\\\"', '\b\t\n\f\r"\\'.inspect(true));
+      assertEqual('\'\\b\\t\\n\\f\\r\'', '\x08\x09\x0a\x0c\x0d'.inspect());
+      assertEqual('\'\\u001a\'', '\x1a'.inspect());
     }},
     
     testInclude: function() {with(this) {
@@ -369,7 +375,41 @@
       assertEqual('abce', 'abcd'.succ());
       assertEqual('{', 'z'.succ());
       assertEqual(':', '9'.succ());
-    }}
+    }},
+
+    testTimes: function() {with(this) {
+      assertEqual('', ''.times(0));
+      assertEqual('', ''.times(5));
+      assertEqual('', 'a'.times(0));
+      assertEqual('a', 'a'.times(1));
+      assertEqual('aaaaa', 'a'.times(5));
+      assertEqual('foofoofoofoofoo', 'foo'.times(5));
+      assertEqual('', 'foo'.times(-5));
+    }},
+    
+    testToJSON: function() {with(this) {
+      assertEqual('\"\"', ''.toJSON());
+      assertEqual('\"test\"', 'test'.toJSON());
+    }},
+
+    testEvalJSON: function() {with(this) {
+      var valid = '{test: "hello world!"}';
+      var invalid = '{test: "hello world!"';
+      var dangerous = '{});attackTarget = "attack succeeded!";({}';
+      
+      assertEqual('hello world!', valid.evalJSON().test);
+      assertEqual('hello world!', valid.evalJSON(true).test);
+      assertRaise('SyntaxError', function(){invalid.evalJSON();});
+      assertRaise('SyntaxError', function(){invalid.evalJSON(true);});
+
+      attackTarget = "scared";      
+      dangerous.evalJSON();
+      assertEqual("attack succeeded!", attackTarget);
+      
+      attackTarget = "Not scared!";
+      assertRaise('SyntaxError', function(){dangerous.evalJSON(true)});
+      assertEqual("Not scared!", attackTarget);
+     }}
   }, 'testlog');
 // ]]>
 </script>

@@ -27,6 +27,26 @@ Object.extend(Object, {
     }
   },
   
+  toJSON: function(object) {
+    var type = typeof object;
+    switch(type) {
+      case 'undefined':
+      case 'function':
+      case 'unknown': return;
+      case 'boolean': return object.toString();
+    }
+    if (object === null) return 'null';
+    if (object.toJSON) return object.toJSON();
+    if (object.ownerDocument === document) return;
+    var results = [];
+    for (var property in object) {
+      var value = Object.toJSON(object[property]);
+      if (value !== undefined)
+        results.push(property.toJSON() + ':' + value);
+    }
+    return '{' + results.join(',') + '}';
+  },
+  
   keys: function(object) {
     var keys = [];
     for (var property in object)
@@ -62,9 +82,7 @@ Function.prototype.bindAsEventListener = function(object) {
 
 Object.extend(Number.prototype, {
   toColorPart: function() {
-    var digits = this.toString(16);
-    if (this < 16) return '0' + digits;
-    return digits;
+    return this.toPaddedString(2, 16);
   },
 
   succ: function() {
@@ -74,8 +92,26 @@ Object.extend(Number.prototype, {
   times: function(iterator) {
     $R(0, this, true).each(iterator);
     return this;
+  },
+  
+  toPaddedString: function(length, radix) {
+    var string = this.toString(radix || 10);
+    return '0'.times(length - string.length) + string;
+  },
+  
+  toJSON: function(){
+    return isFinite(this) ? this.toString() : 'null';
   }
 });
+
+Date.prototype.toJSON = function() {
+  return '"' + this.getFullYear() + '-' +
+    (this.getMonth() + 1).toPaddedString(2) + '-' +
+    this.getDate().toPaddedString(2) + 'T' +
+    this.getHours().toPaddedString(2) + ':' +
+    this.getMinutes().toPaddedString(2) + ':' +
+    this.getSeconds().toPaddedString(2) + '"';
+};
 
 var Try = {
   these: function() {

@@ -22,6 +22,15 @@ Object.extend(Hash, {
     });
     
     return parts.join('&');
+  },
+  
+  toJSON: function(object) {
+    var results = [];
+    this.prototype._each.call(object, function(pair){
+      var value = Object.toJSON(pair.value);
+      if (value !== undefined) results.push(pair.key.toJSON() + ':' + value);
+    });
+    return '{' + results.join(',') + '}';
   }
 });
 
@@ -84,6 +93,10 @@ Object.extend(Hash.prototype, {
     return '#<Hash:{' + this.map(function(pair) {
       return pair.map(Object.inspect).join(': ');
     }).join(', ') + '}>';
+  },
+  
+  toJSON: function() {
+    return Hash.toJSON(this);
   }
 });
 

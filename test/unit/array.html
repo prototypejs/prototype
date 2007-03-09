@@ -102,6 +102,13 @@
       assertEqual('[\'a\', 1]',['a',1].inspect());
     }},
     
+    testToJSON: function(){ with(this) {
+      assertEqual('[]', Object.toJSON([]));
+      assertEqual('[\"a\"]', Object.toJSON(['a']));
+      assertEqual('[\"a\",1]', Object.toJSON(['a', 1]));
+      assertEqual('[\"a\",{\"b\":null}]', Object.toJSON(['a', {'b': null}]));
+    }},
+        
     testReduce: function(){ with(this) {
       assertUndefined([].reduce());
       assertNull([null].reduce());

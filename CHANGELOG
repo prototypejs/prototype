@@ -1,5 +1,7 @@
 *SVN*
 
+* Add support for JSON encoding and decoding.  Closes #7427.  [Tobie Langel]
+
 * Fix double escaping of query parameters in Hash.prototype.toQueryString, and prevent Safari from iterating over shadowed properties when creating hashes.  Closes #7421.  [Tobie Langel, Mislav Marohnić]
 
 * Fix simulated attribute reading for IE for "href", "src" and boolean attributes.  [Mislav Marohnić, Thomas Fuchs]

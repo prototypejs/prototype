@@ -22,11 +22,17 @@
 
 <!-- Log output -->
 <div id="testlog"> </div>
-
+<div id="test"></div> 
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
-
+  var Person = function(name){
+      this.name = name;
+  };
+  
+  Person.prototype.toJSON = function() {
+    return '-' + this.name;
+  };
 
   var peEventCount = 0;
   // peEventFired will stop the PeriodicalExecuter after 3 callbacks
@@ -87,6 +93,33 @@
       assertEqual('[]', Object.inspect([]));
     }},
     
+    testObjectToJSON: function() { with(this) {
+      assertUndefined(Object.toJSON(undefined));
+      assertUndefined(Object.toJSON(Prototype.K));
+      assertEqual('\"\"', Object.toJSON(''));
+      assertEqual('[]', Object.toJSON([]));
+      assertEqual('[\"a\"]', Object.toJSON(['a']));
+      assertEqual('[\"a\",1]', Object.toJSON(['a', 1]));
+      assertEqual('[\"a\",{\"b\":null}]', Object.toJSON(['a', {'b': null}]));
+      assertEqual('{\"a\":\"hello!\"}', Object.toJSON({a: 'hello!'}));
+      assertEqual('{}', Object.toJSON({}));
+      assertEqual('{}', Object.toJSON({a: undefined, b: undefined, c: Prototype.K}));
+      assertEqual('{\"b\":[false,true],\"c\":{\"a\":\"hello!\"}}',
+        Object.toJSON({'b': [undefined, false, true, undefined], c: {a: 'hello!'}}));
+      assertEqual('{\"b\":[false,true],\"c\":{\"a\":\"hello!\"}}',
+        Object.toJSON($H({'b': [undefined, false, true, undefined], c: {a: 'hello!'}})));
+      assertEqual('true', Object.toJSON(true));
+      assertEqual('false', Object.toJSON(false));
+      assertEqual('null', Object.toJSON(null));
+      var sam = new Person('sam');
+      assertEqual('-sam', Object.toJSON(sam));
+      assertEqual('-sam', sam.toJSON());
+      var element = $('test');
+      assertUndefined(Object.toJSON(element));
+      element.toJSON = function(){return 'I\'m a div with id test'};
+      assertEqual('I\'m a div with id test', Object.toJSON(element));
+    }},
+    
     // sanity check
     testDoesntExtendObjectPrototype: function() {with(this) {
       // for-in is supported with objects
@@ -124,6 +157,32 @@
         call(eventTest);
       }
     },
+    
+    testNumberToColorPart: function() {with(this) {
+      assertEqual('00', (0).toColorPart());
+      assertEqual('0a', (10).toColorPart());
+      assertEqual('ff', (255).toColorPart());
+    }},
+    
+    testNumberToPaddedString: function() {with(this) {
+      assertEqual('00', (0).toPaddedString(2, 16));
+      assertEqual('0a', (10).toPaddedString(2, 16));
+      assertEqual('ff', (255).toPaddedString(2, 16));
+      assertEqual('000', (0).toPaddedString(3));
+      assertEqual('010', (10).toPaddedString(3));
+      assertEqual('100', (100).toPaddedString(3));
+      assertEqual('1000', (1000).toPaddedString(3));
+    }},
+    
+    testNumberToJSON: function() {with(this) {
+      assertEqual('null', Number.NaN.toJSON());
+      assertEqual('0', (0).toJSON());
+      assertEqual('-293', (-293).toJSON());
+    }},
+    
+    testDateToJSON: function() {with(this) {
+      assertEqual('\"1969-12-31T19:00:00\"', new Date(1969, 11, 31, 19).toJSON());
+    }},
     
     testBrowserDetection: function() {with(this) {
       var results = $H(Prototype.Browser).map(function(engine){

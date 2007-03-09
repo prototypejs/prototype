@@ -126,6 +126,13 @@
       assertEqual('#<Hash:{}>',              $H({}).inspect());
       assertEqual("#<Hash:{'a': 'A#'}>",     $H(Fixtures.one).inspect());
       assertEqual("#<Hash:{'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D#'}>", $H(Fixtures.many).inspect());
+    }},
+    
+    testToJSON: function(){ with(this) {
+      assertEqual('{\"b\":[false,true],\"c\":{\"a\":\"hello!\"}}',
+        $H({'b': [undefined, false, true, undefined], c: {a: 'hello!'}}).toJSON());
+
+      assertEqual('E', eval('(' + $H(Fixtures.dangerous).toJSON() + ')')._each);
     }}
   }, 'testlog');
 // ]]>

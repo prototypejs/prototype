@@ -1,6 +1,16 @@
-String.interpret = function(value) {
-  return value == null ? '' : String(value);
-}
+Object.extend(String, {
+  interpret: function(value){
+    return value == null ? '' : String(value);
+  },
+  specialChar: {
+    '\b': '\\b',
+    '\t': '\\t',
+    '\n': '\\n',
+    '\f': '\\f',
+    '\r': '\\r',
+    '\\': '\\\\'
+  }
+});
 
 Object.extend(String.prototype, {
   gsub: function(pattern, replacement) {
@@ -107,7 +117,13 @@ Object.extend(String.prototype, {
     return this.slice(0, this.length - 1) +
       String.fromCharCode(this.charCodeAt(this.length - 1) + 1);
   },
-
+  
+  times: function(count) {
+    var result = '';
+    for (var i = 0; i < count; i++) result += this;
+    return result;
+  },
+  
   camelize: function() {
     var parts = this.split('-'), len = parts.length;
     if (len == 1) return parts[0];
@@ -135,13 +151,26 @@ Object.extend(String.prototype, {
   },
 
   inspect: function(useDoubleQuotes) {
-    var escapedString = this.replace(/\\/g, '\\\\');
-    if (useDoubleQuotes)
-      return '"' + escapedString.replace(/"/g, '\\"') + '"';
-    else
-      return "'" + escapedString.replace(/'/g, '\\\'') + "'";
+    var escapedString = this.gsub(/[\x00-\x1f\\]/, function(match) {
+      var character = String.specialChar[match[0]];
+      return character ? character : '\\u00' + match[0].charCodeAt().toPaddedString(2, 16);
+    });
+    if (useDoubleQuotes) return '"' + escapedString.replace(/"/g, '\\"') + '"';
+    return "'" + escapedString.replace(/'/g, '\\\'') + "'";
+  },
+  
+  toJSON: function(){
+    return this.inspect(true);
   },
 
+  evalJSON: function(sanitize){
+    try {
+      if (!sanitize || (/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(this)))
+        return eval('(' + this + ')');
+    } catch(e) {}
+    throw new SyntaxError('Badly formated JSON string: ' + this.inspect());
+  },
+  
   include: function(pattern) {
     return this.indexOf(pattern) > -1;
   },
