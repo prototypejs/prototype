@@ -18,10 +18,12 @@ if (Prototype.BrowserFeatures.XPath) {
       results.push(query.snapshotItem(i));
     return results;
   };
+  
   document.getElementsByClassName = function(className, parentElement) {
     var q = ".//*[contains(concat(' ', @class, ' '), ' " + className + " ')]";
     return document._getElementsByXPath(q, parentElement);
   }
+  
 } else document.getElementsByClassName = function(className, parentElement) {
   var children = ($(parentElement) || document.body).getElementsByTagName('*');
   var elements = [], child;
@@ -177,19 +179,27 @@ Element.Methods = {
   },
   
   up: function(element, expression, index) {
-    return Selector.findElement($(element).ancestors(), expression, index);
+    var ancestors = $(element).ancestors();
+    return expression ? Selector.findElement(ancestors, expression, index) :
+      ancestors[index || 0];
   },
   
   down: function(element, expression, index) {
-    return Selector.findElement($(element).descendants(), expression, index);
+    var descendants = $(element).descendants();
+    return expression ? Selector.findElement(descendants, expression, index) :
+      descendants[index || 0];
   },
 
   previous: function(element, expression, index) {
-    return Selector.findElement($(element).previousSiblings(), expression, index);
+    var previousSiblings = $(element).previousSiblings();
+    return expression ? Selector.findElement(previousSiblings, expression, index) :
+      previousSiblings[index || 0];
   },
   
   next: function(element, expression, index) {
-    return Selector.findElement($(element).nextSiblings(), expression, index);
+    var nextSiblings = $(element).nextSiblings();
+    return expression ? Selector.findElement(nextSiblings, expression, index) :
+      nextSiblings[index || 0];
   },
   
   getElementsBySelector: function() {
@@ -203,12 +213,12 @@ Element.Methods = {
   
   readAttribute: function(element, name) {
     element = $(element);
-    if (document.all && !window.opera) {
+    if (Prototype.Browser.IE) {
       var t = Element._attributeTranslations;
       if (t.values[name]) return t.values[name](element, name);
       if (t.names[name])  name = t.names[name];
       var attribute = element.attributes[name];
-      if(attribute) return attribute.nodeValue;
+      return attribute ? attribute.nodeValue : null;
     }    
     return element.getAttribute(name);
   },
@@ -398,7 +408,7 @@ Element.Methods = {
     element.style.overflow = element._overflow == 'auto' ? '' : element._overflow;
     element._overflow = null;
     return element;
-  }
+  }  
 };
 
 Object.extend(Element.Methods, {childOf: Element.Methods.descendantOf});
@@ -553,6 +563,11 @@ if (!Prototype.BrowserFeatures.ElementExtensions &&
   window.HTMLElement.prototype = document.createElement('div').__proto__;
   Prototype.BrowserFeatures.ElementExtensions = true;
 }
+
+Element.hasAttribute = function(element, attribute) {
+  if (element.hasAttribute) return element.hasAttribute(attribute);
+  return Element.Methods.Simulated.hasAttribute(element, attribute);
+};
 
 Element.addMethods = function(methods) {
   var F = Prototype.BrowserFeatures, T = Element.Methods.ByTag;

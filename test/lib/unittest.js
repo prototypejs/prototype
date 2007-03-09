@@ -305,7 +305,9 @@ Test.Unit.Assertions.prototype = {
   },
   assertEnumEqual: function(expected, actual) {
     var message = arguments[2] || "assertEnumEqual";
-    try { $A(expected).length == $A(actual).length && 
+    expected = $A(expected);
+    actual = $A(actual);
+    try { expected.length == actual.length && 
       expected.zip(actual).all(function(pair) { return pair[0] == pair[1] }) ?
         this.pass() : this.fail(message + ': expected ' + Test.Unit.inspect(expected) + 
           ', actual ' + Test.Unit.inspect(actual)); }

@@ -1,5 +1,8 @@
 *SVN*
 
+* Merge the selector branch into trunk, bringing vast performance improvements, bug fixes, and near-complete CSS3 compliance to $$ and Selector.  Closes #7568.  [Andrew Dupont]
+  Selector speed test: http://andrewdupont.net/test/double-dollar/
+
 * Add support for JSON encoding and decoding.  Closes #7427.  [Tobie Langel]
 
 * Fix double escaping of query parameters in Hash.prototype.toQueryString, and prevent Safari from iterating over shadowed properties when creating hashes.  Closes #7421.  [Tobie Langel, Mislav Marohnić]
