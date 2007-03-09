@@ -1,33 +1,35 @@
-var Hash = function(obj) {
-  Object.extend(this, obj || {});
+var Hash = function(object) {
+  if (object instanceof Hash) this.merge(object);
+  else Object.extend(this, object || {});
 };
 
 Object.extend(Hash, {
   toQueryString: function(obj) {
     var parts = [];
+    parts.add = arguments.callee.addPair;
     
-	  this.prototype._each.call(obj, function(pair) {
+    this.prototype._each.call(obj, function(pair) {
       if (!pair.key) return;
+      var value = pair.value;
       
-      if (pair.value && pair.value.constructor == Array) {
-        var values = pair.value.compact();
-        if (values.length < 2) pair.value = values.reduce();
-        else {
-        	key = encodeURIComponent(pair.key);
-          values.each(function(value) {
-            value = value != undefined ? encodeURIComponent(value) : '';
-            parts.push(key + '=' + encodeURIComponent(value));
-          });
-          return;
-        }
+      if (value && typeof value == 'object') {
+        if (value.constructor == Array) value.each(function(value) {
+          parts.add(pair.key, value);
+        });
+        return;
       }
-      if (pair.value == undefined) pair[1] = '';
-      parts.push(pair.map(encodeURIComponent).join('='));
-	  });
+      parts.add(pair.key, value);
+    });
     
     return parts.join('&');
   }
 });
+
+Hash.toQueryString.addPair = function(key, value, prefix) {
+  if (value == null) return;
+  key = encodeURIComponent(key);
+  this.push(key + '=' + (value == null ? '' : encodeURIComponent(value)));
+}
 
 Object.extend(Hash.prototype, Enumerable);
 Object.extend(Hash.prototype, {
@@ -86,6 +88,25 @@ Object.extend(Hash.prototype, {
 });
 
 function $H(object) {
-  if (object && object.constructor == Hash) return object;
+  if (object instanceof Hash) return object;
   return new Hash(object);
+};
+
+// Safari iterates over shadowed properties
+if (function() {
+  var i = 0, Test = function(value) { this.key = value };
+  Test.prototype.key = 'foo';
+  for (var property in new Test('bar')) i++;
+  return i > 1;
+}()) Hash.prototype._each = function(iterator) {
+  var cache = [];
+  for (var key in this) {
+    var value = this[key];
+    if ((value && value == Hash.prototype[key]) || cache.include(key)) continue;
+    cache.push(key);
+    var pair = [key, value];
+    pair.key = key;
+    pair.value = value;
+    iterator(pair);
+  }
 };

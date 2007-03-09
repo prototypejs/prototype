@@ -46,6 +46,7 @@
     multiple_nil:     { color: ['r', null, 'g', undefined, 0] },
     multiple_all_nil: { color: [null, undefined] },
     multiple_empty:   { color: [] },
+    multiple_special: { 'stuff[]': $w('$ a ;') },
 
     value_undefined:  { a:"b", c:undefined },
     value_null:       { a:"b", c:null },
@@ -62,6 +63,16 @@
   };
   
   new Test.Unit.Runner({
+    
+    testConstruct: function(){ with(this) {
+      var h = $H(Fixtures.one)
+      assertNotIdentical(Fixtures.one, h)
+      assertIdentical(h, $H(h))
+
+      var h2 = new Hash(h)
+      assertNotIdentical(h, h2)
+      assertEqual(h.inspect(), h2.inspect())
+    }},
     
     testKeys: function(){ with(this) {
       assertEnumEqual([],               $H({}).keys());
@@ -96,15 +107,19 @@
       assertEqual('',                        $H({}).toQueryString());
       assertEqual('a=A%23',                  $H(Fixtures.one).toQueryString());
       assertEqual('a=A&b=B&c=C&d=D%23',      $H(Fixtures.many).toQueryString());
-      assertEqual("a=b&c=",                  $H(Fixtures.value_undefined).toQueryString());
-      assertEqual("a=b&c=",                  $H(Fixtures.value_null).toQueryString());
+      assertEqual("a=b",                     $H(Fixtures.value_undefined).toQueryString());
+      assertEqual("a=b",                     $H(Fixtures.value_null).toQueryString());
       assertEqual("a=b&c=0",                 $H(Fixtures.value_zero).toQueryString());
       assertEqual("color=r&color=g&color=b", $H(Fixtures.multiple).toQueryString());
       assertEqual("color=r&color=g&color=0", $H(Fixtures.multiple_nil).toQueryString());
-      assertEqual("color=",                  $H(Fixtures.multiple_all_nil).toQueryString());
-      assertEqual("color=",                  $H(Fixtures.multiple_empty).toQueryString());
-      
-      assertEqual("_each=E&map=M&keys=K&values=V&collect=C&inject=I", Hash.toQueryString(Fixtures.dangerous));
+      assertEqual("",                        $H(Fixtures.multiple_all_nil).toQueryString());
+      assertEqual("",                        $H(Fixtures.multiple_empty).toQueryString());
+      assertEqual("stuff%5B%5D=%24&stuff%5B%5D=a&stuff%5B%5D=%3B", $H(Fixtures.multiple_special).toQueryString());
+
+      assertEnumEqual($w("_each=E map=M keys=K values=V collect=C inject=I").sort(),
+        Hash.toQueryString(Fixtures.dangerous).split('&').sort());
+      assertEnumEqual($w('_each=E map=M keys=K values=V collect=C inject=I').sort(),
+        $H(Fixtures.dangerous).toQueryString().split('&').sort());
     }},
     
     testInspect: function(){ with(this) {
