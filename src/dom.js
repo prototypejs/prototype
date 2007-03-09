@@ -421,9 +421,9 @@ if (Prototype.Browser.Opera) {
       case 'top': 
       case 'right': 
       case 'bottom': 
-        if(Element._getStyle(element, 'position') == 'static') return null; 
+        if (Element._getStyle(element, 'position') == 'static') return null; 
       default: return Element._getStyle(element, style); 
-    } 
+    }
   }; 
 }
 else if (Prototype.Browser.IE) {
@@ -480,17 +480,13 @@ else if (Prototype.Browser.IE) {
           div.innerHTML = '<table><tbody><tr><td>' +  html.stripScripts() + '</td></tr></tbody></table>';
           depth = 4;
       }
-      $A(element.childNodes).each(function(node){
-        element.removeChild(node)
-      });
-      depth.times(function(){ div = div.firstChild });
-  
-      $A(div.childNodes).each(
-        function(node){ element.appendChild(node) });
+      $A(element.childNodes).each(function(node) { element.removeChild(node) });
+      depth.times(function() { div = div.firstChild });
+      $A(div.childNodes).each(function(node) { element.appendChild(node) });
     } else {
       element.innerHTML = html.stripScripts();
     }
-    setTimeout(function() {html.evalScripts()}, 10);
+    setTimeout(function() { html.evalScripts() }, 10);
     return element;
   }
 }

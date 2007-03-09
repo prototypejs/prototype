@@ -1,5 +1,5 @@
 Object.extend(String, {
-  interpret: function(value){
+  interpret: function(value) {
     return value == null ? '' : String(value);
   },
   specialChar: {
@@ -85,7 +85,7 @@ Object.extend(String.prototype, {
     var div = document.createElement('div');
     div.innerHTML = this.stripTags();
     return div.childNodes[0] ? (div.childNodes.length > 1 ? 
-      $A(div.childNodes).inject('',function(memo,node){ return memo+node.nodeValue }) : 
+      $A(div.childNodes).inject('', function(memo, node) { return memo+node.nodeValue }) : 
       div.childNodes[0].nodeValue) : '';
   },
   
@@ -159,15 +159,15 @@ Object.extend(String.prototype, {
     return "'" + escapedString.replace(/'/g, '\\\'') + "'";
   },
   
-  toJSON: function(){
+  toJSON: function() {
     return this.inspect(true);
   },
 
-  evalJSON: function(sanitize){
+  evalJSON: function(sanitize) {
     try {
       if (!sanitize || (/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(this)))
         return eval('(' + this + ')');
-    } catch(e) {}
+    } catch (e) {}
     throw new SyntaxError('Badly formated JSON string: ' + this.inspect());
   },
   

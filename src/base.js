@@ -99,7 +99,7 @@ Object.extend(Number.prototype, {
     return '0'.times(length - string.length) + string;
   },
   
-  toJSON: function(){
+  toJSON: function() {
     return isFinite(this) ? this.toString() : 'null';
   }
 });

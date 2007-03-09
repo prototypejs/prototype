@@ -26,7 +26,7 @@ Object.extend(Hash, {
   
   toJSON: function(object) {
     var results = [];
-    this.prototype._each.call(object, function(pair){
+    this.prototype._each.call(object, function(pair) {
       var value = Object.toJSON(pair.value);
       if (value !== undefined) results.push(pair.key.toJSON() + ':' + value);
     });

@@ -100,18 +100,18 @@ Object.extend(Array.prototype, {
 
 Array.prototype.toArray = Array.prototype.clone;
 
-function $w(string){
+function $w(string) {
   string = string.strip();
   return string ? string.split(/\s+/) : [];
 }
 
-if(Prototype.Browser.Opera){
-  Array.prototype.concat = function(){
+if (Prototype.Browser.Opera){
+  Array.prototype.concat = function() {
     var array = [];
-    for(var i = 0, length = this.length; i < length; i++) array.push(this[i]);
-    for(var i = 0, length = arguments.length; i < length; i++) {
-      if(arguments[i].constructor == Array) {
-        for(var j = 0, arrayLength = arguments[i].length; j < arrayLength; j++) 
+    for (var i = 0, length = this.length; i < length; i++) array.push(this[i]);
+    for (var i = 0, length = arguments.length; i < length; i++) {
+      if (arguments[i].constructor == Array) {
+        for (var j = 0, arrayLength = arguments[i].length; j < arrayLength; j++) 
           array.push(arguments[i][j]);
       } else { 
         array.push(arguments[i]);
