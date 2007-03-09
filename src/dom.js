@@ -214,6 +214,7 @@ Element.Methods = {
   readAttribute: function(element, name) {
     element = $(element);
     if (Prototype.Browser.IE) {
+      if (!element.attributes) return null;
       var t = Element._attributeTranslations;
       if (t.values[name]) return t.values[name](element, name);
       if (t.names[name])  name = t.names[name];

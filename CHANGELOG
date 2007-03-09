@@ -1,3 +1,7 @@
+*1.5.1_rc1* (March 9, 2007)
+
+* Fix readAttribute for IE7. [Andrew Dupont]
+
 *1.5.1_rc0* (March 8, 2007)
 
 * Merge the selector branch into trunk, bringing vast performance improvements, bug fixes, and near-complete CSS3 compliance to $$ and Selector.  Closes #7568.  [Andrew Dupont]

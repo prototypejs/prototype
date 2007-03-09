@@ -5,7 +5,7 @@ PROTOTYPE_ROOT     = File.expand_path(File.dirname(__FILE__))
 PROTOTYPE_SRC_DIR  = File.join(PROTOTYPE_ROOT, 'src')
 PROTOTYPE_DIST_DIR = File.join(PROTOTYPE_ROOT, 'dist')
 PROTOTYPE_PKG_DIR  = File.join(PROTOTYPE_ROOT, 'pkg')
-PROTOTYPE_VERSION  = '1.5.1_rc0'
+PROTOTYPE_VERSION  = '1.5.1_rc1'
 
 task :default => [:dist, :package, :clean_package_source]
 
