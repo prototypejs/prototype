@@ -63,7 +63,7 @@ Element.extend = function(element) {
       element[property] = cache.findOrStore(value);
   }
 
-  element._extended = true;
+  element._extended = Prototype.emptyFunction;
   return element;
 };
 

@@ -1,5 +1,7 @@
 *SVN*
 
+* Make Element.extend work on IE for Nodes with the same ID that where discarded.  [Mislav Marohnić, Thomas Fuchs]
+
 * Make Selector correctly extend the first element it returns on IE.  [Thomas Fuchs]
 
 * Prevent a crash in Safari when using $A() on NodeList objects that contain text nodes.  [Thomas Fuchs]

@@ -153,6 +153,8 @@
 
 <div id="element_extend_test"> </div>
 
+<div id="element_reextend_test"><div id="discard_1"></div></div>
+
 <div id="test_whitespace"> <span> </span>
 
 
@@ -605,6 +607,12 @@
         assertEqual(textnode, Element.extend(textnode));
         assert(typeof textnode['show'] == 'undefined');
       });
+    }},
+    
+    testElementExtendReextendsDiscardedNodes: function() {with(this) {
+      assertRespondsTo('show', $('discard_1'));
+      $('element_reextend_test').innerHTML += '<div id="discard_2"></div>';
+      assertRespondsTo('show', $('discard_1'));
     }},
     
     testElementCleanWhitespace: function() {with(this) {
