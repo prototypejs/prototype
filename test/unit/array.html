@@ -23,6 +23,8 @@
 <!-- Log output -->
 <div id="testlog"> </div>
 
+<div id="test_node">22<span id="span_1"></span><span id="span_2"></span></div>
+
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
@@ -41,6 +43,22 @@
       assertEnumEqual(['foo'], globalArgsTest);
       toArrayOnArguments('foo','bar');
       assertEnumEqual(['foo','bar'], globalArgsTest);
+    }},
+    
+    testToArrayOnNodeList: function(){ with(this) {
+      // direct HTML
+      assertEqual(3, $A($('test_node').childNodes).length);
+      
+      // DOM
+      var element = document.createElement('div');
+      element.appendChild(document.createTextNode('22'));
+      (2).times(function(){ element.appendChild(document.createElement('span')) });
+      assertEqual(3, $A(element.childNodes).length);
+      
+      // HTML String
+      element = document.createElement('div');
+      $(element).update('22<span></span><span></span');
+      assertEqual(3, $A(element.childNodes).length);
     }},
     
     testClear: function(){ with(this) {

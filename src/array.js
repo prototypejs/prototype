@@ -10,6 +10,21 @@ var $A = Array.from = function(iterable) {
   }
 }
 
+if (Prototype.Browser.WebKit) {
+  $A = Array.from = function(iterable) {
+    if (!iterable) return [];
+    if (!(typeof iterable == 'function' && iterable == '[object NodeList]') && 
+      iterable.toArray) {
+      return iterable.toArray();
+    } else {
+      var results = [];
+      for (var i = 0, length = iterable.length; i < length; i++)
+        results.push(iterable[i]);
+      return results;
+    }
+  }
+}
+
 Object.extend(Array.prototype, Enumerable);
 
 if (!Array.prototype._reverse)

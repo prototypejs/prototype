@@ -1,5 +1,7 @@
 *SVN*
 
+* Prevent a crash in Safari when using $A() on NodeList objects that contain text nodes.  [Thomas Fuchs]
+
 * Fix Element.Methods.descendants() to properly extend elements on IE.  [Thomas Fuchs]
 
 *1.5.1_rc1* (March 9, 2007)
