@@ -1,6 +1,6 @@
 *SVN*
 
-* Make Element.extend work on IE for Nodes with the same ID that where discarded.  [Mislav Marohnić, Thomas Fuchs]
+* Make Element.extend work on IE for Nodes with the same ID that where discarded.  Closes #7497.  [Mislav Marohnić, Thomas Fuchs]
 
 * Make Selector correctly extend the first element it returns on IE.  [Thomas Fuchs]
 
