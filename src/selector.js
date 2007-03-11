@@ -249,7 +249,7 @@ Object.extend(Selector, {
     unique: function(nodes) {
       if (nodes.length == 0) return nodes;
       var results = [nodes[0]], n;
-      nodes[0]._counted = true;      
+      Element.extend(nodes[0])._counted = true;
       for (var i = 0, l = nodes.length; i < l; i++) {
         n = nodes[i];
         if (!n._counted) {

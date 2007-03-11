@@ -359,6 +359,20 @@
       assertEnumEqual($('list', 'p', 'link_1', 'item_1', 'item_3', 'troubleForm'), $$('#list, .first,', '*[xml:lang="es-us"] , #troubleForm'));
       assertEnumEqual($('commaParent', 'commaChild'), $$('form[title*="commas,"], input[value="#commaOne,#commaTwo"]'));
       assertEnumEqual($('commaParent', 'commaChild'), $$('form[title*="commas,"]', 'input[value="#commaOne,#commaTwo"]'));
+    }},
+    
+    testSelectorExtendsAllNodes: function(){ with(this) {
+      var element = document.createElement('div');
+      (3).times(function(){
+        element.appendChild(document.createElement('div'));
+      });
+      element.setAttribute('id','scratch_element');
+      $$('body')[0].appendChild(element);
+      
+      var results = $$('#scratch_element div');
+      assert(typeof results[0].show == 'function');
+      assert(typeof results[1].show == 'function');
+      assert(typeof results[2].show == 'function');
     }}
   }, 'testlog');
 // ]]>
