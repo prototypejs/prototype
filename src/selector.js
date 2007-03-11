@@ -248,15 +248,12 @@ Object.extend(Selector, {
     // filters out duplicates and extends all nodes
     unique: function(nodes) {
       if (nodes.length == 0) return nodes;
-      var results = [nodes[0]], n;
-      Element.extend(nodes[0])._counted = true;
-      for (var i = 0, l = nodes.length; i < l; i++) {
-        n = nodes[i];
-        if (!n._counted) {
+      var results = [], n;
+      for (var i = 0, l = nodes.length; i < l; i++)
+        if (!(n = nodes[i])._counted) {
           n._counted = true;
           results.push(Element.extend(n));
         }
-      }
       return Selector.handlers.unmark(results);
     },
     
