@@ -149,7 +149,7 @@ Element.Methods = {
   },
   
   descendants: function(element) {
-    return $A($(element).getElementsByTagName('*'));
+    return $A($(element).getElementsByTagName('*')).each(Element.extend);
   },
   
   immediateDescendants: function(element) {

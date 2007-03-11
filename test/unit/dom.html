@@ -308,38 +308,38 @@
     }},
     
     testElementVisible: function(){with(this) {
-        assertNotEqual('none', $('test-visible').style.display);
-        assertEqual('none', $('test-hidden').style.display);
+      assertNotEqual('none', $('test-visible').style.display);
+      assertEqual('none', $('test-hidden').style.display);
     }},
     
     testElementToggle: function(){with(this) {
-        $('test-toggle-visible').toggle();
-        assert(!$('test-toggle-visible').visible());
-        $('test-toggle-visible').toggle();
-        assert($('test-toggle-visible').visible());
-        $('test-toggle-hidden').toggle();
-        assert($('test-toggle-hidden').visible());
-        $('test-toggle-hidden').toggle();
-        assert(!$('test-toggle-hidden').visible());
+      $('test-toggle-visible').toggle();
+      assert(!$('test-toggle-visible').visible());
+      $('test-toggle-visible').toggle();
+      assert($('test-toggle-visible').visible());
+      $('test-toggle-hidden').toggle();
+      assert($('test-toggle-hidden').visible());
+      $('test-toggle-hidden').toggle();
+      assert(!$('test-toggle-hidden').visible());
     }},
     
     testElementShow: function(){with(this) {
-        $('test-show-visible').show();
-        assert($('test-show-visible').visible());
-        $('test-show-hidden').show();
-        assert($('test-show-hidden').visible());
+      $('test-show-visible').show();
+      assert($('test-show-visible').visible());
+      $('test-show-hidden').show();
+      assert($('test-show-hidden').visible());
     }},
     
     testElementHide: function(){with(this) {
-        $('test-hide-visible').hide();
-        assert(!$('test-hide-visible').visible());
-        $('test-hide-hidden').hide();
-        assert(!$('test-hide-hidden').visible());
+      $('test-hide-visible').hide();
+      assert(!$('test-hide-visible').visible());
+      $('test-hide-hidden').hide();
+      assert(!$('test-hide-hidden').visible());
     }}, 
     
     testElementRemove: function(){with(this) {
-        $('removable').remove();
-        assert($('removable-container').empty());
+      $('removable').remove();
+      assert($('removable-container').empty());
     }},  
      
     testElementUpdate: function() {with(this) {
@@ -439,6 +439,10 @@
       assertElementsMatch(ancestors, 'ul', 'li', 'ul#navigation_test',
         'div#nav_tests_isolator', 'body', 'html');
       assertElementsMatch(ancestors.last().ancestors());
+      
+      var dummy = $(document.createElement('DIV'));
+      dummy.innerHTML = '<div></div>'.times(3);
+      assert(typeof $(dummy.childNodes[0]).ancestors()[0]['setStyle'] == 'function');
     }},
     
     testElementDescendants: function() {with(this) {
@@ -446,6 +450,10 @@
         'li', 'em', 'li', 'em.dim', 'li', 'em', 'ul', 'li',
         'em.dim', 'li#navigation_test_f', 'em', 'li', 'em');
       assertElementsMatch($('navigation_test_f').descendants(), 'em');
+      
+      var dummy = $(document.createElement('DIV'));
+      dummy.innerHTML = '<div></div>'.times(3);
+      assert(typeof dummy.descendants()[0].setStyle == 'function');
     }},
     
     testElementImmediateDescendants: function() {with(this) {
@@ -453,24 +461,40 @@
         'li.first', 'li', 'li#navigation_test_c', 'li.last');
       assertNotEqual(0, $('navigation_test_next_sibling').childNodes.length);
       assertEnumEqual([], $('navigation_test_next_sibling').immediateDescendants());
+      
+      var dummy = $(document.createElement('DIV'));
+      dummy.innerHTML = '<div></div>'.times(3);
+      assert(typeof dummy.immediateDescendants()[0].setStyle == 'function');
     }},
         
     testElementPreviousSiblings: function() {with(this) {
       assertElementsMatch($('navigation_test').previousSiblings(),
         'span#nav_test_prev_sibling', 'p.test', 'div', 'div#nav_test_first_sibling');
       assertElementsMatch($('navigation_test_f').previousSiblings(), 'li');
+      
+      var dummy = $(document.createElement('DIV'));
+      dummy.innerHTML = '<div></div>'.times(3);
+      assert(typeof $(dummy.childNodes[1]).previousSiblings()[0].setStyle == 'function');
     }},
     
     testElementNextSiblings: function() {with(this) {
       assertElementsMatch($('navigation_test').nextSiblings(),
         'div#navigation_test_next_sibling', 'p');
       assertElementsMatch($('navigation_test_f').nextSiblings());
+      
+      var dummy = $(document.createElement('DIV'));
+      dummy.innerHTML = '<div></div>'.times(3);
+      assert(typeof $(dummy.childNodes[0]).nextSiblings()[0].setStyle == 'function');
     }},
     
     testElementSiblings: function() {with(this) {
       assertElementsMatch($('navigation_test').siblings(),
         'div#nav_test_first_sibling', 'div', 'p.test',
         'span#nav_test_prev_sibling', 'div#navigation_test_next_sibling', 'p');
+        
+      var dummy = $(document.createElement('DIV'));
+      dummy.innerHTML = '<div></div>'.times(3);
+      assert(typeof $(dummy.childNodes[0]).siblings()[0].setStyle == 'function');
     }},
     
     testElementUp: function() {with(this) {
@@ -483,6 +507,10 @@
       assertElementMatches(element.up('ul', 1), 'ul#navigation_test');
       assertEqual(undefined, element.up('garbage'));
       assertEqual(undefined, element.up(6));
+      
+      var dummy = $(document.createElement('DIV'));
+      dummy.innerHTML = '<div></div>'.times(3);
+      assert(typeof $(dummy.childNodes[0]).up().setStyle == 'function');
     }},
     
     testElementDown: function() {with(this) {
@@ -492,6 +520,10 @@
       assertElementMatches(element.down(1), 'em');
       assertElementMatches(element.down('li', 5), 'li.last');
       assertElementMatches(element.down('ul').down('li', 1), 'li#navigation_test_f');
+      
+      var dummy = $(document.createElement('DIV'));
+      dummy.innerHTML = '<div></div>'.times(3);
+      assert(typeof dummy.down().setStyle == 'function');
     }},
     
     testElementPrevious: function() {with(this) {
@@ -501,6 +533,10 @@
       assertElementMatches(element.previous('.first'), 'li.first');
       assertEqual(undefined, element.previous(3));
       assertEqual(undefined, $('navigation_test').down().previous());
+      
+      var dummy = $(document.createElement('DIV'));
+      dummy.innerHTML = '<div></div>'.times(3);
+      assert(typeof $(dummy.childNodes[1]).previous().setStyle == 'function');
     }},
     
     testElementNext: function() {with(this) {
@@ -511,6 +547,10 @@
       assertElementMatches(element.next('.last'), 'li.last');
       assertEqual(undefined, element.next(3));
       assertEqual(undefined, element.next(2).next());
+      
+      var dummy = $(document.createElement('DIV'));
+      dummy.innerHTML = '<div></div>'.times(3);
+      assert(typeof $(dummy.childNodes[0]).next().setStyle == 'function');
     }},
     
     testElementInspect: function() {with(this) {

@@ -1,3 +1,7 @@
+*SVN*
+
+* Fix Element.Methods.descendants() to properly extend elements on IE.  [Thomas Fuchs]
+
 *1.5.1_rc1* (March 9, 2007)
 
 * Fix readAttribute for IE7. [Andrew Dupont]
