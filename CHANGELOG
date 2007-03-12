@@ -1,4 +1,4 @@
-*SVN*
+*1.5.1_rc2* (March 12, 2007)
 
 * Add a tab character via innerHTML to the selector whitespace test.  [Christophe Porteneuve]
 
