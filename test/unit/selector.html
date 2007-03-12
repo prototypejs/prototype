@@ -330,6 +330,7 @@
     }},
     
     testSelectorWithEmpty: function() {with(this) {
+      $('level3_1').innerHTML = "\t\n\n\r\n\t   ";
       assertEnumEqual($('level3_1', 'level3_2', 'level_only_child', 'level2_3'), $$('#level1 *:empty'));
       assertEnumEqual([$('level_only_child')], $$('#level_only_child:empty'));
     }},    

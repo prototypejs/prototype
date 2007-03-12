@@ -1,5 +1,9 @@
 *SVN*
 
+* Add a tab character via innerHTML to the selector whitespace test.  [Christophe Porteneuve]
+
+* Add an attribution to YUI-Ext's DomQuery in selector.js.
+
 * Make Element.extend work on IE for Nodes with the same ID that where discarded.  Closes #7497.  [Mislav Marohnić, Thomas Fuchs]
 
 * Make Selector correctly extend the first element it returns on IE.  [Thomas Fuchs]
