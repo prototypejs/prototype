@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix an issue with Element.getDimensions with some element types on non IE-browsers.  Closes #7683.  [Andrew Dupont]
+
 * Fix Form.disable to work again on non-form elements.  Closes #6887.  [Mislav Marohnić]
 
 * Fix an issue with String.prototype.endsWith.  Closes #7822.  [altblue]
