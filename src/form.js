@@ -56,18 +56,13 @@ Form.Methods = {
 
   disable: function(form) {
     form = $(form);
-    form.getElements().each(function(element) {
-      element.blur();
-      element.disabled = 'true';
-    });
+    Form.getElements(form).invoke('disable');
     return form;
   },
 
   enable: function(form) {
     form = $(form);
-    form.getElements().each(function(element) {
-      element.disabled = '';
-    });
+    Form.getElements(form).invoke('enable');
     return form;
   },
 

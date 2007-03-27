@@ -184,6 +184,37 @@
       });
     }},
     
+    testFormEnabling: function(){ with(this) {
+      var form = $('form_focus')
+      var input1 = form.focus_disabled
+      var input2 = form.focus_text
+      
+      assert(input1.disabled)
+      assert(!input2.disabled)
+      
+      form.disable()
+      assert(input1.disabled)
+      assert(input2.disabled)
+      
+      form.enable()
+      assert(!input1.disabled)
+      assert(!input2.disabled)
+      
+      input1.disable()
+      assert(input1.disabled)
+      
+      // non-form elements:
+      var fieldset = $('form_fieldset')
+      var fields = fieldset.immediateDescendants()
+      assert(fields.all(function(select){ return !select.disabled }))
+      
+      Form.disable(fieldset)
+      assert(fields.all(function(select){ return select.disabled }))
+      
+      Form.enable(fieldset)
+      assert(fields.all(function(select){ return !select.disabled }))
+    }},
+    
     testFormElementEnabling: function(){ with(this) {
       assert($('input_disabled').disabled);
       $('input_disabled').enable();
