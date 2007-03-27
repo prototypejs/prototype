@@ -176,11 +176,12 @@ Object.extend(String.prototype, {
   },
 
   startsWith: function(pattern) {
-    return this.indexOf(pattern) == 0;
+    return this.indexOf(pattern) === 0;
   },
 
   endsWith: function(pattern) {
-    return this.lastIndexOf(pattern) == (this.length - pattern.length);
+    var d = this.length - pattern.length;
+    return d >= 0 && this.lastIndexOf(pattern) === d;
   },
   
   empty: function() {
