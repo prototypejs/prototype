@@ -1,6 +1,6 @@
 *SVN*
 
-* Fix issues with Selector an+b logic, performance improvements.  Closes #7873.  [Andrew Dupont]
+* Fix issues with Selector an+b logic, :not support, attribute selector double quotes, plus performance improvements.  Closes #7873, #7901.  [Andrew Dupont]
 
 * Fix an issue with Element.getDimensions with some element types on non IE-browsers.  Closes #7683.  [Andrew Dupont]
 

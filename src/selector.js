@@ -44,7 +44,7 @@ Selector.prototype = {
   
   compileXPathMatcher: function() {
     var e = this.expression, ps = Selector.patterns,
-        x = Selector.xpath, le, p, m;
+        x = Selector.xpath, le,  m;
 
     if (Selector._cache[e]) {
       this.xpath = Selector._cache[e]; return;
@@ -130,16 +130,22 @@ Object.extend(Selector, {
       'disabled':    "[@disabled]",
       'enabled':     "[not(@disabled)]",
       'not': function(m) {
-        if (!m[6]) return '';
-        var p = Selector.patterns, x = Selector.xpath;
-        for (var i in p) {
-          if (mm = m[6].match(p[i])) {
-            var ss = typeof x[i] == 'function' ? x[i](mm) : new Template(x[i]).evaluate(mm);
-            m[6] = ss.substring(1, ss.length - 1);
-            break;
+        var e = m[6], p = Selector.patterns,
+            x = Selector.xpath, le, m, v;
+            
+        var exclusion = [];
+        while (e && le != e && (/\S/).test(e)) {
+          le = e;
+          for (var i in p) {
+            if (m = e.match(p[i])) {
+              v = typeof x[i] == 'function' ? x[i](m) : new Template(x[i]).evaluate(m);
+              exclusion.push("(" + v.substring(1, v.length - 1) + ")");
+              e = e.replace(m[0], '');
+              break;
+            }
           }
-        }
-        return "[not(" + m[6] + ")]";
+        }        
+        return "[not(" + exclusion.join(" and ") + ")]";
       },
       'nth-child':      function(m) { 
         return Selector.xpath.pseudos.nth("(count(./preceding-sibling::*) + 1) ", m);
@@ -187,10 +193,13 @@ Object.extend(Selector, {
     id:           'n = h.id(n, r, "#{1}", c);        c = false;',
     attrPresence: 'n = h.attrPresence(n, r, "#{1}"); c = false;',
     attr: function(m) {
-      m[3] = m[5] || m[6];
+      m[3] = (m[5] || m[6]);
       return new Template('n = h.attr(n, r, "#{1}", "#{3}", "#{2}"); c = false;').evaluate(m);
     },
-    pseudo:       'n = h.pseudo(n, "#{1}", "#{6}", r, c); c = false;',
+    pseudo:       function(m) {
+      if (m[6]) m[6] = m[6].replace(/"/g, '\\"');
+      return new Template('n = h.pseudo(n, "#{1}", "#{6}", r, c); c = false;').evaluate(m); 
+    },
     descendant:   'c = "descendant";',
     child:        'c = "child";',
     adjacent:     'c = "adjacent";',
@@ -209,7 +218,7 @@ Object.extend(Selector, {
     tagName:      /^\s*(\*|[\w\-]+)(\b|$)?/,
     id:           /^#([\w\-\*]+)(\b|$)/,
     className:    /^\.([\w\-\*]+)(\b|$)/,
-    pseudo:       /^:((first|last|nth|nth-last|only)(-child|-of-type)|empty|checked|(en|dis)abled|not)(\((.*?)\))?(\b|$)/,
+    pseudo:       /^:((first|last|nth|nth-last|only)(-child|-of-type)|empty|checked|(en|dis)abled|not)(\((.*?)\))?(\b|$|\s)/,
     attrPresence: /^\[([\w]+)\]/,
     attr:         /\[((?:[\w-]*:)?[\w-]+)\s*(?:([!^$*~|]?=)\s*((['"])([^\]]*?)\4|([^'"][^\]]*?)))?\]/
   },
@@ -377,6 +386,7 @@ Object.extend(Selector, {
     },
     
     attr: function(nodes, root, attr, value, operator) {
+      if (!nodes) nodes = root.getElementsByTagName("*");
       var handler = Selector.operators[operator], results = [];
       for (var i = 0, node; node = nodes[i]; i++) {
         var nodeValue = Element.readAttribute(node, attr);
@@ -387,7 +397,8 @@ Object.extend(Selector, {
     },
                 
     pseudo: function(nodes, name, value, root, combinator) {
-      if (combinator) nodes = this[combinator](nodes);
+      if (nodes && combinator) nodes = this[combinator](nodes);
+      if (!nodes) nodes = root.getElementsByTagName("*");
       return Selector.pseudos[name](nodes, value, root);
     }
   },
@@ -488,20 +499,8 @@ Object.extend(Selector, {
     },
     
     'not': function(nodes, selector, root) {
-      var h = Selector.handlers, exclusions = $A(nodes), selectorType, m;
-      for (var i in Selector.patterns) {
-        if (m = selector.match(Selector.patterns[i])) {
-          selectorType = i; break;
-        }
-      }
-      switch(selectorType) {
-        case 'className': case 'tagName': case 'id': // fallthroughs
-        case 'attrPresence': exclusions = h[selectorType](exclusions, root, m[1], false); break;
-        case 'attr': m[3] = m[5] || m[6]; exclusions = h.attr(exclusions, root, m[1], m[3], m[2]); break;        
-        case 'pseudo': exclusions = h.pseudo(exclusions, m[1], m[6], root, false); break;   
-        // only 'simple selectors' (one token) allowed in a :not clause
-        default: throw 'Illegal selector in :not clause.';
-      }
+      var h = Selector.handlers, selectorType, m;
+      var exclusions = new Selector(selector).findElements(root);
       h.mark(exclusions);
       for (var i = 0, results = [], node; node = nodes[i]; i++)
         if (!node._counted) results.push(node);

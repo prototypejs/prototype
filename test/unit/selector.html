@@ -25,7 +25,7 @@
   <h1 class="title">Some title <span>here</span></h1>
   <p id="p" class="first summary">
     <strong id="strong">This</strong> is a short blurb
-    <a id="link_1" class="first internal" rel="external nofollow" href="#">with a link</a> or 
+    <a id="link_1" class="first internal" rel="external nofollow" href="#">with a <em id="em2">link</em></a> or 
     <a id="link_2" class="internal highlight" href="#"><em id="em">two</em></a>.
     Or <cite id="with_title" title="hello world!">a citation</cite>.
   </p>
@@ -144,7 +144,7 @@
     }},
     
     test$$MatchesAncestryWithTokensSeparatedByWhitespace: function() {with(this) {
-      assertEnumEqual($('em', 'span'), $$('#fixtures a *'));
+      assertEnumEqual($('em2', 'em', 'span'), $$('#fixtures a *'));
       assertEnumEqual([$('p')], $$('div#fixtures p'));
     }},
     
@@ -316,13 +316,14 @@
     }},
     
     testSelectorWithNot: function() {with(this) {
-      assertEnumEqual([$('link_2')], $$('#p a:not(:first-of-type)'));
-      assertEnumEqual([$('link_1')], $$('#p a:not(:last-of-type)'));
-      assertEnumEqual([$('link_2')], $$('#p a:not(:nth-of-type(1))'));
-      assertEnumEqual([$('link_1')], $$('#p a:not(:nth-last-of-type(1))'));
-      assertEnumEqual([$('link_2')], $$('#p a:not([rel~=nofollow])'));
-      assertEnumEqual([$('link_2')], $$('#p a:not([rel^=external])'));
-      assertEnumEqual([$('link_2')], $$('#p a:not([rel$=nofollow])'));
+      assertEnumEqual([$('link_2')], $$('#p a:not(a:first-of-type)'), 'first-of-type');
+      assertEnumEqual([$('link_1')], $$('#p a:not(a:last-of-type)'), 'last-of-type');
+      assertEnumEqual([$('link_2')], $$('#p a:not(a:nth-of-type(1))'), 'nth-of-type');
+      assertEnumEqual([$('link_1')], $$('#p a:not(a:nth-last-of-type(1))'), 'nth-last-of-type');
+      assertEnumEqual([$('link_2')], $$('#p a:not([rel~=nofollow])'), 'attribute 1');
+      assertEnumEqual([$('link_2')], $$('#p a:not(a[rel^=external])'), 'attribute 2');
+      assertEnumEqual([$('link_2')], $$('#p a:not(a[rel$=nofollow])'), 'attribute 3');
+      assertEnumEqual([$('em')], $$('#p a:not(a[rel$="nofollow"]) > em'), 'attribute 4')
     }},
     
     testSelectorWithEnabledDisabledChecked: function() {with(this) {
