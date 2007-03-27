@@ -95,15 +95,15 @@ Object.extend(String.prototype, {
     
     return match[1].split(separator || '&').inject({}, function(hash, pair) {
       if ((pair = pair.split('='))[0]) {
-        var name = decodeURIComponent(pair[0]);
-        var value = pair[1] ? decodeURIComponent(pair[1]) : undefined;
-
-        if (hash[name] !== undefined) {
-          if (hash[name].constructor != Array)
-            hash[name] = [hash[name]];
-          if (value) hash[name].push(value);
+        var key = decodeURIComponent(pair.shift());
+        var value = pair.length > 1 ? pair.join('=') : pair[0];
+        if (value != undefined) value = decodeURIComponent(value);
+        
+        if (key in hash) {
+          if (hash[key].constructor != Array) hash[key] = [hash[key]];
+          hash[key].push(value);
         }
-        else hash[name] = value;
+        else hash[key] = value;
       }
       return hash;
     });

@@ -303,6 +303,12 @@ Test.Unit.Assertions.prototype = {
         '", actual "' + Test.Unit.inspect(actual) + '"'); }
     catch(e) { this.error(e); }
   },
+  assertNotEqual: function(expected, actual) {
+    var message = arguments[2] || "assertNotEqual";
+    try { (expected != actual) ? this.pass() : 
+      this.fail(message + ': got "' + Test.Unit.inspect(actual) + '"'); }
+    catch(e) { this.error(e); }
+  },
   assertEnumEqual: function(expected, actual) {
     var message = arguments[2] || "assertEnumEqual";
     expected = $A(expected);
@@ -313,10 +319,44 @@ Test.Unit.Assertions.prototype = {
           ', actual ' + Test.Unit.inspect(actual)); }
     catch(e) { this.error(e); }
   },
-  assertNotEqual: function(expected, actual) {
-    var message = arguments[2] || "assertNotEqual";
-    try { (expected != actual) ? this.pass() : 
-      this.fail(message + ': got "' + Test.Unit.inspect(actual) + '"'); }
+  assertEnumNotEqual: function(expected, actual) {
+    var message = arguments[2] || "assertEnumEqual";
+    expected = $A(expected);
+    actual = $A(actual);
+    try { expected.length != actual.length || 
+      expected.zip(actual).any(function(pair) { return pair[0] != pair[1] }) ?
+        this.pass() : this.fail(message + ': ' + Test.Unit.inspect(expected) + 
+          ' was the same as ' + Test.Unit.inspect(actual)); }
+    catch(e) { this.error(e); }
+  },
+  assertHashEqual: function(expected, actual) {
+    var message = arguments[2] || "assertHashEqual";
+    expected = $H(expected);
+    actual = $H(actual);
+    var expected_array = expected.toArray().sort(), actual_array = actual.toArray().sort();
+    // from now we recursively zip & compare nested arrays
+    try { expected_array.length == actual_array.length && 
+      expected_array.zip(actual_array).all(function(pair) {
+        return pair.all(function(i){ return i && i.constructor == Array }) ?
+          pair[0].zip(pair[1]).all(arguments.callee) : pair[0] == pair[1];
+      }) ?
+        this.pass() : this.fail(message + ': expected ' + Test.Unit.inspect(expected) + 
+          ', actual ' + Test.Unit.inspect(actual)); }
+    catch(e) { this.error(e); }
+  },
+  assertHashNotEqual: function(expected, actual) {
+    var message = arguments[2] || "assertHashEqual";
+    expected = $H(expected);
+    actual = $H(actual);
+    var expected_array = expected.toArray().sort(), actual_array = actual.toArray().sort();
+    // from now we recursively zip & compare nested arrays
+    try { !(expected_array.length == actual_array.length && 
+      expected_array.zip(actual_array).all(function(pair) {
+        return pair.all(function(i){ return i && i.constructor == Array }) ?
+          pair[0].zip(pair[1]).all(arguments.callee) : pair[0] == pair[1];
+      })) ?
+        this.pass() : this.fail(message + ': ' + Test.Unit.inspect(expected) + 
+          ' was the same as ' + Test.Unit.inspect(actual)); }
     catch(e) { this.error(e); }
   },
   assertIdentical: function(expected, actual) { 
@@ -372,17 +412,20 @@ Test.Unit.Assertions.prototype = {
   assertMatch: function(expected, actual) {
     var message = arguments[2] || 'assertMatch';
     var regex = new RegExp(expected);
-    try { (regex.exec(actual)) ? this.pass() :
+    try { regex.exec(actual) ? this.pass() :
       this.fail(message + ' : regex: "' +  Test.Unit.inspect(expected) + ' did not match: ' + Test.Unit.inspect(actual) + '"'); }
+    catch(e) { this.error(e); }
+  },
+  assertNoMatch: function(expected, actual) {
+    var message = arguments[2] || 'assertMatch';
+    var regex = new RegExp(expected);
+    try { !regex.exec(actual) ? this.pass() :
+      this.fail(message + ' : regex: "' +  Test.Unit.inspect(expected) + ' matched: ' + Test.Unit.inspect(actual) + '"'); }
     catch(e) { this.error(e); }
   },
   assertHidden: function(element) {
     var message = arguments[1] || 'assertHidden';
     this.assertEqual("none", element.style.display, message);
-  },
-  assertNotNull: function(object) {
-    var message = arguments[1] || 'assertNotNull';
-    this.assert(object != null, message);
   },
   assertInstanceOf: function(expected, actual) {
     var message = arguments[2] || 'assertInstanceOf';

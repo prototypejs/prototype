@@ -1,5 +1,12 @@
 *SVN*
 
+* Make Hash.toQueryString serialize undefined values. Ensure consistency with String.prototype.toQueryParams.  Closes #7806.  [Mislav Marohnić]
+  Examples:
+    $H({a:'b',c:undefined}).toQueryString()      -> 'a=b&c'
+    $H({a:'b',c:null}).toQueryString()           -> 'a=b&c='
+    $H('a=b&c'.toQueryParams()).toQueryString()  -> 'a=b&c'
+    $H('a=b&c='.toQueryParams()).toQueryString() -> 'a=b&c='
+    
 * Fix issues with Selector an+b logic, :not support, attribute selector double quotes, plus performance improvements.  Closes #7873, #7901.  [Andrew Dupont]
 
 * Fix an issue with Element.getDimensions with some element types on non-IE browsers.  Closes #7683.  [Andrew Dupont]

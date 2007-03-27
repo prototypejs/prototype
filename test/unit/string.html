@@ -289,32 +289,29 @@
     }},
     
     testToQueryParams: function() {with(this) {
-      assertEnumEqual([], Object.keys(''.toQueryParams()));
-      assertEnumEqual([], Object.keys('foo?'.toQueryParams()));
+      // only the query part
+      var result = {a:undefined, b:'c'};
+      assertHashEqual({}, ''.toQueryParams(), 'empty query');
+      assertHashEqual({}, 'foo?'.toQueryParams(), 'empty query with URL');
+      assertHashEqual(result, 'foo?a&b=c'.toQueryParams(), 'query with URL');
+      assertHashEqual(result, 'foo?a&b=c#fragment'.toQueryParams(), 'query with URL and fragment');
+      assertHashEqual(result, 'a;b=c'.toQueryParams(';'), 'custom delimiter');
+    
+      assertHashEqual({a:undefined}, 'a'.toQueryParams(), 'key without value');
+      assertHashEqual({a:'b'},  'a=b&=c'.toQueryParams(), 'empty key');
+      assertHashEqual({a:'b', c:''}, 'a=b&c='.toQueryParams(), 'empty value');
       
-      assertEnumEqual(['a', 'b'], Object.keys('foo?a&b'.toQueryParams()));
-      assertEnumEqual(['a', 'b'], Object.keys('foo?a&b#fragment'.toQueryParams()));
-      assertEnumEqual(['a', 'b'], Object.keys('a;b'.toQueryParams(';')));
+      assertHashEqual({'a b':'c', d:'e f', g:'h'},
+        'a%20b=c&d=e%20f&g=h'.toQueryParams(), 'proper decoding');
+      assertHashEqual({a:'b=c=d'}, 'a=b=c=d'.toQueryParams(), 'multiple equal signs');
+      assertHashEqual({a:'b', c:'d'}, '&a=b&&&c=d'.toQueryParams(), 'proper splitting');
       
-      var result = 'a'.toQueryParams();
-      assertEqual(undefined, result['a']);
-      assert(result.hasOwnProperty('a'));
-      
-      result = 'a&b=c'.toQueryParams();
-      assertEqual(undefined, result['a']);
-      assert(result.hasOwnProperty('a'));
-      assertEqual('c', result['b']);
-      
-      result = 'a%20b=c&d=e%20f&g=h'.toQueryParams();
-      assertEqual('c', result['a b']);
-      assertEqual('e f', result['d']);
-      assertEqual('h', result['g']);
-      
-      result = 'color=r&color=g&color=b'.toQueryParams();
-      assertEnumEqual(['r', 'g', 'b'], result['color']);
-      assertEnumEqual(['r', 'b'], 'c=r&c=&c=b'.toQueryParams()['c']);
-      assertEqual('blue', 'c=&c=blue'.toQueryParams()['c']);
-      assertEqual('blue', 'c=blue&c='.toQueryParams()['c']);
+      assertEnumEqual($w('r g b'), 'col=r&col=g&col=b'.toQueryParams()['col'],
+        'collection without square brackets');
+      var msg = 'empty values inside collection';
+      assertEnumEqual(['r', '', 'b'], 'c=r&c=&c=b'.toQueryParams()['c'], msg);
+      assertEnumEqual(['', 'blue'],   'c=&c=blue'.toQueryParams()['c'], msg);
+      assertEnumEqual(['blue', ''],   'c=blue&c='.toQueryParams()['c'], msg);
     }},
     
     testInspect: function() {with(this) {

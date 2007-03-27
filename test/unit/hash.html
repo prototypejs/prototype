@@ -38,8 +38,8 @@
     },
 
     functions: {
-      alpha: 'foo',
-      beta:  function(n) { return n+1; }
+      quad: function(n) { return n*n },
+      plus: function(n) { return n+n }
     },
     
     multiple:         { color: $w('r g b') },
@@ -65,61 +65,65 @@
   new Test.Unit.Runner({
     
     testConstruct: function(){ with(this) {
-      var h = $H(Fixtures.one)
-      assertNotIdentical(Fixtures.one, h)
-      assertIdentical(h, $H(h))
+      var h = $H(Fixtures.one);
+      assertNotIdentical(Fixtures.one, h);
+      assertIdentical(h, $H(h));
 
-      var h2 = new Hash(h)
-      assertNotIdentical(h, h2)
-      assertEqual(h.inspect(), h2.inspect())
+      var h2 = new Hash(h);
+      assertNotIdentical(h, h2);
+      assertHashEqual(h, h2);
     }},
     
     testKeys: function(){ with(this) {
       assertEnumEqual([],               $H({}).keys());
       assertEnumEqual(['a'],            $H(Fixtures.one).keys());
-      assertEnumEqual($w('a b c d'),    $H(Fixtures.many).keys());
-      assertEnumEqual($w('alpha beta'), $H(Fixtures.functions).keys());
+      assertEnumEqual($w('a b c d'),    $H(Fixtures.many).keys().sort());
+      assertEnumEqual($w('plus quad'),  $H(Fixtures.functions).keys().sort());
     }},
     
     testValues: function(){ with(this) {
       assertEnumEqual([],             $H({}).values());
       assertEnumEqual(['A#'],         $H(Fixtures.one).values());
-      assertEnumEqual($w('A B C D#'), $H(Fixtures.many).values());
-      assertEqual('function', typeof $H(Fixtures.functions).values()[1]);
-      assertEqual(2, $H(Fixtures.functions).beta(1));
+      assertEnumEqual($w('A B C D#'), $H(Fixtures.many).values().sort());
+      assertEnumEqual($w('function function'),
+        $H(Fixtures.functions).values().map(function(i){ return typeof i }));
+      assertEqual(9, $H(Fixtures.functions).quad(3));
+      assertEqual(6, $H(Fixtures.functions).plus(3));
     }},  
       
     testMerge: function(){ with(this) {
-      assertEqual($H(Fixtures.many).inspect(), $H(Fixtures.many).merge().inspect());
-      assertEqual($H(Fixtures.many).inspect(), $H(Fixtures.many).merge({}).inspect());
-      assertEqual("#<Hash:{'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D#', 'aaa': 'AAA'}>", $H(Fixtures.many).merge({aaa: 'AAA'}).inspect());
-      assertEqual("#<Hash:{'a': 'A#', 'b': 'B', 'c': 'C', 'd': 'D#'}>", $H(Fixtures.many).merge(Fixtures.one).inspect());
+      assertHashEqual(Fixtures.many, $H(Fixtures.many).merge());
+      assertHashEqual(Fixtures.many, $H(Fixtures.many).merge({}));
+      assertHashEqual(Fixtures.many, $H(Fixtures.many).merge($H()));
+      assertHashEqual({a:'A',  b:'B', c:'C', d:'D#', aaa:'AAA' }, $H(Fixtures.many).merge({aaa: 'AAA'}));
+      assertHashEqual({a:'A#', b:'B', c:'C', d:'D#' }, $H(Fixtures.many).merge(Fixtures.one));
     }},
 
     testRemove: function(){ with(this) {
       var hash = $H(Fixtures.many);
       var values = hash.remove('b', 'c');
-      assertEnumEqual($w('a d'), hash.keys());
+      assertHashEqual({a:'A', d:'D#'}, hash);
       assertEnumEqual($w('B C'), values);
     }},
     
     testToQueryString: function(){ with(this) {
-      assertEqual('',                        $H({}).toQueryString());
-      assertEqual('a=A%23',                  $H(Fixtures.one).toQueryString());
-      assertEqual('a=A&b=B&c=C&d=D%23',      $H(Fixtures.many).toQueryString());
-      assertEqual("a=b",                     $H(Fixtures.value_undefined).toQueryString());
-      assertEqual("a=b",                     $H(Fixtures.value_null).toQueryString());
-      assertEqual("a=b&c=0",                 $H(Fixtures.value_zero).toQueryString());
+      assertEqual('',                   $H({}).toQueryString());
+      assertEqual('a=A%23',             $H(Fixtures.one).toQueryString());
+      assertEqual('a=A&b=B&c=C&d=D%23', $H(Fixtures.many).toQueryString());
+      assertEqual("a=b&c",              $H(Fixtures.value_undefined).toQueryString());
+      assertEqual("a=b&c",              $H("a=b&c".toQueryParams()).toQueryString());
+      assertEqual("a=b&c=",             $H(Fixtures.value_null).toQueryString());
+      assertEqual("a=b&c=0",            $H(Fixtures.value_zero).toQueryString());
       assertEqual("color=r&color=g&color=b", $H(Fixtures.multiple).toQueryString());
-      assertEqual("color=r&color=g&color=0", $H(Fixtures.multiple_nil).toQueryString());
-      assertEqual("",                        $H(Fixtures.multiple_all_nil).toQueryString());
-      assertEqual("",                        $H(Fixtures.multiple_empty).toQueryString());
+      assertEqual("color=r&color=&color=g&color&color=0", $H(Fixtures.multiple_nil).toQueryString());
+      assertEqual("color=&color",       $H(Fixtures.multiple_all_nil).toQueryString());
+      assertEqual("",                   $H(Fixtures.multiple_empty).toQueryString());
       assertEqual("stuff%5B%5D=%24&stuff%5B%5D=a&stuff%5B%5D=%3B", $H(Fixtures.multiple_special).toQueryString());
-
-      assertEnumEqual($w("_each=E map=M keys=K values=V collect=C inject=I").sort(),
-        Hash.toQueryString(Fixtures.dangerous).split('&').sort());
-      assertEnumEqual($w('_each=E map=M keys=K values=V collect=C inject=I').sort(),
-        $H(Fixtures.dangerous).toQueryString().split('&').sort());
+      assertHashEqual(Fixtures.multiple_special, $H(Fixtures.multiple_special).toQueryString().toQueryParams());
+      
+      var danger = $w("_each=E collect=C inject=I keys=K map=M values=V");
+      assertEnumEqual(danger, Hash.toQueryString(Fixtures.dangerous).split('&').sort());
+      assertEnumEqual(danger, $H(Fixtures.dangerous).toQueryString().split('&').sort());
     }},
     
     testInspect: function(){ with(this) {
