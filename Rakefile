@@ -43,7 +43,7 @@ JavaScriptTestTask.new(:test_units) do |t|
   t.mount("/dist")
   t.mount("/test")
   
-  Dir["test/unit/*.html"].each do |test_file|
+  Dir["test/unit/*.html"].sort.each do |test_file|
     test_file = "/#{test_file}"
     test_name = test_file[/.*\/(.+?)\.html/, 1]
     t.run(test_file) unless tests_to_run && !tests_to_run.include?(test_name)
