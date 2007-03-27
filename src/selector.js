@@ -162,18 +162,21 @@ Object.extend(Selector, {
       'only-of-type':   function(m) {
         var p = Selector.xpath.pseudos; return p['first-of-type'](m) + p['last-of-type'](m);
       },
-      nth: function(predicate, m) {
-        var mm, formula = m[6];
+      nth: function(fragment, m) {
+        var mm, formula = m[6], predicate;
         if (formula == 'even') formula = '2n+0';
         if (formula == 'odd')  formula = '2n+1';
         if (mm = formula.match(/^(\d+)$/)) // digit only
-          predicate += "= " + mm[1];
-        if (mm = formula.match(/^(\d+)?n(\+(\d+))?/)) { // an+b
+          return '[' + fragment + "= " + mm[1] + ']';
+        if (mm = formula.match(/^(-?\d*)?n(([+-])(\d+))?/)) { // an+b
+          if (mm[1] == "-") mm[1] = -1;
           var a = mm[1] ? Number(mm[1]) : 1;
-          var b = mm[3] ? Number(mm[3]) : 0;
-          predicate += "mod " + a + " = " + b;
+          var b = mm[2] ? Number(mm[2]) : 0;
+          predicate = "[((#{fragment} - #{b}) mod #{a} = 0) and " +
+          "((#{fragment} - #{b}) div #{a} >= 0)]";
+          return new Template(predicate).evaluate({
+            fragment: fragment, a: a, b: b });
         }
-        return "[" + predicate + "]";        
       }
     }
   },
@@ -265,14 +268,16 @@ Object.extend(Selector, {
     descendant: function(nodes) {
       var h = Selector.handlers;
       for (var i = 0, results = [], node; node = nodes[i]; i++)
-        h.concat(results, Element.descendants(node));
+        h.concat(results, node.getElementsByTagName('*'));
       return results;
     },
     
     child: function(nodes) {
       var h = Selector.handlers;
-      for (var i = 0, results = [], node; node = nodes[i]; i++)
-        h.concat(results, Element.immediateDescendants(node));
+      for (var i = 0, results = [], node; node = nodes[i]; i++) {
+        for (var j = 0, children = [], child; child = node.childNodes[j]; j++)
+          if (child.nodeType == 1 && child.tagName != '!') results.push(child);
+      }
       return results;
     },
     
@@ -432,8 +437,18 @@ Object.extend(Selector, {
       return p['last-of-type'](p['first-of-type'](nodes, formula, root), formula, root);
     },
     
+    // handles the an+b logic
+    getIndices: function(a, b, total) {
+      if (a == 0) return b > 0 ? [b] : [];
+      return $R(1, total).inject([], function(memo, i) {
+        if (0 == (i - b) % a && (i - b) / a >= 0) memo.push(i);
+        return memo;
+      });
+    },
+    
     // handles nth(-last)-child, nth(-last)-of-type, and (first|last)-of-type
     nth: function(nodes, formula, root, reverse, ofType) {
+      if (nodes.length == 0) return [];
       if (formula == 'even') formula = '2n+0';
       if (formula == 'odd')  formula = '2n+1';
       var h = Selector.handlers, results = [], indexed = [], m;
@@ -448,11 +463,15 @@ Object.extend(Selector, {
         formula = Number(formula);
         for (var i = 0, node; node = nodes[i]; i++)
           if (node.nodeIndex == formula) results.push(node);
-      } else if (m = formula.match(/^(\d+)?n(\+(\d+))?$/)) { // an+b
+      } else if (m = formula.match(/^(-?\d*)?n(([+-])(\d+))?/)) { // an+b
+        if (m[1] == "-") m[1] = -1;
         var a = m[1] ? Number(m[1]) : 1;
-        var b = m[3] ? Number(m[3]) : 0;
-        for (var i = 0, node; node = nodes[i]; i++)
-          if (node.nodeIndex % a == b) results.push(node);
+        var b = m[2] ? Number(m[2]) : 0;
+        var indices = Selector.pseudos.getIndices(a, b, nodes.length);
+        for (var i = 0, node, l = indices.length; node = nodes[i]; i++) {
+          for (var j = 0; j < l; j++)
+            if (node.nodeIndex == indices[j]) results.push(node);
+        }
       }
       h.unmark(nodes);
       h.unmark(indexed);    

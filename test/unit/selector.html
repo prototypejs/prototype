@@ -298,6 +298,8 @@
       assertEnumEqual([$('link_2')], $$('#p *:nth-last-child(2)'), 'nth-last-child');
       assertEnumEqual([$('link_2')], $$('#p *:nth-child(3)'), 'nth-child');
       assertEnumEqual([$('link_2')], $$('#p a:nth-child(3)'), 'nth-child');
+      assertEnumEqual($('item_2', 'item_3'), $$('#list > li:nth-child(n+2)'));
+      assertEnumEqual($('item_1', 'item_2'), $$('#list > li:nth-child(-n+2)'));
       $RunBenchmarks && wait(500, function() {
         benchmark(function() { $$('#level1 *:first-child') }, 1000, ':first-child');
         benchmark(function() { $$('#level1 *:last-child') }, 1000, ':last-child');
@@ -346,6 +348,7 @@
       assertEnumEqual($$('ul > li:first-child'), $$('ul > li:nth-child(1)'));
       assertEnumEqual($$('ul > li:last-child'), $$('ul > li:nth-last-child(1)'));
       assertEnumEqual($$('#troubleForm *:enabled'), $$('#troubleForm *:not(:disabled)'));
+      assertEnumEqual($$('ul > li:nth-child(n-999)'), $$('ul > li'));
     }},
     
     testSelectorsThatShouldReturnNothing: function() {with(this) {
