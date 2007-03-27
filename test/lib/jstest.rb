@@ -32,7 +32,7 @@ class Browser
 end
 
 class FirefoxBrowser < Browser
-  def initialize(path='c:\Program Files\Mozilla Firefox\firefox.exe')
+  def initialize(path=File.join(ENV['ProgramFiles'] || 'c:\Program Files', '\Mozilla Firefox\firefox.exe'))
     @path = path
   end
 
@@ -70,7 +70,7 @@ class SafariBrowser < Browser
 end
 
 class IEBrowser < Browser
-  def initialize(path='C:\Program Files\Internet Explorer\IEXPLORE.EXE')
+  def initialize(path=File.join(ENV['ProgramFiles'] || 'c:\Program Files', '\Internet Explorer\IEXPLORE.EXE'))
     @path = path
   end
   

@@ -2,7 +2,7 @@
 
 * Fix issues with Selector an+b logic, :not support, attribute selector double quotes, plus performance improvements.  Closes #7873, #7901.  [Andrew Dupont]
 
-* Fix an issue with Element.getDimensions with some element types on non IE-browsers.  Closes #7683.  [Andrew Dupont]
+* Fix an issue with Element.getDimensions with some element types on non-IE browsers.  Closes #7683.  [Andrew Dupont]
 
 * Fix Form.disable to work again on non-form elements.  Closes #6887.  [Mislav Marohnić]
 
