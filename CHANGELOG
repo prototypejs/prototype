@@ -1,5 +1,7 @@
 *SVN*
 
+* Prevent linefeed normalisation in String.prototype.escapeHTML and unescapeHTML on IE for consistency with other browsers.  [Thomas Fuchs]
+
 * Make Hash.toQueryString serialize undefined values. Ensure consistency with String.prototype.toQueryParams.  Closes #7806.  [Mislav Marohnić]
   Examples:
     $H({a:'b',c:undefined}).toQueryString()      -> 'a=b&c'

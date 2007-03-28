@@ -193,6 +193,21 @@ Object.extend(String.prototype, {
   }
 });
 
+if (Prototype.Browser.IE) Object.extend(String.prototype, {
+  escapeHTML: function() {
+    var self = arguments.callee;
+    self.text.data = this.gsub(/\n/, Prototype.LinefeedFragment);
+    return self.div.innerHTML.gsub(Prototype.LinefeedFragment, '\n');
+  },
+  unescapeHTML: function() {
+    var div = document.createElement('div');
+    div.innerHTML = this.stripTags().gsub(/\n/, Prototype.LinefeedFragment);
+    return (div.childNodes[0] ? (div.childNodes.length > 1 ?
+      $A(div.childNodes).inject('', function(memo, node) { return memo+node.nodeValue }) :
+      div.childNodes[0].nodeValue) : '').gsub(Prototype.LinefeedFragment, '\n');
+  }
+});
+
 String.prototype.gsub.prepareReplacement = function(replacement) {
   if (typeof replacement == 'function') return replacement;
   var template = new Template(replacement);

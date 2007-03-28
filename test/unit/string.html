@@ -76,6 +76,11 @@
         source.gsub(/\s+/, ''));
       assertEqual('  z', 
         source.gsub(/(.)(o+)/, ''));
+        
+      assertEqual('ウィメンズ2007<br/>クルーズコレクション', 
+        'ウィメンズ2007\nクルーズコレクション'.gsub(/\n/,'<br/>'));
+      assertEqual('ウィメンズ2007<br/>クルーズコレクション', 
+        'ウィメンズ2007\nクルーズコレクション'.gsub('\n','<br/>'));
     }},
     
     testGsubWithReplacementTemplateString: function() {with(this) {
@@ -217,6 +222,7 @@
       assertEqual('hello world', 'hello <span>world</span>'.stripTags());
       assertEqual('hello world', '<a href="#" onclick="moo!">hello</a> world'.stripTags());
       assertEqual('hello world', 'h<b><em>e</em></b>l<i>l</i>o w<span class="moo" id="x"><b>o</b></span>rld'.stripTags());
+      assertEqual('1\n2', '1\n2'.stripTags());
     }},
     
     testStripScripts: function() {with(this) {
@@ -251,10 +257,15 @@
       assertEqual('foo &lt;span&gt;bar&lt;/span&gt;', 'foo <span>bar</span>'.escapeHTML());
       assertEqual('foo ß bar', 'foo ß bar'.escapeHTML());
       
+      assertEqual('ウィメンズ2007\nクルーズコレクション', 
+        'ウィメンズ2007\nクルーズコレクション'.escapeHTML());
+        
       assertEqual('a&lt;a href="blah"&gt;blub&lt;/a&gt;b&lt;span&gt;&lt;div&gt;&lt;/div&gt;&lt;/span&gt;cdef&lt;strong&gt;!!!!&lt;/strong&gt;g',
-                  'a<a href="blah">blub</a>b<span><div></div></span>cdef<strong>!!!!</strong>g'.escapeHTML());
+        'a<a href="blah">blub</a>b<span><div></div></span>cdef<strong>!!!!</strong>g'.escapeHTML());
       
       assertEqual(largeTextEscaped, largeTextUnescaped.escapeHTML());
+      
+      assertEqual('1\n2', '1\n2'.escapeHTML());
     }},
     
     testUnescapeHTML: function() {with(this) {
@@ -266,6 +277,8 @@
         'a&lt;a href="blah"&gt;blub&lt;/a&gt;b&lt;span&gt;&lt;div&gt;&lt;/div&gt;&lt;/span&gt;cdef&lt;strong&gt;!!!!&lt;/strong&gt;g'.unescapeHTML());
       
       assertEqual(largeTextUnescaped, largeTextEscaped.unescapeHTML());
+      
+      assertEqual('1\n2', '1\n2'.unescapeHTML());
     }},
     
     testTemplateEvaluation: function() {with(this) {
