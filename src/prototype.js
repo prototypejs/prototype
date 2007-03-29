@@ -18,8 +18,6 @@ var Prototype = {
   },
   
   ScriptFragment: '(?:<script.*?>)((\n|\r|.)*?)(?:<\/script>)',
-  LinefeedFragment: '-PrOtOtYpE LiNeFeEd-',
-  
   emptyFunction: function() {},
   K: function(x) { return x }
 }

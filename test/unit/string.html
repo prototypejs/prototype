@@ -266,6 +266,10 @@
       assertEqual(largeTextEscaped, largeTextUnescaped.escapeHTML());
       
       assertEqual('1\n2', '1\n2'.escapeHTML());
+      
+      benchmark(function(){
+        largeTextUnescaped.escapeHTML();
+      },1000);
     }},
     
     testUnescapeHTML: function() {with(this) {
@@ -279,6 +283,11 @@
       assertEqual(largeTextUnescaped, largeTextEscaped.unescapeHTML());
       
       assertEqual('1\n2', '1\n2'.unescapeHTML());
+      
+      benchmark(function(){
+        largeTextEscaped.unescapeHTML();
+      },1000);
+      
     }},
     
     testTemplateEvaluation: function() {with(this) {
