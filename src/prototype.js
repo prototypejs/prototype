@@ -17,7 +17,7 @@ var Prototype = {
        document.createElement('form').__proto__)
   },
   
-  ScriptFragment: '(?:<script.*?>)((\n|\r|.)*?)(?:<\/script>)',
+  ScriptFragment: '<script[^>]*>([\u0001-\uFFFF]*?)</script>',
   emptyFunction: function() {},
   K: function(x) { return x }
 }

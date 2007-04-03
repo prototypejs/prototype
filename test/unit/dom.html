@@ -270,7 +270,7 @@
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
 
-  var testVar = 'to be updated';
+  var testVar = 'to be updated', testVar2 = '';
 
   Element.addMethods("LI", {
     pancakes: function(element) { return "pancakes"; }
@@ -364,7 +364,7 @@
     }},
 
     testElementUpdateWithScript: function() {with(this) {
-      $('testdiv').update('hello from div!<script>testVar="hello!"</'+'script>');
+      $('testdiv').update('hello from div!<script>\ntestVar="hello!";\n</'+'script>');
       assertEqual('hello from div!',$('testdiv').innerHTML);
       wait(100,function(){
         assertEqual('hello!',testVar);
@@ -375,6 +375,18 @@
         assertMatch(/^another hello from div!\s+here it goes$/,$('testdiv').innerHTML);
         wait(100,function(){
           assertEqual('another hello!',testVar);
+          
+          Element.update('testdiv','a\n<script>testVar="a"\ntestVar="b"</'+'script>');
+          wait(100,function(){
+            assertEqual('b', testVar);
+            
+            Element.update('testdiv',
+              'x<script>testVar2="a"</'+'script>\nblah\n'+
+              'x<script>testVar2="b"</'+'script>');
+            wait(100,function(){
+              assertEqual('b', testVar2);
+            });
+          });
         });
       });
     }},
@@ -934,7 +946,20 @@
       assertRespondsTo('orangeJuice', elem2);
       assertEqual("orange juice", elem.orangeJuice());
       assertEqual("orange juice", elem2.orangeJuice());
-    }}    
+    }},
+    
+    testScriptFragment: function() {with(this) {
+      var element = document.createElement('div');
+      // tests an issue with Safari 2.0 crashing when the ScriptFragment
+      // regular expression is using a pipe-based approach for
+      // matching any character
+      ['\r','\n',' '].each(function(character){
+        $(element).update("<script>"+character.times(10000)+"</scr"+"ipt>");
+        assertEqual('', element.innerHTML);
+      });
+      $(element).update("<script>var blah='"+'\\'.times(10000)+"'</scr"+"ipt>");
+      assertEqual('', element.innerHTML);
+    }}
   }, 'testlog');
 
 // ]]>
