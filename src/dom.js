@@ -346,28 +346,23 @@ Element.Methods = {
     element = $(element);
     var display = $(element).getStyle('display');
     if (display != 'none' && display != null) // Safari bug
-      return { width: element.offsetWidth, height: element.offsetHeight };
-
+      return {width: element.offsetWidth, height: element.offsetHeight};
+    
     // All *Width and *Height properties give 0 on elements with display none,
     // so enable the element temporarily
-    var els = element.style, original = {};
-
-    $w('display position visibility height width').each( function(name) {
-      original[name] = els[name];
-    });
-    
-    els.visibility = 'hidden';    
-    els.display    = 'block';
-
-    Position.absolutize(element);
-    var originalWidth  = element.clientWidth;
+    var els = element.style;
+    var originalVisibility = els.visibility;
+    var originalPosition = els.position;
+    var originalDisplay = els.display;
+    els.visibility = 'hidden';
+    els.position = 'absolute';
+    els.display = 'block';
+    var originalWidth = element.clientWidth;
     var originalHeight = element.clientHeight;
-    Position.relativize(element);
-
-    $w('display position visibility height width').each( function(name) {
-      els[name] = original[name] || '';
-    });
-    return { width: originalWidth, height: originalHeight };  
+    els.display = originalDisplay;
+    els.position = originalPosition;
+    els.visibility = originalVisibility;
+    return {width: originalWidth, height: originalHeight};    
   },
   
   makePositioned: function(element) {
