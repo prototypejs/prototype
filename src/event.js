@@ -18,7 +18,7 @@ Object.extend(Event, {
   KEY_PAGEDOWN: 34,
 
   element: function(event) {
-    return event.target || event.srcElement;
+    return $(event.target || event.srcElement);
   },
 
   isLeftClick: function(event) {
