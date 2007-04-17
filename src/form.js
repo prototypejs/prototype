@@ -93,7 +93,7 @@ Form.Methods = {
     if (form.hasAttribute('method') && !options.method)
       options.method = form.method;
     
-    return new Ajax.Request(form.action, options);
+    return new Ajax.Request(form.readAttribute('action'), options);
   }
 }
 

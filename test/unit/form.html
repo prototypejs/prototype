@@ -28,6 +28,7 @@
   <div>This is not a form element</div>
   <input type="text" name="val2" id="input_disabled" disabled="disabled" value="5" />
   <input type="submit" />
+  <input type="text" name="action" value="blah" />
 </form>
 <div id="form_wrapper">
   <form id="form_selects" action="fixtures/empty.js">
@@ -310,7 +311,7 @@
 
       // Checks that disabled element is not included in serialized form.
       $('input_enabled').enable();
-      assertEqual('val1=4', Form.serialize('form'));
+      assertEqual('val1=4&action=blah', Form.serialize('form'));
 
       // Checks that select-related serializations work just fine
       assertEqual('vu=1&vm%5B%5D=1&vm%5B%5D=3&nvu=One&nvm%5B%5D=One'+
@@ -366,12 +367,12 @@
       
       request = $("form").request();
       assert($("form").hasAttribute("method"));
-      assert(request.url.endsWith("fixtures/empty.js?val1=4"));
+      assert(request.url.endsWith("fixtures/empty.js?val1=4&action=blah"));
       assertEqual("get", request.method);
       
       request = $("form").request({method: "post"});
       assert(request.url.endsWith("fixtures/empty.js"));
-      assertEqual("val1=4", Hash.toQueryString(request.options.parameters));
+      assertEqual("val1=4&action=blah", Hash.toQueryString(request.options.parameters));
       assertEqual("post", request.method);
     }},
     
