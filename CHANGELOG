@@ -1,6 +1,6 @@
 *SVN*
 
-* Prevent a crash on Safari on String.prototyype.stripScripts and extractScripts with large <script> tags.  [Thomas Fuchs]
+* Prevent a crash on Safari on String.prototype.stripScripts and extractScripts with large <script> tags.  [Thomas Fuchs]
 
 * Prevent linefeed normalisation in String.prototype.escapeHTML and unescapeHTML on IE for consistency with other browsers. Speed optimizations for Safari and IE.  [Thomas Fuchs]
 
