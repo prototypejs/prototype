@@ -633,6 +633,9 @@ Element.addMethods = function(methods) {
       copy(T[tag], klass.prototype);
     }
   }  
+
+  Object.extend(Element, Element.Methods);
+  delete Element.ByTag;
 };
 
 var Toggle = { display: Element.toggle };

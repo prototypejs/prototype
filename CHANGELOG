@@ -1,5 +1,7 @@
 *SVN*
 
+* Element.addMethods should add methods to Element as well as Element.Methods.  Closes #7888.  [Andrew Dupont]
+
 * Add support for per-request onCreate callbacks to Ajax.Request.  Closes #8011.  [Andrew Dupont]
 
 * Don't call evalResponse() when an Ajax response has no Content-type header.  Closes #7827.  [Tobie Langel]

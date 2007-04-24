@@ -272,6 +272,10 @@
 
   var testVar = 'to be updated', testVar2 = '';
 
+  Element.addMethods({
+    hashBrowns: function(element) { return 'hash browns'; }
+  });
+
   Element.addMethods("LI", {
     pancakes: function(element) { return "pancakes"; }
   });
@@ -929,7 +933,16 @@
       window.scrollTo(0, 0);
     }},
     
-    testSpecificElementMethods: function() {with(this) {
+    testCustomElementMethods: function() {with(this) {
+      var elem = $('navigation_test_f');
+      assertRespondsTo('hashBrowns', elem);
+      assertEqual('hash browns', elem.hashBrowns());
+      
+      assertRespondsTo('hashBrowns', Element);
+      assertEqual('hash browns', Element.hashBrowns(elem));
+    }},
+    
+    testSpecificCustomElementMethods: function() {with(this) {
       var elem = $('navigation_test_f');
       
       assert(Element.Methods.ByTag[elem.tagName]);
@@ -947,6 +960,11 @@
       assertRespondsTo('orangeJuice', elem2);
       assertEqual("orange juice", elem.orangeJuice());
       assertEqual("orange juice", elem2.orangeJuice());
+      
+      assert(typeof Element.orangeJuice == 'undefined');
+      assert(typeof Element.pancakes == 'undefined');
+      assert(typeof Element.waffles == 'undefined');
+      
     }},
     
     testScriptFragment: function() {with(this) {
