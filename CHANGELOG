@@ -1,5 +1,9 @@
 *SVN*
 
+* Optimize DOM navigation methods (Element#up, Element#down, Element#previous, Element#next) for no-argument calls.  Closes #7848.  [haraldmartin, sam]
+
+* Add Element#firstDescendant to retrieve the first non-text child node of an element.  [sam]
+
 * Element.addMethods should add methods to Element as well as Element.Methods.  Closes #7888.  [Andrew Dupont]
 
 * Add support for per-request onCreate callbacks to Ajax.Request.  Closes #8011.  [Andrew Dupont]

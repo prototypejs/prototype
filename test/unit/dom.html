@@ -479,6 +479,11 @@
       assert(typeof dummy.descendants()[0].setStyle == 'function');
     }},
     
+    testElementFirstDescendant: function() {with(this) {
+      assertElementMatches($('navigation_test').firstDescendant(), 'li.first');
+      assertNull($('navigation_test_next_sibling').firstDescendant());
+    }},
+    
     testElementImmediateDescendants: function() {with(this) {
       assertElementsMatch($('navigation_test').immediateDescendants(),
         'li.first', 'li', 'li#navigation_test_c', 'li.last');

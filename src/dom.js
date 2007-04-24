@@ -152,6 +152,12 @@ Element.Methods = {
     return $A($(element).getElementsByTagName('*')).each(Element.extend);
   },
   
+  firstDescendant: function(element) {
+    element = $(element).firstChild;
+    while (element && element.nodeType != 1) element = element.nextSibling;
+    return $(element);
+  },
+  
   immediateDescendants: function(element) {
     if (!(element = $(element).firstChild)) return [];
     while (element && element.nodeType != 1) element = element.nextSibling;
@@ -179,25 +185,33 @@ Element.Methods = {
   },
   
   up: function(element, expression, index) {
-    var ancestors = $(element).ancestors();
+    element = $(element);
+    if (arguments.length == 1) return $(element.parentNode);
+    var ancestors = element.ancestors();
     return expression ? Selector.findElement(ancestors, expression, index) :
       ancestors[index || 0];
   },
   
   down: function(element, expression, index) {
-    var descendants = $(element).descendants();
+    element = $(element);
+    if (arguments.length == 1) return element.firstDescendant();
+    var descendants = element.descendants();
     return expression ? Selector.findElement(descendants, expression, index) :
       descendants[index || 0];
   },
 
   previous: function(element, expression, index) {
-    var previousSiblings = $(element).previousSiblings();
+    element = $(element);
+    if (arguments.length == 1) return $(Selector.handlers.previousElementSibling(element));
+    var previousSiblings = element.previousSiblings();
     return expression ? Selector.findElement(previousSiblings, expression, index) :
       previousSiblings[index || 0];
   },
   
   next: function(element, expression, index) {
-    var nextSiblings = $(element).nextSiblings();
+    element = $(element);
+    if (arguments.length == 1) return $(Selector.handlers.nextElementSibling(element));
+    var nextSiblings = element.nextSiblings();
     return expression ? Selector.findElement(nextSiblings, expression, index) :
       nextSiblings[index || 0];
   },
