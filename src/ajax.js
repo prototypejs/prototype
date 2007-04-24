@@ -212,13 +212,13 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
   evalJSON: function() {
     try {
       var json = this.getHeader('X-JSON');
-      return json ? eval('(' + json + ')') : null;
+      return json ? json.evalJSON() : null;
     } catch (e) { return null }
   },
   
   evalResponse: function() {
     try {
-      return eval(this.transport.responseText);
+      return eval((this.transport.responseText || '').unfilterJSON());
     } catch (e) {
       this.dispatchException(e);
     }

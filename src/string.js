@@ -163,12 +163,17 @@ Object.extend(String.prototype, {
     return this.inspect(true);
   },
 
+  unfilterJSON: function(filter) {
+    return this.sub(filter || Prototype.JSONFilter, '#{1}');
+  },
+
   evalJSON: function(sanitize) {
+    var json = this.unfilterJSON();
     try {
-      if (!sanitize || (/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(this)))
-        return eval('(' + this + ')');
-    } catch (e) {}
-    throw new SyntaxError('Badly formated JSON string: ' + this.inspect());
+      if (!sanitize || (/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(json)))
+        return eval('(' + json + ')');
+    } catch (e) { }
+    throw new SyntaxError('Badly formed JSON string: ' + this.inspect());
   },
   
   include: function(pattern) {

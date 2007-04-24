@@ -430,7 +430,13 @@
       attackTarget = "Not scared!";
       assertRaise('SyntaxError', function(){dangerous.evalJSON(true)});
       assertEqual("Not scared!", attackTarget);
-     }}
+
+      assertEqual('hello world!', ('/*-secure-\n' + valid + '\n*/').evalJSON().test);
+      var temp = Prototype.JSONFilter;
+      Prototype.JSONFilter = /^\/\*(.*)\*\/$/; // test custom delimiters.
+      assertEqual('hello world!', ('/*' + valid + '*/').evalJSON().test);
+      Prototype.JSONFilter = temp;
+    }}
   }, 'testlog');
 // ]]>
 </script>
