@@ -133,7 +133,7 @@
     }},
     
     testToJSON: function(){ with(this) {
-      assertEqual('{\"b\":[false,true],\"c\":{\"a\":\"hello!\"}}',
+      assertEqual('{\"b\": [false, true], \"c\": {\"a\": \"hello!\"}}',
         $H({'b': [undefined, false, true, undefined], c: {a: 'hello!'}}).toJSON());
 
       assertEqual('E', eval('(' + $H(Fixtures.dangerous).toJSON() + ')')._each);

@@ -1,5 +1,7 @@
 *SVN*
 
+* Add extra spacing so Array#toJSON and Hash#toJSON generate YAML-loadable JSON.  Closes #7883.  [Andrew Dupont]
+
 * Fix Form.request for forms containing an input element with name="action".  Closes #8063.  [Thomas Fuchs, Mislav Marohnić]
 
 * Make Event.element extend the returned element.  Closes #7870.  [Thomas Fuchs]

@@ -28,9 +28,9 @@ Object.extend(Hash, {
     var results = [];
     this.prototype._each.call(object, function(pair) {
       var value = Object.toJSON(pair.value);
-      if (value !== undefined) results.push(pair.key.toJSON() + ':' + value);
+      if (value !== undefined) results.push(pair.key.toJSON() + ': ' + value);
     });
-    return '{' + results.join(',') + '}';
+    return '{' + results.join(', ') + '}';
   }
 });
 

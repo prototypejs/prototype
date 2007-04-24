@@ -42,9 +42,9 @@ Object.extend(Object, {
     for (var property in object) {
       var value = Object.toJSON(object[property]);
       if (value !== undefined)
-        results.push(property.toJSON() + ':' + value);
+        results.push(property.toJSON() + ': ' + value);
     }
-    return '{' + results.join(',') + '}';
+    return '{' + results.join(', ') + '}';
   },
   
   keys: function(object) {

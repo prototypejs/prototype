@@ -109,7 +109,7 @@ Object.extend(Array.prototype, {
       var value = Object.toJSON(object);
       if (value !== undefined) results.push(value);
     });
-    return '[' + results.join(',') + ']';
+    return '[' + results.join(', ') + ']';
   }
 });
 

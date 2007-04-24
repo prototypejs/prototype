@@ -84,7 +84,7 @@
       methodWithBindArgumentsAndArguments.bind({hi:'withBindArgsAndArgs'},'arg1','arg2')('arg3','arg4');
       assertEqual('withBindArgsAndArgs,arg1,arg2,arg3,arg4', globalBindTest);
     }},
-
+    
     testObjectInspect: function() { with(this) {
       assertEqual('undefined', Object.inspect());
       assertEqual('undefined', Object.inspect(undefined));
@@ -99,14 +99,14 @@
       assertEqual('\"\"', Object.toJSON(''));
       assertEqual('[]', Object.toJSON([]));
       assertEqual('[\"a\"]', Object.toJSON(['a']));
-      assertEqual('[\"a\",1]', Object.toJSON(['a', 1]));
-      assertEqual('[\"a\",{\"b\":null}]', Object.toJSON(['a', {'b': null}]));
-      assertEqual('{\"a\":\"hello!\"}', Object.toJSON({a: 'hello!'}));
+      assertEqual('[\"a\", 1]', Object.toJSON(['a', 1]));
+      assertEqual('[\"a\", {\"b\": null}]', Object.toJSON(['a', {'b': null}]));
+      assertEqual('{\"a\": \"hello!\"}', Object.toJSON({a: 'hello!'}));
       assertEqual('{}', Object.toJSON({}));
       assertEqual('{}', Object.toJSON({a: undefined, b: undefined, c: Prototype.K}));
-      assertEqual('{\"b\":[false,true],\"c\":{\"a\":\"hello!\"}}',
+      assertEqual('{\"b\": [false, true], \"c\": {\"a\": \"hello!\"}}',
         Object.toJSON({'b': [undefined, false, true, undefined], c: {a: 'hello!'}}));
-      assertEqual('{\"b\":[false,true],\"c\":{\"a\":\"hello!\"}}',
+      assertEqual('{\"b\": [false, true], \"c\": {\"a\": \"hello!\"}}',
         Object.toJSON($H({'b': [undefined, false, true, undefined], c: {a: 'hello!'}})));
       assertEqual('true', Object.toJSON(true));
       assertEqual('false', Object.toJSON(false));
@@ -148,12 +148,12 @@
         div.setAttribute('id','test-'+i);
         document.body.appendChild(div);
         var tobj = new TestObj();
-        var eventTest = {test:true};
+        var eventTest = { test: true };
         var call = tobj.assertingEventHandler.bindAsEventListener(tobj,
-          this.assertEqual.bind(this,eventTest),
-          this.assertEqual.bind(this,arg1),
-          this.assertEqual.bind(this,arg2),
-          this.assertEqual.bind(this,arg3), arg1, arg2, arg3 );
+          this.assertEqual.bind(this, eventTest),
+          this.assertEqual.bind(this, arg1),
+          this.assertEqual.bind(this, arg2),
+          this.assertEqual.bind(this, arg3), arg1, arg2, arg3 );
         call(eventTest);
       }
     },
