@@ -1,5 +1,7 @@
 *SVN*
 
+* Don't call evalResponse() when an Ajax response has no Content-type header.  Closes #7827.  [Tobie Langel]
+
 * Automatically strip security delimiter comments from JSON strings before evaling them.  The default delimiter is '/*-secure- ... */' or you can specify your own with the Prototype.JSONFilter regular expression.  If you wrap your JSON response bodies in this delimiter on the server side, rogue external sites can't hijack potentially sensitive data via <script> tags.  Closes #7910.  [Tobie Langel]
   For more details on potential security problems, see: http://www.fortifysoftware.com/servlet/downloads/public/JavaScript_Hijacking.pdf
 
