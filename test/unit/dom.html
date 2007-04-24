@@ -484,16 +484,20 @@
       assertNull($('navigation_test_next_sibling').firstDescendant());
     }},
     
-    testElementImmediateDescendants: function() {with(this) {
-      assertElementsMatch($('navigation_test').immediateDescendants(),
+    testElementChildElements: function() {with(this) {
+      assertElementsMatch($('navigation_test').childElements(),
         'li.first', 'li', 'li#navigation_test_c', 'li.last');
       assertNotEqual(0, $('navigation_test_next_sibling').childNodes.length);
-      assertEnumEqual([], $('navigation_test_next_sibling').immediateDescendants());
+      assertEnumEqual([], $('navigation_test_next_sibling').childElements());
       
       var dummy = $(document.createElement('DIV'));
       dummy.innerHTML = '<div></div>'.times(3);
-      assert(typeof dummy.immediateDescendants()[0].setStyle == 'function');
+      assert(typeof dummy.childElements()[0].setStyle == 'function');
     }},
+
+    testElementImmediateDescendants: function() {with(this) {
+      assertIdentical(Element.Methods.childElements, Element.Methods.immediateDescendants);
+    }},  
         
     testElementPreviousSiblings: function() {with(this) {
       assertElementsMatch($('navigation_test').previousSiblings(),

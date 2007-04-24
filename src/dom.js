@@ -426,7 +426,10 @@ Element.Methods = {
   }  
 };
 
-Object.extend(Element.Methods, {childOf: Element.Methods.descendantOf});
+Object.extend(Element.Methods, {
+  childOf: Element.Methods.descendantOf,
+  childElements: Element.Methods.immediateDescendants
+});
 
 if (Prototype.Browser.Opera) { 
   Element.Methods._getStyle = Element.Methods.getStyle; 

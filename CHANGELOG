@@ -1,5 +1,7 @@
 *SVN*
 
+* Add Element#childElements as an alias for Element#immediateDescendants.  [Tobie Langel]
+
 * Optimize DOM navigation methods (Element#up, Element#down, Element#previous, Element#next) for no-argument calls.  Closes #7848.  [haraldmartin, sam]
 
 * Add Element#firstDescendant to retrieve the first non-text child node of an element.  [sam]
