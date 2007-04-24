@@ -1,4 +1,4 @@
-*SVN*
+*1.5.1_rc3 (April 24, 2007)*
 
 * Add Element#childElements as an alias for Element#immediateDescendants.  [Tobie Langel]
 
