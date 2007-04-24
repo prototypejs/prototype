@@ -165,6 +165,14 @@
             assertEqual('application/bogus; charset=UTF-8', response.responseText);
         }
       });
+    }},
+    
+    testOnCreateCallback: function() {with(this) {
+      new Ajax.Request("fixtures/content.html", {
+        asynchronous: false,
+        onCreate: function(transport) { assertEqual(0, transport.readyState) },
+        onComplete: function(transport) { assertNotEqual(0, transport.readyState) }
+      });
     }}
     
   }, 'testlog');

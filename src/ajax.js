@@ -101,6 +101,7 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
     }
       
     try {
+      if (this.options.onCreate) this.options.onCreate(this.transport);
       Ajax.Responders.dispatch('onCreate', this, this.transport);
     
       this.transport.open(this.method.toUpperCase(), this.url, 
