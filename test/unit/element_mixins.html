@@ -32,11 +32,19 @@
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
+Form.Element.Methods.coffee = Prototype.K;
+Element.addMethods();
+
   new Test.Unit.Runner({
     testInput: function() {with(this) {
       assert($("input").present != null);
       assert(typeof $("input").present == 'function');
       assert($("input").select != null);
+      assertRespondsTo('present', Form.Element);
+      assertRespondsTo('present', Form.Element.Methods);
+      assertRespondsTo('coffee', $('input'));
+      assertIdentical(Prototype.K, Form.Element.coffee);
+      assertIdentical(Prototype.K, Form.Element.Methods.coffee);
     }},
     
     testForm: function() {with(this) {
