@@ -1,5 +1,7 @@
 *SVN*
 
+* Set window.$continue to an Error with a helpful message for anyone who may still be using "throw $continue".  [sam]
+
 * Fix jstest.rb IE support so you don't have to close the IE window after each test (yay!).  Closes #8207.  [Ryan Schuft]
 
 * Fix jstest.rb Konqueror support.  Closes #7140.  [Christophe Porteneuve]
