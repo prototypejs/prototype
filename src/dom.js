@@ -551,6 +551,7 @@ Element._attributeTranslations = {
   Object.extend(this, {
     href: this._getAttr,
     src:  this._getAttr,
+    type: this._getAttr,
     disabled: this._flag,
     checked:  this._flag,
     readonly: this._flag,

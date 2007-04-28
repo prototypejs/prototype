@@ -216,6 +216,7 @@
   <input type="checkbox" id="attributes_with_issues_checked" name="a" checked="checked"/>
   <input type="checkbox" id="attributes_with_issues_disabled" name="b" checked="checked" disabled="disabled"/>
   <input type="text" id="attributes_with_issues_readonly" name="c" readonly="readonly" value="blech"/>
+  <input type="date" id="attributes_with_issues_type" value="blech" />
   <select id="attributes_with_issues_multiple" name="e" multiple="multiple">
     <option>blech</option>
     <option>blah</option>
@@ -825,7 +826,10 @@
       ['checked','disabled','readonly','multiple'].each(function(attr){
         assertEqual(attr, $('attributes_with_issues_'+attr).readAttribute(attr));
       });
-    
+      
+      assertEqual('date', $('attributes_with_issues_type').readAttribute('type'));
+      assertEqual('text', $('attributes_with_issues_readonly').readAttribute('type'));
+      
       var elements = $('custom_attributes').immediateDescendants();
       assertEnumEqual(['1', '2'], elements.invoke('readAttribute', 'foo'));
       assertEnumEqual(['2', null], elements.invoke('readAttribute', 'bar'));

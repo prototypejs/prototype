@@ -1,4 +1,8 @@
-*1.5.1_rc3 (April 24, 2007)*
+*SVN*
+
+* Fix Element#readAttribute to work with the 'type' attribute in IE.  Closes #8160.  [Tobie Langel, Wiktor Ihárosi]
+
+*1.5.1_rc3* (April 24, 2007)
 
 * Add Element#childElements as an alias for Element#immediateDescendants.  [Tobie Langel]
 
