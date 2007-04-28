@@ -122,6 +122,10 @@
       $('tf_radio').checked = false;
     }},
     
+    testDollarF: function(){ with(this) {
+      assertEqual("4", $F("input_enabled"));
+    }},
+    
     testFormElementEventObserver: function(){ with(this) {
       var observer = new Form.Element.EventObserver('input_enabled', function(){
         callbackCounter++;
