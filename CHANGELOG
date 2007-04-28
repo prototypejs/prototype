@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix jstest.rb Konqueror support.  Closes #7140.  [Christophe Porteneuve]
+
 * Fix regression in which no-argument calls to Element.addMethods() would not add the methods defined in Form.Methods and Form.Element.Methods.  Closes #8206.  [Tobie Langel, fwittekind]
 
 * Fix Element#readAttribute to work with the 'type' attribute in IE.  Closes #8160.  [Tobie Langel, Wiktor Ihárosi]
