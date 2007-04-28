@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix jstest.rb IE support so you don't have to close the IE window after each test (yay!).  Closes #8207.  [Ryan Schuft]
+
 * Fix jstest.rb Konqueror support.  Closes #7140.  [Christophe Porteneuve]
 
 * Fix regression in which no-argument calls to Element.addMethods() would not add the methods defined in Form.Methods and Form.Element.Methods.  Closes #8206.  [Tobie Langel, fwittekind]

@@ -72,20 +72,8 @@ class SafariBrowser < Browser
 end
 
 class IEBrowser < Browser
-  def initialize(path=File.join(ENV['ProgramFiles'] || 'c:\Program Files', '\Internet Explorer\IEXPLORE.EXE'))
-    @path = path
-  end
-  
   def setup
-    if windows?
-      puts %{
-        MAJOR ANNOYANCE on Windows.
-        You have to shut down the Internet Explorer manually after each test
-        for the script to proceed.
-        Any suggestions on fixing this is GREATLY appreaciated!
-        Thank you for your understanding.
-      }
-    end
+    require 'win32ole' if windows?
   end
 
   def supported?
@@ -93,7 +81,14 @@ class IEBrowser < Browser
   end
   
   def visit(url)
-    system("#{@path} #{url}") if windows? 
+    if windows?
+      ie = WIN32OLE.new('InternetExplorer.Application')
+      ie.visible = true
+      ie.Navigate(url)
+      while ie.ReadyState != 4 do
+        sleep(1)
+      end
+    end
   end
 
   def to_s
