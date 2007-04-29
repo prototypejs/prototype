@@ -107,8 +107,7 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
       this.transport.open(this.method.toUpperCase(), this.url, 
         this.options.asynchronous);
 
-      if (this.options.asynchronous)
-        setTimeout(function() { this.respondToReadyState(1) }.bind(this), 10);
+      if (this.options.asynchronous) this.respondToReadyState.bind(this).defer(1);
       
       this.transport.onreadystatechange = this.onStateChange.bind(this);
       this.setRequestHeaders();
@@ -267,8 +266,7 @@ Object.extend(Object.extend(Ajax.Updater.prototype, Ajax.Request.prototype), {
     }
     
     if (this.success()) {
-      if (this.onComplete)
-        setTimeout(this.onComplete.bind(this), 10);
+      if (this.onComplete) this.onComplete.bind(this).defer();
     }
   }
 });
@@ -307,8 +305,7 @@ Ajax.PeriodicalUpdater.prototype = Object.extend(new Ajax.Base(), {
 
       this.lastText = request.responseText;
     }
-    this.timer = setTimeout(this.onTimerEvent.bind(this), 
-      this.decay * this.frequency * 1000);
+    this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
   },
 
   onTimerEvent: function() {

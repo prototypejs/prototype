@@ -85,6 +85,57 @@
       assertEqual('withBindArgsAndArgs,arg1,arg2,arg3,arg4', globalBindTest);
     }},
     
+    testFunctionCurry: function() { with(this) {
+      var split = function(delimiter, string) { return string.split(delimiter); };
+      var splitOnColons = split.curry(":");
+      assertEnumEqual(split(":", "0:1:2:3:4:5"), splitOnColons("0:1:2:3:4:5"));
+    }},
+    
+    testFunctionDelay: function() { with(this) {
+      window.delayed = undefined;
+      var delayedFunction = function() { window.delayed = true; };
+      var delayedFunctionWithArgs = function() { window.delayedWithArgs = $A(arguments).join(' '); };
+      delayedFunction.delay(0.8);
+      delayedFunctionWithArgs.delay(0.8, 'hello', 'world');
+      assertUndefined(window.delayed);
+      wait(1000, function() {
+        assert(window.delayed);
+        assertEqual('hello world', window.delayedWithArgs);
+      });
+    }},
+    
+    testFunctionWrap: function() { with(this) {
+      function sayHello(){
+        return 'hello world';
+      };
+      
+      assertEqual('HELLO WORLD', sayHello.wrap(function(proceed) {
+        return proceed().toUpperCase();
+      })());
+      
+      var temp = String.prototype.capitalize;
+      String.prototype.capitalize = String.prototype.capitalize.wrap(function(proceed, eachWord) {
+        if(eachWord && this.include(' ')) return this.split(' ').map(function(str){
+          return str.capitalize();
+        }).join(' ');
+        return proceed();
+      });
+      assertEqual('Hello world', 'hello world'.capitalize());
+      assertEqual('Hello World', 'hello world'.capitalize(true));
+      assertEqual('Hello', 'hello'.capitalize());
+      String.prototype.capitalize = temp;
+    }},
+    
+    testFunctionDefer: function() { with(this) {
+      window.deferred = undefined;
+      var deferredFunction = function() { window.deferred = true; };
+      deferredFunction.defer();
+      assertUndefined(window.deferred);
+      wait(50, function() {
+        assert(window.deferred);
+      });
+    }},
+
     testObjectInspect: function() { with(this) {
       assertEqual('undefined', Object.inspect());
       assertEqual('undefined', Object.inspect(undefined));

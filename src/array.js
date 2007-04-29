@@ -1,4 +1,4 @@
-var $A = Array.from = function(iterable) {
+function $A(iterable) {
   if (!iterable) return [];
   if (iterable.toArray) {
     return iterable.toArray();
@@ -11,7 +11,7 @@ var $A = Array.from = function(iterable) {
 }
 
 if (Prototype.Browser.WebKit) {
-  $A = Array.from = function(iterable) {
+  function $A(iterable) {
     if (!iterable) return [];
     if (!(typeof iterable == 'function' && iterable == '[object NodeList]') && 
       iterable.toArray) {
@@ -24,6 +24,8 @@ if (Prototype.Browser.WebKit) {
     }
   }
 }
+
+Array.from = $A;
 
 Object.extend(Array.prototype, Enumerable);
 

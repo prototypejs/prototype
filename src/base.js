@@ -66,19 +66,44 @@ Object.extend(Object, {
   }
 });
 
-Function.prototype.bind = function() {
-  var __method = this, args = $A(arguments), object = args.shift();
-  return function() {
-    return __method.apply(object, args.concat($A(arguments)));
-  }
-}
+Object.extend(Function.prototype, {
+  bind: function() {
+    var __method = this, args = $A(arguments), object = args.shift();
+    return function() {
+      return __method.apply(object, args.concat($A(arguments)));
+    }
+  },
+  
+  bindAsEventListener: function() {
+    var __method = this, args = $A(arguments), object = args.shift();
+    return function(event) {
+      return __method.apply(object, [(event || window.event)].concat(args).concat($A(arguments)));
+    }
+  },
+  
+  curry: function() {
+    var __method = this, args = $A(arguments);
+    return function() {
+      return __method.apply(this, args.concat($A(arguments)));
+    }
+  },
 
-Function.prototype.bindAsEventListener = function(object) {
-  var __method = this, args = $A(arguments), object = args.shift();
-  return function(event) {
-    return __method.apply(object, [( event || window.event)].concat(args).concat($A(arguments)));
+  delay: function() { 
+    var __method = this, args = $A(arguments), timeout = args.shift() * 1000; 
+    return window.setTimeout(function() {
+      return __method.apply(__method, args);
+    }, timeout);
+  },
+  
+  wrap: function(wrapper) {
+    var __method = this;
+    return function() {
+      return wrapper.apply(this, [__method.bind(this)].concat($A(arguments))); 
+    }
   }
-}
+});
+
+Function.prototype.defer = Function.prototype.delay.curry(0.01);
 
 Object.extend(Number.prototype, {
   toColorPart: function() {

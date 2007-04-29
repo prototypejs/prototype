@@ -105,7 +105,7 @@ Element.Methods = {
   update: function(element, html) {
     html = typeof html == 'undefined' ? '' : html.toString();
     $(element).innerHTML = html.stripScripts();
-    setTimeout(function() {html.evalScripts()}, 10);
+    html.evalScripts.bind(html).defer();
     return element;
   },
   
@@ -120,7 +120,7 @@ Element.Methods = {
       element.parentNode.replaceChild(
         range.createContextualFragment(html.stripScripts()), element);
     }
-    setTimeout(function() {html.evalScripts()}, 10);
+    html.evalScripts.bind(html).defer();
     return element;
   },
   
@@ -504,7 +504,7 @@ else if (Prototype.Browser.IE) {
     } else {
       element.innerHTML = html.stripScripts();
     }
-    setTimeout(function() { html.evalScripts() }, 10);
+    html.evalScripts.bind(html).defer();
     return element;
   }
 }
@@ -698,7 +698,7 @@ Abstract.Insertion.prototype = {
       this.insertContent([this.range.createContextualFragment(this.content)]);
     }
 
-    setTimeout(function() {content.evalScripts()}, 10);   
+    content.evalScripts.bind(content).defer();   
   },
   
   contentFromAnonymousTable: function() {
