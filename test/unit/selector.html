@@ -324,6 +324,7 @@
       assertEnumEqual([$('link_2')], $$('#p a:not(a[rel^=external])'), 'attribute 2');
       assertEnumEqual([$('link_2')], $$('#p a:not(a[rel$=nofollow])'), 'attribute 3');
       assertEnumEqual([$('em')], $$('#p a:not(a[rel$="nofollow"]) > em'), 'attribute 4')
+      assertEnumEqual([$('item_2')], $$('#list li:not(#item_1):not(#item_3)'), 'adjacent :not clauses');
     }},
     
     testSelectorWithEnabledDisabledChecked: function() {with(this) {

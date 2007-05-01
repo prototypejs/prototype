@@ -77,7 +77,7 @@ Object.extend(Function.prototype, {
   bindAsEventListener: function() {
     var __method = this, args = $A(arguments), object = args.shift();
     return function(event) {
-      return __method.apply(object, [(event || window.event)].concat(args).concat($A(arguments)));
+      return __method.apply(object, [event || window.event].concat(args));
     }
   },
   
