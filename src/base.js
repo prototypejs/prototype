@@ -100,6 +100,14 @@ Object.extend(Function.prototype, {
     return function() {
       return wrapper.apply(this, [__method.bind(this)].concat($A(arguments))); 
     }
+  },
+  
+  methodize: function() {
+    if (this._methodized) return this._methodized;
+    var __method = this;
+    return this._methodized = function() {
+      return __method.apply(null, [this].concat($A(arguments)));
+    };
   }
 });
 

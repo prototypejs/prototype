@@ -345,8 +345,8 @@
       Element.addMethods('INPUT',  { anInputMethod: function(input)  { return 'input'  } });
       Element.addMethods('SELECT', { aSelectMethod: function(select) { return 'select' } });
 
-      document.getElementById('tf_text')._extended = false;
-      document.getElementById('tf_selectOne')._extended = false;
+      document.getElementById('tf_text')._extendedByPrototype = false;
+      document.getElementById('tf_selectOne')._extendedByPrototype = false;
 
       assert($('tf_text').anInputMethod);
       assert(!$('tf_text').aSelectMethod);

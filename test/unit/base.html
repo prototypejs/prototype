@@ -135,6 +135,15 @@
         assert(window.deferred);
       });
     }},
+    
+    testFunctionMethodize: function() { with(this) {
+      var Foo = { bar: function(baz) { return baz } };
+      var baz = { quux: Foo.bar.methodize() };
+      
+      assertEqual(Foo.bar.methodize(), baz.quux);
+      assertEqual(baz, Foo.bar(baz));
+      assertEqual(baz, baz.quux());
+    }},
 
     testObjectInspect: function() { with(this) {
       assertEqual('undefined', Object.inspect());

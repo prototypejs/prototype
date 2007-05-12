@@ -39,42 +39,6 @@ if (Prototype.BrowserFeatures.XPath) {
 
 if (!window.Element) var Element = {};
 
-Element.extend = function(element) {
-  var F = Prototype.BrowserFeatures;
-  if (!element || !element.tagName || element.nodeType == 3 || 
-   element._extended || F.SpecificElementExtensions || element == window) 
-    return element;
-
-  var methods = {}, tagName = element.tagName, cache = Element.extend.cache, 
-   T = Element.Methods.ByTag;
-
-  // extend methods for all tags (Safari doesn't need this)
-  if (!F.ElementExtensions) {
-    Object.extend(methods, Element.Methods), 
-    Object.extend(methods, Element.Methods.Simulated);      
-  }
-
-  // extend methods for specific tags
-  if (T[tagName]) Object.extend(methods, T[tagName]);
-
-  for (var property in methods) {
-    var value = methods[property];
-    if (typeof value == 'function' && !(property in element))
-      element[property] = cache.findOrStore(value);
-  }
-
-  element._extended = Prototype.emptyFunction;
-  return element;
-};
-
-Element.extend.cache = {
-  findOrStore: function(value) {
-    return this[value] = this[value] || function() {
-      return value.apply(null, [this].concat($A(arguments)));
-    }
-  }
-};
-
 Element.Methods = {
   visible: function(element) {
     return $(element).style.display != 'none';
@@ -572,8 +536,47 @@ Element.Methods.ByTag = {};
 
 Object.extend(Element, Element.Methods);
 
+Element.extend = (function() {
+  if (Prototype.BrowserFeatures.SpecificElementExtensions)
+    return Prototype.K;
+  
+  var Methods = {}, ByTag = Element.Methods.ByTag;
+  
+  var extend = Object.extend(function(element) {
+    if (!element || element._extendedByPrototype || 
+        element.nodeType != 1 || element == window) return element;
+
+    var methods = Object.clone(Methods),
+      tagName = element.tagName, property, value;
+    
+    // extend methods for specific tags
+    if (ByTag[tagName]) Object.extend(methods, ByTag[tagName]);
+    
+    for (property in methods) {
+      value = methods[property];
+      if (typeof value == 'function' && !(property in element))
+        element[property] = value.methodize();
+    }
+    
+    element._extendedByPrototype = Prototype.emptyFunction;
+    return element;
+    
+  }, { 
+    refresh: function() {
+      // extend methods for all tags (Safari doesn't need this)
+      if (!Prototype.BrowserFeatures.ElementExtensions) {
+        Object.extend(Methods, Element.Methods);
+        Object.extend(Methods, Element.Methods.Simulated);
+      }
+    }
+  });
+  
+  extend.refresh();
+  return extend;
+})();
+
 if (!Prototype.BrowserFeatures.ElementExtensions && 
- document.createElement('div').__proto__) {
+    document.createElement('div').__proto__) {
   window.HTMLElement = {};
   window.HTMLElement.prototype = document.createElement('div').__proto__;
   Prototype.BrowserFeatures.ElementExtensions = true;
@@ -618,11 +621,11 @@ Element.addMethods = function(methods) {
 
   function copy(methods, destination, onlyIfAbsent) {
     onlyIfAbsent = onlyIfAbsent || false;
-    var cache = Element.extend.cache;
     for (var property in methods) {
       var value = methods[property];
+      if (typeof value != 'function') continue;
       if (!onlyIfAbsent || !(property in destination))
-        destination[property] = cache.findOrStore(value);
+        destination[property] = value.methodize();
     }
   }
   
@@ -666,6 +669,8 @@ Element.addMethods = function(methods) {
 
   Object.extend(Element, Element.Methods);
   delete Element.ByTag;
+  
+  if (Element.extend.refresh) Element.extend.refresh();
 };
 
 var Toggle = { display: Element.toggle };

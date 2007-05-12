@@ -1,5 +1,7 @@
 *SVN*
 
+* Refactor Element.extend and eliminate Element.extend.cache.  [sam]
+
 * Add Function#curry, Function#delay, Function#defer, and Function#wrap.  Closes #8134.  [Andrew Dupont, Tobie Langel, sam]
 
 *1.5.1* (May 1, 2007)
