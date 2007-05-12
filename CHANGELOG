@@ -14,7 +14,7 @@
 
 * Make Element into a constructor: new Element(tagName, attributes). Add Element#writeAttribute which accepts a hash of attributes or a name/value pair. Closes #7476. [Mislav Marohnić, haraldmartin, Tobie Langel]
 
-* Insertion overhaul: Add Element.insert(content[, position = 'Bottom']). Deprecate Insertion (kept for backwards compatibility). Make Ajax.Updater option.insertion accept both Insertion.Top or the now preferred 'Top'. Closes #7907. [Tobie Langel]
+* Insertion overhaul: Add Element.insert(content[, position = 'bottom']). Deprecate Insertion (kept for backwards compatibility). Make Ajax.Updater option.insertion accept both Insertion.Top or the now preferred 'top'. Closes #7907. [Tobie Langel]
 
 * Refactor Element.extend and eliminate Element.extend.cache.  [sam]
 
