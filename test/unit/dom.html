@@ -435,6 +435,9 @@
       
       $('element-insertions-main').insert('some more text at the bottom');
       assert(getInnerHTML('element-insertions-main').endsWith('some more text at the bottom'));
+      
+      $('element-insertions-main').insert('some text uppercase top', 'TOP');
+      assert(getInnerHTML('element-insertions-main').startsWith('some text uppercase top'));
     }},
     
     testInsertionBackwardsCompatibility: function() {with(this) {
