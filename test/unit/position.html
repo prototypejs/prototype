@@ -63,35 +63,6 @@
       assertEqual(30, Position.deltaY);
     }},
     
-    testPositionedOffset: function() {with(this) {
-      assertEnumEqual([10,10],
-        Position.positionedOffset($('body_absolute')));
-      assertEnumEqual([10,10],
-        Position.positionedOffset($('absolute_absolute')));
-      assertEnumEqual([10,10],
-        Position.positionedOffset($('absolute_relative')));
-      assertEnumEqual([0,10],
-        Position.positionedOffset($('absolute_relative_undefined')));
-    }},
-    
-    testPage: function() {with(this) {
-      assertEnumEqual([10,10],
-        Position.page($('body_absolute')));
-      assertEnumEqual([20,20],
-        Position.page($('absolute_absolute')));
-      assertEnumEqual([20,20],
-        Position.page($('absolute_relative')));
-      assertEnumEqual([20,30],
-        Position.page($('absolute_relative_undefined')));
-    }},
-    
-    testOffsetParent: function() {with(this) {
-      assertEqual('body_absolute', Position.offsetParent($('absolute_absolute')).id);
-      assertEqual('body_absolute', Position.offsetParent($('absolute_relative')).id);
-      assertEqual('absolute_relative', Position.offsetParent($('inline')).id);
-      assertEqual('absolute_relative', Position.offsetParent($('absolute_relative_undefined')).id);
-    }},
-    
     testWithin: function() {with(this) {
       [true, false].each(function(withScrollOffsets) {
         Position.includeScrollOffsets = withScrollOffsets;

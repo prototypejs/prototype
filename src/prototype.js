@@ -29,6 +29,6 @@ var Prototype = {
 
 <%= include 'enumerable.js', 'array.js', 'hash.js', 'range.js' %>
 
-<%= include 'ajax.js', 'dom.js', 'selector.js', 'form.js', 'event.js', 'position.js' %>
+<%= include 'ajax.js', 'dom.js', 'selector.js', 'form.js', 'event.js', 'deprecated.js' %>
 
 Element.addMethods();

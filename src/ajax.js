@@ -254,15 +254,17 @@ Object.extend(Object.extend(Ajax.Updater.prototype, Ajax.Request.prototype), {
 
   updateContent: function() {
     var receiver = this.container[this.success() ? 'success' : 'failure'];
-    var response = this.transport.responseText;
+    var response = this.transport.responseText, options = this.options;
     
-    if (!this.options.evalScripts) response = response.stripScripts();
+    if (!options.evalScripts) response = response.stripScripts();
     
     if (receiver = $(receiver)) {
-      if (this.options.insertion)
-        new this.options.insertion(receiver, response);
-      else
-        receiver.update(response);
+      if (options.insertion) {
+        if (typeof options.insertion == 'string')
+          receiver.insert(response, options.insertion);
+        else options.insertion(receiver, response);
+      } 
+      else receiver.update(response);
     }
     
     if (this.success()) {

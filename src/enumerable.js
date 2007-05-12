@@ -1,4 +1,4 @@
-var $break = {}, $continue = new Error('"throw $continue" is deprecated, use "return" instead');
+var $break = {};
 
 var Enumerable = {
   each: function(iterator) {

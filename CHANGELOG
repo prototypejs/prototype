@@ -1,5 +1,19 @@
 *SVN*
 
+* Make Element#update and Element#insert work for SELECT tags in IE and Opera. [Tobie Langel]
+
+* Make Element#insert and Element#update better handle TABLE related elements in IE and Opera. Closes #7776, #8040, #7550, #7776, #7938. [Tobie Langel]
+
+* Make Element#readAttribute('title') work in Opera. [Tobie Langel]
+
+* Make Element#replace work with form elements in Firefox and Safari. Closes #8010, #7989. [dsl239, Tobie Langel]
+
+* Add Element#wrap which wraps the element inside a new one. Closes #5732. [P. Vande, Tobie Langel]
+
+* Make Element into a constructor: new Element(tagName, attributes). Add Element#writeAttribute which accepts a hash of attributes or a name/value pair. Closes #7476. [Mislav Marohnić, haraldmartin, Tobie Langel]
+
+* Insertion overhaul: Add Element.insert(content[, position = 'Bottom']). Deprecate Insertion (kept for backwards compatibility). Make Ajax.Updater option.insertion accept both Insertion.Top or the now preferred 'Top'. Closes #7907. [Tobie Langel]
+
 * Refactor Element.extend and eliminate Element.extend.cache.  [sam]
 
 * Add Function#curry, Function#delay, Function#defer, and Function#wrap.  Closes #8134.  [Andrew Dupont, Tobie Langel, sam]

@@ -37,7 +37,24 @@ if (Prototype.BrowserFeatures.XPath) {
 
 /*--------------------------------------------------------------------------*/
 
-if (!window.Element) var Element = {};
+(function() {
+  var element = this.Element;
+  this.Element = function(tagName, attributes) {
+    attributes = attributes || {};
+    tagName = tagName.toLowerCase();
+    var cache = Element.cache;
+    if (Prototype.Browser.IE && attributes.name) {
+      tagName = '<' + tagName + ' name="' + attributes.name + '">';
+      delete attributes.name;
+      return Element.writeAttribute(document.createElement(tagName), attributes);
+    }
+    if (!cache[tagName]) cache[tagName] = Element.extend(document.createElement(tagName));
+    return Element.writeAttribute(cache[tagName].cloneNode(false), attributes);
+  };
+  Object.extend(this.Element, element || {});
+}).call(window);
+
+Element.cache = {};
 
 Element.Methods = {
   visible: function(element) {
@@ -80,7 +97,7 @@ Element.Methods = {
       element.outerHTML = html.stripScripts();
     } else {
       var range = element.ownerDocument.createRange();
-      range.selectNodeContents(element);
+      range.selectNode(element);
       element.parentNode.replaceChild(
         range.createContextualFragment(html.stripScripts()), element);
     }
@@ -88,6 +105,36 @@ Element.Methods = {
     return element;
   },
   
+  insert: function(element, content, position) {
+    element = $(element);
+    position = (position || 'bottom').toLowerCase();
+    var t = Element._insertionTranslations[position], range;
+    
+    if (content && content.ownerDocument === document) {
+      t.insert(element, content);
+      return element;
+    }
+    
+    content = content.toString();
+    
+    range = element.ownerDocument.createRange();
+    t.initializeRange(element, range);
+    t.insert(element, range.createContextualFragment(content.stripScripts()));
+
+    content.evalScripts.bind(content).defer();
+    return element;
+  },
+  
+  wrap: function(element, wrapper) {
+    element = $(element);
+    wrapper = wrapper || 'div';
+    if (typeof wrapper == 'string') wrapper = new Element(wrapper);
+    else Element.extend(wrapper);
+    element.parentNode.replaceChild(wrapper, element);
+    wrapper.appendChild(element);
+    return element;
+  },
+
   inspect: function(element) {
     element = $(element);
     var result = '<' + element.tagName.toLowerCase();
@@ -193,13 +240,32 @@ Element.Methods = {
     element = $(element);
     if (Prototype.Browser.IE) {
       if (!element.attributes) return null;
-      var t = Element._attributeTranslations;
+      var t = Element._attributeTranslations.read;
       if (t.values[name]) return t.values[name](element, name);
       if (t.names[name])  name = t.names[name];
       var attribute = element.attributes[name];
       return attribute ? attribute.nodeValue : null;
     }    
     return element.getAttribute(name);
+  },
+  
+  writeAttribute: function(element, name, value) {
+    element = $(element);
+    var attributes = {}, t = Element._attributeTranslations.write;
+    
+    if (typeof name == 'object') attributes = name;
+    else attributes[name] = value === undefined ? true : value;
+    
+    for (var attr in attributes) {
+      var name = t.names[attr] || attr, value = attributes[attr];
+      if (t.values[attr]) name = t.values[attr](element, value);
+      if (value === false || value === null)
+        element.removeAttribute(name);
+      else if (value === true)
+        element.setAttribute(name, name);
+      else element.setAttribute(name, value);
+    }
+    return element;
   },
   
   getHeight: function(element) {
@@ -387,13 +453,200 @@ Element.Methods = {
     element.style.overflow = element._overflow == 'auto' ? '' : element._overflow;
     element._overflow = null;
     return element;
-  }  
+  },
+
+  cumulativeOffset: function(element) {
+    var valueT = 0, valueL = 0;
+    do {
+      valueT += element.offsetTop  || 0;
+      valueL += element.offsetLeft || 0;
+      element = element.offsetParent;
+    } while (element);
+    return Element._returnOffset(valueL, valueT);
+  },
+
+  positionedOffset: function(element) {
+    var valueT = 0, valueL = 0;
+    do {
+      valueT += element.offsetTop  || 0;
+      valueL += element.offsetLeft || 0;
+      element = element.offsetParent;
+      if (element) {
+        if (element.tagName == 'BODY') break;
+        var p = Element.getStyle(element, 'position');
+        if (p == 'relative' || p == 'absolute') break;
+      }
+    } while (element);
+    return Element._returnOffset(valueL, valueT);
+  },
+
+  absolutize: function(element) {
+    element = $(element);
+    if (element.style.position == 'absolute') return;
+    // Position.prepare(); // To be done manually by Scripty when it needs it.
+
+    var offsets = element.positionedOffset();
+    var top     = offsets[1];
+    var left    = offsets[0];
+    var width   = element.clientWidth;
+    var height  = element.clientHeight;
+
+    element._originalLeft   = left - parseFloat(element.style.left  || 0);
+    element._originalTop    = top  - parseFloat(element.style.top || 0);
+    element._originalWidth  = element.style.width;
+    element._originalHeight = element.style.height;
+
+    element.style.position = 'absolute';
+    element.style.top    = top + 'px';
+    element.style.left   = left + 'px';
+    element.style.width  = width + 'px';
+    element.style.height = height + 'px';
+    return element;
+  },
+
+  relativize: function(element) {
+    element = $(element);
+    if (element.style.position == 'relative') return;
+    // Position.prepare(); // To be done manually by Scripty when it needs it.
+
+    element.style.position = 'relative';
+    var top  = parseFloat(element.style.top  || 0) - (element._originalTop || 0);
+    var left = parseFloat(element.style.left || 0) - (element._originalLeft || 0);
+
+    element.style.top    = top + 'px';
+    element.style.left   = left + 'px';
+    element.style.height = element._originalHeight;
+    element.style.width  = element._originalWidth;
+    return element;
+  },
+
+  cumulativeScrollOffset: function(element) {
+    var valueT = 0, valueL = 0;
+    do {
+      valueT += element.scrollTop  || 0;
+      valueL += element.scrollLeft || 0; 
+      element = element.parentNode;
+    } while (element);
+    return Element._returnOffset(valueL, valueT);
+  },
+  
+  getOffsetParent: function(element) {
+    if (element.offsetParent) return $(element.offsetParent);
+    if (element == document.body) return $(element);
+
+    while ((element = element.parentNode) && element != document.body)
+      if (Element.getStyle(element, 'position') != 'static')
+        return $(element);
+
+    return $(document.body);
+  },
+
+  viewportOffset: function(forElement) {
+    var valueT = 0, valueL = 0;
+
+    var element = forElement;
+    do {
+      valueT += element.offsetTop  || 0;
+      valueL += element.offsetLeft || 0;
+
+      // Safari fix
+      if (element.offsetParent == document.body)
+        if (Element.getStyle(element,'position')=='absolute') break;
+
+    } while (element = element.offsetParent);
+
+    element = forElement;
+    do {
+      if (!window.opera || element.tagName=='BODY') {
+        valueT -= element.scrollTop  || 0;
+        valueL -= element.scrollLeft || 0;
+      }
+    } while (element = element.parentNode);
+
+    return Element._returnOffset(valueL, valueT);
+  },
+
+  clonePosition: function(element, source) {
+    var options = Object.extend({
+      setLeft:    true,
+      setTop:     true,
+      setWidth:   true,
+      setHeight:  true,
+      offsetTop:  0,
+      offsetLeft: 0
+    }, arguments[2] || {})
+
+    // find page position of source
+    source = $(source);
+    var p = source.viewportOffset();
+
+    // find coordinate system to use
+    element = $(element);
+    var delta = [0, 0];
+    var parent = null;
+    // delta [0,0] will do fine with position: fixed elements, 
+    // position:absolute needs offsetParent deltas
+    if (Element.getStyle(element,'position') == 'absolute') {
+      parent = element.getOffsetParent();
+      delta = parent.getViewportOffset();
+    }
+
+    // correct by body offsets (fixes Safari)
+    if (parent == document.body) {
+      delta[0] -= document.body.offsetLeft;
+      delta[1] -= document.body.offsetTop; 
+    }
+
+    // set position
+    if(options.setLeft)   element.style.left  = (p[0] - delta[0] + options.offsetLeft) + 'px';
+    if(options.setTop)    element.style.top   = (p[1] - delta[1] + options.offsetTop) + 'px';
+    if(options.setWidth)  element.style.width = source.offsetWidth + 'px';
+    if(options.setHeight) element.style.height = source.offsetHeight + 'px';
+    return element;
+  }
 };
 
 Object.extend(Element.Methods, {
-  childOf: Element.Methods.descendantOf,
   childElements: Element.Methods.immediateDescendants
 });
+
+Element._attributeTranslations = {
+  write: {
+    names: {
+      className: 'class',
+      htmlFor:   'for'      
+    }, 
+    values: {}
+  }
+};
+
+
+if (!document.createRange || Prototype.Browser.Opera) {
+  Element.Methods.insert = function(element, content, position) {
+    element = $(element);
+    position = (position || 'bottom').toLowerCase();
+    var t = Element._insertionTranslations, pos = t[position], tagName;
+    
+    if (content && content.ownerDocument === document) {
+      pos.insert(element, content);
+      return element;
+    }
+
+    content = content.toString();
+    tagName = ((position == 'before' || position == 'after')
+      ? element.parentNode : element).tagName.toUpperCase();
+    
+    if (t.tags[tagName]) {
+      var fragments = Element._getContentFromAnonymousElement(tagName, content.stripScripts());
+      if (position == 'top' || position == 'after') fragments.reverse();
+      fragments.each(pos.insert.curry(element));
+    }
+    else element.insertAdjacentHTML(pos.adjacency, content.stripScripts());
+    
+    content.evalScripts.bind(content).defer();
+    return element;
+  }
+}
 
 if (Prototype.Browser.Opera) { 
   Element.Methods._getStyle = Element.Methods.getStyle; 
@@ -406,8 +659,14 @@ if (Prototype.Browser.Opera) {
         if (Element._getStyle(element, 'position') == 'static') return null; 
       default: return Element._getStyle(element, style); 
     }
-  }; 
+  };
+  Element.Methods._readAttribute = Element.Methods.readAttribute; 
+  Element.Methods.readAttribute = function(element, attribute) { 
+    if (attribute == 'title') return element.title; 
+    return Element._readAttribute(element, attribute);
+  };  
 }
+
 else if (Prototype.Browser.IE) {
   Element.Methods.getStyle = function(element, style) {
     element = $(element);
@@ -423,7 +682,7 @@ else if (Prototype.Browser.IE) {
 
     if (value == 'auto') {
       if ((style == 'width' || style == 'height') && (element.getStyle('display') != 'none'))
-        return element['offset'+style.capitalize()] + 'px';
+        return element['offset' + style.capitalize()] + 'px';
       return null;
     }
     return value;
@@ -441,37 +700,67 @@ else if (Prototype.Browser.IE) {
     return element;   
   };
 
-  // IE is missing .innerHTML support for TABLE-related elements
-  Element.Methods.update = function(element, html) {
-    element = $(element);
-    html = typeof html == 'undefined' ? '' : html.toString();
-    var tagName = element.tagName.toUpperCase();  
-    if (['THEAD','TBODY','TR','TD'].include(tagName)) {
-      var div = document.createElement('div');
-      switch (tagName) {
-        case 'THEAD':
-        case 'TBODY':
-          div.innerHTML = '<table><tbody>' +  html.stripScripts() + '</tbody></table>';
-          depth = 2;
-          break;
-        case 'TR':
-          div.innerHTML = '<table><tbody><tr>' +  html.stripScripts() + '</tr></tbody></table>';
-          depth = 3;
-          break;
-        case 'TD':
-          div.innerHTML = '<table><tbody><tr><td>' +  html.stripScripts() + '</td></tr></tbody></table>';
-          depth = 4;
+  Element._attributeTranslations = {
+    read: {
+      names: {
+        colspan:   "colSpan",
+        rowspan:   "rowSpan",
+        valign:    "vAlign",
+        datetime:  "dateTime",
+        accesskey: "accessKey",
+        tabindex:  "tabIndex",
+        enctype:   "encType",
+        maxlength: "maxLength",
+        readonly:  "readOnly",
+        longdesc:  "longDesc"
+      },
+      values: {
+        _getAttr: function(element, attribute) {
+          return element.getAttribute(attribute, 2);
+        },
+        _flag: function(element, attribute) {
+          return $(element).hasAttribute(attribute) ? attribute : null;
+        },
+        style: function(element) {
+          return element.style.cssText.toLowerCase();
+        },
+        title: function(element) {
+          var node = element.getAttributeNode('title');
+          return node.specified ? node.nodeValue : null;
+        }
       }
-      $A(element.childNodes).each(function(node) { element.removeChild(node) });
-      depth.times(function() { div = div.firstChild });
-      $A(div.childNodes).each(function(node) { element.appendChild(node) });
-    } else {
-      element.innerHTML = html.stripScripts();
     }
-    html.evalScripts.bind(html).defer();
-    return element;
-  }
+  };
+  
+  Element._attributeTranslations.write = {
+    names: Object.extend({
+        'class': 'className',
+        'for':   'htmlFor'    
+      }, Element._attributeTranslations.read.names),
+    values: {
+      checked: function(element, value) {
+        element.checked = !!value;
+      },
+      
+      style: function(element, value) {
+        element.style.cssText = value ? value : '';
+      }
+    }
+  };
+  
+  (function() {
+    Object.extend(this, {
+      href: this._getAttr,
+      src:  this._getAttr,
+      type: this._getAttr,
+      disabled: this._flag,
+      checked:  this._flag,
+      readonly: this._flag,
+      multiple: this._flag
+    });
+  }).call(Element._attributeTranslations.read.values);
 }
+
 else if (Prototype.Browser.Gecko) {
   Element.Methods.setOpacity = function(element, value) {
     element = $(element);
@@ -481,51 +770,114 @@ else if (Prototype.Browser.Gecko) {
   };
 }
 
-Element._attributeTranslations = {
-  names: {
-    colspan:   "colSpan",
-    rowspan:   "rowSpan",
-    valign:    "vAlign",
-    datetime:  "dateTime",
-    accesskey: "accessKey",
-    tabindex:  "tabIndex",
-    enctype:   "encType",
-    maxlength: "maxLength",
-    readonly:  "readOnly",
-    longdesc:  "longDesc"
-  },
-  values: {
-    _getAttr: function(element, attribute) {
-      return element.getAttribute(attribute, 2);
+else if (Prototype.Browser.WebKit) {
+  // Safari returns margins on body which is incorrect if the child is absolutely
+  // positioned.  For performance reasons, redefine Position.cumulativeOffset for
+  // KHTML/WebKit only.
+  Element.Methods.cumulativeOffset = function(element) {
+    var valueT = 0, valueL = 0;
+    do {
+      valueT += element.offsetTop  || 0;
+      valueL += element.offsetLeft || 0;
+      if (element.offsetParent == document.body)
+        if (Element.getStyle(element, 'position') == 'absolute') break;
+        
+      element = element.offsetParent;
+    } while (element);
+    
+    return [valueL, valueT];
+  }
+}
+
+if (Prototype.Browser.IE || Prototype.Browser.Opera) {
+  // IE and Opera are missing .innerHTML support for TABLE-related and SELECT elements
+  Element.Methods.update = function(element, html) {
+    element = $(element);
+    html = typeof html == 'undefined' ? '' : html.toString();
+    var tagName = element.tagName.toUpperCase();
+    
+    if (Element._insertionTranslations.tags[tagName]) {
+      $A(element.childNodes).each(function(node) { element.removeChild(node) });
+      Element._getContentFromAnonymousElement(tagName, html.stripScripts())
+        .each(function(node) { element.appendChild(node) });
+    } 
+    else element.innerHTML = html.stripScripts();
+    
+    html.evalScripts.bind(html).defer();
+    return element;
+  };
+}
+
+Element._returnOffset = function(l, t) {
+  var result = [l, t];
+  result.left = l;
+  result.top = t;
+  return result;
+};
+
+Element._getContentFromAnonymousElement = function(tagName, html) {
+  var div = new Element('div'); t = Element._insertionTranslations.tags[tagName]
+  div.innerHTML = t[0] + html + t[1];
+  t[2].times(function() { div = div.firstChild });
+  return $A(div.childNodes);
+};
+
+Element._insertionTranslations = {
+  before: {
+    adjacency: 'beforeBegin',
+    insert: function(element, node) {
+      element.parentNode.insertBefore(node, element);
     },
-    _flag: function(element, attribute) {
-      return $(element).hasAttribute(attribute) ? attribute : null;
-    },
-    style: function(element) {
-      return element.style.cssText.toLowerCase();
-    },
-    title: function(element) {
-      var node = element.getAttributeNode('title');
-      return node.specified ? node.nodeValue : null;
+    initializeRange: function(element, range) {
+      range.setStartBefore(element);      
     }
+  },
+  top: {
+    adjacency: 'afterBegin',
+    insert: function(element, node) {
+      element.insertBefore(node, element.firstChild);
+    },
+    initializeRange: function(element, range) {
+      range.selectNodeContents(element);
+      range.collapse(true);
+    }
+  },
+  bottom: {
+    adjacency: 'beforeEnd',
+    insert: function(element, node) {
+      element.appendChild(node);
+    }
+  },
+  after: {
+    adjacency: 'afterEnd',
+    insert: function(element, node) {
+      element.parentNode.insertBefore(node, element.nextSibling);
+    },
+    initializeRange: function(element, range) {
+      range.setStartAfter(element);
+    }
+  },
+  tags: {
+    TABLE:  ['<table>',                '</table>',                   1],
+    TBODY:  ['<table><tbody>',         '</tbody></table>',           2],
+    TR:     ['<table><tbody><tr>',     '</tr></tbody></table>',      3],
+    TD:     ['<table><tbody><tr><td>', '</td></tr></tbody></table>', 4],
+    SELECT: ['<select>',               '</select>',                  1]
   }
 };
 
 (function() {
-  Object.extend(this, {
-    href: this._getAttr,
-    src:  this._getAttr,
-    type: this._getAttr,
-    disabled: this._flag,
-    checked:  this._flag,
-    readonly: this._flag,
-    multiple: this._flag
+  this.bottom.initializeRange = this.top.initializeRange;
+  Object.extend(this.tags, {
+    THEAD: this.tags.TBODY,
+    TFOOT: this.tags.TBODY,
+    TH:    this.tags.TD
   });
-}).call(Element._attributeTranslations.values);
+}).call(Element._insertionTranslations);
 
 Element.Methods.Simulated = {
   hasAttribute: function(element, attribute) {
-    var t = Element._attributeTranslations, node;
+    var t = Element._attributeTranslations.read, node;
     attribute = t.names[attribute] || attribute;
     node = $(element).getAttributeNode(attribute);
     return node && node.specified;
@@ -671,104 +1023,8 @@ Element.addMethods = function(methods) {
   delete Element.ByTag;
   
   if (Element.extend.refresh) Element.extend.refresh();
+  Element.cache = {};
 };
-
-var Toggle = { display: Element.toggle };
-
-/*--------------------------------------------------------------------------*/
-
-Abstract.Insertion = function(adjacency) {
-  this.adjacency = adjacency;
-}
-
-Abstract.Insertion.prototype = {
-  initialize: function(element, content) {
-    this.element = $(element);
-    this.content = content.stripScripts();
-    
-    if (this.adjacency && this.element.insertAdjacentHTML) {
-      try {
-        this.element.insertAdjacentHTML(this.adjacency, this.content);
-      } catch (e) {
-        var tagName = this.element.tagName.toUpperCase();
-        if (['TBODY', 'TR'].include(tagName)) {
-          this.insertContent(this.contentFromAnonymousTable());
-        } else {
-          throw e;
-        }
-      }
-    } else {
-      this.range = this.element.ownerDocument.createRange();
-      if (this.initializeRange) this.initializeRange();
-      this.insertContent([this.range.createContextualFragment(this.content)]);
-    }
-
-    content.evalScripts.bind(content).defer();   
-  },
-  
-  contentFromAnonymousTable: function() {
-    var div = document.createElement('div');
-    div.innerHTML = '<table><tbody>' + this.content + '</tbody></table>';
-    return $A(div.childNodes[0].childNodes[0].childNodes);
-  }
-}
-
-var Insertion = new Object();
-
-Insertion.Before = Class.create();
-Insertion.Before.prototype = Object.extend(new Abstract.Insertion('beforeBegin'), {
-  initializeRange: function() {
-    this.range.setStartBefore(this.element);
-  },
-  
-  insertContent: function(fragments) {
-    fragments.each((function(fragment) {
-      this.element.parentNode.insertBefore(fragment, this.element);
-    }).bind(this));
-  }
-});
-
-Insertion.Top = Class.create();
-Insertion.Top.prototype = Object.extend(new Abstract.Insertion('afterBegin'), {
-  initializeRange: function() {
-    this.range.selectNodeContents(this.element);
-    this.range.collapse(true);
-  },
-  
-  insertContent: function(fragments) {
-    fragments.reverse(false).each((function(fragment) {
-      this.element.insertBefore(fragment, this.element.firstChild);
-    }).bind(this));
-  }
-});
-
-Insertion.Bottom = Class.create();
-Insertion.Bottom.prototype = Object.extend(new Abstract.Insertion('beforeEnd'), {
-  initializeRange: function() {
-    this.range.selectNodeContents(this.element);
-    this.range.collapse(this.element);
-  },
-  
-  insertContent: function(fragments) {
-    fragments.each((function(fragment) {
-      this.element.appendChild(fragment);
-    }).bind(this));
-  }
-});
-
-Insertion.After = Class.create();
-Insertion.After.prototype = Object.extend(new Abstract.Insertion('afterEnd'), {
-  initializeRange: function() {
-    this.range.setStartAfter(this.element);
-  },
-  
-  insertContent: function(fragments) {
-    fragments.each((function(fragment) {
-      this.element.parentNode.insertBefore(fragment, 
-        this.element.nextSibling);
-    }).bind(this));
-  }
-});
 
 /*--------------------------------------------------------------------------*/
 

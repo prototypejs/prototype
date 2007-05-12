@@ -82,7 +82,7 @@ Object.extend(String.prototype, {
   },
 
   unescapeHTML: function() {
-    var div = document.createElement('div');
+    var div = new Element('div');
     div.innerHTML = this.stripTags();
     return div.childNodes[0] ? (div.childNodes.length > 1 ? 
       $A(div.childNodes).inject('', function(memo, node) { return memo+node.nodeValue }) : 

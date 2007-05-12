@@ -146,6 +146,7 @@
 <div id="testdiv-replace-container-3"><div id="testdiv-replace-3"></div></div>
 <div id="testdiv-replace-container-4"><div id="testdiv-replace-4"></div></div>
 <div id="testdiv-replace-container-5"><div id="testdiv-replace-5"></div></div>
+<div id="testform-replace-container"><p>some text</p><form id="testform-replace"><input id="testinput-replace" type="text" /></form><p>some text</p></div>
 
 <div id="element_with_visible_overflow" style="overflow:visible">V</div>
 <div id="element_with_hidden_overflow" style="overflow:hidden">H</div>
@@ -223,6 +224,26 @@
   </select>
 </form>
 
+<!-- writeAttributes  -->
+<p id="write_attribute_para"></a>
+<a id="write_attribute_link" href="test.html"></a>
+<form action="/dev/null" id="write_attribute_form" method="get" accept-charset="utf-8">
+  <label id="write_attribute_label"></label>
+  <input type="checkbox" name="write_attribute_checkbox" value="" id="write_attribute_checkbox">
+  <input type="checkbox" checked="checked" name="write_attribute_checked_checkbox" value="" id="write_attribute_checked_checkbox">
+  <input type="text" name="write_attribute_input" value="" id="write_attribute_input">
+  <select id="write_attribute_select">
+    <option>Cat</option>
+    <option>Dog</option>
+  </select>
+</form>
+
+<table id="write_attribute_table">
+  <tr><td id="write_attribute_td">A</td><td>B</td></tr>
+  <tr><td>C</td></tr>
+  <tr><td>D</td><td>E</td><td>F</td></tr>
+</table>
+
 <div id="dom_attribute_precedence">
   <form action="blech" method="post">
     <input type="submit" id="update" />
@@ -267,12 +288,45 @@
 <p id="test-full">content</p>
 <div id="ancestor"><div id="child"><div><div id="great-grand-child"></div></div></div></div>
 <div id="not-in-the-family"></div>
+
+<div id="insertions-container"><div id="insertions-main"><p>some content.</p></div></div>
+<div id="insertions-node-container"><div id="insertions-node-main"><p>some content.</p></div></div>
+<div id="element-insertions-container"><div id="element-insertions-main"><p>some content.</p></div></div>
+<table id="table_for_insertions"></table>
+<table id="table_for_row_insertions"><tr id="row_1"></tr></table>
+<form method="post" action="blah">
+  <select id="select_for_update" name="select_for_update">
+    <option>option 1</option>
+    <option>option 2</option>
+  </select>
+  <select id="select_for_insert_bottom" name="select_for_insert_bottom">
+    <option>option 1</option>
+    <option>option 2</option>
+  </select>
+  <select id="select_for_insert_top" name="select_for_insert_top">
+    <option>option 1</option>
+    <option>option 2</option>
+  </select>
+</form>
+<div id="wrap-container"><p id="wrap"></p></div>
+
+<!-- Positioning methods bench -->
+<div id="body_absolute" style="position: absolute; top: 10px; left: 10px">
+  <div id="absolute_absolute" style="position: absolute; top: 10px; left:10px"> </div>
+  <div id="absolute_relative" style="position: relative; top: 10px; left:10px">
+    <div style="height:10px">test<span id="inline">test</span></div>
+    <div id="absolute_relative_undefined"> </div>
+  </div>
+</div>
+ 
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
 
   var testVar = 'to be updated', testVar2 = '';
-
+  var getInnerHTML = function(id) {
+    return $(id).innerHTML.toString().toLowerCase().gsub(/[\r\n\t]/, '');
+  };
   Element.addMethods({
     hashBrowns: function(element) { return 'hash browns'; }
   });
@@ -313,10 +367,96 @@
       assertElementsMatch(document.getElementsByClassName('B', 'class_names'), 'ul#class_names_ul.A.B', 'div.B.C.D');
       assertElementsMatch(document.getElementsByClassName('B', 'class_names_ul'));
     }},
+
+    testElementInsertWithHTML: function() {with(this) {
+      Element.insert('insertions-main', '<p><em>before</em> text</p><p>more testing</p>', 'before');
+      assert(getInnerHTML('insertions-container').startsWith('<p><em>before</em> text</p><p>more testing</p>'));
+      Element.insert('insertions-main', '<p><em>after</em> text</p><p>more testing</p>', 'after');
+      assert(getInnerHTML('insertions-container').endsWith('<p><em>after</em> text</p><p>more testing</p>'));
+      Element.insert('insertions-main', '<p><em>top</em> text.</p><p>more testing</p>', 'top');
+      assert(getInnerHTML('insertions-main').startsWith('<p><em>top</em> text.</p><p>more testing</p>'));
+      Element.insert('insertions-main', '<p><em>bottom</em> text.</p><p>more testing</p>', 'bottom');
+      assert(getInnerHTML('insertions-main').endsWith('<p><em>bottom</em> text.</p><p>more testing</p>'));
+    }},
+
+    testElementInsertWithDOMNode: function() {with(this) {
+      var createParagraph = function(text) {
+        var p = document.createElement('p');
+        p.appendChild(document.createTextNode(text));
+        return p;
+      }
+      Element.insert('insertions-node-main', createParagraph('node before'), 'before');
+      assert(getInnerHTML('insertions-node-container').startsWith('<p>node before</p>'));
+      Element.insert('insertions-node-main', createParagraph('node after'), 'after');
+      assert(getInnerHTML('insertions-node-container').endsWith('<p>node after</p>'));
+      Element.insert('insertions-node-main', createParagraph('node top'), 'top');
+      assert(getInnerHTML('insertions-node-main').startsWith('<p>node top</p>'));
+      Element.insert('insertions-node-main', createParagraph('node bottom'), 'bottom');
+      assert(getInnerHTML('insertions-node-main').endsWith('<p>node bottom</p>'));
+      assertEqual($('insertions-node-main'), $('insertions-node-main').insert(document.createElement('p')));
+    }},
     
-    testInsertWithTR: function() {with(this) {
-      new Insertion.After('second_row', '<tr id="third_row"><td>Third Row</td></tr>');
+    testElementInsertWithNonString: function() {with(this) {
+      Element.insert('insertions-main', 3, 'bottom');
+      assert(getInnerHTML('insertions-main').endsWith('3'));
+    }},
+
+    testElementInsertInTables: function() {with(this) {
+      Element.insert('second_row', '<tr id="third_row"><td>Third Row</td></tr>', 'after');
       assert($('second_row').descendantOf('table'));
+      
+      $('a_cell').insert('hello world', 'top');
+      assert($('a_cell').innerHTML.startsWith('hello world'));
+      $('a_cell').insert('<td>hi planet</td>', 'after');
+      assertEqual('hi planet', $('a_cell').next().innerHTML);
+      $('table_for_insertions').insert('<tr><td>a cell!</td></tr>');
+      assert($('table_for_insertions').innerHTML.gsub('\r\n', '').toLowerCase().include('<tr><td>a cell!</td></tr>'));
+      $('row_1').insert('<tr></tr><tr></tr><tr><td>last</td></tr>', 'after');
+      assertEqual('last', $A($('table_for_row_insertions').getElementsByTagName('tr')).last().lastChild.innerHTML);
+    }},
+    
+    testElementInsertInSelect: function() {with(this) {
+      var selectTop = $('select_for_insert_top'), selectBottom = $('select_for_insert_bottom');
+      selectBottom.insert('<option value="33">option 33</option><option selected="selected">option 45</option>');
+      assertEqual('option 45', selectBottom.getValue());
+      selectTop.insert('<option value="A">option A</option><option value="B" selected="selected">option B</option>', 'top');
+      assertEqual(4, selectTop.options.length);
+    }},
+        
+    testElementMethodInsert: function() {with(this) {
+      $('element-insertions-main').insert('some text before','before');
+      assert(getInnerHTML('element-insertions-container').startsWith('some text before'));
+      $('element-insertions-main').insert('some text after', 'after');
+      assert(getInnerHTML('element-insertions-container').endsWith('some text after'));
+      $('element-insertions-main').insert('some text top', 'top');
+      assert(getInnerHTML('element-insertions-main').startsWith('some text top'));
+      $('element-insertions-main').insert('some text bottom', 'bottom');
+      assert(getInnerHTML('element-insertions-main').endsWith('some text bottom'));
+      
+      $('element-insertions-main').insert('some more text at the bottom');
+      assert(getInnerHTML('element-insertions-main').endsWith('some more text at the bottom'));
+    }},
+    
+    testInsertionBackwardsCompatibility: function() {with(this) {
+      new Insertion.Before('element-insertions-main', 'some backward-compatibility testing before');
+      assert(getInnerHTML('element-insertions-container').include('some backward-compatibility testing before'));
+      new Insertion.After('element-insertions-main', 'some backward-compatibility testing after');
+      assert(getInnerHTML('element-insertions-container').include('some backward-compatibility testing after'));
+      new Insertion.Top('element-insertions-main', 'some backward-compatibility testing top');
+      assert(getInnerHTML('element-insertions-main').startsWith('some backward-compatibility testing top'));
+      new Insertion.Bottom('element-insertions-main', 'some backward-compatibility testing bottom');
+      assert(getInnerHTML('element-insertions-main').endsWith('some backward-compatibility testing bottom'));
+    }},
+    
+    testElementWrap: function() {with(this) {
+      var element = $('wrap'), parent = document.createElement('div');
+      element.wrap('div');
+      assert(getInnerHTML('wrap-container').startsWith('<div><p'));
+      element.wrap(parent);
+      assert(getInnerHTML('wrap-container').startsWith('<div><div><p'));
+      assert(typeof parent.setStyle == 'function');
+      element.wrap();
+      assert(getInnerHTML('wrap-container').startsWith('<div><div><div><p'));
     }},
     
     testElementVisible: function(){with(this) {
@@ -414,18 +554,31 @@
       assertMatch(/^<tr>\s*<td>boo!<\/td><\/tr>$/,$('table').innerHTML.toLowerCase());
     }},
     
+    testElementUpdateInSelect: function() {with(this) {
+      var select = $('select_for_update');
+      select.update('<option value="3">option 3</option><option selected="selected">option 4</option>');
+      assertEqual('option 4', select.getValue());
+    }},
+    
     testElementReplace: function() {with(this) {
       $('testdiv-replace-1').replace('hello from div!');
       assertEqual('hello from div!', $('testdiv-replace-container-1').innerHTML);
       
       $('testdiv-replace-2').replace(123);
-      assertEqual('123', $('testdiv-replace-container-2').innerHTML)
+      assertEqual('123', $('testdiv-replace-container-2').innerHTML);
       
       $('testdiv-replace-3').replace();
-      assertEqual('', $('testdiv-replace-container-3').innerHTML)
+      assertEqual('', $('testdiv-replace-container-3').innerHTML);
+      
+      $('testinput-replace').replace('<p>hello world</p>');
+      assertEqual('<p>hello world</p>',
+        $('testform-replace').innerHTML.gsub('\r\n', '').toLowerCase());
+
+      $('testform-replace').replace('<form></form>');
+      assertEqual('<p>some text</p><form></form><p>some text</p>',
+        $('testform-replace-container').innerHTML.gsub('\r\n', '').toLowerCase());
     }},
     
-
     testElementReplaceWithScript: function() {with(this) {
       $('testdiv-replace-4').replace('hello from div!<script>testVarReplace="hello!"</'+'script>');
       assertEqual('hello from div!', $('testdiv-replace-container-4').innerHTML);
@@ -441,7 +594,7 @@
         });
       });
     }},
-    
+        
     testElementSelectorMethod: function() {with(this) {
       var testSelector = $('container').getElementsBySelector('p.test');
       assertEqual(testSelector.length, 4);
@@ -835,6 +988,118 @@
       assertEnumEqual(['2', null], elements.invoke('readAttribute', 'bar'));
     }},
     
+    testElementWriteAttribute: function() {with(this) {
+      var element = Element.extend(document.body.appendChild(document.createElement('p')));
+      assertRespondsTo('writeAttribute', element);
+      assertEqual(element, element.writeAttribute('id', 'write_attribute_test'));
+      assertEqual('write_attribute_test', element.id);
+      assertEqual('http://prototypejs.org/', $('write_attribute_link').
+        writeAttribute({href: 'http://prototypejs.org/', title: 'Home of Prototype'}).href);
+      assertEqual('Home of Prototype', $('write_attribute_link').title);
+      
+      var element2 = Element.extend(document.createElement('p'));
+      element2.writeAttribute('id', 'write_attribute_without_hash');
+      assertEqual('write_attribute_without_hash', element2.id);
+      element2.writeAttribute('animal', 'cat');
+      assertEqual('cat', element2.readAttribute('animal'));
+    }},
+    
+    testElementWriteAttributeWithBooleans: function() {with(this) {
+      var input = $('write_attribute_input'),
+        select = $('write_attribute_select'),
+        checkbox = $('write_attribute_checkbox'),
+        checkedCheckbox = $('write_attribute_checked_checkbox');
+      assert( input.          writeAttribute('readonly').            hasAttribute('readonly'));
+      assert(!input.          writeAttribute('readonly', false).     hasAttribute('readonly'));
+      assert( input.          writeAttribute('readonly', true).      hasAttribute('readonly'));
+      assert(!input.          writeAttribute('readonly', null).      hasAttribute('readonly'));
+      assert( input.          writeAttribute('readonly', 'readonly').hasAttribute('readonly'));
+      assert( select.         writeAttribute('multiple').            hasAttribute('multiple'));
+      assert( input.          writeAttribute('disabled').            hasAttribute('disabled'));
+      assert( checkbox.       writeAttribute('checked').             checked);
+      assert(!checkedCheckbox.writeAttribute('checked', false).      checked);
+    }},
+
+    testElementWriteAttributeWithIssues: function() {with(this) {
+      var input = $('write_attribute_input').writeAttribute({maxlength: 90, tabindex: 10}),
+        td = $('write_attribute_td').writeAttribute({valign: 'bottom', colspan: 2, rowspan: 2});
+      assertEqual(90, input.readAttribute('maxlength'));
+      assertEqual(10, input.readAttribute('tabindex'));
+      assertEqual(2,  td.readAttribute('colspan'));
+      assertEqual(2,  td.readAttribute('rowspan'));
+      assertEqual('bottom', td.readAttribute('valign'));
+      
+      var p = $('write_attribute_para'), label = $('write_attribute_label');
+      assertEqual('some-class',     p.    writeAttribute({'class':   'some-class'}).    readAttribute('class'));
+      assertEqual('some-className', p.    writeAttribute({className: 'some-className'}).readAttribute('class'));
+      assertEqual('some-id',        label.writeAttribute({'for':     'some-id'}).       readAttribute('for'));
+      assertEqual('some-other-id',  label.writeAttribute({htmlFor:   'some-other-id'}). readAttribute('for'));
+      
+      assert(p.writeAttribute({style: 'width: 5px;'}).readAttribute('style').toLowerCase().include('width'));      
+    }},
+    
+    testElementWriteAttributeWithCustom: function() {with(this) {
+      var p = $('write_attribute_para').writeAttribute({name: 'martin', location: 'stockholm', age: 26});
+      assertEqual('martin',    p.readAttribute('name'));
+      assertEqual('stockholm', p.readAttribute('location'));
+      assertEqual('26',        p.readAttribute('age'));
+    }},
+    
+    testNewElement: function() {with(this) {
+      assert(new Element('h1'));
+      
+      var XHTML_TAGS = $w(
+        'a abbr acronym address area '+
+        'b bdo big blockquote br button caption '+
+        'cite code col colgroup dd del dfn div dl dt '+
+        'em fieldset form h1 h2 h3 h4 h5 h6 hr '+
+        'i iframe img input ins kbd label legend li '+
+        'map object ol optgroup option p param pre q samp '+
+        'script select small span strong style sub sup '+
+        'table tbody td textarea tfoot th thead tr tt ul var');
+        
+      XHTML_TAGS.each(function(tag, index) {
+        var id = tag + '_' + index, element = document.body.appendChild(new Element(tag, {id: id}));
+        assertEqual(tag, element.tagName.toLowerCase());
+        assertEqual(element, document.body.lastChild);
+        assertEqual(id, element.id);
+      });
+      
+      
+      assertRespondsTo('update', new Element('div'));
+      Element.addMethods({
+        cheeseCake: function(){
+          return 'Cheese cake';
+        }
+      });
+      
+      assertRespondsTo('cheeseCake', new Element('div'));
+      
+      /* window.ElementOld = function(tagName, attributes) { 
+        if (Prototype.Browser.IE && attributes && attributes.name) { 
+          tagName = '<' + tagName + ' name="' + attributes.name + '">'; 
+          delete attributes.name; 
+        } 
+        return Element.extend(document.createElement(tagName)).writeAttribute(attributes || {}); 
+      };
+      
+      benchmark(function(){
+        XHTML_TAGS.each(function(tagName){new Element(tagName)});
+      }, 5);
+      
+      benchmark(function(){
+        XHTML_TAGS.each(function(tagName){new ElementOld(tagName)});
+      }, 5); */
+      
+      assertEqual('foobar', new Element('a', {custom: 'foobar'}).readAttribute('custom'));
+      var input = document.body.appendChild(new Element('input', 
+        {id: 'my_input_field_id', name: 'my_input_field'}));
+      assertEqual(input, document.body.lastChild);
+      assertEqual('my_input_field', $(document.body.lastChild).name);
+      if (Prototype.Browser.IE)
+        assertMatch(/name=["']?my_input_field["']?/, $('my_input_field').outerHTML);
+    }},
+
     testElementGetHeight: function() {with(this) {
       assertIdentical(100, $('dimensions-visible').getHeight());
       assertIdentical(100, $('dimensions-display-none').getHeight());
@@ -991,9 +1256,38 @@
       });
       $(element).update("<script>var blah='"+'\\'.times(10000)+"'</scr"+"ipt>");
       assertEqual('', element.innerHTML);
+    }},
+
+    testPositionedOffset: function() {with(this) {
+      assertEnumEqual([10,10],
+        $('body_absolute').positionedOffset());
+      assertEnumEqual([10,10],
+        $('absolute_absolute').positionedOffset());
+      assertEnumEqual([10,10],
+        $('absolute_relative').positionedOffset());
+      assertEnumEqual([0,10],
+        $('absolute_relative_undefined').positionedOffset());
+    }},
+    
+    testViewportOffset: function() {with(this) {
+      assertEnumEqual([10,10],
+        $('body_absolute').viewportOffset());
+      assertEnumEqual([20,20],
+        $('absolute_absolute').viewportOffset());
+      assertEnumEqual([20,20],
+        $('absolute_relative').viewportOffset());
+      assertEnumEqual([20,30],
+        $('absolute_relative_undefined').viewportOffset());
+    }},
+    
+    testOffsetParent: function() {with(this) {
+      assertEqual('body_absolute', $('absolute_absolute').getOffsetParent().id);
+      assertEqual('body_absolute', $('absolute_relative').getOffsetParent().id);
+      assertEqual('absolute_relative', $('inline').getOffsetParent().id);
+      assertEqual('absolute_relative', $('absolute_relative_undefined').getOffsetParent().id);
     }}
   }, 'testlog');
-
+    
 // ]]>
 </script>
 </body>

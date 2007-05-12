@@ -29,7 +29,11 @@
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
   var responderCounter = 0;
-
+  
+  // lowercase comparison because of MSIE which presents HTML tags in uppercase
+  var sentence = ("Pack my box with <em>five dozen</em> liquor jugs! " +
+  "Oh, how <strong>quickly</strong> daft jumping zebras vex...").toLowerCase();
+  
   new Test.Unit.Runner({
     
     setup: function(){
@@ -76,10 +80,6 @@
       
       new Ajax.Updater("content", "fixtures/content.html", { method:'get' });
       
-      // lowercase comparison because of MSIE which presents HTML tags in uppercase
-      var sentence = ("Pack my box with <em>five dozen</em> liquor jugs! " +
-        "Oh, how <strong>quickly</strong> daft jumping zebras vex...").toLowerCase();
-
       wait(1000,function(){
         assertEqual(sentence, $("content").innerHTML.strip().toLowerCase());
         
@@ -95,9 +95,22 @@
           assertEqual(sentence, $("content").innerHTML.strip().toLowerCase());
           assertEqual("", $("content2").innerHTML);
         });
-      });
+      }); 
     }},
     
+    testUpdaterWithInsertion: function() {with(this) {
+      $('content').update();
+      new Ajax.Updater("content", "fixtures/content.html", { method:'get', insertion: Insertion.Top });
+      wait(1000,function(){
+        assertEqual(sentence, $("content").innerHTML.strip().toLowerCase());
+        $('content').update();
+        new Ajax.Updater("content", "fixtures/content.html", { method:'get', insertion: 'bottom' });      
+        wait(1000,function(){
+          assertEqual(sentence, $("content").innerHTML.strip().toLowerCase());
+        });
+      });
+    }},
+       
     testResponders: function(){with(this) {
       // check for internal responder
       assertEqual(1, Ajax.Responders.responders.length);
