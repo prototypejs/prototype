@@ -1,5 +1,7 @@
 *SVN*
 
+* Make Prototype.ScriptFragment behave when including Prototype inline.  [Christophe Porteneuve]
+
 * Deprecate Position (kept for backwards compatibility). Add Element#cumulativeOffset, Element#positionedOffset, Element#absolutize, Element#relativize, Element#cumulativeScrollOffset, Element#getOffsetParent, Element#viewportOffset and Element#clonePosition. [Christophe Porteneuve]
 
 * Make Element#update and Element#insert work for SELECT tags in IE and Opera. [Tobie Langel]

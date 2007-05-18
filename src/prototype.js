@@ -18,7 +18,7 @@ var Prototype = {
        document.createElement('form').__proto__)
   },
 
-  ScriptFragment: '<script[^>]*>([\u0001-\uFFFF]*?)</script>',
+  ScriptFragment: '<script[^>]*>([\u0001-\uFFFF]*?)<\/script>',
   JSONFilter: /^\/\*-secure-\s*(.*)\s*\*\/\s*$/,  
   
   emptyFunction: function() { },
