@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix Element#clonePosition to call viewportOffset.  Closes #8372.  [graemenelson, Christophe Porteneuve] 
+
 * Prevent an error being thrown by $$ when #id does not exist in $$("div #id").  Closes #8325.  [Tobie Langel, ecke]
 
 * Make Prototype.ScriptFragment behave when including Prototype inline.  [Christophe Porteneuve]

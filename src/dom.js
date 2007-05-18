@@ -588,7 +588,7 @@ Element.Methods = {
     // position:absolute needs offsetParent deltas
     if (Element.getStyle(element,'position') == 'absolute') {
       parent = element.getOffsetParent();
-      delta = parent.getViewportOffset();
+      delta = parent.viewportOffset();
     }
 
     // correct by body offsets (fixes Safari)
