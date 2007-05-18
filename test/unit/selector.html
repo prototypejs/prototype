@@ -219,6 +219,7 @@
       assertEnumEqual($('level2_1', 'level2_2'), $$('#level1>span'));
       assertEnumEqual($('level2_1', 'level2_2'), $$('#level1 > span'));
       assertEnumEqual($('level3_1', 'level3_2'), $$('#level2_1 > *'));
+      assertEnumEqual([], $$('div > #nonexistent'));
       $RunBenchmarks && wait(500, function() {
         benchmark(function() { $$('#level1 > span') }, 1000);
       });

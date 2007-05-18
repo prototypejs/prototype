@@ -1,5 +1,7 @@
 *SVN*
 
+* Prevent an error being thrown by $$ when #id does not exist in $$("div #id").  Closes #8325.  [Tobie Langel, ecke]
+
 * Make Prototype.ScriptFragment behave when including Prototype inline.  [Christophe Porteneuve]
 
 * Deprecate Position (kept for backwards compatibility). Add Element#cumulativeOffset, Element#positionedOffset, Element#absolutize, Element#relativize, Element#cumulativeScrollOffset, Element#getOffsetParent, Element#viewportOffset and Element#clonePosition. [Christophe Porteneuve]
