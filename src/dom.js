@@ -550,14 +550,14 @@ Element.Methods = {
       valueL += element.offsetLeft || 0;
 
       // Safari fix
-      if (element.offsetParent == document.body)
-        if (Element.getStyle(element,'position')=='absolute') break;
+      if (element.offsetParent == document.body &&
+        Element.getStyle(element, 'position') == 'absolute') break;
 
     } while (element = element.offsetParent);
 
     element = forElement;
     do {
-      if (!window.opera || element.tagName=='BODY') {
+      if (!Prototype.Browser.Opera || element.tagName == 'BODY') {
         valueT -= element.scrollTop  || 0;
         valueL -= element.scrollLeft || 0;
       }
@@ -574,7 +574,7 @@ Element.Methods = {
       setHeight:  true,
       offsetTop:  0,
       offsetLeft: 0
-    }, arguments[2] || {})
+    }, arguments[2] || {});
 
     // find page position of source
     source = $(source);
@@ -586,7 +586,7 @@ Element.Methods = {
     var parent = null;
     // delta [0,0] will do fine with position: fixed elements, 
     // position:absolute needs offsetParent deltas
-    if (Element.getStyle(element,'position') == 'absolute') {
+    if (Element.getStyle(element, 'position') == 'absolute') {
       parent = element.getOffsetParent();
       delta = parent.viewportOffset();
     }
@@ -598,10 +598,10 @@ Element.Methods = {
     }
 
     // set position
-    if(options.setLeft)   element.style.left  = (p[0] - delta[0] + options.offsetLeft) + 'px';
-    if(options.setTop)    element.style.top   = (p[1] - delta[1] + options.offsetTop) + 'px';
-    if(options.setWidth)  element.style.width = source.offsetWidth + 'px';
-    if(options.setHeight) element.style.height = source.offsetHeight + 'px';
+    if (options.setLeft)   element.style.left  = (p[0] - delta[0] + options.offsetLeft) + 'px';
+    if (options.setTop)    element.style.top   = (p[1] - delta[1] + options.offsetTop) + 'px';
+    if (options.setWidth)  element.style.width = source.offsetWidth + 'px';
+    if (options.setHeight) element.style.height = source.offsetHeight + 'px';
     return element;
   }
 };
