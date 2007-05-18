@@ -1,5 +1,7 @@
 *SVN*
 
+* Event.findElement now uses Element#up (and as a result can take a CSS selector instead of just a tag name).  [Tobie Langel]
+
 * Minor cleanup of the position methods  [sam]
 
 * Fix Element#clonePosition to call viewportOffset.  Closes #8372.  [graemenelson, Christophe Porteneuve] 
