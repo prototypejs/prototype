@@ -689,13 +689,17 @@ else if (Prototype.Browser.IE) {
   };
   
   Element.Methods.setOpacity = function(element, value) {
+    function stripAlpha(filter){
+      return filter.replace(/alpha\([^\)]*\)/gi,'');
+    }
     element = $(element);
     var filter = element.getStyle('filter'), style = element.style;
     if (value == 1 || value === '') {
-      style.filter = filter.replace(/alpha\([^\)]*\)/gi,'');
+      (filter = stripAlpha(filter)) ?
+        style.filter = filter : style.removeAttribute('filter');
       return element;
     } else if (value < 0.00001) value = 0;
-    style.filter = filter.replace(/alpha\([^\)]*\)/gi, '') +
+    style.filter = stripAlpha(filter) +
       'alpha(opacity=' + (value * 100) + ')';
     return element;   
   };
