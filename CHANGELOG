@@ -1,5 +1,7 @@
 *SVN*
 
+* Event.findElement behaves as expected when the element passed matches the given selector.  Closes #8395.  [Mislav Marohnić, Tobie Langel]
+
 * Element.setOpacity now calls removeAttribute on the filter style on IE if no more filters remain, which makes Cleartype work properly.  Closes #8376.  [alexdemi, Thomas Fuchs]
 
 * Event.findElement now uses Element#up (and as a result can take a CSS selector instead of just a tag name).  [Tobie Langel]

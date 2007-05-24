@@ -47,7 +47,8 @@ Object.extend(Event, {
   },
 
   findElement: function(event, expression) {
-    return Event.element(event).up(expression);
+    var element = Event.element(event);
+    return element.match(expression) ? element : element.up(expression);
   },
 
   observers: false,
