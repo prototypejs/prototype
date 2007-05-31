@@ -208,6 +208,9 @@
       assertEqual('foo boo boz foo boo boz foo...', source.truncate(0));
       assertEqual('fo...', source.truncate(5));
       assertEqual('foo b', source.truncate(5, ''));
+      
+      assert(typeof 'foo'.truncate(5) == 'string');
+      assert(typeof'foo bar baz'.truncate(5) == 'string');
     }},
     
     testStrip: function() {with(this) {
