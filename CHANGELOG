@@ -1,5 +1,12 @@
 *SVN*
 
+* Change Element.insert syntax to allow multiple positions.  [Thomas Fuchs]
+  Examples:
+    Element.insert('foo', {top:'bar', bottom:'baz'});
+    $('foo').insert({after: new Element('p').update('bar')});
+    Element.insert('foo', new Element('p').update('bar')); // defaults to bottom
+    Element.insert('foo', 'bar'); // defaults to bottom
+
 * String.prototype.truncate now explicitly converts its return value into a string if no truncation takes place. This prevents possible issues with methods expecting input data that is typeof == 'string'.  [Thomas Fuchs, Tobie Langel, Sam Stephenson]
 
 * Event.findElement behaves as expected when the element passed matches the given selector.  Closes #8395.  [Mislav Marohnić, Tobie Langel]

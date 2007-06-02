@@ -105,23 +105,33 @@ Element.Methods = {
     return element;
   },
   
-  insert: function(element, content, position) {
+  insert: function(element, insertions) {
     element = $(element);
-    position = (position || 'bottom').toLowerCase();
-    var t = Element._insertionTranslations[position], range;
+        
+    if(typeof insertions == 'string' || insertions.ownerDocument === document)
+      insertions = {bottom:insertions};
     
-    if (content && content.ownerDocument === document) {
-      t.insert(element, content);
-      return element;
+    var content, t, range;
+    
+    for (position in insertions) {
+      content  = insertions[position];
+      position = position.toLowerCase();
+      t = Element._insertionTranslations[position];
+    
+      if (content && content.ownerDocument === document) {
+        t.insert(element, content);
+        continue;
+      }
+    
+      content = content.toString();
+      
+      range = element.ownerDocument.createRange();
+      t.initializeRange(element, range);
+      t.insert(element, range.createContextualFragment(content.stripScripts()));
+      
+      content.evalScripts.bind(content).defer();
     }
     
-    content = content.toString();
-    
-    range = element.ownerDocument.createRange();
-    t.initializeRange(element, range);
-    t.insert(element, range.createContextualFragment(content.stripScripts()));
-
-    content.evalScripts.bind(content).defer();
     return element;
   },
   
@@ -622,28 +632,38 @@ Element._attributeTranslations = {
 
 
 if (!document.createRange || Prototype.Browser.Opera) {
-  Element.Methods.insert = function(element, content, position) {
+  Element.Methods.insert = function(element, insertions) {
     element = $(element);
-    position = (position || 'bottom').toLowerCase();
-    var t = Element._insertionTranslations, pos = t[position], tagName;
     
-    if (content && content.ownerDocument === document) {
-      pos.insert(element, content);
-      return element;
+    if(typeof insertions == 'string' || insertions.ownerDocument === document)
+      insertions = {bottom:insertions};
+    
+    var t = Element._insertionTranslations, content, position, pos, tagName;
+    
+    for (position in insertions) {
+      content  = insertions[position];
+      position = position.toLowerCase();
+      pos      = t[position];
+      
+      if (content && content.ownerDocument === document) {
+        pos.insert(element, content);
+        continue;
+      }
+     
+      content = content.toString();
+      tagName = ((position == 'before' || position == 'after')
+        ? element.parentNode : element).tagName.toUpperCase();
+     
+      if (t.tags[tagName]) {
+        var fragments = Element._getContentFromAnonymousElement(tagName, content.stripScripts());
+        if (position == 'top' || position == 'after') fragments.reverse();
+        fragments.each(pos.insert.curry(element));
+      }
+      else element.insertAdjacentHTML(pos.adjacency, content.stripScripts());
+      
+      content.evalScripts.bind(content).defer();
     }
-
-    content = content.toString();
-    tagName = ((position == 'before' || position == 'after')
-      ? element.parentNode : element).tagName.toUpperCase();
     
-    if (t.tags[tagName]) {
-      var fragments = Element._getContentFromAnonymousElement(tagName, content.stripScripts());
-      if (position == 'top' || position == 'after') fragments.reverse();
-      fragments.each(pos.insert.curry(element));
-    }
-    else element.insertAdjacentHTML(pos.adjacency, content.stripScripts());
-    
-    content.evalScripts.bind(content).defer();
     return element;
   }
 }

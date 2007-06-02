@@ -6,19 +6,19 @@ Element.Methods.childOf = Element.Methods.descendantOf;
 
 var Insertion = {
   Before: function(element, content) {
-    return Element.insert(element, content, 'before');
+    return Element.insert(element, {before:content});
   },
   
   Top: function(element, content) {
-    return Element.insert(element, content, 'top');
+    return Element.insert(element, {top:content});
   },
   
   Bottom: function(element, content) {
-    return Element.insert(element, content, 'bottom');
+    return Element.insert(element, {bottom:content});
   },
   
   After: function(element, content) {
-    return Element.insert(element, content, 'after');
+    return Element.insert(element, {after:content});
   }
 }
 
