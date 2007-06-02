@@ -107,6 +107,12 @@
         new Ajax.Updater("content", "fixtures/content.html", { method:'get', insertion: 'bottom' });      
         wait(1000,function(){
           assertEqual(sentence, $("content").innerHTML.strip().toLowerCase());
+          
+          $('content').update();
+          new Ajax.Updater("content", "fixtures/content.html", { method:'get', insertion: 'after' });      
+          wait(1000,function(){
+            assertEqual('five dozen', $("content").next().innerHTML.strip().toLowerCase());
+          });
         });
       });
     }},

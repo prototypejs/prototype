@@ -260,8 +260,10 @@ Object.extend(Object.extend(Ajax.Updater.prototype, Ajax.Request.prototype), {
     
     if (receiver = $(receiver)) {
       if (options.insertion) {
-        if (typeof options.insertion == 'string')
-          receiver.insert( {}[options.insertion] = response );
+        if (typeof options.insertion == 'string') {
+          var insertion = {}; insertion[options.insertion] = response;
+          receiver.insert(insertion);
+        }
         else options.insertion(receiver, response);
       } 
       else receiver.update(response);
