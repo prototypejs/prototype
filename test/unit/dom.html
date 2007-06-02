@@ -446,7 +446,14 @@
       assert(getInnerHTML('element-insertions-multiple-main').startsWith('1'));
       assert(getInnerHTML('element-insertions-multiple-main').endsWith('2'));
       assert(getInnerHTML('element-insertions-multiple-container').startsWith('<p>3</p>'));
-      assert(getInnerHTML('element-insertions-multiple-container').endsWith('4'));      
+      assert(getInnerHTML('element-insertions-multiple-container').endsWith('4'));
+      
+      $('element-insertions-main').update('test');
+      $('element-insertions-main').insert(null);
+      $('element-insertions-main').insert({bottom:null});
+      assertEqual('test', getInnerHTML('element-insertions-main'));
+      $('element-insertions-main').insert(1337);
+      assertEqual('test1337', getInnerHTML('element-insertions-main'));
     }},
     
     testInsertionBackwardsCompatibility: function() {with(this) {

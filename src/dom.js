@@ -108,8 +108,9 @@ Element.Methods = {
   insert: function(element, insertions) {
     element = $(element);
         
-    if(typeof insertions == 'string' || insertions.ownerDocument === document)
-      insertions = {bottom:insertions};
+    if (typeof insertions == 'string' || typeof insertions == 'number' ||
+        (insertions && insertions.ownerDocument === document))
+          insertions = {bottom:insertions};
     
     var content, t, range;
     
@@ -123,7 +124,7 @@ Element.Methods = {
         continue;
       }
     
-      content = content.toString();
+      content = String.interpret(content);
       
       range = element.ownerDocument.createRange();
       t.initializeRange(element, range);
@@ -635,8 +636,9 @@ if (!document.createRange || Prototype.Browser.Opera) {
   Element.Methods.insert = function(element, insertions) {
     element = $(element);
     
-    if(typeof insertions == 'string' || insertions.ownerDocument === document)
-      insertions = {bottom:insertions};
+    if (typeof insertions == 'string' || typeof insertions == 'number' ||
+        (insertions && insertions.ownerDocument === document))
+          insertions = {bottom:insertions};
     
     var t = Element._insertionTranslations, content, position, pos, tagName;
     
@@ -650,7 +652,7 @@ if (!document.createRange || Prototype.Browser.Opera) {
         continue;
       }
      
-      content = content.toString();
+      content = String.interpret(content);
       tagName = ((position == 'before' || position == 'after')
         ? element.parentNode : element).tagName.toUpperCase();
      
