@@ -97,7 +97,7 @@ class IEBrowser < Browser
 end
 
 class KonquerorBrowser < Browser
-  @@configDir = File.join(ENV['HOME'], '.kde', 'share', 'config')
+  @@configDir = File.join((ENV['HOME'] || ''), '.kde', 'share', 'config')
   @@globalConfig = File.join(@@configDir, 'kdeglobals')
   @@konquerorConfig = File.join(@@configDir, 'konquerorrc')
 
@@ -208,7 +208,6 @@ class JavaScriptTestTask < ::Rake::TaskLib
         else
           puts "Skipping #{browser}, not supported on this OS"
         end
-        browser.teardown
       end
 
       @server.shutdown
