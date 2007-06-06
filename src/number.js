@@ -23,5 +23,5 @@ Object.extend(Number.prototype, {
 });
 
 $w('abs round ceil floor').each(function(method){
-  Number.prototype[method] = function(){ return Math[method](this); }
+  Number.prototype[method] = Math[method].methodize()
 });
