@@ -218,35 +218,6 @@
       }
     },
     
-    testNumberRound: function() {with(this) {
-      assertEqual(1, (0.9).round());
-      assertEqual(-2, (-1.9).round());
-      
-      assertEqual(Math.round(Math.PI), Math.PI.round());
-    }},
-    
-    testNumberToColorPart: function() {with(this) {
-      assertEqual('00', (0).toColorPart());
-      assertEqual('0a', (10).toColorPart());
-      assertEqual('ff', (255).toColorPart());
-    }},
-    
-    testNumberToPaddedString: function() {with(this) {
-      assertEqual('00', (0).toPaddedString(2, 16));
-      assertEqual('0a', (10).toPaddedString(2, 16));
-      assertEqual('ff', (255).toPaddedString(2, 16));
-      assertEqual('000', (0).toPaddedString(3));
-      assertEqual('010', (10).toPaddedString(3));
-      assertEqual('100', (100).toPaddedString(3));
-      assertEqual('1000', (1000).toPaddedString(3));
-    }},
-    
-    testNumberToJSON: function() {with(this) {
-      assertEqual('null', Number.NaN.toJSON());
-      assertEqual('0', (0).toJSON());
-      assertEqual('-293', (-293).toJSON());
-    }},
-    
     testDateToJSON: function() {with(this) {
       assertEqual('\"1969-12-31T19:00:00\"', new Date(1969, 11, 31, 19).toJSON());
     }},

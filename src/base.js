@@ -113,34 +113,6 @@ Object.extend(Function.prototype, {
 
 Function.prototype.defer = Function.prototype.delay.curry(0.01);
 
-Object.extend(Number.prototype, {
-  round: function() {
-    return Math.round(this);
-  },
-  
-  toColorPart: function() {
-    return this.toPaddedString(2, 16);
-  },
-
-  succ: function() {
-    return this + 1;
-  },
-  
-  times: function(iterator) {
-    $R(0, this, true).each(iterator);
-    return this;
-  },
-  
-  toPaddedString: function(length, radix) {
-    var string = this.toString(radix || 10);
-    return '0'.times(length - string.length) + string;
-  },
-  
-  toJSON: function() {
-    return isFinite(this) ? this.toString() : 'null';
-  }
-});
-
 Date.prototype.toJSON = function() {
   return '"' + this.getFullYear() + '-' +
     (this.getMonth() + 1).toPaddedString(2) + '-' +

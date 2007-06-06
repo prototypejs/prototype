@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Prototype Unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../dist/prototype.js" type="text/javascript"></script>
+  <script src="../lib/unittest.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="../test.css" type="text/css" />
+  <style type="text/css" media="screen">
+  /* <![CDATA[ */
+    #testcss1 { font-size:11px; color: #f00; }
+    #testcss2 { font-size:12px; color: #0f0; display: none; }
+  /* ]]> */
+  </style>
+</head>
+<body>
+<h1>Prototype Unit test file</h1>
+<p>
+  Test of utility functions in number.js
+</p>
+
+<!-- Log output -->
+<div id="testlog"> </div>
+
+<!-- Tests follow -->
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+
+  new Test.Unit.Runner({
+    
+    testNumberMathMethods: function() {with(this) {
+      assertEqual(1, (0.9).round());
+      assertEqual(-2, (-1.9).floor());
+      assertEqual(-1, (-1.9).ceil());
+
+      $w('abs floor round ceil').each( function(method){
+        assertEqual(Math[method](Math.PI), Math.PI[method]());
+      });
+    }},
+
+    testNumberToColorPart: function() {with(this) {
+      assertEqual('00', (0).toColorPart());
+      assertEqual('0a', (10).toColorPart());
+      assertEqual('ff', (255).toColorPart());
+    }},
+
+    testNumberToPaddedString: function() {with(this) {
+      assertEqual('00', (0).toPaddedString(2, 16));
+      assertEqual('0a', (10).toPaddedString(2, 16));
+      assertEqual('ff', (255).toPaddedString(2, 16));
+      assertEqual('000', (0).toPaddedString(3));
+      assertEqual('010', (10).toPaddedString(3));
+      assertEqual('100', (100).toPaddedString(3));
+      assertEqual('1000', (1000).toPaddedString(3));
+    }},
+
+    testNumberToJSON: function() {with(this) {
+      assertEqual('null', Number.NaN.toJSON());
+      assertEqual('0', (0).toJSON());
+      assertEqual('-293', (-293).toJSON());
+    }}
+
+  }, 'testlog');
+
+// ]]>
+</script>
+</body>
+</html>
