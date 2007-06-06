@@ -218,6 +218,13 @@
       }
     },
     
+    testNumberRound: function() {with(this) {
+      assertEqual(1, (0.9).round());
+      assertEqual(-2, (-1.9).round());
+      
+      assertEqual(Math.round(Math.PI), Math.PI.round());
+    }},
+    
     testNumberToColorPart: function() {with(this) {
       assertEqual('00', (0).toColorPart());
       assertEqual('0a', (10).toColorPart());

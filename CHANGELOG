@@ -1,5 +1,7 @@
 *SVN*
 
+* Add Number.prototype.round as an alias to Math.round().  [Thomas Fuchs]
+
 * Test library fixes: make rake dist work on Windows, only teardown if a browser is supported.  Closes #8463, #8498.  [Mislav Marohnić, grant]
 
 * Change Element.insert syntax to allow multiple positions.  [Thomas Fuchs]

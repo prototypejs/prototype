@@ -114,6 +114,10 @@ Object.extend(Function.prototype, {
 Function.prototype.defer = Function.prototype.delay.curry(0.01);
 
 Object.extend(Number.prototype, {
+  round: function() {
+    return Math.round(this);
+  },
+  
   toColorPart: function() {
     return this.toPaddedString(2, 16);
   },
