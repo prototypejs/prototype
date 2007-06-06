@@ -1,5 +1,7 @@
 *SVN*
 
+* Make Element#absolutize and Element#relativize properly use Element#getStyle.  Closes #8580.  [Christophe Porteneuve]
+
 * Add Number.prototype.round as an alias to Math.round().  [Thomas Fuchs]
 
 * Test library fixes: make rake dist work on Windows, only teardown if a browser is supported.  Closes #8463, #8498.  [Mislav Marohnić, grant]

@@ -68,6 +68,8 @@
         height: 10em;
         width: 20em;
     }
+
+    #notInlineAbsoluted { position: absolute; }
     
     /* for scroll test on really big screens */
     body {
@@ -319,6 +321,8 @@
     <div id="absolute_relative_undefined"> </div>
   </div>
 </div>
+<div id="notInlineAbsoluted"></div>
+<div id="inlineAbsoluted" style="position: absolute"></div>
  
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
@@ -1305,6 +1309,14 @@
       assertEqual('body_absolute', $('absolute_relative').getOffsetParent().id);
       assertEqual('absolute_relative', $('inline').getOffsetParent().id);
       assertEqual('absolute_relative', $('absolute_relative_undefined').getOffsetParent().id);
+    }},
+
+    testAbsolutize: function() {with(this) {
+      $('notInlineAbsoluted', 'inlineAbsoluted').each(function(elt) {
+        if ('_originalLeft' in elt) delete elt._originalLeft;
+        elt.absolutize();
+        assertUndefined(elt._originalLeft, 'absolutize() did not detect absolute positioning');
+      });
     }}
   }, 'testlog');
     

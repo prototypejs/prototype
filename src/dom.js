@@ -355,7 +355,7 @@ Element.Methods = {
   
   scrollTo: function(element) {
     element = $(element);
-    var pos = Position.cumulativeOffset(element);
+    var pos = element.cumulativeOffset();
     window.scrollTo(pos[0], pos[1]);
     return element;
   },
@@ -493,7 +493,7 @@ Element.Methods = {
 
   absolutize: function(element) {
     element = $(element);
-    if (element.style.position == 'absolute') return;
+    if (element.getStyle('position') == 'absolute') return;
     // Position.prepare(); // To be done manually by Scripty when it needs it.
 
     var offsets = element.positionedOffset();
@@ -517,7 +517,7 @@ Element.Methods = {
 
   relativize: function(element) {
     element = $(element);
-    if (element.style.position == 'relative') return;
+    if (element.getStyle('position') == 'relative') return;
     // Position.prepare(); // To be done manually by Scripty when it needs it.
 
     element.style.position = 'relative';
