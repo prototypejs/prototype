@@ -914,6 +914,13 @@ Element.Methods.ByTag = {};
 
 Object.extend(Element, Element.Methods);
 
+if (!Prototype.BrowserFeatures.ElementExtensions && 
+    document.createElement('div').__proto__) {
+  window.HTMLElement = {};
+  window.HTMLElement.prototype = document.createElement('div').__proto__;
+  Prototype.BrowserFeatures.ElementExtensions = true;
+}
+
 Element.extend = (function() {
   if (Prototype.BrowserFeatures.SpecificElementExtensions)
     return Prototype.K;
@@ -952,13 +959,6 @@ Element.extend = (function() {
   extend.refresh();
   return extend;
 })();
-
-if (!Prototype.BrowserFeatures.ElementExtensions && 
-    document.createElement('div').__proto__) {
-  window.HTMLElement = {};
-  window.HTMLElement.prototype = document.createElement('div').__proto__;
-  Prototype.BrowserFeatures.ElementExtensions = true;
-}
 
 Element.hasAttribute = function(element, attribute) {
   if (element.hasAttribute) return element.hasAttribute(attribute);
