@@ -14,6 +14,17 @@
     #style_test_1 { cursor: pointer; font-size:12px;}
     div.style-test { margin-left: 1px }
     
+    #style_test_dimensions_container { 
+      position: absolute;
+      top: 0;
+      left: 500px;
+      width: 20px;
+      height: 30px;
+      margin: 10px;
+      padding: 10px;
+      border: 3px solid red;
+    }
+    
     #not_floating_style { float: none }
     #floating_style { float: left }
     #op2 { opacity:0.5;filter:alpha(opacity=50)progid:DXImageTransform.Microsoft.Blur(strength=10);}
@@ -205,7 +216,10 @@
 
 <div id="style_test_3">blah</div>
 
-
+<div id="style_test_dimensions_container">
+  <div id="style_test_dimensions" style="background:#ddd;padding:1px;margin:1px;border:1px solid #00f"><div style="height:5px;background:#eee;width:5px;padding:2px;margin:2px;border:2px solid #0f0"></div>
+  </div>
+</div>
 
 <div id="custom_attributes">
   <div foo="1" bar="2"></div>
@@ -979,10 +993,16 @@
         assertEqual('alpha(opacity=0)', $('op3').getStyle('filter'));
         assertEqual(0.3, $('op4-ie').getStyle('opacity'));
       }
-      // verify that value is stil found when using camelized
+      // verify that value is still found when using camelized
       // strings (function previously used getPropertyValue()
       // which expected non-camelized strings)
       assertEqual("12px", $('style_test_1').getStyle('fontSize'));
+      
+      // getStyle on width/height should return values according to
+      // the CSS box-model, which doesn't include 
+      // margins, paddings or borders       
+      assertEqual("14px", $('style_test_dimensions').getStyle('width'));
+      assertEqual("17px", $('style_test_dimensions').getStyle('height'));
     }},
     
     testElementGetOpacity: function() {with(this) {
