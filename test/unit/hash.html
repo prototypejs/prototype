@@ -89,7 +89,19 @@
         $H(Fixtures.functions).values().map(function(i){ return typeof i }));
       assertEqual(9, $H(Fixtures.functions).quad(3));
       assertEqual(6, $H(Fixtures.functions).plus(3));
-    }},  
+    }},
+    
+    testIndex: function(){ with(this) {
+      assertUndefined($H().index('foo'));
+      
+      assert('a', $H(Fixtures.one).index('A#'));
+      assert('a', $H(Fixtures.many).index('A'));
+      assertUndefined($H(Fixtures.many).index('Z'))
+    
+      var hash = $H({a:1,b:'2',c:1});
+      assert(['a','c'].include(hash.index(1)));
+      assertUndefined(hash.index('1'));
+    }},
       
     testMerge: function(){ with(this) {
       assertHashEqual(Fixtures.many, $H(Fixtures.many).merge());

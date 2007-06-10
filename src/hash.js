@@ -62,6 +62,13 @@ Object.extend(Hash.prototype, {
     return this.pluck('value');
   },
   
+  index: function(value) {
+    var match = this.detect(function(pair) { 
+      return pair.value === value; 
+    });
+    return match && match.key;
+  },
+  
   merge: function(hash) {
     return $H(hash).inject(this, function(mergedHash, pair) {
       mergedHash[pair.key] = pair.value;

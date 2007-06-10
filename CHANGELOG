@@ -1,5 +1,11 @@
 *SVN*
 
+* Add Hash.prototype.index which returns the first found property that has a specific value.  Closes #8528.  [Thomas Fuchs, slusarz, Mislav Marohnić]
+  Examples:
+    var hash = $H({a:1,b:'2'});
+    hash.index(1)   // -> 'a'
+    hash.index('1') // -> undefined
+
 * Ensure HTMLElement exists before creating Element.extend.  [Tobie Langel]
 
 * Add Number.prototype.round/ceil/floor/abs as an aliases to the respective methods in Math. Refactor to seperate number extensions from base.js.  [Thomas Fuchs]
