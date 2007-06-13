@@ -417,7 +417,7 @@
     }},
 
     testEvalJSON: function() {with(this) {
-      var valid = '{test: "hello world!"}';
+      var valid = '{test: \n\r"hello world!"}';
       var invalid = '{test: "hello world!"';
       var dangerous = '{});attackTarget = "attack succeeded!";({}';
       
@@ -434,9 +434,9 @@
       assertRaise('SyntaxError', function(){dangerous.evalJSON(true)});
       assertEqual("Not scared!", attackTarget);
 
-      assertEqual('hello world!', ('/*-secure-\n' + valid + '\n*/').evalJSON().test);
+      assertEqual('hello world!', ('/*-secure- \r  \n ' + valid + ' \n  */').evalJSON().test);
       var temp = Prototype.JSONFilter;
-      Prototype.JSONFilter = /^\/\*(.*)\*\/$/; // test custom delimiters.
+      Prototype.JSONFilter = /^\/\*([\s\S]*)\*\/$/; // test custom delimiters.
       assertEqual('hello world!', ('/*' + valid + '*/').evalJSON().test);
       Prototype.JSONFilter = temp;
     }}

@@ -1,5 +1,9 @@
 *SVN*
 
+* Prevent a crash in Safari 1.3 on String#stripScripts and String#extractScripts. Closes #8332. [grant, Tobie Langel]
+
+* Allow JSON data to contain line breaks. Closes #8271. [pijyster, Tobie Langel]
+
 * Add Hash.prototype.index which returns the first found property that has a specific value.  Closes #8528.  [Thomas Fuchs, slusarz, Mislav Marohnić]
   Examples:
     var hash = $H({a:1,b:'2'});
