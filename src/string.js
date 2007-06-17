@@ -167,11 +167,15 @@ Object.extend(String.prototype, {
     return this.sub(filter || Prototype.JSONFilter, '#{1}');
   },
 
+  isJSON: function() {
+    var str = this.replace(/\\./g, '@').replace(/"[^"\\\n\r]*"/g, '');
+    return (/^[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]*$/).test(str);
+  },
+  
   evalJSON: function(sanitize) {
     var json = this.unfilterJSON();
     try {
-      if (!sanitize || (/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(json)))
-        return eval('(' + json + ')');
+      if (!sanitize || json.isJSON()) return eval('(' + json + ')');
     } catch (e) { }
     throw new SyntaxError('Badly formed JSON string: ' + this.inspect());
   },

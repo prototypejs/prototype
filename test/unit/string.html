@@ -415,11 +415,32 @@
       assertEqual('\"\"', ''.toJSON());
       assertEqual('\"test\"', 'test'.toJSON());
     }},
+    
+    testIsJSON: function() {with(this) {
+      assert(''.isJSON());
+      assert('"foo"'.isJSON());
+      assert('{}'.isJSON());
+      assert('[]'.isJSON());
+      assert('null'.isJSON());
+      assert('123'.isJSON());
+      assert('true'.isJSON());
+      assert('false'.isJSON());
+      assert('"\\""'.isJSON());
+      assert(!'\\"'.isJSON());
+      assert(!'new'.isJSON());
+      assert(!'\u0028\u0029'.isJSON());
+      // we use '@' as a placeholder for characters authorized only inside brackets,
+      // so this tests make sure it is considered as authorized.
+      assert(!'@'.isJSON());
+    }},
 
     testEvalJSON: function() {with(this) {
       var valid = '{test: \n\r"hello world!"}';
       var invalid = '{test: "hello world!"';
       var dangerous = '{});attackTarget = "attack succeeded!";({}';
+      var longString = '"' + '123456789\\"'.times(1000) + '"';
+      var object = '{' + longString + ': ' + longString + '},';
+      var huge = '[' + object.times(100) + '{"test": 123}]';
       
       assertEqual('hello world!', valid.evalJSON().test);
       assertEqual('hello world!', valid.evalJSON(true).test);
@@ -439,6 +460,8 @@
       Prototype.JSONFilter = /^\/\*([\s\S]*)\*\/$/; // test custom delimiters.
       assertEqual('hello world!', ('/*' + valid + '*/').evalJSON().test);
       Prototype.JSONFilter = temp;
+      
+      assertMatch(123, huge.evalJSON(true).last().test);
     }}
   }, 'testlog');
 // ]]>
