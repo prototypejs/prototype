@@ -207,8 +207,10 @@
   <ul class="A B" id="class_names_ul">
     <li class="C"></li>
     <li class="A C"></li>
+    <li class="1"></li>
   </ul>
   <div class="B C D"></div>
+  <div id="unextended"></div>
 </div>
 
 <div id="style_test_1" style="display:none;"></div>
@@ -337,7 +339,9 @@
 </div>
 <div id="notInlineAbsoluted"></div>
 <div id="inlineAbsoluted" style="position: absolute"></div>
- 
+
+<div id="unextended"></div>
+
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
@@ -381,10 +385,31 @@
     }},
     
     testGetElementsByClassName: function() {with(this) {
+      var div = $('class_names'), list = $('class_names_ul');
+
       assertElementsMatch(document.getElementsByClassName('A'), 'p.A', 'ul#class_names_ul.A', 'li.A.C');
-      assertElementsMatch(document.getElementsByClassName('A', 'class_names_ul'), 'li.A.C');
-      assertElementsMatch(document.getElementsByClassName('B', 'class_names'), 'ul#class_names_ul.A.B', 'div.B.C.D');
-      assertElementsMatch(document.getElementsByClassName('B', 'class_names_ul'));
+      
+      if (Prototype.Browser.IE)
+        assertUndefined(document.getElementById('unextended').show);
+      
+      assertElementsMatch(list.getElementsByClassName('A'), 'li.A.C');
+      assertElementsMatch(list.getElementsByClassName('C A'), 'li.A.C');
+      assertElementsMatch(div.getElementsByClassName('B'), 'ul#class_names_ul.A.B', 'div.B.C.D');
+      assertElementsMatch(div.getElementsByClassName('D C B'), 'div.B.C.D');
+      assertElementsMatch(div.getElementsByClassName($w('D C B')), 'div.B.C.D');
+      assertElementsMatch(list.getElementsByClassName('B'));
+      assertElementsMatch(list.getElementsByClassName('1'), 'li.1');
+      assertElementsMatch(list.getElementsByClassName([1]), 'li.1');
+      assertElementsMatch(list.getElementsByClassName(['1 junk']));
+      assertElementsMatch(list.getElementsByClassName(''));
+      assertElementsMatch(list.getElementsByClassName(' '));
+      assertElementsMatch(list.getElementsByClassName(['']));
+      assertElementsMatch(list.getElementsByClassName([' ', '']));
+      assertElementsMatch(list.getElementsByClassName({}));
+      assertEqual(Array, [].constructor)
+
+      // those lookups shouldn't have extended all nodes in document
+      if (Prototype.Browser.IE) assertUndefined(document.getElementById('unextended')['show']);
     }},
 
     testElementInsertWithHTML: function() {with(this) {

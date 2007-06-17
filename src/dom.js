@@ -18,22 +18,7 @@ if (Prototype.BrowserFeatures.XPath) {
       results.push(query.snapshotItem(i));
     return results;
   };
-  
-  document.getElementsByClassName = function(className, parentElement) {
-    var q = ".//*[contains(concat(' ', @class, ' '), ' " + className + " ')]";
-    return document._getElementsByXPath(q, parentElement);
-  }
-  
-} else document.getElementsByClassName = function(className, parentElement) {
-  var children = ($(parentElement) || document.body).getElementsByTagName('*');
-  var elements = [], child;
-  for (var i = 0, length = children.length; i < length; i++) {
-    child = children[i];
-    if (Element.hasClassName(child, className))
-      elements.push(Element.extend(child));
-  }
-  return elements;
-};
+}
 
 /*--------------------------------------------------------------------------*/
 
@@ -241,10 +226,6 @@ Element.Methods = {
   getElementsBySelector: function() {
     var args = $A(arguments), element = $(args.shift());
     return Selector.findChildElements(element, args);
-  },
-  
-  getElementsByClassName: function(element, className) {
-    return document.getElementsByClassName(className, element);
   },
   
   readAttribute: function(element, name) {
@@ -613,6 +594,42 @@ Element.Methods = {
     return element;
   }
 };
+
+if (!document.getElementsByClassName) document.getElementsByClassName = function(instanceMethods){
+  function isArray(className) {
+    return className.constructor == Array || (/\s/.test(className) && !className.toString().blank());
+  }
+  function classNamesArray(classNames) {
+    return classNames.constructor == Array ? classNames : $w(classNames.toString());
+  }
+  function iter(name) {
+    return name.toString().blank() ? null : "[contains(concat(' ', @class, ' '), ' " + name + " ')]";
+  }
+
+  instanceMethods.getElementsByClassName = Prototype.BrowserFeatures.XPath ?
+  function(element, className) {
+    var cond = isArray(className) ? classNamesArray(className).map(iter).join('') : iter(className);
+    return cond ? document._getElementsByXPath('.//*' + cond, element) : [];
+  } : function(element, className) {
+    var elements = [], classNames = (isArray(className) ? classNamesArray(className) : null);
+    if (classNames ? !classNames.length : className.toString().blank()) return elements;
+    var nodes = $(element).getElementsByTagName('*');
+    className = ' ' + (classNames ? classNames.join(' ') : className) + ' ';
+
+    for (var i = 0, child, cn; child = nodes[i]; i++) {
+      if (child.className && (cn = ' ' + child.className + ' ') && (cn.include(className) ||
+          (classNames && classNames.all(function(name) {
+            return !name.toString().blank() && cn.include(' ' + name + ' ');
+          }))))
+        elements.push(Element.extend(child));
+    }
+    return elements;
+  };
+
+  return function(className, parentElement) {
+    return $(parentElement || document.body).getElementsByClassName(className);
+  };
+}(Element.Methods);
 
 Object.extend(Element.Methods, {
   childElements: Element.Methods.immediateDescendants

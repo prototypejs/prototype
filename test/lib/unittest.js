@@ -484,7 +484,7 @@ Test.Unit.Assertions.prototype = {
   assertElementsMatch: function() {
     var expressions = $A(arguments), elements = $A(expressions.shift());
     if (elements.length != expressions.length) {
-      this.fail('assertElementsMatch: size mismatch: ' + elements.length + ' elements, ' + expressions.length + ' expressions');
+      this.fail('assertElementsMatch: size mismatch: ' + elements.length + ' elements, ' + expressions.length + ' expressions (' + expressions.inspect() + ')');
       return false;
     }
     elements.zip(expressions).all(function(pair, index) {
