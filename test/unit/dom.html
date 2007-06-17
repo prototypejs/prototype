@@ -406,8 +406,7 @@
       assertElementsMatch(list.getElementsByClassName(['']));
       assertElementsMatch(list.getElementsByClassName([' ', '']));
       assertElementsMatch(list.getElementsByClassName({}));
-      assertEqual(Array, [].constructor)
-
+      
       // those lookups shouldn't have extended all nodes in document
       if (Prototype.Browser.IE) assertUndefined(document.getElementById('unextended')['show']);
     }},
