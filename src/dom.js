@@ -797,6 +797,23 @@ else if (Prototype.Browser.Gecko) {
 }
 
 else if (Prototype.Browser.WebKit) {
+  Element.Methods.setOpacity = function(element, value) {
+    element = $(element);
+    element.style.opacity = (value == 1 || value === '') ? '' :
+      (value < 0.00001) ? 0 : value;
+    
+    if (value == 1)
+      if(element.tagName == 'IMG' && element.width) { 
+        element.width++; element.width--;
+      } else try {
+        var n = document.createTextNode(' ');
+        element.appendChild(n);
+        element.removeChild(n);
+      } catch (e) {}
+    
+    return element;
+  }
+  
   // Safari returns margins on body which is incorrect if the child is absolutely
   // positioned.  For performance reasons, redefine Position.cumulativeOffset for
   // KHTML/WebKit only.
