@@ -1,9 +1,8 @@
 *SVN*
 
-* Make document.getElementsByClassName match the WHATWG Web Applications 1.0 specification which was adopted in Firefox 3 (http://www.whatwg.org/specs/web-apps/current-work/#getelementsbyclassname). It now supports multiple class names given as an array or a space-separated list in a string. The method will only return the nodes that match all the class names. In browsers that implement the method natively it will not be overwritten.  Closes #8401.  [Mislav Marohnić]
-  Examples:
+* Make document.getElementsByClassName match the WHATWG Web Applications 1.0 specification which was adopted in Firefox 3 (http://www.whatwg.org/specs/web-apps/current-work/#getelementsbyclassname). It now supports multiple class names given as a whitespace-separated list in a string. Array argument is not supported. The method will only return the nodes that match all the class names. In browsers that implement the method natively it will not be overwritten.  Closes #8401.  [Mislav Marohnić]
+  Example:
     document.getElementsByClassName('foo bar')
-    document.getElementsByClassName(['foo', 'bar'])
 
 * Fix a Safari rendering issue when floating elements could temporarily disappear when opacity was set to 1.  Closes #7063.  References #3044, #3813, #6706.  [Thomas Fuchs, davidjrice]
 

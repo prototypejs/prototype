@@ -392,11 +392,14 @@
       if (Prototype.Browser.IE)
         assertUndefined(document.getElementById('unextended').show);
       
-      assertElementsMatch(list.getElementsByClassName('A'), 'li.A.C');
-      assertElementsMatch(list.getElementsByClassName('C A'), 'li.A.C');
       assertElementsMatch(div.getElementsByClassName('B'), 'ul#class_names_ul.A.B', 'div.B.C.D');
       assertElementsMatch(div.getElementsByClassName('D C B'), 'div.B.C.D');
-      assertElementsMatch(div.getElementsByClassName($w('D C B')), 'div.B.C.D');
+      assertElementsMatch(div.getElementsByClassName(' D\nC\tB '), 'div.B.C.D');
+      assertElementsMatch(div.getElementsByClassName($w('D C B')));
+      assertElementsMatch(list.getElementsByClassName('A'), 'li.A.C');
+      assertElementsMatch(list.getElementsByClassName(' A '), 'li.A.C');
+      assertElementsMatch(list.getElementsByClassName('C A'), 'li.A.C');
+      assertElementsMatch(list.getElementsByClassName("C\nA "), 'li.A.C');
       assertElementsMatch(list.getElementsByClassName('B'));
       assertElementsMatch(list.getElementsByClassName('1'), 'li.1');
       assertElementsMatch(list.getElementsByClassName([1]), 'li.1');

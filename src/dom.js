@@ -597,24 +597,24 @@ Element.Methods = {
 
 if (!document.getElementsByClassName) document.getElementsByClassName = function(instanceMethods){
   function isArray(className) {
-    return className.constructor == Array || (/\s/.test(className) && !className.toString().blank());
-  }
-  function classNamesArray(classNames) {
-    return classNames.constructor == Array ? classNames : $w(classNames.toString());
+    return ;
   }
   function iter(name) {
-    return name.toString().blank() ? null : "[contains(concat(' ', @class, ' '), ' " + name + " ')]";
+    return name.blank() ? null : "[contains(concat(' ', @class, ' '), ' " + name + " ')]";
   }
 
   instanceMethods.getElementsByClassName = Prototype.BrowserFeatures.XPath ?
   function(element, className) {
-    var cond = isArray(className) ? classNamesArray(className).map(iter).join('') : iter(className);
+    className = className.toString().strip();
+    var cond = /\s/.test(className) ? $w(className).map(iter).join('') : iter(className);
     return cond ? document._getElementsByXPath('.//*' + cond, element) : [];
   } : function(element, className) {
-    var elements = [], classNames = (isArray(className) ? classNamesArray(className) : null);
-    if (classNames ? !classNames.length : className.toString().blank()) return elements;
+    className = className.toString().strip();
+    var elements = [], classNames = (/\s/.test(className) ? $w(className) : null);
+    if (!classNames && !className) return elements;
+
     var nodes = $(element).getElementsByTagName('*');
-    className = ' ' + (classNames ? classNames.join(' ') : className) + ' ';
+    className = ' ' + className + ' ';
 
     for (var i = 0, child, cn; child = nodes[i]; i++) {
       if (child.className && (cn = ' ' + child.className + ' ') && (cn.include(className) ||
