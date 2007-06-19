@@ -438,9 +438,12 @@
       var valid = '{test: \n\r"hello world!"}';
       var invalid = '{test: "hello world!"';
       var dangerous = '{});attackTarget = "attack succeeded!";({}';
-      var longString = '"' + '123456789\\"'.times(1000) + '"';
+
+      // use smaller huge string size for KHTML
+      var size = navigator.userAgent.include('KHTML') ? 20 : 100;
+      var longString = '"' + '123456789\\"'.times(size * 10) + '"';
       var object = '{' + longString + ': ' + longString + '},';
-      var huge = '[' + object.times(100) + '{"test": 123}]';
+      var huge = '[' + object.times(size) + '{"test": 123}]';
       
       assertEqual('hello world!', valid.evalJSON().test);
       assertEqual('hello world!', valid.evalJSON(true).test);
