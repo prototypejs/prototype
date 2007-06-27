@@ -4,12 +4,18 @@ var Form = {
     return form;
   },
   
-  serializeElements: function(elements, getHash) {
+  serializeElements: function(elements, options) {
+    if (typeof options != 'object') options = { hash: !!options };
+    else if (options.hash === undefined) options.hash = true;
+    var key, value, submitted = false, submit = options.submit;
+    
     var data = elements.inject({}, function(result, element) {
       if (!element.disabled && element.name) {
-        var key = element.name, value = $(element).getValue();
-        if (value != null) { 
-         	if (key in result) {
+        key = element.name; value = $(element).getValue();
+        if (value != null && (element.type != 'submit' || (!submitted &&
+            submit !== false && (!submit || key == submit) && (submitted = true)))) { 
+          if (key in result) {
+            // a key is already present; construct an array of values
             if (result[key].constructor != Array) result[key] = [result[key]];
             result[key].push(value);
           }
@@ -19,13 +25,13 @@ var Form = {
       return result;
     });
     
-    return getHash ? data : Hash.toQueryString(data);
+    return options.hash ? data : Hash.toQueryString(data);
   }
 };
 
 Form.Methods = {
-  serialize: function(form, getHash) {
-    return Form.serializeElements(Form.getElements(form), getHash);
+  serialize: function(form, options) {
+    return Form.serializeElements(Form.getElements(form), options);
   },
   
   getElements: function(form) {
@@ -67,9 +73,15 @@ Form.Methods = {
   },
 
   findFirstElement: function(form) {
-    return $(form).getElements().find(function(element) {
-      return element.type != 'hidden' && !element.disabled &&
-        ['input', 'select', 'textarea'].include(element.tagName.toLowerCase());
+    var elements = $(form).getElements().findAll(function(element) {
+      return 'hidden' != element.type && !element.disabled;
+    });
+    var firstByIndex = elements.findAll(function(element) {
+      return element.hasAttribute('tabIndex') && element.tabIndex >= 0;
+    }).sortBy(function(element) { return element.tabIndex }).first();
+    
+    return firstByIndex ? firstByIndex : elements.find(function(element) {
+      return ['input', 'select', 'textarea'].include(element.tagName.toLowerCase());
     });
   },
 
@@ -82,7 +94,8 @@ Form.Methods = {
   request: function(form, options) {
     form = $(form), options = Object.clone(options || {});
 
-    var params = options.parameters;
+    var params = options.parameters, action = form.readAttribute('action') || '';
+    if (action.blank()) action = window.location.href;
     options.parameters = form.serialize(true);
     
     if (params) {
@@ -93,7 +106,7 @@ Form.Methods = {
     if (form.hasAttribute('method') && !options.method)
       options.method = form.method;
     
-    return new Ajax.Request(form.readAttribute('action'), options);
+    return new Ajax.Request(action, options);
   }
 }
 
@@ -131,6 +144,13 @@ Form.Element.Methods = {
     return Form.Element.Serializers[method](element);
   },
 
+  setValue: function(element, value) {
+    element = $(element);
+    var method = element.tagName.toLowerCase();
+    Form.Element.Serializers[method](element, value);
+    return element;
+  },
+
   clear: function(element) {
     $(element).value = '';
     return element;
@@ -145,7 +165,7 @@ Form.Element.Methods = {
     try {
       element.focus();
       if (element.select && (element.tagName.toLowerCase() != 'input' ||
-        !['button', 'reset', 'submit'].include(element.type)))
+          !['button', 'reset', 'submit'].include(element.type)))
         element.select();
     } catch (e) {}
     return element;
@@ -173,27 +193,44 @@ var $F = Form.Element.Methods.getValue;
 /*--------------------------------------------------------------------------*/
 
 Form.Element.Serializers = {
-  input: function(element) {
+  input: function(element, value) {
     switch (element.type.toLowerCase()) {
       case 'checkbox':  
       case 'radio':
-        return Form.Element.Serializers.inputSelector(element);
+        return Form.Element.Serializers.inputSelector(element, value);
       default:
-        return Form.Element.Serializers.textarea(element);
+        return Form.Element.Serializers.textarea(element, value);
     }
   },
 
-  inputSelector: function(element) {
-    return element.checked ? element.value : null;
+  inputSelector: function(element, value) {
+    if (value === undefined) return element.checked ? element.value : null;
+    else element.checked = !!value;
   },
 
-  textarea: function(element) {
-    return element.value;
+  textarea: function(element, value) {
+    if (value === undefined) return element.value;
+    else element.value = value;
   },
   
-  select: function(element) {
-    return this[element.type == 'select-one' ? 
-      'selectOne' : 'selectMany'](element);
+  select: function(element, index) {
+    if (index === undefined)
+      return this[element.type == 'select-one' ? 
+        'selectOne' : 'selectMany'](element);
+    else {
+      var opt, value, single = index.constructor != Array;
+      for (var i = 0, length = element.length; i < length; i++) {
+        opt = element.options[i];
+        value = this.optionValue(opt);
+        if (single) {
+          if (value == index) {
+            opt.selected = true;
+            return;
+          }
+        }
+        else opt.selected = index.include(value);
+      }
+    }
   },
   
   selectOne: function(element) {

@@ -1,5 +1,20 @@
 *SVN*
 
+* The action for Form#request defaults to the current URL if the "action" attribute is empty. (This is what most of the major browsers do.) Fixes #8483. [Tomas, Mislav Marohnić]
+
+* In form serialization, change the way submit buttons are handled. Previously all submit buttons were serialized; now Prototype serializes only the first one. Change Form#serialize and Form.serializeElements to accept a params hash. With the "hash: false" option, a serialized string is returned instead of the hash data object. With the "submit: 'foo'" option, only the submit button with the name "foo" is serialized.  References #5031.  [Mislav Marohnić]
+  Examples:
+    $('form').serialize({ submit: 'delete' })
+    $('form').serialize({ hash: false }) //-> equivalent to $('form').serialize()
+
+* Form#findFirstElement respects HTML tabindexes.  Closes #7595.  [Christophe Porteneuve]
+
+* Added Form.Element#setValue method for setting values on various form controls. Checkboxes and radio buttons respond to a boolean and multiple select boxes expect an array of values.  Closes #5902.  [Jonathan Viney, Mislav Marohnić]
+  Examples:
+    $('text_input').setValue('hello world!')
+    $('remember_me').setValue(true)
+    $('attend_classes').setValue(['cheese rolling', 'evil chemistry'])
+
 * Make document.getElementsByClassName match a subset of the WHATWG Web Applications 1.0 specification which was adopted in Firefox 3 (http://www.whatwg.org/specs/web-apps/current-work/#getelementsbyclassname). It now supports multiple class names given as a whitespace-separated list in a string. Array argument is not supported. The method will only return the nodes that match all the class names. In browsers that implement the method natively it will not be overwritten.  Closes #8401.  [Mislav Marohnić]
   Example:
     document.getElementsByClassName('foo bar')
