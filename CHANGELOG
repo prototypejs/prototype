@@ -1,5 +1,7 @@
 *SVN*
 
+* Temporary workaround for Prototype.BrowserFeatures.SpecificElementExtensions incorrectly evaluating to true on iPhone. (needs further investigation)  [sam]
+
 * The action for Form#request defaults to the current URL if the "action" attribute is empty. (This is what most of the major browsers do.) Fixes #8483. [Tomas, Mislav Marohnić]
 
 * In form serialization, change the way submit buttons are handled. Previously all submit buttons were serialized; now Prototype serializes only the first one. Change Form#serialize and Form.serializeElements to accept a params hash. With the "hash: false" option, a serialized string is returned instead of the hash data object. With the "submit: 'foo'" option, only the submit button with the name "foo" is serialized.  References #5031.  [Mislav Marohnić]

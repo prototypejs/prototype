@@ -14,6 +14,7 @@ var Prototype = {
     XPath: !!document.evaluate,
     ElementExtensions: !!window.HTMLElement,
     SpecificElementExtensions: 
+      navigator.userAgent.indexOf('iPhone') == -1 &&
       (document.createElement('div').__proto__ !== 
        document.createElement('form').__proto__)
   },
