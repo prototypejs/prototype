@@ -111,6 +111,33 @@
       assertEqual(-1, [0].indexOf(1));
       assertEqual(0, [1].indexOf(1));
       assertEqual(1, [0,1,2].indexOf(1));
+      assertEqual(0, [1,2,1].indexOf(1));
+      assertEqual(2, [1,2,1].indexOf(1, -1));
+      assertEqual(1, [undefined,null].indexOf(null));
+    }},
+
+    testLastIndexOf: function(){ with(this) {
+      assertEqual(-1,[].lastIndexOf(1));
+      assertEqual(-1, [0].lastIndexOf(1));
+      assertEqual(0, [1].lastIndexOf(1));
+      assertEqual(2, [0,2,4,6].lastIndexOf(4));
+      assertEqual(3, [4,4,2,4,6].lastIndexOf(4));
+      assertEqual(3, [0,2,4,6].lastIndexOf(6,3));
+      assertEqual(-1, [0,2,4,6].lastIndexOf(6,2));
+      assertEqual(0, [6,2,4,6].lastIndexOf(6,2));
+      
+      var fixture = [1,2,3,4,3];
+      assertEqual(4, fixture.lastIndexOf(3));
+      assertEnumEqual([1,2,3,4,3],fixture);
+      
+      //tests from http://developer.mozilla.org/en/docs/Core_JavaScript_1.5_Reference:Objects:Array:lastIndexOf
+      var array = [2, 5, 9, 2];
+      assertEqual(3,array.lastIndexOf(2));
+      assertEqual(-1,array.lastIndexOf(7));
+      assertEqual(3,array.lastIndexOf(2,3));
+      assertEqual(0,array.lastIndexOf(2,2));
+      assertEqual(0,array.lastIndexOf(2,-2));
+      assertEqual(3,array.lastIndexOf(2,-1));
     }},
     
     testInspect: function(){ with(this) {

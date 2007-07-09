@@ -54,41 +54,31 @@
       assert3(a3);
     }
     
-  var globalBindTest = null;
-
   new Test.Unit.Runner({
     
     testFunctionBind: function() { with(this) {
-      function methodWithoutArguments(){
-        globalBindTest = this.hi;
-      }
-      function methodWithArguments(){
-        globalBindTest = this.hi + ',' + $A(arguments).join(',');
-      }
-      function methodWithBindArguments(){
-        globalBindTest = this.hi + ',' + $A(arguments).join(',');
-      }
-      function methodWithBindArgumentsAndArguments(){
-        globalBindTest = this.hi + ',' + $A(arguments).join(',');
-      }
-      
-      methodWithoutArguments.bind({hi:'without'})();
-      assertEqual('without', globalBindTest);
-      
-      methodWithArguments.bind({hi:'with'})('arg1','arg2');
-      assertEqual('with,arg1,arg2', globalBindTest);
-      
-      methodWithBindArguments.bind({hi:'withBindArgs'},'arg1','arg2')();
-      assertEqual('withBindArgs,arg1,arg2', globalBindTest);
-      
-      methodWithBindArgumentsAndArguments.bind({hi:'withBindArgsAndArgs'},'arg1','arg2')('arg3','arg4');
-      assertEqual('withBindArgsAndArgs,arg1,arg2,arg3,arg4', globalBindTest);
+      function methodWithoutArguments() { return this.hi };
+      function methodWithArguments()    { return this.hi + ',' + $A(arguments).join(',') };
+      var func = Prototype.emptyFunction;
+
+      assertIdentical(func, func.bind());
+      assertIdentical(func, func.bind(undefined));
+      assertNotIdentical(func, func.bind(null));
+
+      assertEqual('without', methodWithoutArguments.bind({ hi: 'without' })());
+      assertEqual('with,arg1,arg2', methodWithArguments.bind({ hi: 'with' })('arg1','arg2'));
+      assertEqual('withBindArgs,arg1,arg2',
+        methodWithArguments.bind({ hi: 'withBindArgs' }, 'arg1', 'arg2')());
+      assertEqual('withBindArgsAndArgs,arg1,arg2,arg3,arg4',
+        methodWithArguments.bind({ hi: 'withBindArgsAndArgs' }, 'arg1', 'arg2')('arg3', 'arg4'));
     }},
     
     testFunctionCurry: function() { with(this) {
       var split = function(delimiter, string) { return string.split(delimiter); };
       var splitOnColons = split.curry(":");
+      assertNotIdentical(split, splitOnColons);
       assertEnumEqual(split(":", "0:1:2:3:4:5"), splitOnColons("0:1:2:3:4:5"));
+      assertIdentical(split, split.curry());
     }},
     
     testFunctionDelay: function() { with(this) {

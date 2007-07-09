@@ -1,5 +1,12 @@
 *SVN*
 
+* Enhance the Enumerable and Array APIs to more closely match those of JavaScript 1.6 as implemented in Firefox 1.5.  Closes #6650, #8409.  [Mislav Marohnić, Sylvain Zimmer]
+  - Add Array#lastIndexOf, and change Array#indexOf not to overwrite the native method. 
+  - Make Enumerable use Array.prototype.forEach instead of _each when possible (slight speed increase).
+  - Add "filter", "entries", "every", and "some" Array aliases. 
+  - All Enumerable methods now have an additional parameter, "context", which, if present, specifies the object to which the iterators' "this" is bound. 
+  - Function#bind and #curry now return the receiving function if the binding object is undefined.
+
 * Temporary workaround for Prototype.BrowserFeatures.SpecificElementExtensions incorrectly evaluating to true on iPhone. (needs further investigation)  [sam]
 
 * The action for Form#request defaults to the current URL if the "action" attribute is empty. (This is what most of the major browsers do.) Fixes #8483. [Tomas, Mislav Marohnić]

@@ -68,6 +68,7 @@ Object.extend(Object, {
 
 Object.extend(Function.prototype, {
   bind: function() {
+    if (arguments.length < 2 && arguments[0] === undefined) return this;
     var __method = this, args = $A(arguments), object = args.shift();
     return function() {
       return __method.apply(object, args.concat($A(arguments)));
@@ -82,6 +83,7 @@ Object.extend(Function.prototype, {
   },
   
   curry: function() {
+    if (!arguments.length) return this;
     var __method = this, args = $A(arguments);
     return function() {
       return __method.apply(this, args.concat($A(arguments)));

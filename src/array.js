@@ -1,8 +1,7 @@
 function $A(iterable) {
   if (!iterable) return [];
-  if (iterable.toArray) {
-    return iterable.toArray();
-  } else {
+  if (iterable.toArray) return iterable.toArray();
+  else {
     var results = [];
     for (var i = 0, length = iterable.length; i < length; i++)
       results.push(iterable[i]);
@@ -29,8 +28,7 @@ Array.from = $A;
 
 Object.extend(Array.prototype, Enumerable);
 
-if (!Array.prototype._reverse)
-  Array.prototype._reverse = Array.prototype.reverse;
+if (!Array.prototype._reverse) Array.prototype._reverse = Array.prototype.reverse;
 
 Object.extend(Array.prototype, {
   _each: function(iterator) {
@@ -71,12 +69,6 @@ Object.extend(Array.prototype, {
     });
   },
   
-  indexOf: function(object) {
-    for (var i = 0, length = this.length; i < length; i++)
-      if (this[i] == object) return i;
-    return -1;
-  },
-  
   reverse: function(inline) {
     return (inline !== false ? this : this.toArray())._reverse();
   },
@@ -114,6 +106,25 @@ Object.extend(Array.prototype, {
     return '[' + results.join(', ') + ']';
   }
 });
+
+// use native browser JS 1.6 implementation if available
+if (typeof Array.prototype.forEach == 'function')
+  Array.prototype._each = Array.prototype.forEach;
+
+if (!Array.prototype.indexOf) Array.prototype.indexOf = function(item, i) {
+  i || (i = 0);
+  var length = this.length;
+  if (i < 0) i = length + i;
+  for (; i < length; i++)
+    if (this[i] === item) return i;
+  return -1;
+}
+
+if (!Array.prototype.lastIndexOf) Array.prototype.lastIndexOf = function(item, i) {
+  i = isNaN(i) ? this.length : (i < 0 ? this.length + i : i) + 1;
+  var n = this.slice(0, i).reverse().indexOf(item);
+  return (n < 0) ? n : i - n - 1;
+}
 
 Array.prototype.toArray = Array.prototype.clone;
 
