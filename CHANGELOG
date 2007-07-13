@@ -1,5 +1,9 @@
 *SVN*
 
+* Rename Element#getElementsBySelector to Element#select and add alias for Element#getElementsBySelector.  [Thomas Fuchs]
+
+* Add Element#adjacent as a shortcut to selecting all adjacent nodes (and their children) that match a CSS selector.  [Thomas Fuchs]
+
 * Enhance the Enumerable and Array APIs to more closely match those of JavaScript 1.6 as implemented in Firefox 1.5.  Closes #6650, #8409.  [Mislav Marohnić, Sylvain Zimmer]
   - Add Array#lastIndexOf, and change Array#indexOf not to overwrite the native method. 
   - Make Enumerable use Array.prototype.forEach instead of _each when possible (slight speed increase).

@@ -223,9 +223,14 @@ Element.Methods = {
       nextSiblings[index || 0];
   },
   
-  getElementsBySelector: function() {
+  select: function() {
     var args = $A(arguments), element = $(args.shift());
     return Selector.findChildElements(element, args);
+  },
+  
+  adjacent: function() {
+    var args = $A(arguments), element = $(args.shift());
+    return Selector.findChildElements(element.parentNode, args).without(element);
   },
   
   readAttribute: function(element, name) {
@@ -594,6 +599,8 @@ Element.Methods = {
     return element;
   }
 };
+
+Element.Methods.getElementsBySelector = Element.Methods.select;
 
 if (!document.getElementsByClassName) document.getElementsByClassName = function(instanceMethods){
   function isArray(className) {

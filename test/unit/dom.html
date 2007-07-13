@@ -659,11 +659,21 @@
       });
     }},
         
-    testElementSelectorMethod: function() {with(this) {
-      var testSelector = $('container').getElementsBySelector('p.test');
-      assertEqual(testSelector.length, 4);
-      assertEqual(testSelector[0], $('intended'));
-      assertEqual(testSelector[0], $$('#container p.test')[0]);
+    testElementSelectorMethod: function() {with(this) {      
+      ['getElementsBySelector','select'].each(function(method){
+        var testSelector = $('container')[method]('p.test');
+        assertEqual(testSelector.length, 4);
+        assertEqual(testSelector[0], $('intended'));
+        assertEqual(testSelector[0], $$('#container p.test')[0]);        
+      });
+    }},
+    
+    testElementAdjacent: function() {with(this) {
+      var elements = $('intended').adjacent('p');
+      assertEqual(elements.length, 3);
+      elements.each(function(element){
+        assert(element != $('intended'));
+      });
     }},
        
     testElementClassNameMethod: function() {with(this) {
