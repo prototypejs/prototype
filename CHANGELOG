@@ -1,5 +1,9 @@
 *SVN*
 
+* Add Array#intersect for set intersection. Returns a new array containing all items common to the array and the argument, with duplicates removed (clone of the Ruby & method).   [Thomas Fuchs]
+  Example:
+    [1,1,3,5].intersect([1,2,3]) -> [1,3]
+
 * Rename Element#getElementsBySelector to Element#select and add alias for Element#getElementsBySelector.  [Thomas Fuchs]
 
 * Add Element#adjacent as a shortcut to selecting all adjacent nodes (and their children) that match a CSS selector.  [Thomas Fuchs]

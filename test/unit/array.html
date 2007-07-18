@@ -147,6 +147,18 @@
       assertEqual('[\'a\', 1]',['a',1].inspect());
     }},
     
+    testIntersect: function(){ with(this) {
+      assertEnumEqual([1,3], [1,1,3,5].intersect([1,2,3]));
+      assertEnumEqual([1], [1,1].intersect([1,1]));
+      assertEnumEqual([], [1,1,3,5].intersect([4]));
+      assertEnumEqual([], [1].intersect(['1']));
+      
+      assertEnumEqual(
+        ['B','C','D'], 
+        $R('A','Z').toArray().intersect($R('B','D').toArray())
+      );
+    }},
+    
     testToJSON: function(){ with(this) {
       assertEqual('[]', [].toJSON());
       assertEqual('[\"a\"]', ['a'].toJSON());

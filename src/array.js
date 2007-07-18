@@ -85,6 +85,12 @@ Object.extend(Array.prototype, {
     });
   },
   
+  intersect: function(array) { 
+    return this.uniq().findAll(function(item) { 
+      return array.include(item);
+    }); 
+  },
+  
   clone: function() {
     return [].concat(this);
   },
