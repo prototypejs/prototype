@@ -285,7 +285,7 @@ Element.Methods = {
   },
   
   classNames: function(element) {
-    return $w(element.className);
+    return new Element.ClassNames(element);
   },
 
   hasClassName: function(element, className) {
