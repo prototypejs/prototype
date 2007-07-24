@@ -223,6 +223,12 @@
   </div>
 </div>
 
+<div id="test_csstext_1">test_csstext_1</div>
+<div id="test_csstext_2">test_csstext_2</div>
+<div id="test_csstext_3" style="border: 1px solid red">test_csstext_3</div>
+<div id="test_csstext_4" style="font-size: 20px">test_csstext_4</div>
+<div id="test_csstext_5">test_csstext_5</div>
+
 <div id="custom_attributes">
   <div foo="1" bar="2"></div>
   <div foo="2"></div>
@@ -938,7 +944,7 @@
       Element.setStyle('style_test_3',{ marginTop: '1px' });
       assertEqual('1px', $('style_test_3').style.marginTop);
       
-      $('style_test_3').setStyle({ 'margin-top': '2px', left: '-1px' });
+      $('style_test_3').setStyle({ marginTop: '2px', left: '-1px' });
       assertEqual('-1px', $('style_test_3').style.left);
       assertEqual('2px', $('style_test_3').style.marginTop);
       
@@ -959,7 +965,29 @@
       
       $('style_test_3').setStyle({ opacity: 0 });
       assertEqual(0, $('style_test_3').getStyle('opacity'));
-    }},
+
+      $('test_csstext_1').setStyle('font-size: 15px');
+      assertEqual('15px', $('test_csstext_1').getStyle('font-size'));
+      
+      $('test_csstext_2').setStyle({height: '40px'});
+      $('test_csstext_2').setStyle('font-size: 15px');
+      assertEqual('15px', $('test_csstext_2').getStyle('font-size'));
+      assertEqual('40px', $('test_csstext_2').getStyle('height'));
+      
+      $('test_csstext_3').setStyle('font-size: 15px');
+      assertEqual('15px', $('test_csstext_3').getStyle('font-size'));
+      assertEqual('1px', $('test_csstext_3').getStyle('border-top-width'));
+      
+      $('test_csstext_4').setStyle('font-size: 15px');
+      assertEqual('15px', $('test_csstext_4').getStyle('font-size'));
+      
+      $('test_csstext_4').setStyle('float: right; font-size: 10px');
+      assertEqual('right', $('test_csstext_4').getStyle('float'));
+      assertEqual('10px', $('test_csstext_4').getStyle('font-size'));
+      
+      $('test_csstext_5').setStyle('float: left; opacity: .5; font-size: 10px');
+      assertEqual(parseFloat('0.5'), parseFloat($('test_csstext_5').getStyle('opacity')));
+   }},
     
     testElementSetStyleCamelized: function() { with(this) {
       assertNotEqual('30px', $('style_test_3').style.marginTop);

@@ -1,5 +1,18 @@
 *SVN*
 
+* Make Element#setStyle accept a string argument of CSS rules. Deprecate uncamelized style property names when setting styles using an object (for performance reasons).  Closes #9059.  [Tobie Langel]
+  Examples:
+    $('id').setStyle('font-size: 12px; float: left; opacity: 0.5');
+    $('id').setStyle({fontSize: '12px', cssFloat: 'left', opacity: 0.5});
+
+  !! BACKWARDS COMPATIBILITY CHANGE !!
+  
+  If you have code that looks like this:
+    $('id').setStyle({'font-size': '12px'});
+  You need to replace it with either of the following:
+    $('id').setStyle({fontSize: '12px'});
+    $('id').setStyle('font-size: 12px;');
+
 * Add Element#identify, which returns the element's ID if it exists, or sets and returns a unique, auto-generated ID (of the form "anonymous_element_" + auto-incremented digit) otherwise.  Use this when you need to ensure an element has an ID.  Closes #9012.  [Jeff Watkins, sam, Tobie Langel]
 
 * Make Element#readAttribute work for cloned elements in IE. Closes #8481. [chem, Tobie Langel]

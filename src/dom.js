@@ -365,16 +365,20 @@ Element.Methods = {
     return $(element).getStyle('opacity');
   },
   
-  setStyle: function(element, styles, camelized) {
+  setStyle: function(element, styles) {
     element = $(element);
-    var elementStyle = element.style;
-
+    var elementStyle = element.style, match;
+    if (typeof styles === 'string') {
+      element.style.cssText += ';' + styles;
+      return styles.include('opacity') ?
+        element.setOpacity(styles.match(/opacity:\s*(\d?\.?\d*)/)[1]) : element;
+    }
     for (var property in styles)
       if (property == 'opacity') element.setOpacity(styles[property])
       else 
         elementStyle[(property == 'float' || property == 'cssFloat') ?
           (elementStyle.styleFloat === undefined ? 'cssFloat' : 'styleFloat') : 
-          (camelized ? property : property.camelize())] = styles[property];
+            property] = styles[property];
 
     return element;
   },
