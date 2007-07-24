@@ -61,7 +61,7 @@
   </div> <!-- #level1 -->
 
   <div id="dupContainer">
-    <span id="dupL1">
+    <span id="dupL1" class="span_foo span_bar">
       <span id="dupL2">
         <span id="dupL3">
           <span id="dupL4">
@@ -197,6 +197,26 @@
       assertElementMatches(Selector.findElement($('list').descendants(), 'li', 1), 'li#item_2');
       assertElementMatches(Selector.findElement($('list').descendants(), 'li#item_3'), 'li');
       assertEqual(undefined, Selector.findElement($('list').descendants(), 'em'));
+    }},
+    
+    testElementMatch: function() {with(this) {
+      var span = $('dupL1');
+      // tests that should pass
+      assert(span.match('span'));
+      assert(span.match('span#dupL1'));
+      assert(span.match('div > span'), 'child combinator');
+      assert(span.match('#dupContainer span'), 'descendant combinator');      
+      assert(span.match('#dupL1'), 'ID only');
+      assert(span.match('span.span_foo'), 'class name 1');
+      assert(span.match('span.span_bar'), 'class name 2');
+      assert(span.match('span:first-child'), 'first-child pseudoclass');
+      
+      assert(!span.match('span.span_wtf'), 'bogus class name');
+      assert(!span.match('#dupL2'), 'different ID');
+      assert(!span.match('div'), 'different tag name');
+      assert(!span.match('span span'), 'different ancestry');
+      assert(!span.match('span > span'), 'different parent');
+      assert(!span.match('span:nth-child(5)'), 'different pseudoclass');
     }},
 
     testSelectorWithSpaceInAttributeValue: function() {with(this) {
