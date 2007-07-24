@@ -126,7 +126,7 @@ Element.Methods = {
   
   wrap: function(element, wrapper, attributes) {
     element = $(element);
-    if (wrapper && wrapper.nodeType)
+    if (Object.isElement(wrapper))
       $(wrapper).writeAttribute(attributes || {});
     else if (typeof wrapper == 'string') wrapper = new Element(wrapper, attributes);
     else wrapper = new Element('div', wrapper);
