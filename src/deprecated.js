@@ -20,7 +20,7 @@ var Insertion = {
   After: function(element, content) {
     return Element.insert(element, {after:content});
   }
-}
+};
 
 var $continue = new Error('"throw $continue" is deprecated, use "return" instead');
 
@@ -109,5 +109,41 @@ var Position = {
     options = options || {};
     return Element.clonePosition(target, source, options);
   }
-}
+};
+
+/*--------------------------------------------------------------------------*/
+
+Element.ClassNames = Class.create();
+Element.ClassNames.prototype = {
+  initialize: function(element) {
+    this.element = $(element);
+  },
+
+  _each: function(iterator) {
+    this.element.className.split(/\s+/).select(function(name) {
+      return name.length > 0;
+    })._each(iterator);
+  },
+  
+  set: function(className) {
+    this.element.className = className;
+  },
+  
+  add: function(classNameToAdd) {
+    if (this.include(classNameToAdd)) return;
+    this.set($A(this).concat(classNameToAdd).join(' '));
+  },
+  
+  remove: function(classNameToRemove) {
+    if (!this.include(classNameToRemove)) return;
+    this.set($A(this).without(classNameToRemove).join(' '));
+  },
+  
+  toString: function() {
+    return $A(this).join(' ');
+  }
+};
+
+Object.extend(Element.ClassNames.prototype, Enumerable);
+
 /*--------------------------------------------------------------------------*/

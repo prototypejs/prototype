@@ -1,5 +1,7 @@
 *SVN*
 
+* Remove the dependency on Element.ClassNames from Element#addClassName/removeClassName/toggleClassName, and deprecate Element.ClassNames. Closes #9073. [Tobie Langel]
+
 * Make Element#wrap accept a second argument for setting attributes on the wrapper. Allow wrapping elements which are not part of the document. Closes #9071. [Tobie Langel]
 
 * Improvements for Element#replace, Element#update and Element#insert.  Closes #7429, #9060.  [Tobie Langel]

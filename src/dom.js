@@ -285,7 +285,7 @@ Element.Methods = {
   },
   
   classNames: function(element) {
-    return new Element.ClassNames(element);
+    return $w(element.className);
   },
 
   hasClassName: function(element, className) {
@@ -297,20 +297,22 @@ Element.Methods = {
 
   addClassName: function(element, className) {
     if (!(element = $(element))) return;
-    Element.classNames(element).add(className);
+    if (!element.hasClassName(className))
+      element.className += (element.className ? ' ' : '') + className;
     return element;
   },
 
   removeClassName: function(element, className) {
     if (!(element = $(element))) return;
-    Element.classNames(element).remove(className);
+    element.className = element.className.replace(
+      new RegExp("(^|\\s+)" + className + "(\\s+|$)"), ' ').strip();
     return element;
   },
   
   toggleClassName: function(element, className) {
     if (!(element = $(element))) return;
-    Element.classNames(element)[element.hasClassName(className) ? 'remove' : 'add'](className);
-    return element;
+    return element[element.hasClassName(className) ?
+      'removeClassName' : 'addClassName'](className);
   },
   
   observe: function() {
@@ -1158,38 +1160,3 @@ Element.addMethods = function(methods) {
   if (Element.extend.refresh) Element.extend.refresh();
   Element.cache = {};
 };
-
-/*--------------------------------------------------------------------------*/
-
-Element.ClassNames = Class.create();
-Element.ClassNames.prototype = {
-  initialize: function(element) {
-    this.element = $(element);
-  },
-
-  _each: function(iterator) {
-    this.element.className.split(/\s+/).select(function(name) {
-      return name.length > 0;
-    })._each(iterator);
-  },
-  
-  set: function(className) {
-    this.element.className = className;
-  },
-  
-  add: function(classNameToAdd) {
-    if (this.include(classNameToAdd)) return;
-    this.set($A(this).concat(classNameToAdd).join(' '));
-  },
-  
-  remove: function(classNameToRemove) {
-    if (!this.include(classNameToRemove)) return;
-    this.set($A(this).without(classNameToRemove).join(' '));
-  },
-  
-  toString: function() {
-    return $A(this).join(' ');
-  }
-};
-
-Object.extend(Element.ClassNames.prototype, Enumerable);
