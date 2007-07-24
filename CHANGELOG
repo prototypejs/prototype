@@ -1,5 +1,7 @@
 *SVN*
 
+* Make Element#wrap accept a second argument for setting attributes on the wrapper. Allow wrapping elements which are not part of the document. Closes #9071. [Tobie Langel]
+
 * Improvements for Element#replace, Element#update and Element#insert.  Closes #7429, #9060.  [Tobie Langel]
   - Element#replace/update/insert uses the argument's toElement or toHTML method if present (toElement has precedence if both are present).
   - Element#replace and Element#update now also accept DOM elements.

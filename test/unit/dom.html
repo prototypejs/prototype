@@ -548,13 +548,24 @@
     
     testElementWrap: function() {with(this) {
       var element = $('wrap'), parent = document.createElement('div');
-      element.wrap('div');
+      element.wrap();
       assert(getInnerHTML('wrap-container').startsWith('<div><p'));
-      element.wrap(parent);
+      element.wrap('div');
       assert(getInnerHTML('wrap-container').startsWith('<div><div><p'));
       assert(typeof parent.setStyle == 'function');
-      element.wrap();
+      element.wrap(parent);
       assert(getInnerHTML('wrap-container').startsWith('<div><div><div><p'));
+      
+      element.wrap('div', {className: 'wrapper'});
+      assert(element.up().hasClassName('wrapper'));      
+      element.wrap({className: 'other-wrapper'});
+      assert(element.up().hasClassName('other-wrapper'));
+      element.wrap(new Element('div'), {className: 'yet-other-wrapper'});
+      assert(element.up().hasClassName('yet-other-wrapper'));
+      
+      var orphan = new Element('p'), div = new Element('div');
+      orphan.wrap(div);
+      assertEqual(orphan.parentNode, div);
     }},
     
     testElementVisible: function(){with(this) {

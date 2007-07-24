@@ -124,12 +124,14 @@ Element.Methods = {
     return element;
   },
   
-  wrap: function(element, wrapper) {
+  wrap: function(element, wrapper, attributes) {
     element = $(element);
-    wrapper = wrapper || 'div';
-    if (typeof wrapper == 'string') wrapper = new Element(wrapper);
-    else Element.extend(wrapper);
-    element.parentNode.replaceChild(wrapper, element);
+    if (wrapper && wrapper.nodeType)
+      $(wrapper).writeAttribute(attributes || {});
+    else if (typeof wrapper == 'string') wrapper = new Element(wrapper, attributes);
+    else wrapper = new Element('div', wrapper);
+    if (element.parentNode)
+      element.parentNode.replaceChild(wrapper, element);
     wrapper.appendChild(element);
     return element;
   },
