@@ -1,6 +1,14 @@
 *SVN*
 
-* Extended grep semantics. The first argument to Enumerable#grep is now a "filter" (an object with a match() method) so you can now e.g. filter an array of DOM nodes by CSS selector.  RegExp#match is now an alias to RegExp#test, so grep can still be used to filter an array of strings with a regular expression.  Closes #7596.  [Christophe Porteneuve, sam]
+* Template enhancements.  Closes #8166.  [Christophe Porteneuve]
+  - Added String#interpolate as a shortcut for new Template(...).evaluate(...). 
+  - If you pass String#interpolate or Template#evaluate an object with a toTemplateReplacements() method, the return value of that method will be used as the replacement object.
+  - You can now substitute properties of template replacement values in template strings, using dot or bracket notation (or both).  Example:
+    "#{name.last}, #{name.first[0]}. (#{location})".interpolate({
+      name: { first: "Christophe", last: "Porteneuve" }, location: "Paris"
+    }) // "Porteneuve, C. (Paris)"
+
+* Extended grep semantics.  The first argument to Enumerable#grep is now a "filter" (an object with a match() method) so you can now e.g. filter an array of DOM nodes by CSS selector.  RegExp#match is now an alias to RegExp#test, so grep can still be used to filter an array of strings with a regular expression.  Closes #7596.  [Christophe Porteneuve, sam]
 
 * Make String#scan explicitly return a string. This prevents possible issues with methods expecting input data that is typeof == 'string'. Closes #6350. [AndrewRev, Tobie Langel]
 

@@ -146,7 +146,7 @@
       assertEnumEqual(['a','b'],'ab'.toArray());
       assertEnumEqual(['f','o','o'],'foo'.toArray());
     }},
-    
+
     /* 
       Note that camelize() differs from its Rails counterpart,
       as it is optimized for dealing with JavaScript object
@@ -313,7 +313,67 @@
       assertEqual('<tr><td>0</td><td>false</td><td></td><td></td><td></td></tr>',
         template.evaluate(falses));
     }},
-    
+
+    testTemplateEvaluationWithNested: function() {with(this) {
+      var source = '#{name} #{manager.name} #{manager.age} #{manager.undef} #{manager.age.undef} #{colleagues.first.name}';
+      var subject = { manager: { name: 'John', age: 29 }, name: 'Stephan', age: 22, colleagues: { first: { name: 'Mark' } } };
+      assertEqual('Stephan', new Template('#{name}').evaluate(subject));
+      assertEqual('John', new Template('#{manager.name}').evaluate(subject));
+      assertEqual('29', new Template('#{manager.age}').evaluate(subject));
+      assertEqual('', new Template('#{manager.undef}').evaluate(subject));
+      assertEqual('', new Template('#{manager.age.undef}').evaluate(subject));
+      assertEqual('Mark', new Template('#{colleagues.first.name}').evaluate(subject));
+      assertEqual('Stephan John 29   Mark', new Template(source).evaluate(subject));
+    }},
+
+    testTemplateEvaluationWithIndexing: function() {with(this) {
+      var source = '#{0} = #{[0]} - #{1} = #{[1]} - #{[2][0]} - #{[2].name} - #{first[0]} - #{[first][0]} - #{[\\]]} - #{first[\\]]}';
+      var subject = [ 'zero', 'one', [ 'two-zero' ] ];
+      subject[2].name = 'two-zero-name';
+      subject.first = subject[2];
+      subject[']'] = '\\';
+      subject.first[']'] = 'first\\';
+      assertEqual('zero', new Template('#{[0]}').evaluate(subject));
+      assertEqual('one', new Template('#{[1]}').evaluate(subject));
+      assertEqual('two-zero', new Template('#{[2][0]}').evaluate(subject));
+      assertEqual('two-zero-name', new Template('#{[2].name}').evaluate(subject));
+      assertEqual('two-zero', new Template('#{first[0]}').evaluate(subject));
+      assertEqual('\\', new Template('#{[\\]]}').evaluate(subject));
+      assertEqual('first\\', new Template('#{first[\\]]}').evaluate(subject));
+      assertEqual('empty - empty2', new Template('#{[]} - #{m[]}').evaluate({ '': 'empty', m: {'': 'empty2'}}));
+      assertEqual('zero = zero - one = one - two-zero - two-zero-name - two-zero - two-zero - \\ - first\\', new Template(source).evaluate(subject));
+    }},
+
+    testTemplateToTemplateReplacements: function() {with(this) {
+      var source = 'My name is #{name}, my job is #{job}';
+      var subject = {
+        name: 'Stephan',
+        getJob: function() { return 'Web developer'; },
+        toTemplateReplacements: function() { return { name: this.name, job: this.getJob() } }
+      };
+      assertEqual('My name is Stephan, my job is Web developer', new Template(source).evaluate(subject));
+    }},
+
+    testTemplateEvaluationCombined: function() {with(this) {
+      var source = '#{name} is #{age} years old, managed by #{manager.name}, #{manager.age}.\n' +
+        'Colleagues include #{colleagues[0].name} and #{colleagues[1].name}.';
+      var subject = {
+        name: 'Stephan', age: 22,
+        manager: { name: 'John', age: 29 },
+        colleagues: [ { name: 'Mark' }, { name: 'Indy' } ]
+      };
+      assertEqual('Stephan is 22 years old, managed by John, 29.\n' +
+        'Colleagues include Mark and Indy.',
+        new Template(source).evaluate(subject));
+    }},
+
+    testInterpolate: function() {with(this) {
+      var subject = { name: 'Stephan' };
+      var pattern = /(^|.|\r|\n)(#\((.*?)\))/;
+      assertEqual('#{name}: Stephan', '\\#{name}: #{name}'.interpolate(subject));
+      assertEqual('#(name): Stephan', '\\#(name): #(name)'.interpolate(subject, pattern));
+    }},
+
     testToQueryParams: function() {with(this) {
       // only the query part
       var result = {a:undefined, b:'c'};

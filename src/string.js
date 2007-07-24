@@ -199,6 +199,10 @@ Object.extend(String.prototype, {
   
   blank: function() {
     return /^\s*$/.test(this);
+  },
+
+  interpolate: function(object, pattern) {
+    return new Template(this, pattern).evaluate(object);
   }
 });
 
@@ -231,14 +235,32 @@ Template.Pattern = /(^|.|\r|\n)(#\{(.*?)\})/;
 Template.prototype = {
   initialize: function(template, pattern) {
     this.template = template.toString();
-    this.pattern  = pattern || Template.Pattern;
+    this.pattern = pattern || Template.Pattern;
   },
   
   evaluate: function(object) {
+    if (typeof object.toTemplateReplacements == 'function')
+      object = object.toTemplateReplacements();
+
     return this.template.gsub(this.pattern, function(match) {
-      var before = match[1];
+      if (object == null) return '';
+      
+      var before = match[1] || '';
       if (before == '\\') return match[2];
-      return before + String.interpret(object[match[3]]);
-    });
+      
+      var ctx = object, expr = match[3];
+      var pattern = /^([^.[]+|\[((?:.*?[^\\])?)\])(\.|\[|$)/, match = pattern.exec(expr);
+      if (match == null) return '';
+
+      while (match != null) {
+        var comp = match[1].startsWith('[') ? match[2].gsub('\\\\]', ']') : match[1];
+        ctx = ctx[comp];
+        if (null == ctx || '' == match[3]) break;
+        expr = expr.substring('[' == match[3] ? match[1].length : match[0].length);
+        match = pattern.exec(expr);
+      }
+      
+      return before + String.interpret(ctx);
+    }.bind(this));
   }
-}
+};
