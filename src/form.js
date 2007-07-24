@@ -16,7 +16,7 @@ var Form = {
             submit !== false && (!submit || key == submit) && (submitted = true)))) { 
           if (key in result) {
             // a key is already present; construct an array of values
-            if (result[key].constructor != Array) result[key] = [result[key]];
+            if (!Object.isArray(result[key])) result[key] = [result[key]];
             result[key].push(value);
           }
           else result[key] = value;
@@ -218,7 +218,7 @@ Form.Element.Serializers = {
       return this[element.type == 'select-one' ? 
         'selectOne' : 'selectMany'](element);
     else {
-      var opt, value, single = index.constructor != Array;
+      var opt, value, single = !Object.isArray(index);
       for (var i = 0, length = element.length; i < length; i++) {
         opt = element.options[i];
         value = this.optionValue(opt);

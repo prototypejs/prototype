@@ -170,6 +170,30 @@
       assertEqual('I\'m a div with id test', Object.toJSON(element));
     }},
     
+    testObjectToHTML: function() { with(this) {
+      assertIdentical('', Object.toHTML());
+      assertIdentical('', Object.toHTML(''));
+      assertIdentical('', Object.toHTML(null));
+      assertIdentical('0', Object.toHTML(0));
+      assertIdentical('123', Object.toHTML(123));
+      assertEqual('hello world', Object.toHTML('hello world'));
+      assertEqual('hello world', Object.toHTML({toHTML: function() { return 'hello world' }}));
+    }},
+    
+    testObjectIsArray: function() { with(this) {
+      assert(Object.isArray([]));
+      assert(Object.isArray([0]));
+      assert(Object.isArray([0, 1]));
+      assert(!Object.isArray({}));
+    }},
+    
+    testObjectIsElement: function() { with(this) {
+      assert(Object.isElement(document.createElement('div')));
+      assert(Object.isElement(new Element('div')));
+      assert(Object.isElement($('testlog')));
+      assert(!Object.isElement(document.createTextNode('bla')));
+    }},
+    
     // sanity check
     testDoesntExtendObjectPrototype: function() {with(this) {
       // for-in is supported with objects

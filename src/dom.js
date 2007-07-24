@@ -68,33 +68,35 @@ Element.Methods = {
     return element;
   },
 
-  update: function(element, html) {
-    html = typeof html == 'undefined' ? '' : html.toString();
-    $(element).innerHTML = html.stripScripts();
-    html.evalScripts.bind(html).defer();
+  update: function(element, content) {
+    element = $(element);
+    if (content && content.toElement) content = content.toElement();
+    if (Object.isElement(content)) return element.update().insert(content);
+    content = Object.toHTML(content);
+    element.innerHTML = content.stripScripts();
+    content.evalScripts.bind(content).defer();
     return element;
   },
   
-  replace: function(element, html) {
+  replace: function(element, content) {
     element = $(element);
-    html = typeof html == 'undefined' ? '' : html.toString();
-    if (element.outerHTML) {
-      element.outerHTML = html.stripScripts();
-    } else {
+    if (content && content.toElement) content = content.toElement();
+    else if (!Object.isElement(content)) {
+      content = Object.toHTML(content);
       var range = element.ownerDocument.createRange();
       range.selectNode(element);
-      element.parentNode.replaceChild(
-        range.createContextualFragment(html.stripScripts()), element);
+      content.evalScripts.bind(content).defer();
+      content = range.createContextualFragment(content.stripScripts());
     }
-    html.evalScripts.bind(html).defer();
+    element.parentNode.replaceChild(content, element);
     return element;
   },
   
   insert: function(element, insertions) {
     element = $(element);
-        
+    
     if (typeof insertions == 'string' || typeof insertions == 'number' ||
-        (insertions && insertions.ownerDocument === document))
+        Object.isElement(insertions) || (insertions && (insertions.toElement || insertions.toHTML)))
           insertions = {bottom:insertions};
     
     var content, t, range;
@@ -103,13 +105,14 @@ Element.Methods = {
       content  = insertions[position];
       position = position.toLowerCase();
       t = Element._insertionTranslations[position];
-    
-      if (content && content.ownerDocument === document) {
+
+      if (content && content.toElement) content = content.toElement();
+      if (Object.isElement(content)) {
         t.insert(element, content);
         continue;
       }
     
-      content = String.interpret(content);
+      content = Object.toHTML(content);
       
       range = element.ownerDocument.createRange();
       t.initializeRange(element, range);
@@ -613,9 +616,6 @@ Element.Methods = {
 Element.Methods.identify.counter = 1;
 
 if (!document.getElementsByClassName) document.getElementsByClassName = function(instanceMethods){
-  function isArray(className) {
-    return ;
-  }
   function iter(name) {
     return name.blank() ? null : "[contains(concat(' ', @class, ' '), ' " + name + " ')]";
   }
@@ -667,9 +667,9 @@ Element._attributeTranslations = {
 if (!document.createRange || Prototype.Browser.Opera) {
   Element.Methods.insert = function(element, insertions) {
     element = $(element);
-    
+
     if (typeof insertions == 'string' || typeof insertions == 'number' ||
-        (insertions && insertions.ownerDocument === document))
+        Object.isElement(insertions) || (insertions && (insertions.toElement || insertions.toHTML)))
           insertions = {bottom:insertions};
     
     var t = Element._insertionTranslations, content, position, pos, tagName;
@@ -678,13 +678,14 @@ if (!document.createRange || Prototype.Browser.Opera) {
       content  = insertions[position];
       position = position.toLowerCase();
       pos      = t[position];
-      
-      if (content && content.ownerDocument === document) {
+
+      if (content && content.toElement) content = content.toElement();
+      if (Object.isElement(content)) {
         pos.insert(element, content);
         continue;
       }
      
-      content = String.interpret(content);
+      content = Object.toHTML(content);
       tagName = ((position == 'before' || position == 'after')
         ? element.parentNode : element).tagName.toUpperCase();
      
@@ -888,19 +889,52 @@ else if (Prototype.Browser.WebKit) {
 
 if (Prototype.Browser.IE || Prototype.Browser.Opera) {
   // IE and Opera are missing .innerHTML support for TABLE-related and SELECT elements
-  Element.Methods.update = function(element, html) {
+  Element.Methods.update = function(element, content) {
     element = $(element);
-    html = typeof html == 'undefined' ? '' : html.toString();
+    
+    if (content && content.toElement) content = content.toElement();
+    if (Object.isElement(content)) return element.update().insert(content);
+    
+    content = Object.toHTML(content);
     var tagName = element.tagName.toUpperCase();
     
-    if (Element._insertionTranslations.tags[tagName]) {
+    if (tagName in Element._insertionTranslations.tags) {
       $A(element.childNodes).each(function(node) { element.removeChild(node) });
-      Element._getContentFromAnonymousElement(tagName, html.stripScripts())
+      Element._getContentFromAnonymousElement(tagName, content.stripScripts())
         .each(function(node) { element.appendChild(node) });
-    } 
-    else element.innerHTML = html.stripScripts();
+    }
+    else element.innerHTML = content.stripScripts();
     
-    html.evalScripts.bind(html).defer();
+    content.evalScripts.bind(content).defer();
+    return element;
+  };
+}
+
+if (document.createElement('div').outerHTML) {
+  Element.Methods.replace = function(element, content) {
+    element = $(element);
+    
+    if (content && content.toElement) content = content.toElement();
+    if (Object.isElement(content)) {
+      element.parentNode.replaceChild(content, element);
+      return element;
+    }
+
+    content = Object.toHTML(content);
+    var parent = element.parentNode, tagName = parent.tagName.toUpperCase();
+    
+    if (Element._insertionTranslations.tags[tagName]) {
+      var nextSibling = element.next();
+      var fragments = Element._getContentFromAnonymousElement(tagName, content.stripScripts());
+      parent.removeChild(element);
+      if (nextSibling)
+        fragments.each(function(node) { parent.insertBefore(node, nextSibling) });
+      else 
+        fragments.each(function(node) { parent.appendChild(node) });
+    }
+    else element.outerHTML = content.stripScripts();
+    
+    content.evalScripts.bind(content).defer();
     return element;
   };
 }
@@ -1057,7 +1091,7 @@ Element.addMethods = function(methods) {
   
   if (!tagName) Object.extend(Element.Methods, methods || {});  
   else {
-    if (tagName.constructor == Array) tagName.each(extend);
+    if (Object.isArray(tagName)) tagName.each(extend);
     else extend(tagName);
   }
   

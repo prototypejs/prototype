@@ -37,7 +37,7 @@ Object.extend(Object, {
     }
     if (object === null) return 'null';
     if (object.toJSON) return object.toJSON();
-    if (object.ownerDocument === document) return;
+    if (Object.isElement(object)) return;
     var results = [];
     for (var property in object) {
       var value = Object.toJSON(object[property]);
@@ -45,6 +45,10 @@ Object.extend(Object, {
         results.push(property.toJSON() + ': ' + value);
     }
     return '{' + results.join(', ') + '}';
+  },
+  
+  toHTML: function(object) {
+    return object && object.toHTML ? object.toHTML() : String.interpret(object);
   },
   
   keys: function(object) {
@@ -63,6 +67,14 @@ Object.extend(Object, {
   
   clone: function(object) {
     return Object.extend({}, object);
+  },
+  
+  isElement: function(object) {
+    return object && object.nodeType == 1;
+  },
+  
+  isArray: function(object) {
+    return object && object.constructor === Array;
   }
 });
 

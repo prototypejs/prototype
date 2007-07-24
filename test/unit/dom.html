@@ -159,6 +159,12 @@
 <div id="testdiv-replace-container-3"><div id="testdiv-replace-3"></div></div>
 <div id="testdiv-replace-container-4"><div id="testdiv-replace-4"></div></div>
 <div id="testdiv-replace-container-5"><div id="testdiv-replace-5"></div></div>
+<div id="testdiv-replace-container-element"><div id="testdiv-replace-element"></div></div>
+<div id="testdiv-replace-container-toelement"><div id="testdiv-replace-toelement"></div></div>
+<div id="testdiv-replace-container-tohtml"><div id="testdiv-replace-tohtml"></div></div>
+<div id="testtable-replace-container"><table id="testtable-replace"></table></div>
+<table id="testrow-replace-container"><tr id="testrow-replace"></tr></table>
+<select id="testoption-replace-container"><option id="testoption-replace"></option><option>stays</option></select>
 <div id="testform-replace-container"><p>some text</p><form id="testform-replace"><input id="testinput-replace" type="text" /></form><p>some text</p></div>
 
 <div id="element_with_visible_overflow" style="overflow:visible">V</div>
@@ -364,6 +370,11 @@
   var getInnerHTML = function(id) {
     return $(id).innerHTML.toString().toLowerCase().gsub(/[\r\n\t]/, '');
   };
+  var createParagraph = function(text) {
+    var p = document.createElement('p');
+    p.appendChild(document.createTextNode(text));
+    return p;
+  }
   Element.addMethods({
     hashBrowns: function(element) { return 'hash browns'; }
   });
@@ -440,11 +451,6 @@
     }},
 
     testElementInsertWithDOMNode: function() {with(this) {
-      var createParagraph = function(text) {
-        var p = document.createElement('p');
-        p.appendChild(document.createTextNode(text));
-        return p;
-      }
       Element.insert('insertions-node-main', {before: createParagraph('node before')});
       assert(getInnerHTML('insertions-node-container').startsWith('<p>node before</p>'));
       Element.insert('insertions-node-main', {after: createParagraph('node after')});
@@ -454,6 +460,20 @@
       Element.insert('insertions-node-main', {bottom:createParagraph('node bottom')});
       assert(getInnerHTML('insertions-node-main').endsWith('<p>node bottom</p>'));
       assertEqual($('insertions-node-main'), $('insertions-node-main').insert(document.createElement('p')));
+    }},
+    
+    testElementInsertWithToElementMethod: function() {with(this) {
+      Element.insert('insertions-node-main', {toElement: createParagraph.curry('toElement') });
+      assert(getInnerHTML('insertions-node-main').endsWith('<p>toelement</p>'));
+      Element.insert('insertions-node-main', {bottom: {toElement: createParagraph.curry('bottom toElement') }});
+      assert(getInnerHTML('insertions-node-main').endsWith('<p>bottom toelement</p>'));
+    }},
+    
+    testElementInsertWithToHTMLMethod: function() {with(this) {
+      Element.insert('insertions-node-main', {toHTML: function() { return '<p>toHTML</p>'} });
+      assert(getInnerHTML('insertions-node-main').endsWith('<p>tohtml</p>'));
+      Element.insert('insertions-node-main', {bottom: {toHTML: function() { return '<p>bottom toHTML</p>'} }});
+      assert(getInnerHTML('insertions-node-main').endsWith('<p>bottom tohtml</p>'));
     }},
     
     testElementInsertWithNonString: function() {with(this) {
@@ -637,6 +657,21 @@
       select.update('<option value="3">option 3</option><option selected="selected">option 4</option>');
       assertEqual('option 4', select.getValue());
     }},
+
+    testElementUpdateWithDOMNode: function() {with(this) {
+      $('testdiv').update(new Element('div').insert('bla'));
+      assertEqual('<div>bla</div>', getInnerHTML('testdiv'));
+    }},
+    
+    testElementUpdateWithToElementMethod: function() {with(this) {
+      $('testdiv').update({toElement: createParagraph.curry('foo')});
+      assertEqual('<p>foo</p>', getInnerHTML('testdiv'));
+    }},
+    
+    testElementUpdateWithToHTMLMethod: function() {with(this) {
+      $('testdiv').update({toHTML: function() { return 'hello world' }});
+      assertEqual('hello world', getInnerHTML('testdiv'));
+    }},
     
     testElementReplace: function() {with(this) {
       $('testdiv-replace-1').replace('hello from div!');
@@ -648,13 +683,17 @@
       $('testdiv-replace-3').replace();
       assertEqual('', $('testdiv-replace-container-3').innerHTML);
       
+      $('testrow-replace').replace('<tr><td>hello</td></tr>');
+      assert(getInnerHTML('testrow-replace-container').include('<tr><td>hello</td></tr>'));
+      
+      $('testoption-replace').replace('<option>hello</option>');
+      assert($('testoption-replace-container').innerHTML.include('hello'));
+           
       $('testinput-replace').replace('<p>hello world</p>');
-      assertEqual('<p>hello world</p>',
-        $('testform-replace').innerHTML.gsub('\r\n', '').toLowerCase());
+      assertEqual('<p>hello world</p>', getInnerHTML('testform-replace'));
 
       $('testform-replace').replace('<form></form>');
-      assertEqual('<p>some text</p><form></form><p>some text</p>',
-        $('testform-replace-container').innerHTML.gsub('\r\n', '').toLowerCase());
+      assertEqual('<p>some text</p><form></form><p>some text</p>', getInnerHTML('testform-replace-container'));
     }},
     
     testElementReplaceWithScript: function() {with(this) {
@@ -671,6 +710,21 @@
           assertEqual('another hello!',testVarReplace);
         });
       });
+    }},
+
+    testElementReplaceWithDOMNode: function() {with(this) {
+      $('testdiv-replace-element').replace(createParagraph('hello'));
+      assertEqual('<p>hello</p>', getInnerHTML('testdiv-replace-container-element'));
+    }},
+    
+    testElementReplaceWithToElementMethod: function() {with(this) {
+      $('testdiv-replace-toelement').replace({toElement: createParagraph.curry('hello')});
+      assertEqual('<p>hello</p>', getInnerHTML('testdiv-replace-container-toelement'));
+    }},
+    
+    testElementReplaceWithToHTMLMethod: function() {with(this) {
+      $('testdiv-replace-tohtml').replace({toHTML: function() { return 'hello' }});
+      assertEqual('hello', getInnerHTML('testdiv-replace-container-tohtml'));
     }},
         
     testElementSelectorMethod: function() {with(this) {      

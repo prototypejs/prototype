@@ -13,7 +13,7 @@ Object.extend(Hash, {
       var value = pair.value;
       
       if (value && typeof value == 'object') {
-        if (value.constructor == Array) value.each(function(value) {
+        if (Object.isArray(value)) value.each(function(value) {
           parts.add(pair.key, value);
         });
         return;
@@ -83,7 +83,7 @@ Object.extend(Hash.prototype, {
       if (value !== undefined){
         if (result === undefined) result = value;
         else {
-          if (result.constructor != Array) result = [result];
+          if (!Object.isArray(result)) result = [result];
           result.push(value)
         }
       }

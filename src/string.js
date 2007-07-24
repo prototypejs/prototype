@@ -100,7 +100,7 @@ Object.extend(String.prototype, {
         if (value != undefined) value = decodeURIComponent(value);
         
         if (key in hash) {
-          if (hash[key].constructor != Array) hash[key] = [hash[key]];
+          if (!Object.isArray(hash[key])) hash[key] = [hash[key]];
           hash[key].push(value);
         }
         else hash[key] = value;

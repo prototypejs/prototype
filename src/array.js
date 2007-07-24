@@ -57,7 +57,7 @@ Object.extend(Array.prototype, {
   
   flatten: function() {
     return this.inject([], function(array, value) {
-      return array.concat(value && value.constructor == Array ?
+      return array.concat(Object.isArray(value) ?
         value.flatten() : [value]);
     });
   },
@@ -144,7 +144,7 @@ if (Prototype.Browser.Opera){
     var array = [];
     for (var i = 0, length = this.length; i < length; i++) array.push(this[i]);
     for (var i = 0, length = arguments.length; i < length; i++) {
-      if (arguments[i].constructor == Array) {
+      if (Object.isArray(arguments[i])) {
         for (var j = 0, arrayLength = arguments[i].length; j < arrayLength; j++) 
           array.push(arguments[i][j]);
       } else { 
