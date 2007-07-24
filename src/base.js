@@ -140,6 +140,8 @@ var Try = {
   }
 }
 
+RegExp.prototype.match = RegExp.prototype.test;
+
 /*--------------------------------------------------------------------------*/
 
 var PeriodicalExecuter = Class.create();

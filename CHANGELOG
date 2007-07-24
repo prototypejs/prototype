@@ -1,5 +1,7 @@
 *SVN*
 
+* Extended grep semantics. The first argument to Enumerable#grep is now a "filter" (an object with a match() method) so you can now e.g. filter an array of DOM nodes by CSS selector.  RegExp#match is now an alias to RegExp#test, so grep can still be used to filter an array of strings with a regular expression.  Closes #7596.  [Christophe Porteneuve, sam]
+
 * Make String#scan explicitly return a string. This prevents possible issues with methods expecting input data that is typeof == 'string'. Closes #6350. [AndrewRev, Tobie Langel]
 
 * Add Array#intersect for set intersection. Returns a new array containing all items common to the array and the argument, with duplicates removed (clone of the Ruby & method).   [Thomas Fuchs]

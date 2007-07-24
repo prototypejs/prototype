@@ -73,12 +73,15 @@ var Enumerable = {
     return results;
   },
   
-  grep: function(pattern, iterator, context) {
+  grep: function(filter, iterator, context) {
     iterator = iterator ? iterator.bind(context) : Prototype.K;
     var results = [];
+
+    if (typeof filter == "string")
+      filter = new RegExp(filter);
+      
     this.each(function(value, index) {
-      var stringValue = value.toString();
-      if (stringValue.match(pattern))
+      if (filter.match(value))
         results.push(iterator(value, index));
     });
     return results;
