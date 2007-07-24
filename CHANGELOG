@@ -1,5 +1,7 @@
 *SVN*
 
+* Make Element#readAttribute work for cloned elements in IE. Closes #8481. [chem, Tobie Langel]
+
 * Template enhancements.  Closes #8166.  [Christophe Porteneuve]
   - Added String#interpolate as a shortcut for new Template(...).evaluate(...). 
   - If you pass String#interpolate or Template#evaluate an object with a toTemplateReplacements() method, the return value of that method will be used as the replacement object.

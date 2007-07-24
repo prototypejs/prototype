@@ -228,7 +228,8 @@
   <div foo="2"></div>
 </div>
 
-<a id="attributes_with_issues_1" href="test.html" accesskey="L" tabindex="50" title="a link"></a>
+<div id="cloned_element_attributes_issue" foo="original"></div>
+<a id="attributes_with_issues_1" href="test.html" accesskey="L" tabindex="50" title="a link" onclick="alert('hello world');"></a>
 <a id="attributes_with_issues_2" href="" accesskey="" tabindex="" title=""></a>
 <a id="attributes_with_issues_3"></a>
 <form id="attributes_with_issues_form" method="post" action="blah">
@@ -1048,11 +1049,16 @@
     
     testElementReadAttribute: function() {with(this) {
       assertEqual('test.html' , $('attributes_with_issues_1').readAttribute('href'));
-      
       assertEqual('L' , $('attributes_with_issues_1').readAttribute('accesskey'));
       assertEqual('50' , $('attributes_with_issues_1').readAttribute('tabindex'));
       assertEqual('a link' , $('attributes_with_issues_1').readAttribute('title'));
-
+      
+      $('cloned_element_attributes_issue').readAttribute('foo')
+      var clone = $('cloned_element_attributes_issue').cloneNode(true);
+      clone.writeAttribute('foo', 'cloned');
+      assertEqual('cloned', clone.readAttribute('foo'));
+      assertEqual('original', $('cloned_element_attributes_issue').readAttribute('foo'));
+      
       ['href', 'accesskey', 'accesskey', 'title'].each(function(attr){
         assertEqual('' , $('attributes_with_issues_2').readAttribute(attr));
       });
@@ -1061,6 +1067,9 @@
         assertEqual(attr, $('attributes_with_issues_'+attr).readAttribute(attr));
       });
       
+      assertEqual("alert('hello world');", $('attributes_with_issues_1').readAttribute('onclick'));
+      assertNull($('attributes_with_issues_1').readAttribute('onmouseover'));
+     
       assertEqual('date', $('attributes_with_issues_type').readAttribute('type'));
       assertEqual('text', $('attributes_with_issues_readonly').readAttribute('type'));
       

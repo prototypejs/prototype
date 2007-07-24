@@ -236,12 +236,9 @@ Element.Methods = {
   readAttribute: function(element, name) {
     element = $(element);
     if (Prototype.Browser.IE) {
-      if (!element.attributes) return null;
       var t = Element._attributeTranslations.read;
       if (t.values[name]) return t.values[name](element, name);
-      if (t.names[name])  name = t.names[name];
-      var attribute = element.attributes[name];
-      return attribute ? attribute.nodeValue : null;
+      if (t.names[name]) name = t.names[name];
     }    
     return element.getAttribute(name);
   },
@@ -750,20 +747,16 @@ else if (Prototype.Browser.IE) {
   Element._attributeTranslations = {
     read: {
       names: {
-        colspan:   "colSpan",
-        rowspan:   "rowSpan",
-        valign:    "vAlign",
-        datetime:  "dateTime",
-        accesskey: "accessKey",
-        tabindex:  "tabIndex",
-        enctype:   "encType",
-        maxlength: "maxLength",
-        readonly:  "readOnly",
-        longdesc:  "longDesc"
+        'class': 'className',
+        'for':   'htmlFor'
       },
       values: {
         _getAttr: function(element, attribute) {
           return element.getAttribute(attribute, 2);
+        },
+        _getEv: function(element, attribute) {
+          var attribute = element.getAttribute(attribute);
+          return attribute ? attribute.toString().slice(23, -2) : null;
         },
         _flag: function(element, attribute) {
           return $(element).hasAttribute(attribute) ? attribute : null;
@@ -772,8 +765,7 @@ else if (Prototype.Browser.IE) {
           return element.style.cssText.toLowerCase();
         },
         title: function(element) {
-          var node = element.getAttributeNode('title');
-          return node.specified ? node.nodeValue : null;
+          return element.title;
         }
       }
     }
@@ -781,9 +773,18 @@ else if (Prototype.Browser.IE) {
   
   Element._attributeTranslations.write = {
     names: Object.extend({
-        'class': 'className',
-        'for':   'htmlFor'    
-      }, Element._attributeTranslations.read.names),
+      colspan:   'colSpan',
+      rowspan:   'rowSpan',
+      valign:    'vAlign',
+      datetime:  'dateTime',
+      accesskey: 'accessKey',
+      tabindex:  'tabIndex',
+      enctype:   'encType',
+      maxlength: 'maxLength',
+      readonly:  'readOnly',
+      longdesc:  'longDesc'
+    }, Element._attributeTranslations.read.names),
+    
     values: {
       checked: function(element, value) {
         element.checked = !!value;
@@ -795,17 +796,35 @@ else if (Prototype.Browser.IE) {
     }
   };
   
-  (function() {
-    Object.extend(this, {
-      href: this._getAttr,
-      src:  this._getAttr,
-      type: this._getAttr,
-      disabled: this._flag,
-      checked:  this._flag,
-      readonly: this._flag,
-      multiple: this._flag
+  (function(v) {
+    Object.extend(v, {
+      href: v._getAttr,
+      src:  v._getAttr,
+      type: v._getAttr,
+      disabled: v._flag,
+      checked:  v._flag,
+      readonly: v._flag,
+      multiple: v._flag,
+      onload:      v._getEv,
+      onunload:    v._getEv,
+      onclick:     v._getEv,
+      ondblclick:  v._getEv,
+      onmousedown: v._getEv,
+      onmouseup:   v._getEv,
+      onmouseover: v._getEv,
+      onmousemove: v._getEv,
+      onmouseout:  v._getEv,
+      onfocus:     v._getEv,
+      onblur:      v._getEv,
+      onkeypress:  v._getEv,
+      onkeydown:   v._getEv,
+      onkeyup:     v._getEv,
+      onsubmit:    v._getEv,
+      onreset:     v._getEv,
+      onselect:    v._getEv,
+      onchange:    v._getEv
     });
-  }).call(Element._attributeTranslations.read.values);
+  })(Element._attributeTranslations.read.values);
 }
 
 else if (Prototype.Browser.Gecko) {
