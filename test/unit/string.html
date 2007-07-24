@@ -132,11 +132,12 @@
     
     testScan: function() {with(this) {
       var source = 'foo boo boz', results = [];
-      source.scan(/[o]+/, function(match) {
+      var str = source.scan(/[o]+/, function(match) {
         results.push(match[0].length);
       });
       assertEnumEqual([2, 2, 1], results);
       assertEqual(source, source.scan(/x/, fail));
+      assert(typeof str == 'string');
     }},
     
     testToArray: function() {with(this) {

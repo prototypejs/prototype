@@ -41,7 +41,7 @@ Object.extend(String.prototype, {
   
   scan: function(pattern, iterator) {
     this.gsub(pattern, iterator);
-    return this;
+    return String(this);
   },
   
   truncate: function(length, truncation) {
