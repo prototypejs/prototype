@@ -342,6 +342,13 @@
 <div id="inlineAbsoluted" style="position: absolute"></div>
 
 <div id="unextended"></div>
+<div id="identification">
+  <div id="predefined_id"></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div id="anonymous_element_3"></div>
+</div>
 
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
@@ -675,6 +682,14 @@
       elements.each(function(element){
         assert(element != $('intended'));
       });
+    }},
+    
+    testElementIdentify: function() {with(this) {
+      var parent = $('identification');
+      assertEqual(parent.down().identify(), 'predefined_id');
+      assertEqual(parent.down(1).identify(), 'anonymous_element_1');
+      assertEqual(parent.down(2).identify(), 'anonymous_element_2');
+      assertEqual(parent.down(3).identify(), 'anonymous_element_4');
     }},
        
     testElementClassNameMethod: function() {with(this) {

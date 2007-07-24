@@ -1,5 +1,7 @@
 *SVN*
 
+* Add Element#identify, which returns the element's ID if it exists, or sets and returns a unique, auto-generated ID (of the form "anonymous_element_" + auto-incremented digit) otherwise.  Use this when you need to ensure an element has an ID.  Closes #9012.  [Jeff Watkins, sam, Tobie Langel]
+
 * Make Element#readAttribute work for cloned elements in IE. Closes #8481. [chem, Tobie Langel]
 
 * Template enhancements.  Closes #8166.  [Christophe Porteneuve]

@@ -233,6 +233,15 @@ Element.Methods = {
     return Selector.findChildElements(element.parentNode, args).without(element);
   },
   
+  identify: function(element) {
+    element = $(element);
+    var id = element.readAttribute('id'), self = arguments.callee;
+    if (id) return id;
+    do { id = 'anonymous_element_' + self.counter++ } while ($(id));
+    element.writeAttribute('id', id);
+    return id;
+  },
+  
   readAttribute: function(element, name) {
     element = $(element);
     if (Prototype.Browser.IE) {
@@ -597,7 +606,7 @@ Element.Methods = {
   }
 };
 
-Element.Methods.getElementsBySelector = Element.Methods.select;
+Element.Methods.identify.counter = 1;
 
 if (!document.getElementsByClassName) document.getElementsByClassName = function(instanceMethods){
   function isArray(className) {
@@ -636,6 +645,7 @@ if (!document.getElementsByClassName) document.getElementsByClassName = function
 }(Element.Methods);
 
 Object.extend(Element.Methods, {
+  getElementsBySelector: Element.Methods.select,
   childElements: Element.Methods.immediateDescendants
 });
 
