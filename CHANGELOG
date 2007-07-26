@@ -1,5 +1,7 @@
 *SVN*
 
+* Add Prototype.Browser.MobileSafari which evaluates to true on the iPhone's browser.  [sam]
+
 * Optimize Selector#match and Element#match for simple selectors.  Closes #9082.  [Andrew Dupont]
 
 * Remove the dependency on Element.ClassNames from Element#addClassName/removeClassName/toggleClassName, and deprecate Element.ClassNames. Closes #9073. [Tobie Langel]
