@@ -56,6 +56,13 @@
     
   new Test.Unit.Runner({
     
+    testFunctionArgumentNames: function() { with(this) {
+      assertEnumEqual([], (function() {}).argumentNames());
+      assertEnumEqual(["one"], (function(one) {}).argumentNames());
+      assertEnumEqual(["one", "two", "three"], (function(one, two, three) {}).argumentNames());
+      assertEqual("$super", (function($super) {}).argumentNames().first());
+    }},
+    
     testFunctionBind: function() { with(this) {
       function methodWithoutArguments() { return this.hi };
       function methodWithArguments()    { return this.hi + ',' + $A(arguments).join(',') };

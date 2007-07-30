@@ -79,6 +79,11 @@ Object.extend(Object, {
 });
 
 Object.extend(Function.prototype, {
+  argumentNames: function() {
+    var names = this.toString().match(/^function\s*\((.*?)\)/)[1].split(",").invoke("strip");
+    return names.length == 1 && !names[0] ? [] : names;
+  },
+  
   bind: function() {
     if (arguments.length < 2 && arguments[0] === undefined) return this;
     var __method = this, args = $A(arguments), object = args.shift();

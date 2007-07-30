@@ -1,5 +1,7 @@
 *SVN*
 
+* Add Function#argumentNames, which returns an ordered array of the function's named arguments.  [sam]
+
 * Add Prototype.Browser.MobileSafari which evaluates to true on the iPhone's browser.  [sam]
 
 * Optimize Selector#match and Element#match for simple selectors.  Closes #9082.  [Andrew Dupont]
