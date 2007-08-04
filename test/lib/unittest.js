@@ -290,6 +290,9 @@ Test.Unit.Assertions.prototype = {
     if (this.errors > 0) return 'error';
     return 'passed';
   },
+  isRunningFromRake: (function() {
+    return window.location.port == 4711;
+  })(),
   assert: function(expression) {
     var message = arguments[1] || 'assert: got "' + Test.Unit.inspect(expression) + '"';
     try { expression ? this.pass() : 

@@ -56,7 +56,9 @@ Ajax.Base.prototype = {
       asynchronous: true,
       contentType:  'application/x-www-form-urlencoded',
       encoding:     'UTF-8',
-      parameters:   ''
+      parameters:   '',
+      evalJSON:     true,
+      evalJS:       true
     }
     Object.extend(this.options, options || {});
     
@@ -64,7 +66,7 @@ Ajax.Base.prototype = {
     if (typeof this.options.parameters == 'string') 
       this.options.parameters = this.options.parameters.toQueryParams();
   }
-}
+};
 
 Ajax.Request = Class.create();
 Ajax.Request.Events = 
@@ -101,8 +103,9 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
     }
       
     try {
-      if (this.options.onCreate) this.options.onCreate(this.transport);
-      Ajax.Responders.dispatch('onCreate', this, this.transport);
+      var response = new Ajax.Response(this);
+      if (this.options.onCreate) this.options.onCreate(response);
+      Ajax.Responders.dispatch('onCreate', this, response);
     
       this.transport.open(this.method.toUpperCase(), this.url, 
         this.options.asynchronous);
@@ -167,33 +170,39 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
   },
   
   success: function() {
-    return !this.transport.status
-        || (this.transport.status >= 200 && this.transport.status < 300);
+    var status = this.getStatus();
+    return !status || (status >= 200 && status < 300);
   },
-
+    
+  getStatus: function() {
+    try {
+      return this.transport.status || 0;
+    } catch (e) { return 0 } 
+  },
+  
   respondToReadyState: function(readyState) {
-    var state = Ajax.Request.Events[readyState];
-    var transport = this.transport, json = this.evalJSON();
+    var state = Ajax.Request.Events[readyState], response = new Ajax.Response(this);
 
     if (state == 'Complete') {
       try {
         this._complete = true;
-        (this.options['on' + this.transport.status]
+        (this.options['on' + response.status]
          || this.options['on' + (this.success() ? 'Success' : 'Failure')]
-         || Prototype.emptyFunction)(transport, json);
+         || Prototype.emptyFunction)(response, response.headerJSON);
       } catch (e) {
         this.dispatchException(e);
       }
       
-      var contentType = this.getHeader('Content-type');
-      if (contentType && contentType.strip().
-        match(/^(text|application)\/(x-)?(java|ecma)script(;.*)?$/i))
-          this.evalResponse();
+      var contentType = response.getHeader('Content-type');
+      if (this.options.evalJS == 'force'
+          || (this.options.evalJS && contentType 
+          && contentType.match(/^\s*(text|application)\/(x-)?(java|ecma)script(;.*)?\s*$/i)))
+        this.evalResponse();
     }
 
     try {
-      (this.options['on' + state] || Prototype.emptyFunction)(transport, json);
-      Ajax.Responders.dispatch('on' + state, this, transport, json);
+      (this.options['on' + state] || Prototype.emptyFunction)(response, response.headerJSON);
+      Ajax.Responders.dispatch('on' + state, this, response, response.headerJSON);
     } catch (e) {
       this.dispatchException(e);
     }
@@ -207,13 +216,6 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
   getHeader: function(name) {
     try {
       return this.transport.getResponseHeader(name);
-    } catch (e) { return null }
-  },
-  
-  evalJSON: function() {
-    try {
-      var json = this.getHeader('X-JSON');
-      return json ? json.evalJSON() : null;
     } catch (e) { return null }
   },
   
@@ -231,6 +233,76 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
   }
 });
 
+Ajax.Response = Class.create();
+Ajax.Response.prototype = {
+  initialize: function(request){
+    this.request = request;
+    var transport  = this.transport  = request.transport,
+        readyState = this.readyState = transport.readyState;
+    
+    if((readyState > 2 && !Prototype.Browser.IE) || readyState == 4) {
+      this.status       = this.getStatus();
+      this.statusText   = this.getStatusText();
+      this.responseText = String.interpret(transport.responseText);
+      this.headerJSON   = this.getHeaderJSON();
+    }
+    
+    if(readyState == 4) {
+      var xml = transport.responseXML;
+      this.responseXML  = xml === undefined ? null : xml;
+      this.responseJSON = this.getResponseJSON();
+    }
+  },
+  
+  status:      0,
+  statusText: '',
+  
+  getStatus: Ajax.Request.prototype.getStatus,
+  
+  getStatusText: function() {
+    try {
+      return this.transport.statusText || '';
+    } catch (e) { return '' }
+  },
+  
+  getHeader: Ajax.Request.prototype.getHeader,
+  
+  getAllHeaders: function() {
+    try {
+      return this.getAllResponseHeaders();
+    } catch (e) { return null } 
+  },
+  
+  getResponseHeader: function(name) {
+    return this.transport.getResponseHeader(name);
+  },
+  
+  getAllResponseHeaders: function() {
+    return this.transport.getAllResponseHeaders();
+  },
+  
+  getHeaderJSON: function() {
+    var json = this.getHeader('X-JSON');
+    try {
+      return json ? json.evalJSON(this.request.options.sanitizeJSON) : null;
+    } catch (e) {
+      this.request.dispatchException(e);
+    }
+  },
+  
+  getResponseJSON: function() {
+    var options = this.request.options;
+    try {
+      if (options.evalJSON == 'force' || (options.evalJSON &&
+          (this.getHeader('Content-type') || '').include('application/json')))
+        return this.transport.responseText.evalJSON(options.sanitizeJSON);
+      return null;
+    } catch (e) {
+      this.request.dispatchException(e);
+    }
+  }
+};
+
 Ajax.Updater = Class.create();
 
 Object.extend(Object.extend(Ajax.Updater.prototype, Ajax.Request.prototype), {
@@ -244,29 +316,29 @@ Object.extend(Object.extend(Ajax.Updater.prototype, Ajax.Request.prototype), {
     this.setOptions(options);
 
     var onComplete = this.options.onComplete || Prototype.emptyFunction;
-    this.options.onComplete = (function(transport, param) {
-      this.updateContent();
-      onComplete(transport, param);
+    this.options.onComplete = (function(response, param) {
+      this.updateContent(response.responseText);
+      onComplete(response, param);
     }).bind(this);
 
     this.request(url);
   },
 
-  updateContent: function() {
-    var receiver = this.container[this.success() ? 'success' : 'failure'];
-    var response = this.transport.responseText, options = this.options;
+  updateContent: function(responseText) {
+    var receiver = this.container[this.success() ? 'success' : 'failure'], 
+        options = this.options;
     
-    if (!options.evalScripts) response = response.stripScripts();
+    if (!options.evalScripts) responseText = responseText.stripScripts();
     
     if (receiver = $(receiver)) {
       if (options.insertion) {
         if (typeof options.insertion == 'string') {
-          var insertion = {}; insertion[options.insertion] = response;
+          var insertion = {}; insertion[options.insertion] = responseText;
           receiver.insert(insertion);
         }
-        else options.insertion(receiver, response);
+        else options.insertion(receiver, responseText);
       } 
-      else receiver.update(response);
+      else receiver.update(responseText);
     }
     
     if (this.success()) {
@@ -302,12 +374,12 @@ Ajax.PeriodicalUpdater.prototype = Object.extend(new Ajax.Base(), {
     (this.onComplete || Prototype.emptyFunction).apply(this, arguments);
   },
 
-  updateComplete: function(request) {
+  updateComplete: function(responseText) {
     if (this.options.decay) {
-      this.decay = (request.responseText == this.lastText ? 
+      this.decay = (responseText == this.lastText ? 
         this.decay * this.options.decay : 1);
 
-      this.lastText = request.responseText;
+      this.lastText = responseText;
     }
     this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
   },

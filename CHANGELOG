@@ -1,5 +1,11 @@
 *SVN*
 
+* Add Ajax.Response object which supports the following methods: responseJSON, headerJSON, getHeader, getAllHeaders and handles browser discrepancies in the other response methods. Add sanitizeJSON, evalJS and evalJSON to Ajax.Request. Closes #8122, #8006, #7295. [Tobie Langel]
+
+* Add an isRunningFromRake property to unit tests. [Tobie Langel]
+
+* Add support for Opera browser in jstest.rb. [Tobie Langel]
+
 * Inheritance branch merged to trunk; robust inheritance support for Class.create. Closes #5459. [Dean Edwards, Alex Arnell, Andrew Dupont, Mislav Mahronic]
  - To access a method's superclass method, add "$super" as the first argument. (The naming is significant.) Works like Function#wrap.
  - Class.create now takes two optional arguments. The first is an existing class to subclass; the second is an object literal defining the instance properties/methods. Either can be omitted. Backwards-compatible with old Class.create.
@@ -8,6 +14,8 @@
  - Added Object.isFunction [sam]
  
 * Add Function#argumentNames, which returns an ordered array of the function's named arguments.  [sam]
+
+* Prevent a crash in Safari 1.3 on String#stripScripts and String#extractScripts. Closes #8332. [grant, Tobie Langel]
 
 * Add Prototype.Browser.MobileSafari which evaluates to true on the iPhone's browser.  [sam]
 

@@ -45,15 +45,25 @@
 // <![CDATA[
 
   var testObj = {
-    isNice: function(){
+    isNice: function() {
       return true;
     },
-    isBroken: function(){
+    isBroken: function() {
       return false;
     }
   }
 
   new Test.Unit.Runner({
+    
+    testIsRunningFromRake:  function() { with(this) {
+      if (window.location.toString().startsWith('http')) {
+        assert(isRunningFromRake);
+        info('These tests are runingn from rake.')
+      } else {
+        assert(!isRunningFromRake);
+        info('These tests are *not* running from rake.')
+      }
+    }},
     
     testAssertEqual: function() { with(this) {
       assertEqual(0, 0);
