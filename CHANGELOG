@@ -1,5 +1,19 @@
 *SVN*
 
+* Make the eventName and handler arguments to Event.stopObserving optional.  If no handler is specified, all handlers for the given event are unregistered.  If no event name is specified, all observed events on the element are unregistered.  [sam]
+
+* Add cross-support for the DOMContentLoaded event through a Prototype custom event on document called "contentloaded".  The DOMContentLoaded event fires before window.load, when the entire HTML document, but not necessarily its images, stylesheets or other assets, has loaded.  Based on [6596].  [sam, Mislav Marohnić] 
+  Example:
+    document.observe("contentloaded", function() {
+      $$("a").invoke("identify"); // give all <a> tags an ID
+    });
+
+* Add Event.fire and Element.Methods.fire for firing custom events.  Prototype custom events piggyback on a real DOM event ("ondataavailable"), so they bubble and cancel.  You can fire custom events from any element, or fire global events on the document object.  Observe custom events just as you'd observe a regular DOM event.  [sam, Seth Dillingham]
+
+* Extend the event object with methods from Event.Methods and normalize it in IE.  [sam, Mislav Marohnić]
+
+* Remove support for observing the capturing phase of DOM events, since we can't support it in all browsers.  [sam]
+
 * Add Ajax.Response object which supports the following methods: responseJSON, headerJSON, getHeader, getAllHeaders and handles browser discrepancies in the other response methods. Add sanitizeJSON, evalJS and evalJSON to Ajax.Request. Closes #8122, #8006, #7295. [Tobie Langel]
 
 * Add an isRunningFromRake property to unit tests. [Tobie Langel]

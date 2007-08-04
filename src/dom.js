@@ -22,10 +22,28 @@ if (Prototype.BrowserFeatures.XPath) {
 
 /*--------------------------------------------------------------------------*/
 
+if (!window.Node)
+  var Node = { };
+  
+Object.extend(Node, {
+  ELEMENT_NODE: 1,
+  ATTRIBUTE_NODE: 2,
+  TEXT_NODE: 3,
+  CDATA_SECTION_NODE: 4,
+  ENTITY_REFERENCE_NODE: 5,
+  ENTITY_NODE: 6,
+  PROCESSING_INSTRUCTION_NODE: 7,
+  COMMENT_NODE: 8,
+  DOCUMENT_NODE: 9,
+  DOCUMENT_TYPE_NODE: 10,
+  DOCUMENT_FRAGMENT_NODE: 11,
+  NOTATION_NODE: 12
+});
+
 (function() {
   var element = this.Element;
   this.Element = function(tagName, attributes) {
-    attributes = attributes || {};
+    attributes = attributes || { };
     tagName = tagName.toLowerCase();
     var cache = Element.cache;
     if (Prototype.Browser.IE && attributes.name) {
@@ -36,10 +54,10 @@ if (Prototype.BrowserFeatures.XPath) {
     if (!cache[tagName]) cache[tagName] = Element.extend(document.createElement(tagName));
     return Element.writeAttribute(cache[tagName].cloneNode(false), attributes);
   };
-  Object.extend(this.Element, element || {});
+  Object.extend(this.Element, element || { });
 }).call(window);
 
-Element.cache = {};
+Element.cache = { };
 
 Element.Methods = {
   visible: function(element) {
@@ -127,7 +145,7 @@ Element.Methods = {
   wrap: function(element, wrapper, attributes) {
     element = $(element);
     if (Object.isElement(wrapper))
-      $(wrapper).writeAttribute(attributes || {});
+      $(wrapper).writeAttribute(attributes || { });
     else if (typeof wrapper == 'string') wrapper = new Element(wrapper, attributes);
     else wrapper = new Element('div', wrapper);
     if (element.parentNode)
@@ -259,7 +277,7 @@ Element.Methods = {
   
   writeAttribute: function(element, name, value) {
     element = $(element);
-    var attributes = {}, t = Element._attributeTranslations.write;
+    var attributes = { }, t = Element._attributeTranslations.write;
     
     if (typeof name == 'object') attributes = name;
     else attributes[name] = value === undefined ? true : value;
@@ -313,16 +331,6 @@ Element.Methods = {
     if (!(element = $(element))) return;
     return element[element.hasClassName(className) ?
       'removeClassName' : 'addClassName'](className);
-  },
-  
-  observe: function() {
-    Event.observe.apply(Event, arguments);
-    return $A(arguments).first();
-  },
-  
-  stopObserving: function() {
-    Event.stopObserving.apply(Event, arguments);
-    return $A(arguments).first();
   },
   
   // removes whitespace-only text node children
@@ -585,7 +593,7 @@ Element.Methods = {
       setHeight:  true,
       offsetTop:  0,
       offsetLeft: 0
-    }, arguments[2] || {});
+    }, arguments[2] || { });
 
     // find page position of source
     source = $(source);
@@ -663,7 +671,7 @@ Element._attributeTranslations = {
       className: 'class',
       htmlFor:   'for'      
     }, 
-    values: {}
+    values: { }
   }
 };
 
@@ -868,7 +876,7 @@ else if (Prototype.Browser.WebKit) {
         var n = document.createTextNode(' ');
         element.appendChild(n);
         element.removeChild(n);
-      } catch (e) {}
+      } catch (e) { }
     
     return element;
   }
@@ -1019,13 +1027,13 @@ Element.Methods.Simulated = {
   }
 };
 
-Element.Methods.ByTag = {};
+Element.Methods.ByTag = { };
 
 Object.extend(Element, Element.Methods);
 
 if (!Prototype.BrowserFeatures.ElementExtensions && 
     document.createElement('div').__proto__) {
-  window.HTMLElement = {};
+  window.HTMLElement = { };
   window.HTMLElement.prototype = document.createElement('div').__proto__;
   Prototype.BrowserFeatures.ElementExtensions = true;
 }
@@ -1034,7 +1042,7 @@ Element.extend = (function() {
   if (Prototype.BrowserFeatures.SpecificElementExtensions)
     return Prototype.K;
   
-  var Methods = {}, ByTag = Element.Methods.ByTag;
+  var Methods = { }, ByTag = Element.Methods.ByTag;
   
   var extend = Object.extend(function(element) {
     if (!element || element._extendedByPrototype || 
@@ -1093,7 +1101,7 @@ Element.addMethods = function(methods) {
     methods = arguments[1];
   }
   
-  if (!tagName) Object.extend(Element.Methods, methods || {});  
+  if (!tagName) Object.extend(Element.Methods, methods || { });  
   else {
     if (Object.isArray(tagName)) tagName.each(extend);
     else extend(tagName);
@@ -1102,7 +1110,7 @@ Element.addMethods = function(methods) {
   function extend(tagName) {
     tagName = tagName.toUpperCase();
     if (!Element.Methods.ByTag[tagName])
-      Element.Methods.ByTag[tagName] = {};
+      Element.Methods.ByTag[tagName] = { };
     Object.extend(Element.Methods.ByTag[tagName], methods);
   }
 
@@ -1136,7 +1144,7 @@ Element.addMethods = function(methods) {
     klass = 'HTML' + tagName.capitalize() + 'Element';
     if (window[klass]) return window[klass];
     
-    window[klass] = {};
+    window[klass] = { };
     window[klass].prototype = document.createElement(tagName).__proto__;
     return window[klass];
   }
@@ -1158,5 +1166,5 @@ Element.addMethods = function(methods) {
   delete Element.ByTag;
   
   if (Element.extend.refresh) Element.extend.refresh();
-  Element.cache = {};
+  Element.cache = { };
 };
