@@ -1,19 +1,74 @@
+/* Based on Alex Arnell's inheritance implementation. */
 var Class = {
-  create: function() {
-    return function() { 
-      this.initialize.apply(this, arguments);
-    }
-  }
-}
+  create: function(parent, methods) {
+    if (arguments.length == 1 && typeof parent !== 'function')
+      methods = parent, parent = null;
+      
+    var method = function() {
+      if (!Class.extending) this.initialize.apply(this, arguments);
+    };
+    
+    method.superclass = parent;
+    method.subclasses = [];
+    
+    if (Object.isFunction(parent)) {
+      Class.extending = true;
+      method.prototype = new parent();
+      method.prototype.constructor = method;
 
-var Abstract = new Object();
+      parent.subclasses.push(method);
+
+      delete Class.extending;
+    }
+
+    if (methods) Class.extend(method, methods);
+
+    return method;    
+  },
+  
+  extend: function(destination, source) {
+    for (var name in source) Class.inherit(destination, source, name);
+    return destination;
+  },
+    
+  inherit: function(destination, source, name) {
+    var prototype = destination.prototype, ancestor = prototype[name], 
+     descendant = source[name];
+    if (ancestor && Object.isFunction(descendant) &&
+        descendant.argumentNames().first() == "$super") {
+      var method = descendant, descendant = ancestor.wrap(method);
+      Object.extend(descendant, {
+        valueOf:  function() { return method },
+        toString: function() { return method.toString() }
+      });
+    }
+
+    prototype[name] = descendant;
+
+    if (destination.subclasses && destination.subclasses.length > 0) {
+      for (var i = 0, subclass; subclass = destination.subclasses[i]; i++) {
+        Class.extending = true;
+        Object.extend(subclass.prototype, new destination());
+        subclass.prototype.constructor = subclass;
+        delete Class.extending;
+        Class.inherit(subclass, destination.prototype, name);
+      }
+    }
+  },
+  
+  mixin: function(destination, source) {
+    return Object.extend(destination, source);
+  }
+};
+
+var Abstract = { };
 
 Object.extend = function(destination, source) {
   for (var property in source) {
     destination[property] = source[property];
   }
   return destination;
-}
+};
 
 Object.extend(Object, {
   inspect: function(object) {
@@ -29,21 +84,24 @@ Object.extend(Object, {
   
   toJSON: function(object) {
     var type = typeof object;
-    switch(type) {
+    switch (type) {
       case 'undefined':
       case 'function':
       case 'unknown': return;
       case 'boolean': return object.toString();
     }
+    
     if (object === null) return 'null';
     if (object.toJSON) return object.toJSON();
     if (Object.isElement(object)) return;
+    
     var results = [];
     for (var property in object) {
       var value = Object.toJSON(object[property]);
       if (value !== undefined)
         results.push(property.toJSON() + ': ' + value);
     }
+    
     return '{' + results.join(', ') + '}';
   },
   
@@ -66,7 +124,7 @@ Object.extend(Object, {
   },
   
   clone: function(object) {
-    return Object.extend({}, object);
+    return Object.extend({ }, object);
   },
   
   isElement: function(object) {
@@ -75,6 +133,10 @@ Object.extend(Object, {
   
   isArray: function(object) {
     return object && object.constructor === Array;
+  },
+  
+  isFunction: function(object) {
+    return typeof object == "function";
   }
 });
 
@@ -155,14 +217,13 @@ var Try = {
 
     return returnValue;
   }
-}
+};
 
 RegExp.prototype.match = RegExp.prototype.test;
 
 /*--------------------------------------------------------------------------*/
 
-var PeriodicalExecuter = Class.create();
-PeriodicalExecuter.prototype = {
+var PeriodicalExecuter = Class.create({
   initialize: function(callback, frequency) {
     this.callback = callback;
     this.frequency = frequency;
@@ -191,4 +252,4 @@ PeriodicalExecuter.prototype = {
       }
     }
   }
-}
+});

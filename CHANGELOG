@@ -1,5 +1,12 @@
 *SVN*
 
+* Inheritance branch merged to trunk; robust inheritance support for Class.create. Closes #5459. [Dean Edwards, Alex Arnell, Andrew Dupont, Mislav Mahronic]
+ - To access a method's superclass method, add "$super" as the first argument. (The naming is significant.) Works like Function#wrap.
+ - Class.create now takes two optional arguments. The first is an existing class to subclass; the second is an object literal defining the instance properties/methods. Either can be omitted. Backwards-compatible with old Class.create.
+ - Added Class.extend for dynamically adding methods to existing classes (while preserving inheritance chain). Can also be used for mixins.
+ - The 'constructor' property of a class instance always points back to the proper class. Class objects themselves have two special properties: 'superclass' and 'subclasses' (which default to 'null' and '[]', respectively). Allows for powerful introspection.
+ - Added Object.isFunction [sam]
+ 
 * Add Function#argumentNames, which returns an ordered array of the function's named arguments.  [sam]
 
 * Add Prototype.Browser.MobileSafari which evaluates to true on the iPhone's browser.  [sam]

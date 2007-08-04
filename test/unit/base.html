@@ -45,15 +45,43 @@
   var arg1 = 1;
   var arg2 = 2;
   var arg3 = 3;
-  function TestObj(){}
+  function TestObj() { };
   TestObj.prototype.assertingEventHandler = 
-    function( event, assertEvent, assert1, assert2, assert3, a1, a2, a3 ){
+    function(event, assertEvent, assert1, assert2, assert3, a1, a2, a3) {
       assertEvent(event);
       assert1(a1);
       assert2(a2);
       assert3(a3);
-    }
+    };
     
+  var globalBindTest = null;
+  
+  
+  // base class
+  var Animal = Class.create({
+    initialize: function(name) {
+      this.name = name;
+    },
+    name: "",
+    eat: function() {
+      return this.say("Yum!");
+    },
+    say: function(message) {
+      return this.name + ": " + message;
+    }
+  });
+
+  // subclass that augments a method
+  var Cat = Class.create(Animal, {
+    eat: function($super, food) {
+      if (food instanceof Mouse) return $super();
+      else return this.say("Yuk! I only eat mice.");
+    }
+  });
+
+  // empty subclass
+  var Mouse = Class.create(Animal, {});
+
   new Test.Unit.Runner({
     
     testFunctionArgumentNames: function() { with(this) {
@@ -201,6 +229,18 @@
       assert(!Object.isElement(document.createTextNode('bla')));
     }},
     
+    testObjectIsFunction: function() { with(this) {
+      assert(Object.isFunction(function() { }));
+      assert(Object.isFunction(Class.create()));
+      assert(!Object.isFunction("a string"));
+      assert(!Object.isFunction($("testlog")));
+      assert(!Object.isFunction([]));
+      assert(!Object.isFunction({}));
+      assert(!Object.isFunction(0));
+      assert(!Object.isFunction(false));
+      assert(!Object.isFunction(undefined));
+    }},
+    
     // sanity check
     testDoesntExtendObjectPrototype: function() {with(this) {
       // for-in is supported with objects
@@ -283,6 +323,48 @@
         info('Running on Gecko');
         assert(Prototype.Browser.Gecko);
       } 
+    }},
+    
+    testInstantiation: function() { with(this) { 
+      var pet = new Animal("Nibbles");
+      assertEqual("Nibbles", pet.name, "property not initialized");
+      assertEqual('Nibbles: Hi!', pet.say('Hi!'));
+      assertEqual(Animal, pet.constructor, "bad constructor reference");
+      assertUndefined(pet.superclass);
+    }},
+
+    testInheritance: function() { with(this) {
+      var tom = new Cat('Tom');
+      assertEqual(Cat, tom.constructor, "bad constructor reference");
+      assertEqual(Animal, tom.constructor.superclass, 'bad superclass reference');
+      assertEqual('Tom', tom.name);
+      assertEqual('Tom: meow', tom.say('meow'));
+      assertEqual('Tom: Yuk! I only eat mice.', tom.eat(new Animal));
+    }},
+
+    testSupercall: function() { with(this) {
+      var tom = new Cat('Tom');
+      assertEqual('Tom: Yum!', tom.eat(new Mouse));
+    }},
+
+    testAddingInstanceMethod: function() { with(this) {
+      var tom   = new Cat('Tom');
+      var jerry = new Mouse('Jerry');
+      
+      Class.extend(Animal, {
+        sleep: function() {
+          return this.say('ZZZ');
+        }
+      });
+      
+      Class.extend(Mouse, {
+        sleep: function($super) {
+          return $super() + " ... no, can't sleep! Gotta steal cheese!";
+        }
+      });
+      
+      assertEqual('Tom: ZZZ', tom.sleep(), "added instance method not available to subclass");
+      assertEqual("Jerry: ZZZ ... no, can't sleep! Gotta steal cheese!", jerry.sleep());
     }}
 
   }, 'testlog');
