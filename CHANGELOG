@@ -1,5 +1,7 @@
 *SVN*
 
+* Add RegExp.escape for escaping regular expression strings.  Closes #9094.  [Ken Snyder]
+
 * Make the eventName and handler arguments to Event.stopObserving optional.  If no handler is specified, all handlers for the given event are unregistered.  If no event name is specified, all observed events on the element are unregistered.  [sam]
 
 * Add cross-support for the DOMContentLoaded event through a Prototype custom event on document called "contentloaded".  The DOMContentLoaded event fires before window.load, when the entire HTML document, but not necessarily its images, stylesheets or other assets, has loaded.  Based on [6596].  [sam, Mislav Marohnić] 

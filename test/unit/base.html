@@ -283,6 +283,47 @@
       assertEqual('\"1969-12-31T19:00:00\"', new Date(1969, 11, 31, 19).toJSON());
     }},
     
+    testRegExpEscape: function() {with(this) {
+      assertEqual('word', RegExp.escape('word'));
+      assertEqual('\\/slashes\\/', RegExp.escape('/slashes/'));
+      assertEqual('\\\\backslashes\\\\', RegExp.escape('\\backslashes\\'));
+      assertEqual('\\\\border of word', RegExp.escape('\\border of word'));
+      
+      assertEqual('\\(\\?\\:non-capturing\\)', RegExp.escape('(?:non-capturing)'));
+      assertEqual('non-capturing', new RegExp(RegExp.escape('(?:') + '([^)]+)').exec('(?:non-capturing)')[1]);
+      
+      assertEqual('\\(\\?\\=positive-lookahead\\)', RegExp.escape('(?=positive-lookahead)'));
+      assertEqual('positive-lookahead', new RegExp(RegExp.escape('(?=') + '([^)]+)').exec('(?=positive-lookahead)')[1]);
+      
+      assertEqual('\\(\\?<\\=positive-lookbehind\\)', RegExp.escape('(?<=positive-lookbehind)'));
+      assertEqual('positive-lookbehind', new RegExp(RegExp.escape('(?<=') + '([^)]+)').exec('(?<=positive-lookbehind)')[1]);
+      
+      assertEqual('\\(\\?\\!negative-lookahead\\)', RegExp.escape('(?!negative-lookahead)'));
+      assertEqual('negative-lookahead', new RegExp(RegExp.escape('(?!') + '([^)]+)').exec('(?!negative-lookahead)')[1]);
+      
+      assertEqual('\\(\\?<\\!negative-lookbehind\\)', RegExp.escape('(?<!negative-lookbehind)'));
+      assertEqual('negative-lookbehind', new RegExp(RegExp.escape('(?<!') + '([^)]+)').exec('(?<!negative-lookbehind)')[1]);
+      
+      assertEqual('\\[\\\\w\\]\\+', RegExp.escape('[\\w]+'));
+      assertEqual('character class', new RegExp(RegExp.escape('[') + '([^\\]]+)').exec('[character class]')[1]);      
+      
+      assertEqual('<div>', new RegExp(RegExp.escape('<div>')).exec('<td><div></td>')[0]);      
+      
+      assertEqual('false', RegExp.escape(false));
+      assertEqual('undefined', RegExp.escape());
+      assertEqual('null', RegExp.escape(null));
+      assertEqual('42', RegExp.escape(42));
+      
+      assertEqual('\\\\n\\\\r\\\\t', RegExp.escape('\\n\\r\\t'));
+      assertEqual('\n\r\t', RegExp.escape('\n\r\t'));
+      assertEqual('\\{5,2\\}', RegExp.escape('{5,2}'));
+      
+      assertEqual(
+        '\\/\\(\\[\\.\\*\\+\\?\\^\\=\\!\\:\\$\\{\\}\\(\\)\\|\\[\\\\\\]\\\\\\\/\\\\\\\\\\]\\)\\/g',
+        RegExp.escape('/([.*+?^=!:${}()|[\\]\\/\\\\])/g')
+      );
+    }},
+    
     testBrowserDetection: function() {with(this) {
       var results = $H(Prototype.Browser).map(function(engine){
         return engine;
