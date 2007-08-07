@@ -219,7 +219,7 @@ String.prototype.gsub.prepareReplacement = function(replacement) {
   if (typeof replacement == 'function') return replacement;
   var template = new Template(replacement);
   return function(match) { return template.evaluate(match) };
-}
+};
 
 String.prototype.parseQuery = String.prototype.toQueryParams;
 

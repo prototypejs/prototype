@@ -38,7 +38,7 @@ Hash.toQueryString.addPair = function(key, value, prefix) {
   key = encodeURIComponent(key);
   if (value === undefined) this.push(key);
   else this.push(key + '=' + (value == null ? '' : encodeURIComponent(value)));
-}
+};
 
 Object.extend(Hash.prototype, Enumerable);
 Object.extend(Hash.prototype, {
@@ -84,7 +84,7 @@ Object.extend(Hash.prototype, {
         if (result === undefined) result = value;
         else {
           if (!Object.isArray(result)) result = [result];
-          result.push(value)
+          result.push(value);
         }
       }
       delete this[arguments[i]];

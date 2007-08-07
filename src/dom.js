@@ -389,7 +389,7 @@ Element.Methods = {
         element.setOpacity(styles.match(/opacity:\s*(\d?\.?\d*)/)[1]) : element;
     }
     for (var property in styles)
-      if (property == 'opacity') element.setOpacity(styles[property])
+      if (property == 'opacity') element.setOpacity(styles[property]);
       else 
         elementStyle[(property == 'float' || property == 'cssFloat') ?
           (elementStyle.styleFloat === undefined ? 'cssFloat' : 'styleFloat') : 
@@ -712,7 +712,7 @@ if (!document.createRange || Prototype.Browser.Opera) {
     }
     
     return element;
-  }
+  };
 }
 
 if (Prototype.Browser.Opera) { 
@@ -879,7 +879,7 @@ else if (Prototype.Browser.WebKit) {
       } catch (e) { }
     
     return element;
-  }
+  };
   
   // Safari returns margins on body which is incorrect if the child is absolutely
   // positioned.  For performance reasons, redefine Position.cumulativeOffset for
@@ -896,7 +896,7 @@ else if (Prototype.Browser.WebKit) {
     } while (element);
     
     return [valueL, valueT];
-  }
+  };
 }
 
 if (Prototype.Browser.IE || Prototype.Browser.Opera) {
@@ -959,7 +959,7 @@ Element._returnOffset = function(l, t) {
 };
 
 Element._getContentFromAnonymousElement = function(tagName, html) {
-  var div = new Element('div'); t = Element._insertionTranslations.tags[tagName]
+  var div = new Element('div'), t = Element._insertionTranslations.tags[tagName];
   div.innerHTML = t[0] + html + t[1];
   t[2].times(function() { div = div.firstChild });
   return $A(div.childNodes);

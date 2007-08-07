@@ -8,7 +8,7 @@ var Ajax = {
   },
   
   activeRequestCount: 0
-}
+};
 
 Ajax.Responders = {
   responders: [],
@@ -59,7 +59,7 @@ Ajax.Base.prototype = {
       parameters:   '',
       evalJSON:     true,
       evalJS:       true
-    }
+    };
     Object.extend(this.options, options || {});
     
     this.options.method = this.options.method.toLowerCase();
@@ -310,7 +310,7 @@ Object.extend(Object.extend(Ajax.Updater.prototype, Ajax.Request.prototype), {
     this.container = {
       success: (container.success || container),
       failure: (container.failure || (container.success ? null : container))
-    }
+    };
     
     this.transport = Ajax.getTransport();
     this.setOptions(options);

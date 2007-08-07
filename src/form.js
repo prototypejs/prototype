@@ -108,7 +108,7 @@ Form.Methods = {
     
     return new Ajax.Request(action, options);
   }
-}
+};
 
 /*--------------------------------------------------------------------------*/
 
@@ -122,7 +122,7 @@ Form.Element = {
     $(element).select();
     return element;
   }
-}
+};
 
 Form.Element.Methods = {
   serialize: function(element) {
@@ -183,7 +183,7 @@ Form.Element.Methods = {
     element.disabled = false;
     return element;
   }
-}
+};
 
 /*--------------------------------------------------------------------------*/
 
@@ -253,11 +253,11 @@ Form.Element.Serializers = {
     // extend element because hasAttribute may not be native
     return Element.extend(opt).hasAttribute('value') ? opt.value : opt.text;
   }
-}
+};
 
 /*--------------------------------------------------------------------------*/
 
-Abstract.TimedObserver = function() {}
+Abstract.TimedObserver = function() {};
 Abstract.TimedObserver.prototype = {
   initialize: function(element, frequency, callback) {
     this.frequency = frequency;
@@ -281,7 +281,7 @@ Abstract.TimedObserver.prototype = {
       this.lastValue = value;
     }
   }
-}
+};
 
 Form.Element.Observer = Class.create();
 Form.Element.Observer.prototype = Object.extend(new Abstract.TimedObserver(), {
@@ -299,7 +299,7 @@ Form.Observer.prototype = Object.extend(new Abstract.TimedObserver(), {
 
 /*--------------------------------------------------------------------------*/
 
-Abstract.EventObserver = function() {}
+Abstract.EventObserver = function() {};
 Abstract.EventObserver.prototype = {
   initialize: function(element, callback) {
     this.element  = $(element);
@@ -337,7 +337,7 @@ Abstract.EventObserver.prototype = {
       }
     }    
   }
-}
+};
 
 Form.Element.EventObserver = Class.create();
 Form.Element.EventObserver.prototype = Object.extend(new Abstract.EventObserver(), {

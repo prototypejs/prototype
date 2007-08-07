@@ -124,13 +124,13 @@ if (!Array.prototype.indexOf) Array.prototype.indexOf = function(item, i) {
   for (; i < length; i++)
     if (this[i] === item) return i;
   return -1;
-}
+};
 
 if (!Array.prototype.lastIndexOf) Array.prototype.lastIndexOf = function(item, i) {
   i = isNaN(i) ? this.length : (i < 0 ? this.length + i : i) + 1;
   var n = this.slice(0, i).reverse().indexOf(item);
   return (n < 0) ? n : i - n - 1;
-}
+};
 
 Array.prototype.toArray = Array.prototype.clone;
 
@@ -152,5 +152,5 @@ if (Prototype.Browser.Opera){
       }
     }
     return array;
-  }
+  };
 }

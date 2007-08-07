@@ -44,7 +44,7 @@ Selector.prototype = {
   
   compileXPathMatcher: function() {
     var e = this.expression, ps = Selector.patterns,
-        x = Selector.xpath, le,  m;
+        x = Selector.xpath, le, m;
 
     if (Selector._cache[e]) {
       this.xpath = Selector._cache[e]; return;
@@ -228,7 +228,7 @@ Object.extend(Selector, {
       m[3] = (m[5] || m[6]);
       return new Template('n = h.attr(n, r, "#{1}", "#{3}", "#{2}"); c = false;').evaluate(m);
     },
-    pseudo:       function(m) {
+    pseudo: function(m) {
       if (m[6]) m[6] = m[6].replace(/"/g, '\\"');
       return new Template('n = h.pseudo(n, "#{1}", "#{6}", r, c); c = false;').evaluate(m); 
     },
