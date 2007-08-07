@@ -99,14 +99,7 @@ Event.extend = (function() {
     };
     
   } else {
-    if(!Event.prototype) try {
-      Event.prototype = document.createEvent("Events").__proto__;
-    } catch(e) {
-      return function(event) {
-        if (event._extendedByPrototype) return event;
-        return Object.extend(event, methods);
-      };
-    }
+    Event.prototype = Event.prototype || document.createEvent("HTMLEvents").__proto__;
     Object.extend(Event.prototype, methods);
     return Prototype.K;
   }
@@ -219,11 +212,7 @@ Object.extend(Event, (function() {
         element = document.documentElement;
         
       if (document.createEvent) {
-        try {
-          var event = document.createEvent("Events");
-        } catch(e) {
-          var event = document.createEvent("UIEvents");
-        }
+        var event = document.createEvent("HTMLEvents");
         event.initEvent("dataavailable", true, true);
       } else {
         var event = document.createEventObject();
