@@ -1,5 +1,9 @@
 *SVN*
 
+* Add support for brackets in quoted attribute value selectors.  Closes #9157.  [Ken Snyder]
+
+* Add some missing semicolons to the source tree.  Closes #9140.  [jdalton]
+
 * Fix event extensions and custom events firing for Safari 2.0.  [Thomas Fuchs]
 
 * Add RegExp.escape for escaping regular expression strings.  Closes #9094.  [Ken Snyder]

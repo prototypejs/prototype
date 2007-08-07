@@ -47,6 +47,11 @@
     <input type="radio" name="radiobuttons" id="unchecked_radio" value="Unchecked" />
   </form>
   
+  <form id="troubleForm2">
+    <input type="checkbox" name="brackets[5][]" id="chk_1" checked="checked" value="1" />
+    <input type="checkbox" name="brackets[5][]" id="chk_2" value="2" />    
+  </form>
+  
   <div id="level1">
     <span id="level2_1">
       <span id="level3_1"></span>
@@ -175,6 +180,13 @@
     
     testSelectorWithTagNameAndNegatedAttributeValue: function() {with(this) {
       assertEnumEqual([], $$('a[href!=#]'));
+    }},
+
+    testSelectorWithBracketAttributeValue: function() {with(this) {
+      assertEnumEqual($('chk_1', 'chk_2'), $$('#troubleForm2 input[name="brackets[5][]"]'));
+      assertEnumEqual([$('chk_1')], $$('#troubleForm2 input[name="brackets[5][]"]:checked'));
+      assertEnumEqual([$('chk_2')], $$('#troubleForm2 input[name="brackets[5][]"][value=2]'));
+      assertEnumEqual([], $$('#troubleForm2 input[name=brackets[5][]]'));
     }},
     
     test$$WithNestedAttributeSelectors: function() {with(this) {
