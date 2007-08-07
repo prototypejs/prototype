@@ -99,7 +99,14 @@ Event.extend = (function() {
     };
     
   } else {
-    Event.prototype = Event.prototype || document.createEvent("Events").__proto__;
+    if(!Event.prototype) try {
+      Event.prototype = document.createEvent("Events").__proto__;
+    } catch(e) {
+      return function(event) {
+        if (event._extendedByPrototype) return event;
+        return Object.extend(event, methods);
+      };
+    }
     Object.extend(Event.prototype, methods);
     return Prototype.K;
   }
@@ -212,7 +219,11 @@ Object.extend(Event, (function() {
         element = document.documentElement;
         
       if (document.createEvent) {
-        var event = document.createEvent("Events");
+        try {
+          var event = document.createEvent("Events");
+        } catch(e) {
+          var event = document.createEvent("UIEvents");
+        }
         event.initEvent("dataavailable", true, true);
       } else {
         var event = document.createEventObject();

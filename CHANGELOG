@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix event extensions and custom events firing for Safari 2.0.  [Thomas Fuchs]
+
 * Add RegExp.escape for escaping regular expression strings.  Closes #9094.  [Ken Snyder]
 
 * Make the eventName and handler arguments to Event.stopObserving optional.  If no handler is specified, all handlers for the given event are unregistered.  If no event name is specified, all observed events on the element are unregistered.  [sam]
