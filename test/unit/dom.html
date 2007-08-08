@@ -1491,6 +1491,31 @@
         elt.absolutize();
         assertUndefined(elt._originalLeft, 'absolutize() did not detect absolute positioning');
       });
+    }},
+    
+    
+    testViewportDimensions: function() {with(this) {
+      window.resizeTo(800, 600);
+      var before = document.viewport.getDimensions();
+      window.resizeBy(50, 50);
+      var after  = document.viewport.getDimensions();
+      
+      assertEqual(before.width + 50, after.width, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THESE TESTS TO PASS");
+      assertEqual(before.height + 50, after.height, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THESE TESTS TO PASS");
+    }},
+    
+    testViewportScrollOffsets: function() {with(this) {
+      window.scrollTo(0, 0);
+      assertEqual(0, document.viewport.getScrollOffsets().top);
+      
+      window.scrollTo(0, 35);
+      assertEqual(35, document.viewport.getScrollOffsets().top);
+      
+      window.resizeTo(200, 650);
+      window.scrollTo(25, 35);
+      assertEqual(25, document.viewport.getScrollOffsets().left);
+      
+      window.resizeTo(850, 650);
     }}
   }, 'testlog');
     

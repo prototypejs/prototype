@@ -1,5 +1,12 @@
 *SVN*
 
+* Add the document.viewport object for querying dimensions and scroll offsets of the browser viewport.  [Andrew Dupont, Thomas Fuchs, sam]
+  Example:
+    document.viewport.getDimensions()     // { width: 1149, height: 923 }
+    document.viewport.getWidth()          // 1149
+    document.viewport.getHeight()         // 923
+    document.viewport.getScrollOffsets()  // { left: 0, top: 1592 }
+
 * Add support for brackets in quoted attribute value selectors.  Closes #9157.  [Ken Snyder]
 
 * Add some missing semicolons to the source tree.  Closes #9140.  [jdalton]
