@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix Function#argumentNames for Opera [Thomas Fuchs]
+
 * Add Object.isString, Object.isNumber, and Object.isUndefined, and clean up the source to make use of Object.isXXX where possible.  [sam]
 
 * Add the document.viewport object for querying dimensions and scroll offsets of the browser viewport.  [Andrew Dupont, Thomas Fuchs, sam]
