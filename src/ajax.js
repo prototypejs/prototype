@@ -28,10 +28,10 @@ Ajax.Responders = {
   
   dispatch: function(callback, request, transport, json) {
     this.each(function(responder) {
-      if (typeof responder[callback] == 'function') {
+      if (Object.isFunction(responder[callback])) {
         try {
           responder[callback].apply(responder, [request, transport, json]);
-        } catch (e) {}
+        } catch (e) { }
       }
     });
   }
@@ -48,7 +48,7 @@ Ajax.Responders.register({
   }
 });
 
-Ajax.Base = function() {};
+Ajax.Base = function() { };
 Ajax.Base.prototype = {
   setOptions: function(options) {
     this.options = {
@@ -60,10 +60,10 @@ Ajax.Base.prototype = {
       evalJSON:     true,
       evalJS:       true
     };
-    Object.extend(this.options, options || {});
+    Object.extend(this.options, options || { });
     
     this.options.method = this.options.method.toLowerCase();
-    if (typeof this.options.parameters == 'string') 
+    if (Object.isString(this.options.parameters)) 
       this.options.parameters = this.options.parameters.toQueryParams();
   }
 };
@@ -158,7 +158,7 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
     if (typeof this.options.requestHeaders == 'object') {
       var extras = this.options.requestHeaders;
 
-      if (typeof extras.push == 'function')
+      if (Object.isFunction(extras.push))
         for (var i = 0, length = extras.length; i < length; i += 2) 
           headers[extras[i]] = extras[i+1];
       else
@@ -332,8 +332,8 @@ Object.extend(Object.extend(Ajax.Updater.prototype, Ajax.Request.prototype), {
     
     if (receiver = $(receiver)) {
       if (options.insertion) {
-        if (typeof options.insertion == 'string') {
-          var insertion = {}; insertion[options.insertion] = responseText;
+        if (Object.isString(options.insertion)) {
+          var insertion = { }; insertion[options.insertion] = responseText;
           receiver.insert(insertion);
         }
         else options.insertion(receiver, responseText);
@@ -356,7 +356,7 @@ Ajax.PeriodicalUpdater.prototype = Object.extend(new Ajax.Base(), {
     this.frequency = (this.options.frequency || 2);
     this.decay = (this.options.decay || 1);
     
-    this.updater = {};
+    this.updater = { };
     this.container = container;
     this.url = url;
 

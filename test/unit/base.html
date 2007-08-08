@@ -241,6 +241,38 @@
       assert(!Object.isFunction(undefined));
     }},
     
+    testObjectIsString: function() { with(this) {
+      assert(!Object.isString(function() { }));
+      assert(Object.isString("a string"));
+      assert(!Object.isString(0));
+      assert(!Object.isString([]));
+      assert(!Object.isString({}));
+      assert(!Object.isString(false));
+      assert(!Object.isString(undefined));
+    }},
+    
+    testObjectIsNumber: function() { with(this) {
+      assert(Object.isNumber(0));
+      assert(Object.isNumber(1.0));
+      assert(!Object.isNumber(function() { }));
+      assert(!Object.isNumber("a string"));
+      assert(!Object.isNumber([]));
+      assert(!Object.isNumber({}));
+      assert(!Object.isNumber(false));
+      assert(!Object.isNumber(undefined));
+    }},
+    
+    testObjectIsUndefined: function() { with(this) {
+      assert(Object.isUndefined(undefined));
+      assert(!Object.isUndefined(null));
+      assert(!Object.isUndefined(false));
+      assert(!Object.isUndefined(0));
+      assert(!Object.isUndefined(""));
+      assert(!Object.isUndefined(function() { }));
+      assert(!Object.isUndefined([]));
+      assert(!Object.isUndefined({}));
+    }},
+    
     // sanity check
     testDoesntExtendObjectPrototype: function() {with(this) {
       // for-in is supported with objects

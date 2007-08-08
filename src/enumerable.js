@@ -1,4 +1,4 @@
-var $break = {};
+var $break = { };
 
 var Enumerable = {
   each: function(iterator, context) {
@@ -77,7 +77,7 @@ var Enumerable = {
     iterator = iterator ? iterator.bind(context) : Prototype.K;
     var results = [];
 
-    if (typeof filter == "string")
+    if (Object.isString(filter))
       filter = new RegExp(filter);
       
     this.each(function(value, index) {
@@ -88,7 +88,7 @@ var Enumerable = {
   },
   
   include: function(object) {
-    if (typeof this.indexOf == 'function')
+    if (Object.isFunction(this.indexOf))
       return this.indexOf(object) != -1;
 
     var found = false;
@@ -190,7 +190,7 @@ var Enumerable = {
   
   zip: function() {
     var iterator = Prototype.K, args = $A(arguments);
-    if (typeof args.last() == 'function')
+    if (Object.isFunction(args.last()))
       iterator = args.pop();
 
     var collections = [this].concat(args).map($A);

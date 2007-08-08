@@ -220,7 +220,7 @@ Object.extend(Event, (function() {
       }
 
       event.eventName = eventName;
-      event.memo = memo || {};
+      event.memo = memo || { };
 
       if (document.createEvent) {
         element.dispatchEvent(event);

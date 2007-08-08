@@ -1,7 +1,7 @@
 /* Based on Alex Arnell's inheritance implementation. */
 var Class = {
   create: function(parent, methods) {
-    if (arguments.length == 1 && typeof parent !== 'function')
+    if (arguments.length == 1 && !Object.isFunction(parent))
       methods = parent, parent = null;
       
     var method = function() {
@@ -137,6 +137,18 @@ Object.extend(Object, {
   
   isFunction: function(object) {
     return typeof object == "function";
+  },
+  
+  isString: function(object) {
+    return typeof object == "string";
+  },
+  
+  isNumber: function(object) {
+    return typeof object == "number";
+  },
+  
+  isUndefined: function(object) {
+    return typeof object == "undefined";
   }
 });
 
@@ -212,7 +224,7 @@ var Try = {
       try {
         returnValue = lambda();
         break;
-      } catch (e) {}
+      } catch (e) { }
     }
 
     return returnValue;

@@ -91,9 +91,9 @@ Object.extend(String.prototype, {
   
   toQueryParams: function(separator) {
     var match = this.strip().match(/([^?#]*)(#.*)?$/);
-    if (!match) return {};
+    if (!match) return { };
     
-    return match[1].split(separator || '&').inject({}, function(hash, pair) {
+    return match[1].split(separator || '&').inject({ }, function(hash, pair) {
       if ((pair = pair.split('='))[0]) {
         var key = decodeURIComponent(pair.shift());
         var value = pair.length > 1 ? pair.join('=') : pair[0];
@@ -216,7 +216,7 @@ if (Prototype.Browser.WebKit || Prototype.Browser.IE) Object.extend(String.proto
 });
 
 String.prototype.gsub.prepareReplacement = function(replacement) {
-  if (typeof replacement == 'function') return replacement;
+  if (Object.isFunction(replacement)) return replacement;
   var template = new Template(replacement);
   return function(match) { return template.evaluate(match) };
 };
@@ -239,7 +239,7 @@ Template.prototype = {
   },
   
   evaluate: function(object) {
-    if (typeof object.toTemplateReplacements == 'function')
+    if (Object.isFunction(object.toTemplateReplacements))
       object = object.toTemplateReplacements();
 
     return this.template.gsub(this.pattern, function(match) {

@@ -4,7 +4,7 @@ function $(element) {
       elements.push($(arguments[i]));
     return elements;
   }
-  if (typeof element == 'string')
+  if (Object.isString(element))
     element = document.getElementById(element);
   return Element.extend(element);
 }
@@ -113,7 +113,7 @@ Element.Methods = {
   insert: function(element, insertions) {
     element = $(element);
     
-    if (typeof insertions == 'string' || typeof insertions == 'number' ||
+    if (Object.isString(insertions) || Object.isNumber(insertions) ||
         Object.isElement(insertions) || (insertions && (insertions.toElement || insertions.toHTML)))
           insertions = {bottom:insertions};
     
@@ -146,7 +146,7 @@ Element.Methods = {
     element = $(element);
     if (Object.isElement(wrapper))
       $(wrapper).writeAttribute(attributes || { });
-    else if (typeof wrapper == 'string') wrapper = new Element(wrapper, attributes);
+    else if (Object.isString(wrapper)) wrapper = new Element(wrapper, attributes);
     else wrapper = new Element('div', wrapper);
     if (element.parentNode)
       element.parentNode.replaceChild(wrapper, element);
@@ -209,7 +209,7 @@ Element.Methods = {
   },
   
   match: function(element, selector) {
-    if (typeof selector == 'string')
+    if (Object.isString(selector))
       selector = new Selector(selector);
     return selector.match($(element));
   },
@@ -383,7 +383,7 @@ Element.Methods = {
   setStyle: function(element, styles) {
     element = $(element);
     var elementStyle = element.style, match;
-    if (typeof styles === 'string') {
+    if (Object.isString(styles)) {
       element.style.cssText += ';' + styles;
       return styles.include('opacity') ?
         element.setOpacity(styles.match(/opacity:\s*(\d?\.?\d*)/)[1]) : element;
@@ -680,9 +680,9 @@ if (!document.createRange || Prototype.Browser.Opera) {
   Element.Methods.insert = function(element, insertions) {
     element = $(element);
 
-    if (typeof insertions == 'string' || typeof insertions == 'number' ||
+    if (Object.isString(insertions) || Object.isNumber(insertions) ||
         Object.isElement(insertions) || (insertions && (insertions.toElement || insertions.toHTML)))
-          insertions = {bottom:insertions};
+          insertions = { bottom: insertions };
     
     var t = Element._insertionTranslations, content, position, pos, tagName;
     
@@ -1056,7 +1056,7 @@ Element.extend = (function() {
     
     for (property in methods) {
       value = methods[property];
-      if (typeof value == 'function' && !(property in element))
+      if (Object.isFunction(value) && !(property in element))
         element[property] = value.methodize();
     }
     
@@ -1118,7 +1118,7 @@ Element.addMethods = function(methods) {
     onlyIfAbsent = onlyIfAbsent || false;
     for (var property in methods) {
       var value = methods[property];
-      if (typeof value != 'function') continue;
+      if (!Object.isFunction(value)) continue;
       if (!onlyIfAbsent || !(property in destination))
         destination[property] = value.methodize();
     }
@@ -1157,7 +1157,7 @@ Element.addMethods = function(methods) {
   if (F.SpecificElementExtensions) {
     for (var tag in Element.Methods.ByTag) {
       var klass = findDOMClass(tag);
-      if (typeof klass == "undefined") continue;
+      if (Object.isUndefined(klass)) continue;
       copy(T[tag], klass.prototype);
     }
   }  
@@ -1171,8 +1171,8 @@ Element.addMethods = function(methods) {
 
 document.viewport = {
   getDimensions: function() {
-    var dimensions = {};
-    $w('width height').each( function(d) {
+    var dimensions = { };
+    $w('width height').each(function(d) {
       var D = d.capitalize();
       dimensions[d] = self['inner' + D] || 
        (document.documentElement['client' + D] || document.body['client' + D]);

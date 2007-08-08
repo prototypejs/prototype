@@ -9,7 +9,7 @@ var Form = {
     else if (options.hash === undefined) options.hash = true;
     var key, value, submitted = false, submit = options.submit;
     
-    var data = elements.inject({}, function(result, element) {
+    var data = elements.inject({ }, function(result, element) {
       if (!element.disabled && element.name) {
         key = element.name; value = $(element).getValue();
         if (value != null && (element.type != 'submit' || (!submitted &&
@@ -92,14 +92,14 @@ Form.Methods = {
   },
   
   request: function(form, options) {
-    form = $(form), options = Object.clone(options || {});
+    form = $(form), options = Object.clone(options || { });
 
     var params = options.parameters, action = form.readAttribute('action') || '';
     if (action.blank()) action = window.location.href;
     options.parameters = form.serialize(true);
     
     if (params) {
-      if (typeof params == 'string') params = params.toQueryParams();
+      if (Object.isString(params)) params = params.toQueryParams();
       Object.extend(options.parameters, params);
     }
     
@@ -130,7 +130,7 @@ Form.Element.Methods = {
     if (!element.disabled && element.name) {
       var value = element.getValue();
       if (value != undefined) {
-        var pair = {};
+        var pair = { };
         pair[element.name] = value;
         return Hash.toQueryString(pair);
       }
@@ -167,7 +167,7 @@ Form.Element.Methods = {
       if (element.select && (element.tagName.toLowerCase() != 'input' ||
           !['button', 'reset', 'submit'].include(element.type)))
         element.select();
-    } catch (e) {}
+    } catch (e) { }
     return element;
   },
   
@@ -257,7 +257,7 @@ Form.Element.Serializers = {
 
 /*--------------------------------------------------------------------------*/
 
-Abstract.TimedObserver = function() {};
+Abstract.TimedObserver = function() { };
 Abstract.TimedObserver.prototype = {
   initialize: function(element, frequency, callback) {
     this.frequency = frequency;
@@ -274,7 +274,7 @@ Abstract.TimedObserver.prototype = {
   
   onTimerEvent: function() {
     var value = this.getValue();
-    var changed = ('string' == typeof this.lastValue && 'string' == typeof value
+    var changed = (Object.isString(this.lastValue) && Object.isString(value)
       ? this.lastValue != value : String(this.lastValue) != String(value));
     if (changed) {
       this.callback(this.element, value);
@@ -299,7 +299,7 @@ Form.Observer.prototype = Object.extend(new Abstract.TimedObserver(), {
 
 /*--------------------------------------------------------------------------*/
 
-Abstract.EventObserver = function() {};
+Abstract.EventObserver = function() { };
 Abstract.EventObserver.prototype = {
   initialize: function(element, callback) {
     this.element  = $(element);

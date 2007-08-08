@@ -106,7 +106,7 @@ var Position = {
   page: Element.Methods.viewportOffset,
 
   clone: function(source, target, options) {
-    options = options || {};
+    options = options || { };
     return Element.clonePosition(target, source, options);
   }
 };

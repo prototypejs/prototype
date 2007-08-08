@@ -19,8 +19,10 @@ Selector.prototype = {
         c = Selector.criteria, le, p, m;
 
     if (Selector._cache[e]) {
-      this.matcher = Selector._cache[e]; return;
+      this.matcher = Selector._cache[e]; 
+      return;
     }
+    
     this.matcher = ["this.matcher = function(root) {", 
                     "var r = root, h = Selector.handlers, c = false, n;"];
 
@@ -29,7 +31,7 @@ Selector.prototype = {
       for (var i in ps) {
         p = ps[i];
         if (m = e.match(p)) {
-          this.matcher.push(typeof c[i] == 'function' ? c[i](m) :
+          this.matcher.push(Object.isFunction(c[i]) ? c[i](m) :
     	      new Template(c[i]).evaluate(m));
           e = e.replace(m[0], '');
           break;
@@ -55,7 +57,7 @@ Selector.prototype = {
       le = e;
       for (var i in ps) {
         if (m = e.match(ps[i])) {
-          this.matcher.push(typeof x[i] == 'function' ? x[i](m) : 
+          this.matcher.push(Object.isFunction(x[i]) ? x[i](m) : 
             new Template(x[i]).evaluate(m));
           e = e.replace(m[0], '');
           break;
@@ -119,7 +121,7 @@ Selector.prototype = {
 };
 
 Object.extend(Selector, {
-  _cache: {},
+  _cache: { },
   
   xpath: {
     descendant:   "//*",
@@ -141,7 +143,7 @@ Object.extend(Selector, {
     pseudo: function(m) {
       var h = Selector.xpath.pseudos[m[1]];
       if (!h) return '';
-      if (typeof h === 'function') return h(m);
+      if (Object.isFunction(h)) return h(m);
       return new Template(Selector.xpath.pseudos[m[1]]).evaluate(m);
     },
     operators: {
@@ -170,7 +172,7 @@ Object.extend(Selector, {
           le = e;
           for (var i in p) {
             if (m = e.match(p[i])) {
-              v = typeof x[i] == 'function' ? x[i](m) : new Template(x[i]).evaluate(m);
+              v = Object.isFunction(x[i]) ? x[i](m) : new Template(x[i]).evaluate(m);
               exclusion.push("(" + v.substring(1, v.length - 1) + ")");
               e = e.replace(m[0], '');
               break;
@@ -604,7 +606,7 @@ Object.extend(Selector, {
   },
   
   findElement: function(elements, expression, index) {
-    if (typeof expression == 'number') { 
+    if (Object.isNumber(expression)) { 
       index = expression; expression = false;
     }
     return Selector.matchElements(elements, expression || '*')[index || 0];

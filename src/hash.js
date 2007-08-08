@@ -1,6 +1,6 @@
 var Hash = function(object) {
   if (object instanceof Hash) this.merge(object);
-  else Object.extend(this, object || {});
+  else Object.extend(this, object || { });
 };
 
 Object.extend(Hash, {

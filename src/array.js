@@ -12,8 +12,8 @@ function $A(iterable) {
 if (Prototype.Browser.WebKit) {
   function $A(iterable) {
     if (!iterable) return [];
-    if (!(typeof iterable == 'function' && iterable == '[object NodeList]') && 
-      iterable.toArray) {
+    if (!(Object.isFunction(iterable) && iterable == '[object NodeList]') && 
+        iterable.toArray) {
       return iterable.toArray();
     } else {
       var results = [];
@@ -114,7 +114,7 @@ Object.extend(Array.prototype, {
 });
 
 // use native browser JS 1.6 implementation if available
-if (typeof Array.prototype.forEach == 'function')
+if (Object.isFunction(Array.prototype.forEach))
   Array.prototype._each = Array.prototype.forEach;
 
 if (!Array.prototype.indexOf) Array.prototype.indexOf = function(item, i) {
