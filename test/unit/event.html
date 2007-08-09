@@ -166,6 +166,22 @@
       assertEqual(1, count);
     }},
     
+    testStopObservingRemovesHandlerFromCache: function() { with(this) {
+      var span = $("span"), observer = function() { }, eventID;
+      
+      span.observe("somethingHappened", observer);
+      eventID = span._eventID;
+      
+      assert(Event.cache[eventID]);
+      assert(Object.isArray(Event.cache[eventID].somethingHappened));
+      assertEqual(1, Event.cache[eventID].somethingHappened.length);
+      
+      span.stopObserving("somethingHappened", observer);
+      assert(Event.cache[eventID]);
+      assert(Object.isArray(Event.cache[eventID].somethingHappened));
+      assertEqual(0, Event.cache[eventID].somethingHappened.length);
+    }},
+    
     testDocumentContentLoadedEventFiresBeforeWindowLoad: function() { with(this) {
       assert(eventResults.contentLoaded, "contentLoaded");
       assert(eventResults.contentLoaded.endOfDocument, "contentLoaded.endOfDocument");

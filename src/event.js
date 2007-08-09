@@ -24,6 +24,8 @@ Object.extend(Event, {
               'DOMSubtreeModified', 'DOMNodeInserted', 
               'NodeInsertedIntoDocument', 'DOMAttrModified', 
               'DOMCharacterDataModified'],
+              
+  cache: { },
 
   relatedTarget: function(event) {
     var element;
@@ -106,7 +108,7 @@ Event.extend = (function() {
 })();
 
 Object.extend(Event, (function() {
-  var cache = { };
+  var cache = Event.cache;
   
   function getEventID(element) {
     if (element._eventID) return element._eventID;
@@ -151,9 +153,9 @@ Object.extend(Event, (function() {
   }
   
   function destroyWrapper(id, eventName, handler) {
-    var c = getCacheForID(id), name = getDOMEventName(eventName);
-    if (!c[name]) return false;
-    c[name] = c[name].without(findWrapper(id, eventName, handler));
+    var c = getCacheForID(id);
+    if (!c[eventName]) return false;
+    c[eventName] = c[eventName].without(findWrapper(id, eventName, handler));
   }
   
   function destroyCache() {
@@ -204,6 +206,8 @@ Object.extend(Event, (function() {
       } else {
         element.detachEvent("on" + name, wrapper);
       }
+      
+      destroyWrapper(id, eventName, handler);
     },
   
     fire: function(element, eventName, memo) {
