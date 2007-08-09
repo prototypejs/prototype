@@ -1,6 +1,6 @@
 *SVN*
 
-* Fix Function#argumentNames for Opera [Thomas Fuchs]
+* Fix Function#argumentNames for Opera and IE.  [Thomas Fuchs]
 
 * Add Object.isString, Object.isNumber, and Object.isUndefined, and clean up the source to make use of Object.isXXX where possible.  [sam]
 
