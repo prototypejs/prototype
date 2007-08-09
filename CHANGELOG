@@ -1,5 +1,7 @@
 *SVN*
 
+* Add line numbers to failures when unit testing in Firefox.  Closes #9231.  [John Resig]
+
 * Fix Function#argumentNames for Opera and IE.  [Thomas Fuchs]
 
 * Add Object.isString, Object.isNumber, and Object.isUndefined, and clean up the source to make use of Object.isXXX where possible.  [sam]
