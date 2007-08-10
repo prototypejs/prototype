@@ -552,7 +552,7 @@ Element.Methods = {
   getOffsetParent: function(element) {
     if (element.offsetParent) return $(element.offsetParent);
     if (element == document.body) return $(element);
-
+    
     while ((element = element.parentNode) && element != document.body)
       if (Element.getStyle(element, 'position') != 'static')
         return $(element);
@@ -735,6 +735,20 @@ if (Prototype.Browser.Opera) {
 }
 
 else if (Prototype.Browser.IE) {
+  ['positionedOffset','getOffsetParent'].each(function(method){
+    Element.Methods[method] = Element.Methods[method].wrap(
+      function(proceed, element){
+        element = $(element);
+        if (element.getStyle('position') == 'static') return proceed(element);
+        var position = element.getStyle(position);
+        element.setStyle({position: 'relative'});
+        var value = proceed(element);
+        element.setStyle({position: position});
+        return value;
+      }
+    );
+  });
+  
   Element.Methods.getStyle = function(element, style) {
     element = $(element);
     style = (style == 'float' || style == 'cssFloat') ? 'styleFloat' : style.camelize();

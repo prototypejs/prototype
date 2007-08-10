@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix Element#positionedOffset and Element#getOffsetParent for static elements on IE.  [Thomas Fuchs]
+
 * Make sure event handlers and their wrappers are removed from the cache by Event.stopObserving.  [sam, Severin Heiniger]
 
 * Add line numbers to failures when unit testing in Firefox.  Closes #9231.  [John Resig]
