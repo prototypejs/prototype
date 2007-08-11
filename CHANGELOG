@@ -1,5 +1,7 @@
 *SVN*
 
+* Restrict Event.DOMEvents to include only events that can be supported in all browsers.  [sam]
+
 * Fix a failing test in base.html in Safari 2.  [Tobie Langel]
 
 * Fix Element#positionedOffset and Element#getOffsetParent for static elements on IE.  [Thomas Fuchs]

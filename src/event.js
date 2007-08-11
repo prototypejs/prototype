@@ -19,11 +19,7 @@ Object.extend(Event, {
   DOMEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 
               'mousemove', 'mouseout', 'keypress', 'keydown', 'keyup', 
               'load', 'unload', 'abort', 'error', 'resize', 'scroll', 
-              'select', 'change', 'submit', 'reset', 'focus', 'blur', 
-              'DOMFocusIn', 'DOMFocusOut', 'DOMActivate', 
-              'DOMSubtreeModified', 'DOMNodeInserted', 
-              'NodeInsertedIntoDocument', 'DOMAttrModified', 
-              'DOMCharacterDataModified'],
+              'select', 'change', 'submit', 'reset', 'focus', 'blur'],
               
   cache: { },
 
