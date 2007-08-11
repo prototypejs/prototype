@@ -14,7 +14,6 @@ var Class = {
     if (Object.isFunction(parent)) {
       Class.extending = true;
       method.prototype = new parent();
-      method.prototype.constructor = method;
 
       parent.subclasses.push(method);
 
@@ -22,6 +21,7 @@ var Class = {
     }
 
     if (methods) Class.extend(method, methods);
+    method.prototype.constructor = method;
 
     return method;    
   },

@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix a failing test in base.html in Safari 2.  [Tobie Langel]
+
 * Fix Element#positionedOffset and Element#getOffsetParent for static elements on IE.  [Thomas Fuchs]
 
 * Make sure event handlers and their wrappers are removed from the cache by Event.stopObserving.  [sam, Severin Heiniger]
