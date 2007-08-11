@@ -183,6 +183,17 @@
       assertEqual(0, Event.cache[eventID].somethingHappened.length);
     }},
     
+    testStopObservingIsChainable: function() { with(this) {
+      var span = $("span"), observer = function() { };
+      span.observe("somethingHappened", observer);
+      assertEqual(span, span.stopObserving("somethingHappened", observer));
+      span.observe("somethingHappened", observer);
+      assertEqual(span, span.stopObserving("somethingHappened"));
+      span.observe("somethingHappened", observer);
+      assertEqual(span, span.stopObserving());
+      assertEqual(span, span.stopObserving()); // assert it again, after there are no observers
+    }},
+    
     testDocumentContentLoadedEventFiresBeforeWindowLoad: function() { with(this) {
       assert(eventResults.contentLoaded, "contentLoaded");
       assert(eventResults.contentLoaded.endOfDocument, "contentLoaded.endOfDocument");

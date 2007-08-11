@@ -186,18 +186,20 @@ Object.extend(Event, (function() {
       var id = getEventID(element), name = getDOMEventName(eventName);
       
       if (!handler && eventName) {
-        return getWrappersForEventName(id, eventName).each(function(wrapper) {
+        getWrappersForEventName(id, eventName).each(function(wrapper) {
           element.stopObserving(eventName, wrapper.handler);
-        }) && false;
+        });
+        return element;
         
       } else if (!eventName) {
-        return Object.keys(getCacheForID(id)).each(function(eventName) {
+        Object.keys(getCacheForID(id)).each(function(eventName) {
           element.stopObserving(eventName);
-        }) && false;
+        });
+        return element;
       }
       
       var wrapper = findWrapper(id, eventName, handler);
-      if (!wrapper) return false;
+      if (!wrapper) return element;
       
       if (element.removeEventListener) {
         element.removeEventListener(name, wrapper, false);
