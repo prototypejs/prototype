@@ -1,6 +1,6 @@
 *SVN*
 
-* Make sure Element#stopObserving is always chainable.  [sam]
+* Make sure Element#observe and Element#stopObserving are always chainable.  [sam]
 
 * Event.fire/Element#fire now returns the newly-fired event instead of the event's target element.  [sam]
 

@@ -170,7 +170,7 @@ Object.extend(Event, (function() {
       var id = getEventID(element), name = getDOMEventName(eventName);
       
       var wrapper = createWrapper(id, eventName, handler);
-      if (!wrapper) return false;
+      if (!wrapper) return element;
       
       if (element.addEventListener) {
         element.addEventListener(name, wrapper, false);
