@@ -177,6 +177,8 @@ Object.extend(Event, (function() {
       } else {
         element.attachEvent("on" + name, wrapper);
       }
+      
+      return element;
     },
   
     stopObserving: function(element, eventName, handler) {
@@ -204,6 +206,8 @@ Object.extend(Event, (function() {
       }
       
       destroyWrapper(id, eventName, handler);
+      
+      return element;
     },
   
     fire: function(element, eventName, memo) {
@@ -228,7 +232,7 @@ Object.extend(Event, (function() {
         element.fireEvent(event.eventType, event);
       }
 
-      return element;
+      return event;
     }
   };
 })());
@@ -236,20 +240,9 @@ Object.extend(Event, (function() {
 Object.extend(Event, Event.Methods);
 
 Element.addMethods({
-  fire: function() {
-    Event.fire.apply(Event, arguments);
-    return $A(arguments).first();
-  },
-  
-  observe: function() {
-    Event.observe.apply(Event, arguments);
-    return $A(arguments).first();
-  },
-  
-  stopObserving: function() {
-    Event.stopObserving.apply(Event, arguments);
-    return $A(arguments).first();
-  }
+  fire:          Event.fire,
+  observe:       Event.observe,
+  stopObserving: Event.stopObserving
 });
 
 Object.extend(document, {
@@ -281,12 +274,14 @@ Object.extend(document, {
       Event.observe(window, "load", fireContentLoadedEvent);
       
     } else {
-      document.addEventListener("DOMContentLoaded", fireContentLoadedEvent, false);
+      document.addEventListener("DOMContentLoaded", 
+        fireContentLoadedEvent, false);
     }
     
   } else {
-    var dummy = location.protocol == "https:" ? "https://javascript:void(0)" : "javascript:void(0)";
-    document.write("<script id=__onDOMContentLoaded defer src='" + dummy + "'><\/script>");
+    document.write("<script id=__onDOMContentLoaded defer " +
+      "src='://javascript:void(0)'><\/script>");
+      
     $("__onDOMContentLoaded").onreadystatechange = function() { 
       if (this.readyState == "complete") {
         this.onreadystatechange = null; 

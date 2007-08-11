@@ -105,9 +105,10 @@
     }},
     
     testEventObjectIsExtended: function() { with(this) { 
-      var span = $("span"), event, observer = function(e) { event = e };
+      var span = $("span"), event, observedEvent, observer = function(e) { observedEvent = e };
       span.observe("somethingHappened", observer);
-      span.fire("somethingHappened");
+      event = span.fire("somethingHappened");
+      assertEqual(event, observedEvent);
       assertEqual(Event.Methods.stop.methodize(), event.stop);
       span.stopObserving("somethingHappened", observer);
     }},

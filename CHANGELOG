@@ -1,5 +1,7 @@
 *SVN*
 
+* Event.fire/Element#fire now returns the newly-fired event instead of the event's target element.  [sam]
+
 * Restrict Event.DOMEvents to include only events that can be supported in all browsers.  [sam]
 
 * Fix a failing test in base.html in Safari 2.  [Tobie Langel]
