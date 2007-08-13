@@ -1,5 +1,7 @@
 *SVN*
 
+* Make sure the WebKit redefinition of Element#cumulativeOffset uses Element._returnOffset.  Closes #9245.  [mdaines]
+
 * Make sure Element#observe and Element#stopObserving are always chainable.  [sam]
 
 * Event.fire/Element#fire now returns the newly-fired event instead of the event's target element.  [sam]

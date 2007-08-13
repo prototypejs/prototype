@@ -909,7 +909,7 @@ else if (Prototype.Browser.WebKit) {
       element = element.offsetParent;
     } while (element);
     
-    return [valueL, valueT];
+    return Element._returnOffset(valueL, valueT);
   };
 }
 
