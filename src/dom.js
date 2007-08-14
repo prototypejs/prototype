@@ -271,7 +271,11 @@ Element.Methods = {
       var t = Element._attributeTranslations.read;
       if (t.values[name]) return t.values[name](element, name);
       if (t.names[name]) name = t.names[name];
-    }    
+      if (name.include(':')) {
+        return (!element.attributes || !element.attributes[name]) ? null : 
+         element.attributes[name].value;
+      }
+    }
     return element.getAttribute(name);
   },
   
@@ -735,15 +739,15 @@ if (Prototype.Browser.Opera) {
 }
 
 else if (Prototype.Browser.IE) {
-  ['positionedOffset','getOffsetParent'].each(function(method){
+  $w('positionedOffset getOffsetParent viewportOffset').each(function(method) {
     Element.Methods[method] = Element.Methods[method].wrap(
-      function(proceed, element){
+      function(proceed, element) {
         element = $(element);
-        if (element.getStyle('position') == 'static') return proceed(element);
-        var position = element.getStyle(position);
-        element.setStyle({position: 'relative'});
+        var position = element.getStyle('position');
+        if (position != 'static') return proceed(element);
+        element.setStyle({ position: 'relative' });
         var value = proceed(element);
-        element.setStyle({position: position});
+        element.setStyle({ position: position });
         return value;
       }
     );
@@ -813,19 +817,7 @@ else if (Prototype.Browser.IE) {
   };
   
   Element._attributeTranslations.write = {
-    names: Object.extend({
-      colspan:   'colSpan',
-      rowspan:   'rowSpan',
-      valign:    'vAlign',
-      datetime:  'dateTime',
-      accesskey: 'accessKey',
-      tabindex:  'tabIndex',
-      enctype:   'encType',
-      maxlength: 'maxLength',
-      readonly:  'readOnly',
-      longdesc:  'longDesc'
-    }, Element._attributeTranslations.read.names),
-    
+    names: Object.clone(Element._attributeTranslations.read.names),
     values: {
       checked: function(element, value) {
         element.checked = !!value;
@@ -836,6 +828,14 @@ else if (Prototype.Browser.IE) {
       }
     }
   };
+  
+  Element._attributeTranslations.has = {};
+    
+  $w('colSpan rowSpan vAlign dateTime accessKey tabIndex ' +
+      'encType maxLength readOnly longDesc').each(function(attr) {
+    Element._attributeTranslations.write.names[attr.toLowerCase()] = attr;
+    Element._attributeTranslations.has[attr.toLowerCase()] = attr;
+  });
   
   (function(v) {
     Object.extend(v, {
@@ -1034,9 +1034,8 @@ Element._insertionTranslations = {
 
 Element.Methods.Simulated = {
   hasAttribute: function(element, attribute) {
-    var t = Element._attributeTranslations.read, node;
-    attribute = t.names[attribute] || attribute;
-    node = $(element).getAttributeNode(attribute);
+    attribute = Element._attributeTranslations.has[attribute] || attribute;
+    var node = $(element).getAttributeNode(attribute);
     return node && node.specified;
   }
 };
