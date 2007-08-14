@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix readAttribute-related failure in form.html in IE.  [sam, Andrew Dupont]
+
 * Fix failing dom.html and selector.html tests in IE.  [Tobie Langel, Andrew Dupont]
 
 * Make sure the WebKit redefinition of Element#cumulativeOffset uses Element._returnOffset.  Closes #9245.  [mdaines]

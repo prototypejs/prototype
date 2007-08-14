@@ -799,6 +799,10 @@ else if (Prototype.Browser.IE) {
         _getAttr: function(element, attribute) {
           return element.getAttribute(attribute, 2);
         },
+        _getAttrNode: function(element, attribute) {
+          var node = element.getAttributeNode(attribute);
+          return node ? node.value : "";
+        },
         _getEv: function(element, attribute) {
           var attribute = element.getAttribute(attribute);
           return attribute ? attribute.toString().slice(23, -2) : null;
@@ -839,13 +843,14 @@ else if (Prototype.Browser.IE) {
   
   (function(v) {
     Object.extend(v, {
-      href: v._getAttr,
-      src:  v._getAttr,
-      type: v._getAttr,
-      disabled: v._flag,
-      checked:  v._flag,
-      readonly: v._flag,
-      multiple: v._flag,
+      href:        v._getAttr,
+      src:         v._getAttr,
+      type:        v._getAttr,
+      action:      v._getAttrNode,
+      disabled:    v._flag,
+      checked:     v._flag,
+      readonly:    v._flag,
+      multiple:    v._flag,
       onload:      v._getEv,
       onunload:    v._getEv,
       onclick:     v._getEv,
