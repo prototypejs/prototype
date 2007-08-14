@@ -1,5 +1,7 @@
 *SVN*
 
+* Add contextmenu to Event.DOMEvents.  [Thomas Fuchs]
+
 * Fix readAttribute-related failure in form.html in IE.  [sam, Andrew Dupont]
 
 * Fix failing dom.html and selector.html tests in IE.  [Tobie Langel, Andrew Dupont]

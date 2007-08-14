@@ -19,7 +19,8 @@ Object.extend(Event, {
   DOMEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 
               'mousemove', 'mouseout', 'keypress', 'keydown', 'keyup', 
               'load', 'unload', 'abort', 'error', 'resize', 'scroll', 
-              'select', 'change', 'submit', 'reset', 'focus', 'blur'],
+              'select', 'change', 'submit', 'reset', 'focus', 'blur',
+              'contextmenu'],
               
   cache: { },
 
