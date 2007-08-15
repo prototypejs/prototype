@@ -2,6 +2,8 @@
 
 * Add contextmenu to Event.DOMEvents.  [Thomas Fuchs]
 
+*1.6.0_rc0* (August 15, 2007)
+
 * Fix readAttribute-related failure in form.html in IE.  [sam, Andrew Dupont]
 
 * Fix failing dom.html and selector.html tests in IE.  [Tobie Langel, Andrew Dupont]
