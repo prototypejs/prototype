@@ -113,7 +113,7 @@
       span.stopObserving("somethingHappened", observer);
     }},
     
-    testEventObserversAreBoundToTheTargetElement: function() { with(this) {
+    testEventObserversAreBoundToTheObservedElement: function() { with(this) {
       var span = $("span"), target, observer = function() { target = this };
       
       span.observe("somethingHappened", observer);
@@ -126,7 +126,7 @@
       outer.observe("somethingHappened", observer);
       span.fire("somethingHappened");
       outer.stopObserving("somethingHappened", observer);
-      assertEqual(span, target);
+      assertEqual(outer, target);
     }},
     
     testMultipleCustomEventObserversWithTheSameHandler: function() { with(this) {

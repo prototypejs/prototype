@@ -127,7 +127,8 @@ Object.extend(Event, (function() {
     return c[eventName] = c[eventName] || [];
   }
   
-  function createWrapper(id, eventName, handler) {
+  function createWrapper(element, eventName, handler) {
+    var id = getEventID(element);
     var c = getWrappersForEventName(id, eventName);
     if (c.pluck("handler").include(handler)) return false;
     
@@ -136,7 +137,7 @@ Object.extend(Event, (function() {
         return false;
       
       Event.extend(event);
-      handler.call(event.target, event);
+      handler.call(element, event)
     };
     
     wrapper.handler = handler;
@@ -168,9 +169,9 @@ Object.extend(Event, (function() {
   return {
     observe: function(element, eventName, handler) {
       element = $(element);
-      var id = getEventID(element), name = getDOMEventName(eventName);
+      var name = getDOMEventName(eventName);
       
-      var wrapper = createWrapper(id, eventName, handler);
+      var wrapper = createWrapper(element, eventName, handler);
       if (!wrapper) return element;
       
       if (element.addEventListener) {
