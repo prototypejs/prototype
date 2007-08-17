@@ -1,5 +1,7 @@
 *SVN*
 
+* Define Node constants conditionally after checking for Node.ELEMENT_NODE presence.  Add unit test to check the values of all constants.  Closes #7625.  [Mislav Marohnić]
+
 * Make sure Enumerable#include doesn't do type comparision.  [Mislav Marohnić]
 
 * Add contextmenu to Event.DOMEvents.  [Thomas Fuchs]
