@@ -1,5 +1,7 @@
 *SVN*
 
+* Change Class.extend to allow for superclass method resolution and remove Class.inherit.  Closes #9274.  [Samuel Lebeau]
+
 * Event handlers are now bound to the observed element, not the event's target element.  [Dan Webb]
 
 * Define Node constants conditionally after checking for Node.ELEMENT_NODE presence.  Add unit test to check the values of all constants.  Closes #7625.  [Mislav Marohnić]

@@ -1,61 +1,52 @@
 /* Based on Alex Arnell's inheritance implementation. */
 var Class = {
-  create: function(parent, methods) {
-    if (arguments.length == 1 && !Object.isFunction(parent))
-      methods = parent, parent = null;
+  create: (function() {
+    var extending = { };
+    
+    return function(parent, properties) {
+      if (arguments.length == 1 && !Object.isFunction(parent))
+        properties = parent, parent = null;
       
-    var method = function() {
-      if (!Class.extending) this.initialize.apply(this, arguments);
+      function klass() {
+        if (arguments[0] !== extending) 
+          this.initialize.apply(this, arguments);
+      }
+    
+      klass.superclass = parent;
+      klass.subclasses = [];
+    
+      if (Object.isFunction(parent)) {
+        klass.prototype = new parent(extending);
+        parent.subclasses.push(klass);
+      }
+
+      if (properties) Class.extend(klass, properties);
+      klass.prototype.constructor = klass;
+
+      return klass;
     };
-    
-    method.superclass = parent;
-    method.subclasses = [];
-    
-    if (Object.isFunction(parent)) {
-      Class.extending = true;
-      method.prototype = new parent();
-
-      parent.subclasses.push(method);
-
-      delete Class.extending;
-    }
-
-    if (methods) Class.extend(method, methods);
-    method.prototype.constructor = method;
-
-    return method;    
-  },
+  })(),
   
   extend: function(destination, source) {
-    for (var name in source) Class.inherit(destination, source, name);
+    var ancestor = destination.superclass && destination.superclass.prototype;
+
+    for (var property in source) {
+      var value = source[property];
+      if (ancestor && Object.isFunction(value) &&
+          value.argumentNames().first() == "$super") {
+        var method = value, value = Object.extend((function() { 
+          return ancestor[property].apply(this, arguments) 
+        }).wrap(method), {
+          valueOf:  function() { return method },
+          toString: function() { return method.toString() }  
+        });
+      }
+      destination.prototype[property] = value;
+    }
+    
     return destination;
   },
-    
-  inherit: function(destination, source, name) {
-    var prototype = destination.prototype, ancestor = prototype[name], 
-     descendant = source[name];
-    if (ancestor && Object.isFunction(descendant) &&
-        descendant.argumentNames().first() == "$super") {
-      var method = descendant, descendant = ancestor.wrap(method);
-      Object.extend(descendant, {
-        valueOf:  function() { return method },
-        toString: function() { return method.toString() }
-      });
-    }
 
-    prototype[name] = descendant;
-
-    if (destination.subclasses && destination.subclasses.length > 0) {
-      for (var i = 0, subclass; subclass = destination.subclasses[i]; i++) {
-        Class.extending = true;
-        Object.extend(subclass.prototype, new destination());
-        subclass.prototype.constructor = subclass;
-        delete Class.extending;
-        Class.inherit(subclass, destination.prototype, name);
-      }
-    }
-  },
-  
   mixin: function(destination, source) {
     return Object.extend(destination, source);
   }
@@ -64,9 +55,8 @@ var Class = {
 var Abstract = { };
 
 Object.extend = function(destination, source) {
-  for (var property in source) {
+  for (var property in source)
     destination[property] = source[property];
-  }
   return destination;
 };
 

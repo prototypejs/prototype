@@ -438,6 +438,14 @@
       
       assertEqual('Tom: ZZZ', tom.sleep(), "added instance method not available to subclass");
       assertEqual("Jerry: ZZZ ... no, can't sleep! Gotta steal cheese!", jerry.sleep());
+      
+      Class.extend(Animal, {
+        sleep: function() {
+          return this.say('zZzZ');
+        }
+      });
+      
+      assertEqual("Jerry: zZzZ ... no, can't sleep! Gotta steal cheese!", jerry.sleep());
     }}
 
   }, 'testlog');
