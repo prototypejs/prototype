@@ -89,11 +89,11 @@ var Enumerable = {
   
   include: function(object) {
     if (Object.isFunction(this.indexOf))
-      return this.indexOf(object) != -1;
+      if (this.indexOf(object) != -1) return true;
 
     var found = false;
     this.each(function(value) {
-      if (value === object) {
+      if (value == object) {
         found = true;
         throw $break;
       }

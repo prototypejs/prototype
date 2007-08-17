@@ -1,5 +1,7 @@
 *SVN*
 
+* Make sure Enumerable#include doesn't do type comparision.  [Mislav Marohnić]
+
 * Add contextmenu to Event.DOMEvents.  [Thomas Fuchs]
 
 *1.6.0_rc0* (August 15, 2007)

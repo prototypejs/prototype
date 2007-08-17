@@ -199,9 +199,10 @@
     testInclude: function() {with(this) {
       assert(Fixtures.Nicknames.include('sam-'));
       assert(Fixtures.Nicknames.include('noradio'));
-      assert(Fixtures.Nicknames.include('htonl'));
-      assert(Fixtures.Nicknames.include('Ulysses'));
       assert(!Fixtures.Nicknames.include('gmosx'));
+      assert(Fixtures.Basic.include(2));
+      assert(Fixtures.Basic.include('2'));
+      assert(!Fixtures.Basic.include('4'));
     }},
     
     testInGroupsOf: function() { with(this) {

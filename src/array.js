@@ -87,7 +87,7 @@ Object.extend(Array.prototype, {
   
   intersect: function(array) { 
     return this.uniq().findAll(function(item) { 
-      return array.include(item);
+      return array.detect(function(value) { return item === value });
     }); 
   },
   
