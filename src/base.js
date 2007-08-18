@@ -48,7 +48,7 @@ var Class = {
   },
 
   mixin: function(destination, source) {
-    return Object.extend(destination, source);
+    return Object.extend(destination.prototype, source);
   }
 };
 

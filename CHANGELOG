@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix Class.mixin to extend the class's prototype.  [Mislav Marohnić]
+
 * Fix superclass method call breakage from [7337].  [Mislav Marohnić, sam]
 
 * Change Class.extend to allow for superclass method resolution and remove Class.inherit.  Closes #9274.  [Samuel Lebeau]
