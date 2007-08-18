@@ -257,41 +257,30 @@ Form.Element.Serializers = {
 
 /*--------------------------------------------------------------------------*/
 
-Abstract.TimedObserver = function() { };
-Abstract.TimedObserver.prototype = {
-  initialize: function(element, frequency, callback) {
-    this.frequency = frequency;
+Abstract.TimedObserver = Class.create(PeriodicalExecuter, {
+  initialize: function($super, element, frequency, callback) {
+    $super(callback, frequency);
     this.element   = $(element);
-    this.callback  = callback;
-    
     this.lastValue = this.getValue();
-    this.registerCallback();
   },
   
-  registerCallback: function() {
-    setInterval(this.onTimerEvent.bind(this), this.frequency * 1000);
-  },
-  
-  onTimerEvent: function() {
+  execute: function() {
     var value = this.getValue();
-    var changed = (Object.isString(this.lastValue) && Object.isString(value)
-      ? this.lastValue != value : String(this.lastValue) != String(value));
-    if (changed) {
+    if (Object.isString(this.lastValue) && Object.isString(value) ?
+        this.lastValue != value : String(this.lastValue) != String(value)) {
       this.callback(this.element, value);
       this.lastValue = value;
     }
   }
-};
+});
 
-Form.Element.Observer = Class.create();
-Form.Element.Observer.prototype = Object.extend(new Abstract.TimedObserver(), {
+Form.Element.Observer = Class.create(Abstract.TimedObserver, {
   getValue: function() {
     return Form.Element.getValue(this.element);
   }
 });
 
-Form.Observer = Class.create();
-Form.Observer.prototype = Object.extend(new Abstract.TimedObserver(), {
+Form.Observer = Class.create(Abstract.TimedObserver, {
   getValue: function() {
     return Form.serialize(this.element);
   }
@@ -299,8 +288,7 @@ Form.Observer.prototype = Object.extend(new Abstract.TimedObserver(), {
 
 /*--------------------------------------------------------------------------*/
 
-Abstract.EventObserver = function() { };
-Abstract.EventObserver.prototype = {
+Abstract.EventObserver = Class.create({
   initialize: function(element, callback) {
     this.element  = $(element);
     this.callback = callback;
@@ -321,7 +309,7 @@ Abstract.EventObserver.prototype = {
   },
   
   registerFormCallbacks: function() {
-    Form.getElements(this.element).each(this.registerCallback.bind(this));
+    Form.getElements(this.element).each(this.registerCallback, this);
   },
   
   registerCallback: function(element) {
@@ -337,17 +325,15 @@ Abstract.EventObserver.prototype = {
       }
     }    
   }
-};
+});
 
-Form.Element.EventObserver = Class.create();
-Form.Element.EventObserver.prototype = Object.extend(new Abstract.EventObserver(), {
+Form.Element.EventObserver = Class.create(Abstract.EventObserver, {
   getValue: function() {
     return Form.Element.getValue(this.element);
   }
 });
 
-Form.EventObserver = Class.create();
-Form.EventObserver.prototype = Object.extend(new Abstract.EventObserver(), {
+Form.EventObserver = Class.create(Abstract.EventObserver, {
   getValue: function() {
     return Form.serialize(this.element);
   }

@@ -241,6 +241,10 @@ var PeriodicalExecuter = Class.create({
   registerCallback: function() {
     this.timer = setInterval(this.onTimerEvent.bind(this), this.frequency * 1000);
   },
+
+  execute: function() {
+    this.callback(this);
+  },
   
   stop: function() {
     if (!this.timer) return;
@@ -252,7 +256,7 @@ var PeriodicalExecuter = Class.create({
     if (!this.currentlyExecuting) {
       try {
         this.currentlyExecuting = true;
-        this.callback(this);
+        this.execute();
       } finally {
         this.currentlyExecuting = false;
       }

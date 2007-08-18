@@ -34,14 +34,6 @@
     return '-' + this.name;
   };
 
-  var peEventCount = 0;
-  // peEventFired will stop the PeriodicalExecuter after 3 callbacks
-  function peEventFired(pe) {
-    if (++peEventCount>2) {
-      pe.stop();
-    }
-  }
-  
   var arg1 = 1;
   var arg2 = 2;
   var arg3 = 3;
@@ -288,10 +280,16 @@
     }},
     
     testPeriodicalExecuterStop: function() {with(this) {
-      new PeriodicalExecuter(peEventFired, 0.1);
+      var peEventCount = 0;
+      function peEventFired(pe) {
+        if (++peEventCount > 2) pe.stop();
+      }
       
-      wait(1000, function() {
-          assertEqual(3, peEventCount);
+      // peEventFired will stop the PeriodicalExecuter after 3 callbacks
+      new PeriodicalExecuter(peEventFired, 0.05);
+      
+      wait(600, function() {
+        assertEqual(3, peEventCount);
       });
     }},
 

@@ -129,8 +129,6 @@
   <!-- Tests follow -->
   <script type="text/javascript" charset="utf-8">
   // <![CDATA[
-    var callbackCounter = 0;
-    var timedCounter = 0;
 
     // sweet sweet additional assertions
     Object.extend(Test.Unit.Testcase.prototype, {
@@ -161,6 +159,7 @@
     }},
     
     testFormElementEventObserver: function(){ with(this) {
+      var callbackCounter = 0;
       var observer = new Form.Element.EventObserver('input_enabled', function(){
         callbackCounter++;
       });
@@ -172,6 +171,7 @@
     }},
 
     testFormElementObserver: function(){ with(this) {
+      var timedCounter = 0;
       // First part: regular field
       var observer = new Form.Element.Observer('input_enabled', 0.5, function() {
         ++timedCounter;
@@ -194,7 +194,7 @@
         });
       });
 
-      // Second part: multiple-select! -- Fails before patch in #6593.
+      // Second part: multiple-select
       [1, 2, 3].each(function(index) {
         $('multiSel1_opt' + index).selected = (1 == index);
       });

@@ -1,5 +1,7 @@
 *SVN*
 
+* Change Abstract.TimedObserver to subclass PeriodicalExecuter and tweak its subclasses to use new inheritance functionality.  TimedObserver can now be stopped the same way as PeriodicalExecuter.  Closes #8589.  [Mislav Marohnić]
+
 * Fix Class.mixin to extend the class's prototype.  [Mislav Marohnić]
 
 * Fix superclass method call breakage from [7337].  [Mislav Marohnić, sam]
