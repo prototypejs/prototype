@@ -2,9 +2,7 @@
  * part of YUI-Ext version 0.40, distributed under the terms of an MIT-style
  * license.  Please see http://www.yui-ext.com/ for more information. */
 
-var Selector = Class.create();
-
-Selector.prototype = {
+var Selector = Class.create({
   initialize: function(expression) {
     this.expression = expression.strip();
     this.compileMatcher();    
@@ -118,7 +116,7 @@ Selector.prototype = {
   inspect: function() {
     return "#<Selector:" + this.expression.inspect() + ">";
   }
-};
+});
 
 Object.extend(Selector, {
   _cache: { },

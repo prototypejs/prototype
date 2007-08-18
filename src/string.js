@@ -230,9 +230,7 @@ Object.extend(String.prototype.escapeHTML, {
 
 with (String.prototype.escapeHTML) div.appendChild(text);
 
-var Template = Class.create();
-Template.Pattern = /(^|.|\r|\n)(#\{(.*?)\})/;
-Template.prototype = {
+var Template = Class.create({
   initialize: function(template, pattern) {
     this.template = template.toString();
     this.pattern = pattern || Template.Pattern;
@@ -263,4 +261,5 @@ Template.prototype = {
       return before + String.interpret(ctx);
     }.bind(this));
   }
-};
+});
+Template.Pattern = /(^|.|\r|\n)(#\{(.*?)\})/;

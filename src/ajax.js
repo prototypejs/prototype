@@ -40,17 +40,12 @@ Ajax.Responders = {
 Object.extend(Ajax.Responders, Enumerable);
 
 Ajax.Responders.register({
-  onCreate: function() {
-    Ajax.activeRequestCount++;
-  }, 
-  onComplete: function() {
-    Ajax.activeRequestCount--;
-  }
+  onCreate:   function() { Ajax.activeRequestCount++ }, 
+  onComplete: function() { Ajax.activeRequestCount-- }
 });
 
-Ajax.Base = function() { };
-Ajax.Base.prototype = {
-  setOptions: function(options) {
+Ajax.Base = Class.create({
+  initialize: function(options) {
     this.options = {
       method:       'post',
       asynchronous: true,
@@ -66,18 +61,14 @@ Ajax.Base.prototype = {
     if (Object.isString(this.options.parameters)) 
       this.options.parameters = this.options.parameters.toQueryParams();
   }
-};
+});
 
-Ajax.Request = Class.create();
-Ajax.Request.Events = 
-  ['Uninitialized', 'Loading', 'Loaded', 'Interactive', 'Complete'];
-
-Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
+Ajax.Request = Class.create(Ajax.Base, {
   _complete: false,
   
-  initialize: function(url, options) {
+  initialize: function($super, url, options) {
+    $super(options);
     this.transport = Ajax.getTransport();
-    this.setOptions(options);
     this.request(url);
   },
 
@@ -233,8 +224,10 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
   }
 });
 
-Ajax.Response = Class.create();
-Ajax.Response.prototype = {
+Ajax.Request.Events = 
+  ['Uninitialized', 'Loading', 'Loaded', 'Interactive', 'Complete'];
+
+Ajax.Response = Class.create({
   initialize: function(request){
     this.request = request;
     var transport  = this.transport  = request.transport,
@@ -301,27 +294,23 @@ Ajax.Response.prototype = {
       this.request.dispatchException(e);
     }
   }
-};
+});
 
-Ajax.Updater = Class.create();
-
-Object.extend(Object.extend(Ajax.Updater.prototype, Ajax.Request.prototype), {
-  initialize: function(container, url, options) {
+Ajax.Updater = Class.create(Ajax.Request, {
+  initialize: function($super, container, url, options) {
     this.container = {
       success: (container.success || container),
       failure: (container.failure || (container.success ? null : container))
     };
-    
-    this.transport = Ajax.getTransport();
-    this.setOptions(options);
 
-    var onComplete = this.options.onComplete || Prototype.emptyFunction;
-    this.options.onComplete = (function(response, param) {
+    options = options || { };
+    var onComplete = options.onComplete;
+    options.onComplete = (function(response, param) {
       this.updateContent(response.responseText);
-      onComplete(response, param);
+      if (Object.isFunction(onComplete)) onComplete(response, param);
     }).bind(this);
 
-    this.request(url);
+    $super(url, options);
   },
 
   updateContent: function(responseText) {
@@ -347,10 +336,9 @@ Object.extend(Object.extend(Ajax.Updater.prototype, Ajax.Request.prototype), {
   }
 });
 
-Ajax.PeriodicalUpdater = Class.create();
-Ajax.PeriodicalUpdater.prototype = Object.extend(new Ajax.Base(), {
-  initialize: function(container, url, options) {
-    this.setOptions(options);
+Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
+  initialize: function($super, container, url, options) {
+    $super(options);
     this.onComplete = this.options.onComplete;
 
     this.frequency = (this.options.frequency || 2);
