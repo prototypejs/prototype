@@ -398,7 +398,20 @@
       } 
     }},
     
-    testInstantiation: function() { with(this) { 
+    testClassCreate: function() { with(this) { 
+      assert(Object.isFunction(Animal), 'Animal is not a constructor');
+      assertEnumEqual([Cat, Mouse], Animal.subclasses);
+      Animal.subclasses.each(function(subclass) {
+        assertEqual(Animal, subclass.superclass);
+      });
+
+      var Bird = Class.create(Animal);
+      assertEqual(Bird, Animal.subclasses.last());
+      // for..in loop (for some reason) doesn't iterate over the constructor property in top-level classes
+      assertEnumEqual(Object.keys(new Animal), Object.keys(new Bird).without('constructor'));
+    }},
+
+    testClassInstantiation: function() { with(this) { 
       var pet = new Animal("Nibbles");
       assertEqual("Nibbles", pet.name, "property not initialized");
       assertEqual('Nibbles: Hi!', pet.say('Hi!'));
@@ -415,12 +428,29 @@
       assertEqual('Tom: Yuk! I only eat mice.', tom.eat(new Animal));
     }},
 
-    testSupercall: function() { with(this) {
+    testSuperclassMethodCall: function() { with(this) {
       var tom = new Cat('Tom');
       assertEqual('Tom: Yum!', tom.eat(new Mouse));
+
+      // augment the constructor and test
+      var Dodo = Class.create(Animal, {
+        initialize: function($super, name) {
+          $super(name);
+          this.extinct = true;
+        },
+        
+        say: function($super, message) {
+          return $super(message) + " honk honk";
+        }
+      });
+
+      var gonzo = new Dodo('Gonzo');
+      assertEqual('Gonzo', gonzo.name);
+      assert(gonzo.extinct, 'Dodo birds should be extinct');
+      assertEqual("Gonzo: hello honk honk", gonzo.say("hello"));
     }},
 
-    testAddingInstanceMethod: function() { with(this) {
+    testClassExtend: function() { with(this) {
       var tom   = new Cat('Tom');
       var jerry = new Mouse('Jerry');
       

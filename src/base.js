@@ -15,7 +15,7 @@ var Class = {
       klass.superclass = parent;
       klass.subclasses = [];
     
-      if (Object.isFunction(parent)) {
+      if (parent) {
         klass.prototype = new parent(extending);
         parent.subclasses.push(klass);
       }
@@ -34,9 +34,9 @@ var Class = {
       var value = source[property];
       if (ancestor && Object.isFunction(value) &&
           value.argumentNames().first() == "$super") {
-        var method = value, value = Object.extend((function() { 
-          return ancestor[property].apply(this, arguments) 
-        }).wrap(method), {
+        var method = value, value = Object.extend((function(m) { 
+          return function() { return ancestor[m].apply(this, arguments) };
+        })(property).wrap(method), {
           valueOf:  function() { return method },
           toString: function() { return method.toString() }  
         });
