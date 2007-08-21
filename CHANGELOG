@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix Ajax.PeriodicalUpdater for compatibility with Ajax.Response.  Closes #9321.  [kampers]
+
 * Ensure that classes always have an initialize method.  [Mislav Marohnić]
 
 * Update Template, Selector, Ajax.*, and ObjectRange classes to use the new class system.  [Mislav Marohnić]
