@@ -21,6 +21,9 @@ var Class = {
       }
 
       if (properties) Class.extend(klass, properties);
+      if (!klass.prototype.initialize)
+        klass.prototype.initialize = Prototype.emptyFunction;
+        
       klass.prototype.constructor = klass;
 
       return klass;

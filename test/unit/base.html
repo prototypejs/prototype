@@ -415,6 +415,9 @@
       assertEqual('Nibbles: Hi!', pet.say('Hi!'));
       assertEqual(Animal, pet.constructor, "bad constructor reference");
       assertUndefined(pet.superclass);
+
+      var Empty = Class.create();
+      assert('object', typeof new Empty);
     }},
 
     testInheritance: function() { with(this) {
