@@ -464,11 +464,18 @@
       Class.extend(Mouse, {
         sleep: function($super) {
           return $super() + " ... no, can't sleep! Gotta steal cheese!";
+        },
+        escape: function(cat) {
+          return this.say('(from a mousehole) Take that, ' + cat.name + '!');
         }
       });
       
       assertEqual('Tom: ZZZ', tom.sleep(), "added instance method not available to subclass");
       assertEqual("Jerry: ZZZ ... no, can't sleep! Gotta steal cheese!", jerry.sleep());
+      assertEqual("Jerry: (from a mousehole) Take that, Tom!", jerry.escape(tom));
+      // insure that a method has not propagated *up* the prototype chain:
+      assertUndefined(tom.escape);
+      assertUndefined(new Animal().escape);
       
       Class.extend(Animal, {
         sleep: function() {

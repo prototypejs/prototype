@@ -1,5 +1,7 @@
 *SVN*
 
+* Simplify Class.create by establishing a prototype chain when subclassing.  Closes #9342.  [Ben Newman]
+
 * Fix Ajax.PeriodicalUpdater for compatibility with Ajax.Response.  Closes #9321.  [kampers]
 
 * Ensure that classes always have an initialize method.  [Mislav Marohnić]

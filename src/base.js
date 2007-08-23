@@ -1,34 +1,31 @@
 /* Based on Alex Arnell's inheritance implementation. */
 var Class = {
-  create: (function() {
-    var extending = { };
+  create: function(parent, properties) {
+    if (arguments.length == 1 && !Object.isFunction(parent))
+      properties = parent, parent = null;
     
-    return function(parent, properties) {
-      if (arguments.length == 1 && !Object.isFunction(parent))
-        properties = parent, parent = null;
+    function klass() {
+      this.initialize.apply(this, arguments);
+    }
+  
+    klass.superclass = parent;
+    klass.subclasses = [];
+  
+    if (parent) {
+      var subclass = function() { };
+      subclass.prototype = parent.prototype;
+      klass.prototype = new subclass;
+      parent.subclasses.push(klass);
+    }
+
+    if (properties) Class.extend(klass, properties);
+    if (!klass.prototype.initialize)
+      klass.prototype.initialize = Prototype.emptyFunction;
       
-      function klass() {
-        if (arguments[0] !== extending) 
-          this.initialize.apply(this, arguments);
-      }
-    
-      klass.superclass = parent;
-      klass.subclasses = [];
-    
-      if (parent) {
-        klass.prototype = new parent(extending);
-        parent.subclasses.push(klass);
-      }
+    klass.prototype.constructor = klass;
 
-      if (properties) Class.extend(klass, properties);
-      if (!klass.prototype.initialize)
-        klass.prototype.initialize = Prototype.emptyFunction;
-        
-      klass.prototype.constructor = klass;
-
-      return klass;
-    };
-  })(),
+    return klass;
+  },
   
   extend: function(destination, source) {
     var ancestor = destination.superclass && destination.superclass.prototype;
