@@ -780,6 +780,7 @@ else if (Prototype.Browser.IE) {
       return filter.replace(/alpha\([^\)]*\)/gi,'');
     }
     element = $(element);
+    if (!element.currentStyle.hasLayout) element.style.zoom = 1;
     var filter = element.getStyle('filter'), style = element.style;
     if (value == 1 || value === '') {
       (filter = stripAlpha(filter)) ?

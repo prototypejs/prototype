@@ -1,5 +1,7 @@
 *SVN*
 
+* Make sure setting opacity works on elements that have "no layout" in IE.  [Thomas Fuchs]
+
 * Simplify Class.create by establishing a prototype chain when subclassing.  Closes #9342.  [Ben Newman]
 
 * Fix Ajax.PeriodicalUpdater for compatibility with Ajax.Response.  Closes #9321.  [kampers]
