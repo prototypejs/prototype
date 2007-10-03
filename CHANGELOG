@@ -1,5 +1,7 @@
 *SVN*
 
+* Add a test for Form.Observer.  [Christoph Sturm]
+
 * Make sure setting opacity works on elements that have "no layout" in IE.  [Thomas Fuchs]
 
 * Simplify Class.create by establishing a prototype chain when subclassing.  Closes #9342.  [Ben Newman]

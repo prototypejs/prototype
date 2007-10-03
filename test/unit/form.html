@@ -223,6 +223,31 @@
       });
     }},
     
+    testFormObserver: function(){ with(this) {
+      var timedCounter = 0;
+      // should work the same way was Form.Element.Observer
+      var observer = new Form.Observer('form', 0.5, function(form, value) {
+        ++timedCounter;
+      });
+
+      // Test it's unchanged yet
+      assertEqual(0, timedCounter);
+      // Test it doesn't change on first check
+      wait(550, function() {
+        assertEqual(0, timedCounter);
+        // Change, test it doesn't immediately change
+        $('input_enabled').value = 'yowza!';
+        assertEqual(0, timedCounter);
+        // Test it changes on next check, but not again on the next
+        wait(550, function() {
+          assertEqual(1, timedCounter);
+          wait(550, function() {
+            assertEqual(1, timedCounter);
+          });
+        });
+      });
+    }},
+    
     testFormEnabling: function(){ with(this) {
       var form = $('bigform')
       var input1 = $('dummy_disabled');
