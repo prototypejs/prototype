@@ -162,6 +162,27 @@
       assertEqual(baz, baz.quux());
     }},
 
+    testObjectExtend: function() { with(this) {
+      var object = {foo: 'foo', bar: [1, 2, 3]};
+      assertIdentical(object, Object.extend(object));
+      assertHashEqual({foo: 'foo', bar: [1, 2, 3]}, object);
+      assertIdentical(object, Object.extend(object, {bla: 123}));
+      assertHashEqual({foo: 'foo', bar: [1, 2, 3], bla: 123}, object);
+      assertHashEqual({foo: 'foo', bar: [1, 2, 3], bla: null},
+        Object.extend(object, {bla: null}));
+    }},
+
+    testObjectClone: function() { with(this) {
+      var object = {foo: 'foo', bar: [1, 2, 3]};
+      assertNotIdentical(object, Object.clone(object));
+      assertHashEqual(object, Object.clone(object));
+      assertHashEqual({}, Object.clone());
+      var clone = Object.clone(object);
+      delete clone.bar;
+      assertHashEqual({foo: 'foo'}, clone, 
+        "Optimizing Object.clone perf using prototyping doesn't allow properties to be deleted.");
+    }},
+
     testObjectInspect: function() { with(this) {
       assertEqual('undefined', Object.inspect());
       assertEqual('undefined', Object.inspect(undefined));

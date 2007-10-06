@@ -1,5 +1,7 @@
 *SVN*
 
+* Add tests for Object.extend and Object.clone.  [Tobie Langel]
+
 * Add a test for Form.Observer.  [Christoph Sturm]
 
 * Make sure setting opacity works on elements that have "no layout" in IE.  [Thomas Fuchs]
