@@ -308,7 +308,7 @@ Object.extend(Selector, {
       parentNode._counted = true;
       if (reverse) {
         for (var nodes = parentNode.childNodes, i = nodes.length - 1, j = 1; i >= 0; i--) {
-          node = nodes[i];
+          var node = nodes[i];
           if (node.nodeType == 1 && (!ofType || node._counted)) node.nodeIndex = j++;
         }
       } else {
