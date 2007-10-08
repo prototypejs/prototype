@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix contentloaded event initialization in IE.  Closes #9457, #9488, #9707.  [Mislav Marohnić]
+
 * Deprecate document.getElementsByClassName and Element#getElementsByClassName since native versions return a NodeList and we can only return an Array.  Please use $$ or Element#select instead.  [sam]
   For more information see https://bugzilla.mozilla.org/show_bug.cgi?id=390411
 
