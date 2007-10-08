@@ -197,12 +197,12 @@ Object.extend(Function.prototype, {
 Function.prototype.defer = Function.prototype.delay.curry(0.01);
 
 Date.prototype.toJSON = function() {
-  return '"' + this.getFullYear() + '-' +
-    (this.getMonth() + 1).toPaddedString(2) + '-' +
-    this.getDate().toPaddedString(2) + 'T' +
-    this.getHours().toPaddedString(2) + ':' +
-    this.getMinutes().toPaddedString(2) + ':' +
-    this.getSeconds().toPaddedString(2) + '"';
+  return '"' + this.getUTCFullYear() + '-' +
+    (this.getUTCMonth() + 1).toPaddedString(2) + '-' +
+    this.getUTCDate().toPaddedString(2) + 'T' +
+    this.getUTCHours().toPaddedString(2) + ':' +
+    this.getUTCMinutes().toPaddedString(2) + ':' +
+    this.getUTCSeconds().toPaddedString(2) + 'Z"';
 };
 
 var Try = {

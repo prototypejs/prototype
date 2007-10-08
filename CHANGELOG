@@ -1,5 +1,7 @@
 *SVN*
 
+* Date#toJSON now returns times in UTC for better compatibility with json.js.  Closes #9332.  [Tobie Langel]
+
 * Ensure document._getElementsByXPath extends the elements it returns; fixes $$ not returning extended elements in Opera 9.2.  Closes #8843.  [jdalton]
 
 * Update Prototype.Browser.MobileSafari for iPod touch compatibility.  [sam]
