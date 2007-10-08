@@ -1,5 +1,9 @@
 *SVN*
 
+* Ensure document._getElementsByXPath extends the elements it returns; fixes $$ not returning extended elements in Opera 9.2.  Closes #8843.  [jdalton]
+
+* Update Prototype.Browser.MobileSafari for iPod touch compatibility.  [sam]
+
 * Add tests for Object.extend and Object.clone.  [Tobie Langel]
 
 * Add a test for Form.Observer.  [Christoph Sturm]
