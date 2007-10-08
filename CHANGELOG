@@ -1,5 +1,8 @@
 *SVN*
 
+* Deprecate document.getElementsByClassName and Element#getElementsByClassName since native versions return a NodeList and we can only return an Array.  Please use $$ or Element#select instead.  [sam]
+  For more information see https://bugzilla.mozilla.org/show_bug.cgi?id=390411
+
 * Fix missing "var" in selector.js.  Closes #9761.  [Tobie Langel]
 
 * Date#toJSON now returns times in UTC for better compatibility with json.js.  Closes #9332.  [Tobie Langel]
