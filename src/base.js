@@ -1,34 +1,40 @@
 /* Based on Alex Arnell's inheritance implementation. */
 var Class = {
-  create: function(parent, properties) {
-    if (arguments.length == 1 && !Object.isFunction(parent))
-      properties = parent, parent = null;
+  create: function() {
+    var parent = null, properties = $A(arguments);
+    if (Object.isFunction(properties[0]))
+      parent = properties.shift();
     
     function klass() {
       this.initialize.apply(this, arguments);
     }
-  
+    
+    Object.extend(klass, Class.Methods);
     klass.superclass = parent;
     klass.subclasses = [];
-  
+    
     if (parent) {
       var subclass = function() { };
       subclass.prototype = parent.prototype;
       klass.prototype = new subclass;
       parent.subclasses.push(klass);
     }
-
-    if (properties) Class.extend(klass, properties);
+    
+    for (var i = 0; i < properties.length; i++)
+      klass.addMethods(properties[i]);
+      
     if (!klass.prototype.initialize)
       klass.prototype.initialize = Prototype.emptyFunction;
-      
+    
     klass.prototype.constructor = klass;
-
+    
     return klass;
-  },
-  
-  extend: function(destination, source) {
-    var ancestor = destination.superclass && destination.superclass.prototype;
+  }
+};
+
+Class.Methods = {
+  addMethods: function(source) {
+    var ancestor = this.superclass && this.superclass.prototype;
 
     for (var property in source) {
       var value = source[property];
@@ -41,14 +47,10 @@ var Class = {
           toString: function() { return method.toString() }  
         });
       }
-      destination.prototype[property] = value;
+      this.prototype[property] = value;
     }
     
-    return destination;
-  },
-
-  mixin: function(destination, source) {
-    return Object.extend(destination.prototype, source);
+    return this;
   }
 };
 

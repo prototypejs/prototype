@@ -1,5 +1,10 @@
 *SVN*
 
+* Clean up the new class API.  [sam, Tobie Langel]
+  - Add Class#addMethods for adding instance methods to classes.  
+  - Remove Class.extend and Class.mixin.  
+  - Class.create now takes a variable number of arguments: if the first argument is a class, the newly created class inherits from that class; all other arguments are treated as successive calls to addMethods.
+
 * Fix contentloaded event initialization in IE.  Closes #9457, #9488, #9707.  [Mislav Marohnić]
 
 * Deprecate document.getElementsByClassName and Element#getElementsByClassName since native versions return a NodeList and we can only return an Array.  Please use $$ or Element#select instead.  [sam]
