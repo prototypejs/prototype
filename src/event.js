@@ -16,12 +16,6 @@ Object.extend(Event, {
   KEY_PAGEDOWN: 34,
   KEY_INSERT:   45,
   
-  DOMEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 
-              'mousemove', 'mouseout', 'keypress', 'keydown', 'keyup', 
-              'load', 'unload', 'abort', 'error', 'resize', 'scroll', 
-              'select', 'change', 'submit', 'reset', 'focus', 'blur',
-              'contextmenu'],
-              
   cache: { },
 
   relatedTarget: function(event) {
@@ -114,7 +108,7 @@ Object.extend(Event, (function() {
   }
   
   function getDOMEventName(eventName) {
-    if (!Event.DOMEvents.include(eventName)) return "dataavailable";
+    if (eventName && eventName.match(/:/)) return "dataavailable";
     return { keypress: "keydown" }[eventName] || eventName;
   }
   
@@ -264,7 +258,7 @@ Object.extend(document, {
   function fireContentLoadedEvent() {
     if (fired) return;
     if (timer) window.clearInterval(timer);
-    document.fire("contentloaded");
+    document.fire("dom:loaded");
     fired = true;
   }
   

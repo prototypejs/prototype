@@ -1,5 +1,10 @@
 *SVN*
 
+* Namespace all custom event names to avoid conflicts with native DOM events.  [sam]
+  - All custom event names MUST include a namespace.  Prefix custom event names for observe, stopObserving, and fire with the namespace followed by a colon.  E.g. document.fire("widget:activated")
+  - The "contentloaded" event is now "dom:loaded".
+  - The Event.DOMEvents array is no longer present.  If an event name does not include a namespace, the event is treated as a native event.
+
 * Clean up the new class API.  [sam, Tobie Langel]
   - Add Class#addMethods for adding instance methods to classes.  
   - Remove Class.extend and Class.mixin.  
