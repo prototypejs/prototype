@@ -569,6 +569,13 @@
       assertEqual(orphan.parentNode, div);
     }},
     
+    testElementWrapReturnsWrapper: function() {with(this) {
+      var element = new Element("div");
+      var wrapper = element.wrap("div");
+      assertNotEqual(element, wrapper);
+      assertEqual(element.up(), wrapper);
+    }},
+    
     testElementVisible: function(){with(this) {
       assertNotEqual('none', $('test-visible').style.display);
       assertEqual('none', $('test-hidden').style.display);

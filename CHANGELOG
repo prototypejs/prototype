@@ -1,5 +1,7 @@
 *SVN*
 
+* Element#wrap now returns the wrapper instead of the element being wrapped.  [sam]
+
 * Namespace all custom event names to avoid conflicts with native DOM events.  [sam]
   - All custom event names MUST include a namespace.  Prefix custom event names for observe, stopObserving, and fire with the namespace followed by a colon.  E.g. document.fire("widget:activated")
   - The "contentloaded" event is now "dom:loaded".

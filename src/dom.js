@@ -153,7 +153,7 @@ Element.Methods = {
     if (element.parentNode)
       element.parentNode.replaceChild(wrapper, element);
     wrapper.appendChild(element);
-    return element;
+    return wrapper;
   },
 
   inspect: function(element) {
