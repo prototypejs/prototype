@@ -463,13 +463,30 @@
     }},
 
     testTimes: function() {with(this) {
+
       assertEqual('', ''.times(0));
       assertEqual('', ''.times(5));
+      assertEqual('', 'a'.times(-1));
       assertEqual('', 'a'.times(0));
       assertEqual('a', 'a'.times(1));
+      assertEqual('aa', 'a'.times(2));
       assertEqual('aaaaa', 'a'.times(5));
       assertEqual('foofoofoofoofoo', 'foo'.times(5));
       assertEqual('', 'foo'.times(-5));
+      
+      /*window.String.prototype.oldTimes = function(count) {
+        var result = '';
+        for (var i = 0; i < count; i++) result += this;
+        return result;
+      };
+      
+      benchmark(function() {
+        'foo'.times(15);
+      }, 1000, 'new: ');
+      
+      benchmark(function() {
+        'foo'.oldTimes(15);
+      }, 1000, 'previous: ');*/
     }},
     
     testToJSON: function() {with(this) {

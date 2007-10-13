@@ -119,9 +119,7 @@ Object.extend(String.prototype, {
   },
   
   times: function(count) {
-    var result = '';
-    for (var i = 0; i < count; i++) result += this;
-    return result;
+    return count < 1 ? '' : new Array(count + 1).join(this);
   },
   
   camelize: function() {

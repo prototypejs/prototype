@@ -1,5 +1,7 @@
 *SVN*
 
+* Performance improvements to String#times. [Martin Ström]
+
 * Make Ajax.Response#getHeaderJSON and Ajax.Response#getResponseJSON pseudo private instance methods. [Tobie Langel]
 
 * Make ObjectRange use the new Class.create syntax. [Mislav Marohnić]
