@@ -490,7 +490,7 @@
       var Bird = Class.create(Animal);
       assertEqual(Bird, Animal.subclasses.last());
       // for..in loop (for some reason) doesn't iterate over the constructor property in top-level classes
-      assertEnumEqual(Object.keys(new Animal), Object.keys(new Bird).without('constructor'));
+      assertEnumEqual(Object.keys(new Animal).sort(), Object.keys(new Bird).without('constructor').sort());
     }},
 
     testClassInstantiation: function() { with(this) { 
