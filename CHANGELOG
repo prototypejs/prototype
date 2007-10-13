@@ -1,5 +1,7 @@
 *SVN*
 
+* Make Ajax.Response#getHeaderJSON and Ajax.Response#getResponseJSON pseudo private instance methods. [Tobie Langel]
+
 * Make ObjectRange use the new Class.create syntax. [Mislav Marohnić]
 
 * Fix a failing ClassCreate test case in IE. [Tobie Langel]

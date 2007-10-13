@@ -237,13 +237,13 @@ Ajax.Response = Class.create({
       this.status       = this.getStatus();
       this.statusText   = this.getStatusText();
       this.responseText = String.interpret(transport.responseText);
-      this.headerJSON   = this.getHeaderJSON();
+      this.headerJSON   = this._getHeaderJSON();
     }
     
     if(readyState == 4) {
       var xml = transport.responseXML;
       this.responseXML  = xml === undefined ? null : xml;
-      this.responseJSON = this.getResponseJSON();
+      this.responseJSON = this._getResponseJSON();
     }
   },
   
@@ -274,7 +274,7 @@ Ajax.Response = Class.create({
     return this.transport.getAllResponseHeaders();
   },
   
-  getHeaderJSON: function() {
+  _getHeaderJSON: function() {
     var json = this.getHeader('X-JSON');
     try {
       return json ? json.evalJSON(this.request.options.sanitizeJSON) : null;
@@ -283,7 +283,7 @@ Ajax.Response = Class.create({
     }
   },
   
-  getResponseJSON: function() {
+  _getResponseJSON: function() {
     var options = this.request.options;
     try {
       if (options.evalJSON == 'force' || (options.evalJSON &&
