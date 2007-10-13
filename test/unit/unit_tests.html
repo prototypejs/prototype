@@ -58,7 +58,7 @@
     testIsRunningFromRake:  function() { with(this) {
       if (window.location.toString().startsWith('http')) {
         assert(isRunningFromRake);
-        info('These tests are runingn from rake.')
+        info('These tests are running from rake.')
       } else {
         assert(!isRunningFromRake);
         info('These tests are *not* running from rake.')

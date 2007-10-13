@@ -97,6 +97,10 @@ Object.extend(Object, {
     return '{' + results.join(', ') + '}';
   },
   
+  toQueryString: function(object) {
+    return $H(object).toQueryString();
+  },
+  
   toHTML: function(object) {
     return object && object.toHTML ? object.toHTML() : String.interpret(object);
   },

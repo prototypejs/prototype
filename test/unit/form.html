@@ -368,7 +368,7 @@
       // return params
       assertHashEqual(expected, Form.serialize('various', true));
       // return string
-      assertEnumEqual(Hash.toQueryString(expected).split('&').sort(),
+      assertEnumEqual(Object.toQueryString(expected).split('&').sort(),
                       Form.serialize('various').split('&').sort());
       assertEqual('string', typeof $('form').serialize({ hash:false }));
 

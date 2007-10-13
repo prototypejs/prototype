@@ -50,28 +50,61 @@
 
     value_undefined:  { a:"b", c:undefined },
     value_null:       { a:"b", c:null },
-    value_zero:       { a:"b", c:0 },
-
-    dangerous: {
-      _each: 'E',
-      map: 'M',
-      keys: 'K',
-      values: 'V',
-      collect: 'C',
-      inject: 'I'
-    }
+    value_zero:       { a:"b", c:0 }
   };
   
   new Test.Unit.Runner({
+     testSet: function(){ with(this) {
+      var h = $H({a: 'A'})
+
+      assertEqual('B', h.set('b', 'B'));
+      assertHashEqual({a: 'A', b: 'B'}, h);
+      
+      assertUndefined(h.set('c'));
+      assertHashEqual({a: 'A', b: 'B', c: undefined}, h);
+    }},
+
+    testGet: function(){ with(this) {
+      assertEqual('A', $H({a: 'A'}).get('a'));
+      assertUndefined($H({}).get('a'));
+    }},
+    
+   testUnset: function(){ with(this) {
+      var hash = $H(Fixtures.many);
+      assertEqual('B', hash.unset('b'));
+      assertHashEqual({a:'A', c: 'C', d:'D#'}, hash);
+      assertUndefined(hash.unset('z'));
+      assertHashEqual({a:'A', c: 'C', d:'D#'}, hash);
+    }},
+    
+    testToObject: function(){ with(this) {
+      var hash = $H(Fixtures.many), object = hash.toObject();
+      assertInstanceOf(Object, object);
+      assertHashEqual(Fixtures.many, object);
+      assertNotIdentical(Fixtures.many, object);
+      hash.set('foo', 'bar');
+      assertHashNotEqual(object, hash.toObject());
+    }},
     
     testConstruct: function(){ with(this) {
-      var h = $H(Fixtures.one);
-      assertNotIdentical(Fixtures.one, h);
-      assertIdentical(h, $H(h));
-
-      var h2 = new Hash(h);
-      assertNotIdentical(h, h2);
-      assertHashEqual(h, h2);
+      var object = Object.clone(Fixtures.one);
+      var h = new Hash(object), h2 = $H(object);
+      assertInstanceOf(Hash, h);
+      assertInstanceOf(Hash, h2);
+      
+      assertHashEqual({}, new Hash());
+      assertHashEqual(object, h);
+      assertHashEqual(object, h2);
+      
+      h.set('foo', 'bar');
+      assertHashNotEqual(object, h);
+      
+      var clone = $H(h);
+      assertInstanceOf(Hash, clone);
+      assertHashEqual(h, clone);
+      h.set('foo', 'foo');
+      assertHashNotEqual(h, clone);
+      assertIdentical($H, Hash.from);
     }},
     
     testKeys: function(){ with(this) {
@@ -87,8 +120,8 @@
       assertEnumEqual($w('A B C D#'), $H(Fixtures.many).values().sort());
       assertEnumEqual($w('function function'),
         $H(Fixtures.functions).values().map(function(i){ return typeof i }));
-      assertEqual(9, $H(Fixtures.functions).quad(3));
-      assertEqual(6, $H(Fixtures.functions).plus(3));
+      assertEqual(9, $H(Fixtures.functions).get('quad')(3));
+      assertEqual(6, $H(Fixtures.functions).get('plus')(3));
     }},
     
     testIndex: function(){ with(this) {
@@ -104,22 +137,32 @@
     }},
       
     testMerge: function(){ with(this) {
-      assertHashEqual(Fixtures.many, $H(Fixtures.many).merge());
-      assertHashEqual(Fixtures.many, $H(Fixtures.many).merge({}));
-      assertHashEqual(Fixtures.many, $H(Fixtures.many).merge($H()));
-      assertHashEqual({a:'A',  b:'B', c:'C', d:'D#', aaa:'AAA' }, $H(Fixtures.many).merge({aaa: 'AAA'}));
-      assertHashEqual({a:'A#', b:'B', c:'C', d:'D#' }, $H(Fixtures.many).merge(Fixtures.one));
+      var h = $H(Fixtures.many);
+      assertNotIdentical(h, h.merge());
+      assertNotIdentical(h, h.merge({}));
+      assertInstanceOf(Hash, h.merge());
+      assertInstanceOf(Hash, h.merge({}));
+      assertHashEqual(h, h.merge());
+      assertHashEqual(h, h.merge({}));
+      assertHashEqual(h, h.merge($H()));
+      assertHashEqual({a:'A',  b:'B', c:'C', d:'D#', aaa:'AAA' }, h.merge({aaa: 'AAA'}));
+      assertHashEqual({a:'A#', b:'B', c:'C', d:'D#' }, h.merge(Fixtures.one));
     }},
-
-    testRemove: function(){ with(this) {
-      var hash = $H(Fixtures.many);
-      var values = hash.remove('b', 'c');
-      assertHashEqual({a:'A', d:'D#'}, hash);
-      assertEnumEqual($w('B C'), values);
+    
+    testUpdate: function(){ with(this) {
+      var h = $H(Fixtures.many);
+      assertIdentical(h, h.update());
+      assertIdentical(h, h.update({}));
+      assertHashEqual(h, h.update());
+      assertHashEqual(h, h.update({}));
+      assertHashEqual(h, h.update($H()));
+      assertHashEqual({a:'A',  b:'B', c:'C', d:'D#', aaa:'AAA' }, h.update({aaa: 'AAA'}));
+      assertHashEqual({a:'A#', b:'B', c:'C', d:'D#', aaa:'AAA' }, h.update(Fixtures.one));
     }},
     
     testToQueryString: function(){ with(this) {
       assertEqual('',                   $H({}).toQueryString());
+      assertEqual('a%23=A',             $H({'a#': 'A'}).toQueryString());
       assertEqual('a=A%23',             $H(Fixtures.one).toQueryString());
       assertEqual('a=A&b=B&c=C&d=D%23', $H(Fixtures.many).toQueryString());
       assertEqual("a=b&c",              $H(Fixtures.value_undefined).toQueryString());
@@ -132,10 +175,7 @@
       assertEqual("",                   $H(Fixtures.multiple_empty).toQueryString());
       assertEqual("stuff%5B%5D=%24&stuff%5B%5D=a&stuff%5B%5D=%3B", $H(Fixtures.multiple_special).toQueryString());
       assertHashEqual(Fixtures.multiple_special, $H(Fixtures.multiple_special).toQueryString().toQueryParams());
-      
-      var danger = $w("_each=E collect=C inject=I keys=K map=M values=V");
-      assertEnumEqual(danger, Hash.toQueryString(Fixtures.dangerous).split('&').sort());
-      assertEnumEqual(danger, $H(Fixtures.dangerous).toQueryString().split('&').sort());
+      assertIdentical(Object.toQueryString, Hash.toQueryString);
     }},
     
     testInspect: function(){ with(this) {
@@ -143,12 +183,17 @@
       assertEqual("#<Hash:{'a': 'A#'}>",     $H(Fixtures.one).inspect());
       assertEqual("#<Hash:{'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D#'}>", $H(Fixtures.many).inspect());
     }},
+
+    testClone: function(){ with(this) {
+      var h = $H(Fixtures.many);
+      assertHashEqual(h, h.clone());
+      assertInstanceOf(Hash, h.clone());
+      assertNotIdentical(h, h.clone());
+    }},
     
     testToJSON: function(){ with(this) {
       assertEqual('{\"b\": [false, true], \"c\": {\"a\": \"hello!\"}}',
         $H({'b': [undefined, false, true, undefined], c: {a: 'hello!'}}).toJSON());
-
-      assertEqual('E', eval('(' + $H(Fixtures.dangerous).toJSON() + ')')._each);
     }}
   }, 'testlog');
 // ]]>

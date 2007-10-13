@@ -85,7 +85,7 @@ Ajax.Request = Class.create(Ajax.Base, {
     
     this.parameters = params;
 
-    if (params = Hash.toQueryString(params)) {
+    if (params = Object.toQueryString(params)) {
       // when GET, append parameters to URL
       if (this.method == 'get')
         this.url += (this.url.include('?') ? '&' : '?') + params;

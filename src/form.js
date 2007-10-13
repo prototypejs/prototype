@@ -25,7 +25,7 @@ var Form = {
       return result;
     });
     
-    return options.hash ? data : Hash.toQueryString(data);
+    return options.hash ? data : Object.toQueryString(data);
   }
 };
 
@@ -132,7 +132,7 @@ Form.Element.Methods = {
       if (value != undefined) {
         var pair = { };
         pair[element.name] = value;
-        return Hash.toQueryString(pair);
+        return Object.toQueryString(pair);
       }
     }
     return '';

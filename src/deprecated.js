@@ -1,5 +1,7 @@
 /*------------------------------- DEPRECATED -------------------------------*/
 
+Hash.toQueryString = Object.toQueryString;
+
 var Toggle = { display: Element.toggle };
 
 Element.Methods.childOf = Element.Methods.descendantOf;

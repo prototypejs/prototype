@@ -230,7 +230,11 @@
       assertHashEqual({foo: 'foo', bar: [1, 2, 3], bla: null},
         Object.extend(object, {bla: null}));
     }},
-
+    
+    testObjectToQueryString: function() { with(this) {
+      assertEqual('a=A&b=B&c=C&d=D%23', Object.toQueryString({a: 'A', b: 'B', c: 'C', d: 'D#'}));
+    }},
+    
     testObjectClone: function() { with(this) {
       var object = {foo: 'foo', bar: [1, 2, 3]};
       assertNotIdentical(object, Object.clone(object));

@@ -1,5 +1,29 @@
 *SVN*
 
+* Complete rewrite of the Hash class.
+
+  !! BACKWARDS COMPATIBILITY CHANGE !! This new version of Hash is NOT backwards compatible with the former Hash class.
+  
+  Properties are now hidden away in an private store to prevent the risk of collision with Hash's instance and mixed-in methods.
+  This implies that properties of the hash can no longer be set, accessed or deleted directly: use the new Hash#get(key), Hash#set(key, value) and Hash#unset(key) instance methods instead.
+  
+  - Make $H(object) equivalent to new Hash(object). Both now return a new (cloned) instance of Hash in all circumstances.
+  - Make Hash#merge non-destructive.
+  
+  - Add Hash#update (a destructive version of Hash#merge).
+  - Add Hash#clone (returns a new, cloned instance of Hash).
+  - Add Hash#toObject (returns a clone of the contained object).
+  - Add Hash#get(key) (returns the value of the specified property).
+  - Add Hash#set(key, value) (sets the value of the given property. returns the value).
+  - Add Hash#unset(key) (deletes the specified property and returns its value).
+  - Add Hash.from as a alias to $H for consistency with Array.from.
+  - Add Object.toQueryString.
+
+  - Deprecate Hash.toQueryString (use Object.toQueryString or the instance method Hash#toQueryString instead).
+
+  - Remove Hash#remove (use Hash#unset instead).
+  - Remove Hash.toJSON (use Object.toJSON or the instance method Hash#toJSON instead). [sam, Tobie Langel]
+
 * Element#wrap now returns the wrapper instead of the element being wrapped.  [sam]
 
 * Namespace all custom event names to avoid conflicts with native DOM events.  [sam]
