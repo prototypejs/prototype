@@ -1,5 +1,9 @@
 *SVN*
 
+* Make ObjectRange use the new Class.create syntax. [Mislav Marohnić]
+
+* Fix a failing ClassCreate test case in IE. [Tobie Langel]
+
 * Complete rewrite of the Hash class.
 
   !! BACKWARDS COMPATIBILITY CHANGE !! This new version of Hash is NOT backwards compatible with the former Hash class.
