@@ -1,5 +1,7 @@
 *SVN*
 
+* Add more tests to Hash. [Mislav Marohnić]
+
 * Performance enhancements to $A. Closes #9464. [Samuel Lebeau]
 
 * Make Function#argumentNames work with named functions. Closes #9826. [Samuel Lebeau]

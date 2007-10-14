@@ -54,7 +54,7 @@
   };
   
   new Test.Unit.Runner({
-     testSet: function(){ with(this) {
+    testSet: function(){ with(this) {
       var h = $H({a: 'A'})
 
       assertEqual('B', h.set('b', 'B'));
@@ -65,16 +65,21 @@
     }},
 
     testGet: function(){ with(this) {
-      assertEqual('A', $H({a: 'A'}).get('a'));
+      var h = $H({a: 'A'});
+      assertEqual('A', h.get('a'));
+      assertUndefined(h.a);
       assertUndefined($H({}).get('a'));
     }},
     
-   testUnset: function(){ with(this) {
+    testUnset: function(){ with(this) {
       var hash = $H(Fixtures.many);
       assertEqual('B', hash.unset('b'));
       assertHashEqual({a:'A', c: 'C', d:'D#'}, hash);
       assertUndefined(hash.unset('z'));
       assertHashEqual({a:'A', c: 'C', d:'D#'}, hash);
+      // not equivalent to Hash#remove
+      assertEqual('A', hash.unset('a', 'c'));
+      assertHashEqual({c: 'C', d:'D#'}, hash);
     }},
     
     testToObject: function(){ with(this) {
@@ -194,7 +199,15 @@
     testToJSON: function(){ with(this) {
       assertEqual('{\"b\": [false, true], \"c\": {\"a\": \"hello!\"}}',
         $H({'b': [undefined, false, true, undefined], c: {a: 'hello!'}}).toJSON());
+    }},
+    
+    testAbilityToContainAnyKey: function(){ with(this) {
+      var h = $H({ _each: 'E', map: 'M', keys: 'K', pluck: 'P', unset: 'U' });
+      assertEnumEqual($w('_each keys map pluck unset'), h.keys().sort());
+      assertEqual('U', h.unset('unset'));
+      assertHashEqual({ _each: 'E', map: 'M', keys: 'K', pluck: 'P' }, h);
     }}
+    
   }, 'testlog');
 // ]]>
 </script>
