@@ -1,5 +1,7 @@
 *SVN*
 
+* Make Function#argumentNames work with named functions. Closes #9826. [Samuel Lebeau]
+
 * Add Object.isHash. [Tobie Langel]
 
 * Performance improvements to String#times. [Martin Ström]
