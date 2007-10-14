@@ -298,6 +298,12 @@
       assert(!Object.isArray({}));
     }},
     
+    testObjectIsHash: function() { with(this) {
+      assert(Object.isHash($H()));
+      assert(Object.isHash(new Hash()));
+      assert(!Object.isHash({}));
+    }},
+    
     testObjectIsElement: function() { with(this) {
       assert(Object.isElement(document.createElement('div')));
       assert(Object.isElement(new Element('div')));

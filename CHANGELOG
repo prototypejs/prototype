@@ -1,5 +1,7 @@
 *SVN*
 
+* Add Object.isHash. [Tobie Langel]
+
 * Performance improvements to String#times. [Martin Ström]
 
 * Make Ajax.Response#getHeaderJSON and Ajax.Response#getResponseJSON pseudo private instance methods. [Tobie Langel]

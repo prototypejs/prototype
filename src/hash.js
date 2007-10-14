@@ -39,7 +39,7 @@ var Hash = Class.create(Enumerable, (function() {
 
   return {
     initialize: function(object) {
-      this._object = object instanceof Hash ? object.toObject() : Object.clone(object);
+      this._object = Object.isHash(object) ? object.toObject() : Object.clone(object);
     },
 
     _each: each,

@@ -131,6 +131,10 @@ Object.extend(Object, {
     return object && object.constructor === Array;
   },
   
+  isHash: function(object) {
+    return object instanceof Hash;
+  },
+  
   isFunction: function(object) {
     return typeof object == "function";
   },
