@@ -128,6 +128,7 @@ if (!Array.prototype.lastIndexOf) Array.prototype.lastIndexOf = function(item, i
 Array.prototype.toArray = Array.prototype.clone;
 
 function $w(string) {
+  if (!Object.isString(string)) return [];
   string = string.strip();
   return string ? string.split(/\s+/) : [];
 }

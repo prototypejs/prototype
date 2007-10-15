@@ -204,6 +204,11 @@
     test$w: function(){ with(this) {
       assertEnumEqual(['a', 'b', 'c', 'd'], $w('a b c d'));
       assertEnumEqual([], $w(' '));
+      assertEnumEqual([], $w(''));
+      assertEnumEqual([], $w(null));
+      assertEnumEqual([], $w(undefined));
+      assertEnumEqual([], $w());
+      assertEnumEqual([], $w(10));
       assertEnumEqual(['a'], $w('a'));
       assertEnumEqual(['a'], $w('a '));
       assertEnumEqual(['a'], $w(' a'));

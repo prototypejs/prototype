@@ -1,5 +1,7 @@
 *SVN*
 
+* Make sure $w always returns an array. [Andrew Dupont, Tobie Langel]
+
 * Add more tests to Hash. [Mislav Marohnić]
 
 * Performance enhancements to $A. Closes #9464. [Samuel Lebeau]
