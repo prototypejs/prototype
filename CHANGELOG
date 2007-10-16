@@ -1,5 +1,7 @@
 *SVN*
 
+* Changed Selector pattern match so that descendant combinators after pseudoclass tokens are properly handled. [wiktor, kangax, Andrew Dupont]
+
 * Make sure $w always returns an array. [Andrew Dupont, Tobie Langel]
 
 * Add more tests to Hash. [Mislav Marohnić]
