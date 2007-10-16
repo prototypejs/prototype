@@ -58,6 +58,8 @@
   <p id="basic">A basic event test - <strong>click here</strong></p>
   <p id="basic_remove" class="subtest"><strong>click</strong> to stop observing the first test</p>
   
+  <p id="inline_test" onclick="Event.stop(event); $(this).passed();"><strong>click</strong> to ensure generic Event methods work on inline handlers</p>
+  
   <script type="text/javascript">
     var basic_callback = function(e){
       $('basic').passed();

@@ -1,5 +1,7 @@
 *SVN*
 
+* Ensure Event.* generic methods work in IE, even when the event is not extended. [Viktor Kojouharov, Andrew Dupont]
+
 * Don't translate "keypress" events into "keydown" events.  [sam]
   Note: "keypress" is broken in Safari <= 2.x, but Event#stop has no effect on "keydown" events.
 
