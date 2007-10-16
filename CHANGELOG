@@ -1,5 +1,7 @@
 *SVN*
 
+* Changed Element#makeClipping to remember the original overflow value, even if it's a non-inline style. [Andrew Dupont]
+
 * Cross-browser Event#isLeftClick with the addition of is(Middle|Right)Click.  Closes #7520.  [Christophe Porteneuve, Richard Quadling, Mislav Marohnić]
 
 * Changed Selector to use the non-XPath approach for Safari 3 because of bugs in its version of document.evaluate. [Andrew Dupont]
