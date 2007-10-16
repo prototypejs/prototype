@@ -1,6 +1,8 @@
 *SVN*
 
-* Changed Selector pattern match so that descendant combinators after pseudoclass tokens are properly handled. [wiktor, kangax, Andrew Dupont]
+* Changed the Selector regex that tests whether the selector can be expressed in XPath; added :checked, since XPath can't detect all scenarios in which an <input> is checked. Fixes #9776. [StelardActek, kangax, Andrew Dupont]
+
+* Changed Selector pattern match so that descendant combinators after pseudoclass tokens are properly handled. Fixes #9696. [wiktor, kangax, Andrew Dupont]
 
 * Make sure $w always returns an array. [Andrew Dupont, Tobie Langel]
 

@@ -10,7 +10,7 @@ var Selector = Class.create({
   
   compileMatcher: function() {
     // Selectors with namespaced attributes can't use the XPath version
-    if (Prototype.BrowserFeatures.XPath && !(/\[[\w-]*?:/).test(this.expression))
+    if (Prototype.BrowserFeatures.XPath && !(/(\[[\w-]*?:|:checked)/).test(this.expression))
       return this.compileXPathMatcher();
     
     var e = this.expression, ps = Selector.patterns, h = Selector.handlers, 
