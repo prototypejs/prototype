@@ -1,5 +1,7 @@
 *SVN*
 
+* Cross-browser Event#isLeftClick with the addition of is(Middle|Right)Click.  Closes #7520.  [Christophe Porteneuve, Richard Quadling, Mislav Marohnić]
+
 * Changed Selector to use the non-XPath approach for Safari 3 because of bugs in its version of document.evaluate. [Andrew Dupont]
 
 * Changed the Selector regex that tests whether the selector can be expressed in XPath; added :checked, since XPath can't detect all scenarios in which an <input> is checked. Fixes #9776. [StelardActek, kangax, Andrew Dupont]
