@@ -30,23 +30,24 @@ Object.extend(Event, {
 });
 
 Event.Methods = (function() {
-  // mouse button detection is terribly inconsistent
   if (Prototype.Browser.IE) {
-    var isButton = function(event, code) {
-      return event.button == ({ 0:1, 1:4, 2:2 })[code];
-    };
+    function isButton(event, code) {
+      return event.button == ({ 0: 1, 1: 4, 2: 2 })[code];
+    }
+    
   } else if (Prototype.Browser.WebKit) {
-    var isButton = function(event, code) {
+    function isButton(event, code) {
       switch (code) {
         case 0: return event.which == 1 && !event.metaKey;
         case 1: return event.which == 1 && event.metaKey;
         default: return false;
       }
-    };
+    }
+    
   } else {
-    var isButton = function(event, code) {
+    function isButton(event, code) {
       return event.which ? (event.which === code + 1) : (event.button === code);
-    };
+    }
   }
 
   return {
@@ -129,7 +130,7 @@ Object.extend(Event, (function() {
   
   function getDOMEventName(eventName) {
     if (eventName && eventName.match(/:/)) return "dataavailable";
-    return { keypress: "keydown" }[eventName] || eventName;
+    return eventName;
   }
   
   function getCacheForID(id) {

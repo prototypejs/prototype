@@ -1,5 +1,8 @@
 *SVN*
 
+* Don't translate "keypress" events into "keydown" events.  [sam]
+  Note: "keypress" is broken in Safari <= 2.x, but Event#stop has no effect on "keydown" events.
+
 * Changed Element#makeClipping to remember the original overflow value, even if it's a non-inline style. [Andrew Dupont]
 
 * Cross-browser Event#isLeftClick with the addition of is(Middle|Right)Click.  Closes #7520.  [Christophe Porteneuve, Richard Quadling, Mislav Marohnić]
