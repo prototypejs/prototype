@@ -1,5 +1,7 @@
 *1.6.0_rc1* (October 16, 2007)
 
+* Fix Event#is(Left|Middle|Right)Click in IE.  Closes #7520 (again).  [Mislav Marohnić]
+
 * Ensure Event.* generic methods work in IE, even when the event is not extended. [Viktor Kojouharov, Andrew Dupont]
 
 * Don't translate "keypress" events into "keydown" events.  [sam]

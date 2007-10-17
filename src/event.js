@@ -30,24 +30,27 @@ Object.extend(Event, {
 });
 
 Event.Methods = (function() {
+  var isButton;
+
   if (Prototype.Browser.IE) {
-    function isButton(event, code) {
-      return event.button == ({ 0: 1, 1: 4, 2: 2 })[code];
-    }
+    var buttonMap = { 0: 1, 1: 4, 2: 2 };
+    isButton = function(event, code) {
+      return event.button == buttonMap[code];
+    };
     
   } else if (Prototype.Browser.WebKit) {
-    function isButton(event, code) {
+    isButton = function(event, code) {
       switch (code) {
         case 0: return event.which == 1 && !event.metaKey;
         case 1: return event.which == 1 && event.metaKey;
         default: return false;
       }
-    }
+    };
     
   } else {
-    function isButton(event, code) {
+    isButton = function(event, code) {
       return event.which ? (event.which === code + 1) : (event.button === code);
-    }
+    };
   }
 
   return {
