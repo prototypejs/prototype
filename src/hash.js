@@ -116,4 +116,5 @@ var Hash = Class.create(Enumerable, (function() {
   }
 })());
 
+Hash.prototype.toTemplateReplacements = Hash.prototype.toObject;
 Hash.from = $H;

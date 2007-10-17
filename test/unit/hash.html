@@ -206,6 +206,13 @@
       assertEnumEqual($w('_each keys map pluck unset'), h.keys().sort());
       assertEqual('U', h.unset('unset'));
       assertHashEqual({ _each: 'E', map: 'M', keys: 'K', pluck: 'P' }, h);
+    }},
+    
+    testHashToTemplateReplacements: function() { with(this) {
+      var template = new Template("#{a} #{b}"), hash = $H({ a: "hello", b: "world" });
+      assertEqual("hello world", template.evaluate(hash.toObject()));
+      assertEqual("hello world", template.evaluate(hash));
+      assertEqual("hello", "#{a}".interpolate(hash));
     }}
     
   }, 'testlog');
