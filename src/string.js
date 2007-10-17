@@ -246,7 +246,7 @@ var Template = Class.create({
       
       var ctx = object, expr = match[3];
       var pattern = /^([^.[]+|\[((?:.*?[^\\])?)\])(\.|\[|$)/, match = pattern.exec(expr);
-      if (match == null) return '';
+      if (match == null) return before;
 
       while (match != null) {
         var comp = match[1].startsWith('[') ? match[2].gsub('\\\\]', ']') : match[1];

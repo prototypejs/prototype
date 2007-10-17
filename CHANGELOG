@@ -1,8 +1,12 @@
-*1.6.0_rc1* (October 16, 2007)
+*SVN*
+
+* Fix template evaluation with empty replacements.  Closes #9692.  [Ryan McGeary]
 
 * Hash#toTemplateReplacements is an alias for Hash#toObject so you can once again pass hashes to Template#evaluate and String#interpolate.  [sam]
 
 * Fix Event#is(Left|Middle|Right)Click in IE.  Closes #7520 (again).  [Mislav Marohnić]
+
+*1.6.0_rc1* (October 16, 2007)
 
 * Ensure Event.* generic methods work in IE, even when the event is not extended. [Viktor Kojouharov, Andrew Dupont]
 
