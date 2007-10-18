@@ -1,5 +1,7 @@
 *SVN*
 
+* Make submitting forms work in Opera < 9.1. Closes #9917, #9463, #8260. [kangax]
+
 * Fix template evaluation with empty replacements.  Closes #9692.  [Ryan McGeary]
 
 * Hash#toTemplateReplacements is an alias for Hash#toObject so you can once again pass hashes to Template#evaluate and String#interpolate.  [sam]
