@@ -203,11 +203,14 @@ class JavaScriptTestTask < ::Rake::TaskLib
 
     @queue = Queue.new
 
-    result = []
-
     @server = WEBrick::HTTPServer.new(:Port => 4711) # TODO: make port configurable
     @server.mount_proc("/results") do |req, res|
-      @queue.push(req.query['result'])
+      @queue.push({
+        :tests => req.query['tests'].to_i,
+        :assertions => req.query['assertions'].to_i,
+        :failures => req.query['failures'].to_i,
+        :errors => req.query['errors'].to_i
+      })
       res.body = "OK"
     end
     @server.mount_proc("/content-type") do |req, res|
@@ -225,19 +228,43 @@ class JavaScriptTestTask < ::Rake::TaskLib
     task @name do
       trap("INT") { @server.shutdown }
       t = Thread.new { @server.start }
-
+      
       # run all combinations of browsers and tests
       @browsers.each do |browser|
         if browser.supported?
+          t0 = Time.now
+          results = {:tests => 0, :assertions => 0, :failures => 0, :errors => 0}
+          errors = []
+          failures = []
           browser.setup
+          puts "\nStarted tests in #{browser}"
           @tests.each do |test|
             browser.visit("http://localhost:4711#{test}?resultsURL=http://localhost:4711/results&t=" + ("%.6f" % Time.now.to_f))
+ 
             result = @queue.pop
-            puts "#{test} on #{browser}: #{result}"
+            result.each { |k, v| results[k] += v }
+            value = "."
+            
+            if result[:failures] > 0
+              value = "F"
+              failures.push(test)
+            end
+            
+            if result[:errors] > 0
+              value = "E"
+              errors.push(test)
+            end
+            
+            print value
           end
+          
+          puts "\nFinished in #{(Time.now - t0).round.to_s} seconds."
+          puts "  Failures: #{failures.join(', ')}" unless failures.empty?
+          puts "  Errors:   #{errors.join(', ')}" unless errors.empty?
+          puts "#{results[:tests]} tests, #{results[:assertions]} assertions, #{results[:failures]} failures, #{results[:errors]} errors"
           browser.teardown
         else
-          puts "Skipping #{browser}, not supported on this OS"
+          puts "\nSkipping #{browser}, not supported on this OS"
         end
       end
 

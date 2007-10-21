@@ -1,5 +1,7 @@
 *SVN*
 
+* Minor cosmetic changes to the display of unit tests in terminal. [Tobie Langel]
+
 * Make submitting forms work in Opera < 9.1. Closes #9917, #9463, #8260. [kangax]
 
 * Fix template evaluation with empty replacements.  Closes #9692.  [Ryan McGeary]

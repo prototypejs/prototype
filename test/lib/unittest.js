@@ -177,25 +177,25 @@ Test.Unit.Runner.prototype = {
   //  "FAILURE" if there was a failure, or
   //  "SUCCESS" if there was neither
   getResult: function() {
-    var hasFailure = false;
-    for(var i=0;i<this.tests.length;i++) {
-      if (this.tests[i].errors > 0) {
-        return "ERROR";
-      }
-      if (this.tests[i].failures > 0) {
-        hasFailure = true;
-      }
-    }
-    if (hasFailure) {
-      return "FAILURE";
-    } else {
-      return "SUCCESS";
-    }
+    var results = {
+      tests: this.tests.length,
+      assertions: 0,
+      failures: 0,
+      errors: 0
+    };
+    
+    return this.tests.inject(results, function(results, test) {
+      results.assertions += test.assertions;
+      results.failures   += test.failures;
+      results.errors     += test.errors;
+      return results;
+    });
   },
+  
   postResults: function() {
     if (this.options.resultsURL) {
       new Ajax.Request(this.options.resultsURL, 
-        { method: 'get', parameters: 'result=' + this.getResult(), asynchronous: false });
+        { method: 'get', parameters: this.getResult(), asynchronous: false });
     }
   },
   runTests: function() {
@@ -224,21 +224,10 @@ Test.Unit.Runner.prototype = {
       this.runTests();
     }
   },
+  
   summary: function() {
-    var assertions = 0;
-    var failures = 0;
-    var errors = 0;
-    var messages = [];
-    for(var i=0;i<this.tests.length;i++) {
-      assertions +=   this.tests[i].assertions;
-      failures   +=   this.tests[i].failures;
-      errors     +=   this.tests[i].errors;
-    }
-    return (
-      this.tests.length + " tests, " + 
-      assertions + " assertions, " + 
-      failures   + " failures, " +
-      errors     + " errors");
+    return '#{tests} tests, #{assertions} assertions, #{failures} failures, #{errors} errors'
+      .interpolate(this.getResult());
   }
 }
 
