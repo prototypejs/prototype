@@ -619,10 +619,13 @@
       assertEqual('another hello from div!', $('testdiv').innerHTML);
       
       Element.update('testdiv', 123);
-      assertEqual('123', $('testdiv').innerHTML)
+      assertEqual('123', $('testdiv').innerHTML);
       
       Element.update('testdiv');
-      assertEqual('', $('testdiv').innerHTML)
+      assertEqual('', $('testdiv').innerHTML);
+      
+      Element.update('testdiv', '&nbsp;');
+      assert(!$('testdiv').innerHTML.empty());
     }},
 
     testElementUpdateWithScript: function() {with(this) {
