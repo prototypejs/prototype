@@ -133,7 +133,7 @@ Object.extend(Event, (function() {
   }
   
   function getDOMEventName(eventName) {
-    if (eventName && eventName.match(/:/)) return "dataavailable";
+    if (eventName && eventName.include(':')) return "dataavailable";
     return eventName;
   }
   
