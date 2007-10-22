@@ -1,5 +1,7 @@
 *SVN*
 
+* In IE, allow opacity to be set on elements not yet attached to the document. Closes #9904. [Thomas Fuchs, dcpedit, Tobie Langel]
+
 * Avoid the try..catch block in Ajax.Response#_getResponseJSON unless required. [Tobie Langel]
 
 * Add more tests to Element.update. Closes #9327. [Tobie Langel]

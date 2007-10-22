@@ -223,6 +223,8 @@
 <div id="style_test_2" class="style-test" style="font-size:11px;"></div>
 
 <div id="style_test_3">blah</div>
+<span id="style_test_4">blah</span>
+<span id="style_test_5">blah</span>
 
 <div id="style_test_dimensions_container">
   <div id="style_test_dimensions" style="background:#ddd;padding:1px;margin:1px;border:1px solid #00f"><div style="height:5px;background:#eee;width:5px;padding:2px;margin:2px;border:2px solid #0f0"> </div>
@@ -1085,7 +1087,13 @@
       assert(
         $('style_test_3').setOpacity(0.9999999).getStyle('opacity') > 0.999
       );
-      
+      if (Prototype.Browser.IE) {
+        assert($('style_test_4').setOpacity(0.5).currentStyle.hasLayout);
+        assert(2, $('style_test_5').setOpacity(0.5).getStyle('zoom'));
+        assert(0.5, new Element('div').setOpacity(0.5).getOpacity());
+        assert(2, new Element('div').setOpacity(0.5).setStyle('zoom: 2;').getStyle('zoom'));
+        assert(2, new Element('div').setStyle('zoom: 2;').setOpacity(0.5).getStyle('zoom'));
+      }
     }},
     
     testElementGetStyle: function() { with(this) {
