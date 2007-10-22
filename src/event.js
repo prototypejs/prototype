@@ -152,8 +152,9 @@ Object.extend(Event, (function() {
     if (c.pluck("handler").include(handler)) return false;
     
     var wrapper = function(event) {
-      if (event.eventName && event.eventName != eventName)
-        return false;
+      if (!Event || !Event.extend ||
+        (event.eventName && event.eventName != eventName))
+          return false;
       
       Event.extend(event);
       handler.call(element, event)
