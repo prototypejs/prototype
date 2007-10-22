@@ -1,5 +1,7 @@
 *SVN*
 
+* Make the Ajax.Response#headerJSON property correctly decode unicode characters. Closes #9285. [Marius Feraru, Tobie Langel]
+
 * Make sure Event and Event.extend are defined before wrapping events and calling their handler. Prevents a known Firefox bug from throwing errors on page load/unload (cf.: https://bugzilla.mozilla.org/show_bug.cgi?id=361271). Closes #5393, #9421. [staaky, John Resig, sam, Tobie Langel]
 
 * Minor cosmetic changes to the display of unit tests in terminal. [Tobie Langel]

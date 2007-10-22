@@ -276,8 +276,10 @@ Ajax.Response = Class.create({
   
   _getHeaderJSON: function() {
     var json = this.getHeader('X-JSON');
+    if (!json) return null;
+    json = decodeURIComponent(escape(json));
     try {
-      return json ? json.evalJSON(this.request.options.sanitizeJSON) : null;
+      return json.evalJSON(this.request.options.sanitizeJSON);
     } catch (e) {
       this.request.dispatchException(e);
     }

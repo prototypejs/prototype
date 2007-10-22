@@ -60,7 +60,7 @@
     },
     
     headerJson: {
-      'X-JSON': '{"test": 123}'
+      'X-JSON': '{"test": "hello #éà"}'
     }
   };
   
@@ -347,8 +347,8 @@
         new Ajax.Request("/response", extendDefault({
           parameters: Fixtures.headerJson,
           onComplete: function(transport, json) {
-            assertEqual(123, transport.headerJSON.test);
-            assertEqual(123, json.test);
+            assertEqual('hello #éà', transport.headerJSON.test);
+            assertEqual('hello #éà', json.test);
           }
         }));
       
