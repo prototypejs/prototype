@@ -287,11 +287,11 @@ Ajax.Response = Class.create({
   
   _getResponseJSON: function() {
     var options = this.request.options;
+    if (!options.evalJSON || (options.evalJSON != 'force' && 
+      !(this.getHeader('Content-type') || '').include('application/json')))
+        return null;
     try {
-      if (options.evalJSON == 'force' || (options.evalJSON &&
-          (this.getHeader('Content-type') || '').include('application/json')))
-        return this.transport.responseText.evalJSON(options.sanitizeJSON);
-      return null;
+      return this.transport.responseText.evalJSON(options.sanitizeJSON);
     } catch (e) {
       this.request.dispatchException(e);
     }

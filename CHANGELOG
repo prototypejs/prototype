@@ -1,5 +1,7 @@
 *SVN*
 
+* Avoid the try..catch block in Ajax.Response#_getResponseJSON unless required. [Tobie Langel]
+
 * Add more tests to Element.update. Closes #9327. [Tobie Langel]
 
 * Make the Ajax.Response#headerJSON property correctly decode unicode characters. Closes #9285. [Marius Feraru, Tobie Langel]
