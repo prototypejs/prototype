@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix the test runner for Firefox in Leopard.  [sam]
+
 * Use String#include wherever possible.
 
 * In IE, allow opacity to be set on elements not yet attached to the document. Closes #9904. [Thomas Fuchs, dcpedit, Tobie Langel]
