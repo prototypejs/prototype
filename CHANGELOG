@@ -1,5 +1,7 @@
 *SVN*
 
+* Reset the browser's dimensions to their original settings after running the DOM viewport tests.  [sam]
+
 * Fix the test runner for Firefox in Leopard.  [sam]
 
 * Use String#include wherever possible.
