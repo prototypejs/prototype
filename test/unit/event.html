@@ -208,7 +208,22 @@
       assert(eventResults.windowLoad, "windowLoad");
       assert(eventResults.windowLoad.endOfDocument, "windowLoad.endOfDocument");
       assert(eventResults.windowLoad.contentLoaded, "windowLoad.contentLoaded");
+    }},
+    
+    testEventStopped: function() { with(this) {
+      var span = $("span"), event;
+
+      span.observe("test:somethingHappened", function() { });
+      event = span.fire("test:somethingHappened");
+      assert(!event.stopped, "event.stopped should be false with an empty observer");
+      span.stopObserving("test:somethingHappened");
+      
+      span.observe("test:somethingHappened", function(e) { e.stop() });
+      event = span.fire("test:somethingHappened");
+      assert(event.stopped, "event.stopped should be true for an observer that calls stop");
+      span.stopObserving("test:somethingHappened");
     }}
+    
     
   }, 'testlog');
 

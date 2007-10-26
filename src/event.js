@@ -82,8 +82,9 @@ Event.Methods = (function() {
 
     stop: function(event) {
       Event.extend(event);
-      event.preventDefault(); 
-      event.stopPropagation(); 
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopped = true;
     }
   };
 })();
