@@ -1,5 +1,7 @@
 *SVN*
 
+* Apply the workaround for the Firefox "blinking element" opacity=1 bug only to Firefox 1.5.  [Thomas Fuchs]
+
 * Add event.stopped, a boolean that is set to `true` when Event#stop is called. [Andrew Dupont, sam]
 
 * Reset the browser's dimensions to their original settings after running the DOM viewport tests.  [sam]
