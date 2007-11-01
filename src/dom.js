@@ -358,6 +358,20 @@ Element.Methods = {
   
   descendantOf: function(element, ancestor) {
     element = $(element), ancestor = $(ancestor);
+
+    if (element.compareDocumentPosition)
+      return (element.compareDocumentPosition(ancestor) & 24) === 8;
+      
+    if (element.sourceIndex) {
+      var e = element.sourceIndex, a = ancestor.sourceIndex,
+       nextAncestor = ancestor.nextSibling;
+      if (!nextAncestor) {
+        do { ancestor = ancestor.parentNode; }
+        while (!(nextAncestor = ancestor.nextSibling) && ancestor.parentNode);
+      }
+      if (nextAncestor) return (e > a && e < nextAncestor.sourceIndex);      
+    }
+    
     while (element = element.parentNode)
       if (element == ancestor) return true;
     return false;

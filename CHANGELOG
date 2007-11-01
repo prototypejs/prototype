@@ -1,5 +1,7 @@
 *SVN*
 
+* Performance optimizations for Element#descendantOf. Costliness should no longer be dependent on the difference in depth between the parent and the child. [Andrew Dupont]
+
 * Apply the workaround for the Firefox "blinking element" opacity=1 bug only to Firefox 1.5.  [Thomas Fuchs]
 
 * Add event.stopped, a boolean that is set to `true` when Event#stop is called. [Andrew Dupont, sam]

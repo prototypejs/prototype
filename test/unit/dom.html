@@ -319,7 +319,13 @@
     
 </p>
 <p id="test-full">content</p>
-<div id="ancestor"><div id="child"><div><div id="great-grand-child"></div></div></div></div>
+<div id="ancestor">
+  <div id="child">
+    <div id="grand-child">
+      <div id="great-grand-child"></div>
+    </div></div><!-- intentional formatting; don't change this line -->
+  <div id="sibling"><div id="grand-sibling"></div></div>
+</div>
 <div id="not-in-the-family"></div>
 
 <div id="insertions-container"><div id="insertions-main"><p>some content.</p></div></div>
@@ -1003,8 +1009,28 @@
     testDescendantOf: function() {with(this) {
       assert($('child').descendantOf('ancestor'));
       assert($('child').descendantOf($('ancestor')));
-      assert($('great-grand-child').descendantOf('ancestor'));
-      assert(!$('great-grand-child').descendantOf('not-in-the-family'));
+      
+      assert(!$('ancestor').descendantOf($('child')));
+
+      assert($('great-grand-child').descendantOf('ancestor'), 'great-grand-child < ancestor');
+      assert($('grand-child').descendantOf('ancestor'), 'grand-child < ancestor');
+      assert($('great-grand-child').descendantOf('grand-child'), 'great-grand-child < grand-child');
+      assert($('grand-child').descendantOf('child'), 'grand-child < child');
+      assert($('great-grand-child').descendantOf('child'), 'great-grand-child < child');
+      
+      window.debug = true;
+      assert($('sibling').descendantOf('ancestor'), 'sibling < ancestor');
+      assert($('grand-sibling').descendantOf('sibling'), 'grand-sibling < sibling');
+      assert($('grand-sibling').descendantOf('ancestor'), 'grand-sibling < ancestor');
+      
+      assert($('grand-sibling').descendantOf(document.body), 'grand-sibling < body');      
+      window.debug = false;
+      
+      assert(!$('great-grand-child').descendantOf('great-grand-child'), 'great-grand-child < great-grand-child');
+      assert(!$('great-grand-child').descendantOf('sibling'), 'great-grand-child < sibling');
+      assert(!$('sibling').descendantOf('child'), 'sibling < child');
+      assert(!$('great-grand-child').descendantOf('not-in-the-family'), 'great-grand-child < not-in-the-family');
+      assert(!$('child').descendantOf('not-in-the-family'), 'child < not-in-the-family');
     }},  
     
     testChildOf: function() {with(this) {
