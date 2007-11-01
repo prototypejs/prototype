@@ -360,7 +360,7 @@ Element.Methods = {
     element = $(element), ancestor = $(ancestor);
 
     if (element.compareDocumentPosition)
-      return (element.compareDocumentPosition(ancestor) & 24) === 8;
+      return (element.compareDocumentPosition(ancestor) & 8) === 8;
       
     if (element.sourceIndex) {
       var e = element.sourceIndex, a = ancestor.sourceIndex,
