@@ -1403,12 +1403,12 @@
     }},
     
     testHasClassName: function() {with(this) {
-      assert(!$('class_names').hasClassName('does_not_exist'));
-      assert($('class_names').down().hasClassName('A'));
-      assert(!$('class_names').down().hasClassName('does_not_exist'));
-      assert($('class_names_ul').hasClassName('A'));
-      assert($('class_names_ul').hasClassName('B'));
-      assert(!$('class_names_ul').hasClassName('does_not_exist'));
+      assertIdentical(false, $('class_names').hasClassName('does_not_exist'));
+      assertIdentical(true, $('class_names').down().hasClassName('A'));
+      assertIdentical(false, $('class_names').down().hasClassName('does_not_exist'));
+      assertIdentical(true, $('class_names_ul').hasClassName('A'));
+      assertIdentical(true, $('class_names_ul').hasClassName('B'));
+      assertIdentical(false, $('class_names_ul').hasClassName('does_not_exist'));
     }},
     
     testAddClassName: function() {with(this) {
