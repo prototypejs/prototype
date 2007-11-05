@@ -1,5 +1,7 @@
 *SVN*
 
+* Ensure selectors of the form "[href]" (attribute token with no preceding tag name) work properly. Closes #8870. [chao, kangax, Andrew Dupont]
+
 * Performance optimizations for Element#descendantOf. Costliness should no longer be dependent on the difference in depth between the parent and the child. [Andrew Dupont]
 
 * Apply the workaround for the Firefox "blinking element" opacity=1 bug only to Firefox 1.5.  [Thomas Fuchs]

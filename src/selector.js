@@ -436,6 +436,7 @@ Object.extend(Selector, {
     },    
     
     attrPresence: function(nodes, root, attr) {
+      if (!nodes) nodes = root.getElementsByTagName("*");
       var results = [];
       for (var i = 0, node; node = nodes[i]; i++)
         if (Element.hasAttribute(node, attr)) results.push(node);

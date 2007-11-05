@@ -173,6 +173,15 @@
       assertEnumEqual($('link_1', 'link_2'), $$('a[class~=internal]'));
     }},
     
+    testSelectorWithAttributeAndNoTagName: function() {with(this) {
+      assertEnumEqual($(document.body).select('a[href]'), $(document.body).select('[href]'));
+      assertEnumEqual($$('a[class~="internal"]'), $$('[class~=internal]'));
+      assertEnumEqual($$('*[id]'), $$('[id]'));
+      assertEnumEqual($('checked_radio', 'unchecked_radio'), $$('[type=radio]'));
+      assertEnumEqual($$('*[type=checkbox]'), $$('[type=checkbox]'));
+      assertEnumEqual($('with_title', 'commaParent'), $$('[title]'));
+    }},
+    
     testSelectorWithUniversalAndHyphenTokenizedAttributeValue: function() {with(this) {
       assertEnumEqual([$('item_3')], $$('*[xml:lang|="es"]'));
       assertEnumEqual([$('item_3')], $$('*[xml:lang|="ES"]'));
