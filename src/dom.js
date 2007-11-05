@@ -362,7 +362,7 @@ Element.Methods = {
     if (element.compareDocumentPosition)
       return (element.compareDocumentPosition(ancestor) & 8) === 8;
       
-    if (element.sourceIndex) {
+    if (element.sourceIndex && !Prototype.Browser.Opera) {
       var e = element.sourceIndex, a = ancestor.sourceIndex,
        nextAncestor = ancestor.nextSibling;
       if (!nextAncestor) {

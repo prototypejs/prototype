@@ -1,5 +1,7 @@
 *SVN*
 
+* Exclude Opera from using the sourceIndex approach in Element#descendantOf. [Tobie Langel, Andrew Dupont]
+
 * Ensure Element#hasClassName always returns a boolean. Closes #10075. [ronnylovtangen, Tobie Langel]
 
 * Ensure selectors of the form "[href]" (attribute token with no preceding tag name) work properly. Closes #8870. [chao, kangax, Andrew Dupont]
