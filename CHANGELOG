@@ -1,4 +1,4 @@
-*SVN*
+*1.6.0* (November 6, 2007)
 
 * Fix Class#addMethods for "toString" and "valueOf" methods in Internet Explorer.  Closes #9901.  [sam]
 
