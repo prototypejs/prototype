@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix Class#addMethods for "toString" and "valueOf" methods in Internet Explorer.  Closes #9901.  [sam]
+
 * Exclude Opera from using the sourceIndex approach in Element#descendantOf. [Tobie Langel, Andrew Dupont]
 
 * Ensure Element#hasClassName always returns a boolean. Closes #10075. [ronnylovtangen, Tobie Langel]

@@ -34,10 +34,14 @@ var Class = {
 
 Class.Methods = {
   addMethods: function(source) {
-    var ancestor = this.superclass && this.superclass.prototype;
-
-    for (var property in source) {
-      var value = source[property];
+    var ancestor   = this.superclass && this.superclass.prototype;
+    var properties = Object.keys(source);
+    
+    if (!Object.keys({ toString: true }).length)
+      properties.push("toString", "valueOf");
+    
+    for (var i = 0, length = properties.length; i < length; i++) {
+      var property = properties[i], value = source[property];
       if (ancestor && Object.isFunction(value) &&
           value.argumentNames().first() == "$super") {
         var method = value, value = Object.extend((function(m) { 

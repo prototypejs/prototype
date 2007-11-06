@@ -599,6 +599,21 @@
       assertEqual('#<Ox: cow>', cow.inspect());
       assertRespondsTo('reproduce', cow);
       assertRespondsTo('getValue', cow);
+   }},
+   
+   testClassWithToStringAndValueOfMethods: function() { with(this) {
+     var Foo = Class.create({
+       toString: function() {
+         return "toString";
+       },
+       
+       valueOf: function() {
+         return "valueOf";
+       }
+     });
+     
+     assertEqual("toString", new Foo().toString());
+     assertEqual("valueOf", new Foo().valueOf());
    }}
 
   }, 'testlog');
