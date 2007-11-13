@@ -1,3 +1,7 @@
+* Performance optimizations for Event#findElement. Make Event#findElement's expression argument optional, in which case the extended target element is returned (same as Event#element). [Tobie Langel]
+
+* Ensure Event#fire always returns an extended event. [Tobie Langel]
+
 *1.6.0* (November 6, 2007)
 
 * Fix Class#addMethods for "toString" and "valueOf" methods in Internet Explorer.  Closes #9901.  [sam]

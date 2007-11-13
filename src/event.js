@@ -65,7 +65,9 @@ Event.Methods = (function() {
 
     findElement: function(event, expression) {
       var element = Event.element(event);
-      return element.match(expression) ? element : element.up(expression);
+      if (!expression) return element;
+      var elements = [element].concat(element.ancestors());
+      return Selector.findElement(elements, expression, 0);
     },
 
     pointer: function(event) {
@@ -257,7 +259,7 @@ Object.extend(Event, (function() {
         element.fireEvent(event.eventType, event);
       }
 
-      return event;
+      return Event.extend(event);
     }
   };
 })());

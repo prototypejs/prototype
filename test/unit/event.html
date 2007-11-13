@@ -111,6 +111,9 @@
       assertEqual(event, observedEvent);
       assertEqual(Event.Methods.stop.methodize(), event.stop);
       span.stopObserving("test:somethingHappened", observer);
+      
+      event = span.fire("test:somethingHappenedButNoOneIsListening");
+      assertEqual(Event.Methods.stop.methodize(), event.stop);
     }},
     
     testEventObserversAreBoundToTheObservedElement: function() { with(this) {
@@ -222,6 +225,14 @@
       event = span.fire("test:somethingHappened");
       assert(event.stopped, "event.stopped should be true for an observer that calls stop");
       span.stopObserving("test:somethingHappened");
+    }},
+
+    testEventFindElement: function() { with(this) {
+      var span = $("span"), event;
+      event = span.fire("test:somethingHappened");
+      assertEqual(span, event.findElement());
+      assertEqual(span, event.findElement('span'));
+      assertEqual(null, event.findElement('div.does_not_exist'));
     }}
     
     
