@@ -232,6 +232,7 @@
       event = span.fire("test:somethingHappened");
       assertEqual(span, event.findElement());
       assertEqual(span, event.findElement('span'));
+      assertEqual($("inner"), event.findElement('p'));
       assertEqual(null, event.findElement('div.does_not_exist'));
     }}
     
