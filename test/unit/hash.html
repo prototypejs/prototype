@@ -213,6 +213,17 @@
       assertEqual("hello world", template.evaluate(hash.toObject()));
       assertEqual("hello world", template.evaluate(hash));
       assertEqual("hello", "#{a}".interpolate(hash));
+    }},
+    
+    testPreventIterationOverShadowedProperties: function() { with(this) {
+      // redundant now that object is systematically cloned.
+      var FooMaker = function(value) {
+        this.key = value;
+      };
+      FooMaker.prototype.key = 'foo';
+      var foo = new FooMaker('bar');
+      assertEqual("key=bar", new Hash(foo).toQueryString());
+      assertEqual("key=bar", new Hash(new Hash(foo)).toQueryString());
     }}
     
   }, 'testlog');

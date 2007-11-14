@@ -3,35 +3,7 @@ function $H(object) {
 };
 
 var Hash = Class.create(Enumerable, (function() {
-  if (function() {
-    var i = 0, Test = function(value) { this.key = value };
-    Test.prototype.key = 'foo';
-    for (var property in new Test('bar')) i++;
-    return i > 1;
-  }()) {
-    function each(iterator) {
-      var cache = [];
-      for (var key in this._object) {
-        var value = this._object[key];
-        if (cache.include(key)) continue;
-        cache.push(key);
-        var pair = [key, value];
-        pair.key = key;
-        pair.value = value;
-        iterator(pair);
-      }
-    }
-  } else {
-    function each(iterator) {
-      for (var key in this._object) {
-        var value = this._object[key], pair = [key, value];
-        pair.key = key;
-        pair.value = value;
-        iterator(pair);
-      }
-    }
-  }
-  
+
   function toQueryPair(key, value) {
     if (Object.isUndefined(value)) return key;
     return key + '=' + encodeURIComponent(String.interpret(value));
@@ -42,7 +14,14 @@ var Hash = Class.create(Enumerable, (function() {
       this._object = Object.isHash(object) ? object.toObject() : Object.clone(object);
     },
 
-    _each: each,
+    _each: function(iterator) {
+      for (var key in this._object) {
+        var value = this._object[key], pair = [key, value];
+        pair.key = key;
+        pair.value = value;
+        iterator(pair);
+      }
+    },
 
     set: function(key, value) { 
       return this._object[key] = value;

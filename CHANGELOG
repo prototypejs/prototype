@@ -1,3 +1,5 @@
+* Remove the forked declaration of Hash#_each. As we are now systematically cloning the object upon instantiation, preventing iteration of shadowed properties is no longer required. [Tobie Langel]
+
 * Performance optimizations for Event#findElement. Make Event#findElement's expression argument optional, in which case the extended target element is returned (same as Event#element). [Tobie Langel]
 
 * Ensure Event#fire always returns an extended event. [Tobie Langel]
