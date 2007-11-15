@@ -1,3 +1,5 @@
+* Remove useless variable in Selector.handlers.child. Closes #10006 [kuriyama]
+
 * Don't redeclare previously declared variables. Closes #10007 [kuriyama]
 
 * For consistency: use Object.isUndefined where possible. [Tobie Langel]
