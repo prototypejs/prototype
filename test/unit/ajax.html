@@ -161,7 +161,19 @@
         });
       });
     }},
-       
+    
+    testUpdaterOptions: function() {with(this) {
+      var options = {
+        method: 'get',
+        asynchronous: false,
+        evalJS: 'force',
+        onComplete: Prototype.emptyFunction
+      }
+      var request = new Ajax.Updater("content", "fixtures/hello.js", options);
+      request.options.onComplete = function() {};
+      assertIdentical(Prototype.emptyFunction, options.onComplete);
+    }},
+    
     testResponders: function(){with(this) {
       // check for internal responder
       assertEqual(1, Ajax.Responders.responders.length);

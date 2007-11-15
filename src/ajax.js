@@ -306,11 +306,11 @@ Ajax.Updater = Class.create(Ajax.Request, {
       failure: (container.failure || (container.success ? null : container))
     };
 
-    options = options || { };
+    options = Object.clone(options);
     var onComplete = options.onComplete;
-    options.onComplete = (function(response, param) {
+    options.onComplete = (function(response, json) {
       this.updateContent(response.responseText);
-      if (Object.isFunction(onComplete)) onComplete(response, param);
+      if (Object.isFunction(onComplete)) onComplete(response, json);
     }).bind(this);
 
     $super(url, options);
@@ -331,10 +331,6 @@ Ajax.Updater = Class.create(Ajax.Request, {
         else options.insertion(receiver, responseText);
       } 
       else receiver.update(responseText);
-    }
-    
-    if (this.success()) {
-      if (this.onComplete) this.onComplete.bind(this).defer();
     }
   }
 });
