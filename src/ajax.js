@@ -291,7 +291,7 @@ Ajax.Response = Class.create({
       !(this.getHeader('Content-type') || '').include('application/json')))
         return null;
     try {
-      return this.transport.responseText.evalJSON(options.sanitizeJSON);
+      return this.responseText.evalJSON(options.sanitizeJSON);
     } catch (e) {
       this.request.dispatchException(e);
     }
