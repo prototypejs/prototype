@@ -289,7 +289,8 @@ Element.Methods = {
     else attributes[name] = Object.isUndefined(value) ? true : value;
     
     for (var attr in attributes) {
-      var name = t.names[attr] || attr, value = attributes[attr];
+      name = t.names[attr] || attr;
+      value = attributes[attr];
       if (t.values[attr]) name = t.values[attr](element, value);
       if (value === false || value === null)
         element.removeAttribute(name);
@@ -792,7 +793,7 @@ else if (Prototype.Browser.IE) {
           return node ? node.value : "";
         },
         _getEv: function(element, attribute) {
-          var attribute = element.getAttribute(attribute);
+          attribute = element.getAttribute(attribute);
           return attribute ? attribute.toString().slice(23, -2) : null;
         },
         _flag: function(element, attribute) {

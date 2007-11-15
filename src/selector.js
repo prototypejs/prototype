@@ -163,7 +163,7 @@ Object.extend(Selector, {
       'enabled':     "[not(@disabled)]",
       'not': function(m) {
         var e = m[6], p = Selector.patterns,
-            x = Selector.xpath, le, m, v;
+            x = Selector.xpath, le, v;
             
         var exclusion = [];
         while (e && le != e && (/\S/).test(e)) {
@@ -612,7 +612,8 @@ Object.extend(Selector, {
   },
   
   findChildElements: function(element, expressions) {
-    var exprs = expressions.join(','), expressions = [];
+    var exprs = expressions.join(',');
+    expressions = [];
     exprs.scan(/(([\w#:.~>+()\s-]+|\*|\[.*?\])+)\s*(,|$)/, function(m) {
       expressions.push(m[1].strip());
     });
