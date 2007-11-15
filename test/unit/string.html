@@ -504,7 +504,9 @@
     }},
     
     testIsJSON: function() {with(this) {
-      assert(''.isJSON());
+      assert(!''.isJSON());
+      assert(!'     '.isJSON());
+      assert('""'.isJSON());
       assert('"foo"'.isJSON());
       assert('{}'.isJSON());
       assert('[]'.isJSON());
@@ -517,13 +519,13 @@
       assert(!'new'.isJSON());
       assert(!'\u0028\u0029'.isJSON());
       // we use '@' as a placeholder for characters authorized only inside brackets,
-      // so this tests make sure it is considered as authorized.
+      // so this tests make sure it is not considered authorized elsewhere.
       assert(!'@'.isJSON());
     }},
 
     testEvalJSON: function() {with(this) {
-      var valid = '{test: \n\r"hello world!"}';
-      var invalid = '{test: "hello world!"';
+      var valid = '{"test": \n\r"hello world!"}';
+      var invalid = '{"test": "hello world!"';
       var dangerous = '{});attackTarget = "attack succeeded!";({}';
 
       // use smaller huge string size for KHTML
@@ -552,6 +554,16 @@
       Prototype.JSONFilter = temp;
       
       assertMatch(123, huge.evalJSON(true).last().test);
+      
+      assertEqual('', '""'.evalJSON());
+      assertEqual('foo', '"foo"'.evalJSON());
+      assert('object', typeof '{}'.evalJSON());
+      assert(Object.isArray('[]'.evalJSON()));
+      assertNull('null'.evalJSON());
+      assert(123, '123'.evalJSON());
+      assertIdentical(true, 'true'.evalJSON());
+      assertIdentical(false, 'false'.evalJSON());
+      assertEqual('"', '"\\""'.evalJSON());
     }}
   }, 'testlog');
 // ]]>

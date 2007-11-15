@@ -1,3 +1,5 @@
+* Make String#isJSON return false for empty or blank strings. Make Ajax.Response#responseJSON null when Ajax.Response#responseText is empty or blank. [Andrew Dupont, Thomas Fuchs, Tobie Langel]
+
 * Make Ajax.Response#_getResponseJSON use Ajax.Response#responseText. [Tobie Langel]
 
 * Remove the forked declaration of Hash#_each. As we are now systematically cloning the object upon instantiation, preventing iteration of shadowed properties is no longer required. [Tobie Langel]

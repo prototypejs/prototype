@@ -312,7 +312,15 @@
           parameters: Fixtures.json,
           onComplete: function(transport) { assertEqual(123, transport.responseJSON.test) }
         }));
-      
+        
+        new Ajax.Request("/response", extendDefault({
+          parameters: {
+            'Content-Length': 0,
+            'Content-Type': 'application/json'
+          },
+          onComplete: function(transport) { assertNull(transport.responseJSON) }
+        }));
+        
         new Ajax.Request("/response", extendDefault({
           evalJSON: false,
           parameters: Fixtures.json,

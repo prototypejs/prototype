@@ -288,8 +288,9 @@ Ajax.Response = Class.create({
   _getResponseJSON: function() {
     var options = this.request.options;
     if (!options.evalJSON || (options.evalJSON != 'force' && 
-      !(this.getHeader('Content-type') || '').include('application/json')))
-        return null;
+      !(this.getHeader('Content-type') || '').include('application/json')) || 
+        this.responseText.blank())
+          return null;
     try {
       return this.responseText.evalJSON(options.sanitizeJSON);
     } catch (e) {
