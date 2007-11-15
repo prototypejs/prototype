@@ -69,7 +69,7 @@ Object.extend = function(destination, source) {
 Object.extend(Object, {
   inspect: function(object) {
     try {
-      if (object === undefined) return 'undefined';
+      if (Object.isUndefined(object)) return 'undefined';
       if (object === null) return 'null';
       return object.inspect ? object.inspect() : object.toString();
     } catch (e) {
@@ -94,7 +94,7 @@ Object.extend(Object, {
     var results = [];
     for (var property in object) {
       var value = Object.toJSON(object[property]);
-      if (value !== undefined)
+      if (!Object.isUndefined(value))
         results.push(property.toJSON() + ': ' + value);
     }
     
@@ -163,7 +163,7 @@ Object.extend(Function.prototype, {
   },
   
   bind: function() {
-    if (arguments.length < 2 && arguments[0] === undefined) return this;
+    if (arguments.length < 2 && Object.isUndefined(arguments[0])) return this;
     var __method = this, args = $A(arguments), object = args.shift();
     return function() {
       return __method.apply(object, args.concat($A(arguments)));

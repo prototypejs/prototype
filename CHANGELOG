@@ -1,3 +1,5 @@
+* For consistency: use Object.isUndefined where possible. [Tobie Langel]
+
 * Make String#isJSON return false for empty or blank strings. Make Ajax.Response#responseJSON null when Ajax.Response#responseText is empty or blank. [Andrew Dupont, Thomas Fuchs, Tobie Langel]
 
 * Make Ajax.Response#_getResponseJSON use Ajax.Response#responseText. [Tobie Langel]

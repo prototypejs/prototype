@@ -6,7 +6,7 @@ var Form = {
   
   serializeElements: function(elements, options) {
     if (typeof options != 'object') options = { hash: !!options };
-    else if (options.hash === undefined) options.hash = true;
+    else if (Object.isUndefined(options.hash)) options.hash = true;
     var key, value, submitted = false, submit = options.submit;
     
     var data = elements.inject({ }, function(result, element) {
@@ -204,17 +204,17 @@ Form.Element.Serializers = {
   },
 
   inputSelector: function(element, value) {
-    if (value === undefined) return element.checked ? element.value : null;
+    if (Object.isUndefined(value)) return element.checked ? element.value : null;
     else element.checked = !!value;
   },
 
   textarea: function(element, value) {
-    if (value === undefined) return element.value;
+    if (Object.isUndefined(value)) return element.value;
     else element.value = value;
   },
   
   select: function(element, index) {
-    if (index === undefined)
+    if (Object.isUndefined(index))
       return this[element.type == 'select-one' ? 
         'selectOne' : 'selectMany'](element);
     else {

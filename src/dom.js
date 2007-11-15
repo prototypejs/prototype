@@ -286,7 +286,7 @@ Element.Methods = {
     var attributes = { }, t = Element._attributeTranslations.write;
     
     if (typeof name == 'object') attributes = name;
-    else attributes[name] = value === undefined ? true : value;
+    else attributes[name] = Object.isUndefined(value) ? true : value;
     
     for (var attr in attributes) {
       var name = t.names[attr] || attr, value = attributes[attr];
@@ -412,7 +412,7 @@ Element.Methods = {
       if (property == 'opacity') element.setOpacity(styles[property]);
       else 
         elementStyle[(property == 'float' || property == 'cssFloat') ?
-          (elementStyle.styleFloat === undefined ? 'cssFloat' : 'styleFloat') : 
+          (Object.isUndefined(elementStyle.styleFloat) ? 'cssFloat' : 'styleFloat') : 
             property] = styles[property];
 
     return element;

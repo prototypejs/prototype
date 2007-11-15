@@ -102,7 +102,7 @@ var Enumerable = {
   },
   
   inGroupsOf: function(number, fillWith) {
-    fillWith = fillWith === undefined ? null : fillWith;
+    fillWith = Object.isUndefined(fillWith) ? null : fillWith;
     return this.eachSlice(number, function(slice) {
       while(slice.length < number) slice.push(fillWith);
       return slice;
@@ -129,7 +129,7 @@ var Enumerable = {
     var result;
     this.each(function(value, index) {
       value = iterator(value, index);
-      if (result == undefined || value >= result)
+      if (result == null || value >= result)
         result = value;
     });
     return result;
@@ -140,7 +140,7 @@ var Enumerable = {
     var result;
     this.each(function(value, index) {
       value = iterator(value, index);
-      if (result == undefined || value < result)
+      if (result == null || value < result)
         result = value;
     });
     return result;

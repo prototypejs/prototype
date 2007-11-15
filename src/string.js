@@ -31,7 +31,7 @@ Object.extend(String.prototype, {
   
   sub: function(pattern, replacement, count) {
     replacement = this.gsub.prepareReplacement(replacement);
-    count = count === undefined ? 1 : count;
+    count = Object.isUndefined(count) ? 1 : count;
     
     return this.gsub(pattern, function(match) {
       if (--count < 0) return match[0];
@@ -46,7 +46,7 @@ Object.extend(String.prototype, {
   
   truncate: function(length, truncation) {
     length = length || 30;
-    truncation = truncation === undefined ? '...' : truncation;
+    truncation = Object.isUndefined(truncation) ? '...' : truncation;
     return this.length > length ? 
       this.slice(0, length - truncation.length) + truncation : String(this);
   },
