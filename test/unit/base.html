@@ -213,9 +213,16 @@
       window.deferred = undefined;
       var deferredFunction = function() { window.deferred = true; };
       deferredFunction.defer();
-      assertUndefined(window.deferred);
+      assertUndefined(window.deferred);      
       wait(50, function() {
         assert(window.deferred);
+        
+        window.deferredValue = 0;
+        var deferredFunction2 = function(arg) { window.deferredValue = arg; };
+        deferredFunction2.defer('test');
+        wait(50, function() {
+          assertEqual('test', window.deferredValue);
+        });
       });
     }},
     
