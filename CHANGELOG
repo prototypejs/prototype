@@ -1,3 +1,5 @@
+* Fix a bug in the IE-specific Element#descendantOf logic. [Nicholas, Andrew Dupont]
+
 * Make Ajax.Updater clone its options hash before modifying it. Prevents memory leaks in Ajax.PeriodicalUpdater. Closes #10049 [Mislav Marohnić, Tobie Langel].
 
 * Remove useless variable in Selector.handlers.child. Closes #10006 [kuriyama]

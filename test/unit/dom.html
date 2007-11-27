@@ -1031,6 +1031,8 @@
       assert(!$('sibling').descendantOf('child'), 'sibling < child');
       assert(!$('great-grand-child').descendantOf('not-in-the-family'), 'great-grand-child < not-in-the-family');
       assert(!$('child').descendantOf('not-in-the-family'), 'child < not-in-the-family');
+      
+      assert(!$(document.body).descendantOf('great-grand-child'));
     }},  
     
     testChildOf: function() {with(this) {
