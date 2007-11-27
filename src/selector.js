@@ -8,9 +8,26 @@ var Selector = Class.create({
     this.compileMatcher();    
   },
   
+  shouldUseXPath: function() {
+    if (!Prototype.BrowserFeatures.XPath) return false;
+    
+    var e = this.expression;
+
+    // Safari 3 chokes on :*-of-type and :empty
+    if (Prototype.Browser.WebKit && 
+     (e.include("-of-type") || e.include(":empty")))
+      return false;
+    
+    // XPath can't do namespaced attributes, nor can it read
+    // the "checked" property from DOM nodes
+    if ((/(\[[\w-]*?:|:checked)/).test(this.expression))
+      return false;
+
+    return true;
+  },
+  
   compileMatcher: function() {
-    // Selectors with namespaced attributes can't use the XPath version
-    if (Prototype.BrowserFeatures.XPath && !(/(\[[\w-]*?:|:checked)/).test(this.expression))
+    if (this.shouldUseXPath())
       return this.compileXPathMatcher();
     
     var e = this.expression, ps = Selector.patterns, h = Selector.handlers, 
@@ -133,8 +150,12 @@ Object.extend(Selector, {
     },
     className:    "[contains(concat(' ', @class, ' '), ' #{1} ')]",
     id:           "[@id='#{1}']",
-    attrPresence: "[@#{1}]",
+    attrPresence: function(m) {
+      m[1] = m[1].toLowerCase();
+      return new Template("[@#{1}]").evaluate(m);
+    },
     attr: function(m) {
+      m[1] = m[1].toLowerCase();
       m[3] = m[5] || m[6];
       return new Template(Selector.xpath.operators[m[2]]).evaluate(m);
     },

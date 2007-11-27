@@ -158,9 +158,9 @@
     }},
 
     testSelectorWithTagNameAndAttributeExistence: function() {with(this) {
-      assertEnumEqual($$('#fixtures h1'), $$('h1[class]'));
-      assertEnumEqual($$('#fixtures h1'), $$('h1[CLASS]'));
-      assertEnumEqual([$('item_3')], $$('li#item_3[class]'));
+      assertEnumEqual($$('#fixtures h1'), $$('h1[class]'), 'h1[class]');
+      assertEnumEqual($$('#fixtures h1'), $$('h1[CLASS]'), 'h1[CLASS]');
+      assertEnumEqual([$('item_3')], $$('li#item_3[class]'), 'li#item_3[class]');
     }},
     
     testSelectorWithTagNameAndSpecificAttributeValue: function() {with(this) {

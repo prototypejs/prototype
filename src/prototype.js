@@ -30,8 +30,6 @@ var Prototype = {
 if (Prototype.Browser.MobileSafari)
   Prototype.BrowserFeatures.SpecificElementExtensions = false;
   
-if (Prototype.Browser.WebKit)
-  Prototype.BrowserFeatures.XPath = false;
 
 <%= include 'base.js', 'string.js' %>
 
