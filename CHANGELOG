@@ -1,3 +1,5 @@
+* Ensure no comment nodes are returned in Selector queries (IE improperly returns comment nodes on getElementsByTagName("*")). Change Element#descendants to use Element#getElementsBySelector in order to avoid this issue. Closes #10220. [Jeff Gobel, Andrew Dupont]
+
 * Re-enable the XPath approach in Selector for Safari 3. Falls back to the non-XPath version when it sees a problematic token. [Andrew Dupont]
 
 * Fix a bug in the IE-specific Element#descendantOf logic. [Nicholas, Andrew Dupont]

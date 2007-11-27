@@ -647,6 +647,16 @@ Object.extend(Selector, {
   }
 });
 
+if (Prototype.Browser.IE) {
+  // IE returns comment nodes on getElementsByTagName("*").
+  // Filter them out.
+  Selector.handlers.concat = function(a, b) {
+    for (var i = 0, node; node = b[i]; i++)
+      if (node.tagName !== "!") a.push(node);      
+    return a;
+  };
+}
+
 function $$() {
   return Selector.findChildElements(document, $A(arguments));
 }

@@ -181,7 +181,7 @@ Element.Methods = {
   },
   
   descendants: function(element) {
-    return $A($(element).getElementsByTagName('*')).each(Element.extend);
+    return $(element).getElementsBySelector("*");
   },
   
   firstDescendant: function(element) {
