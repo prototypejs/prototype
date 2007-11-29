@@ -389,7 +389,22 @@
           parameters: { 'X-TEST': 'some value' },
           onComplete: function(transport) {
             assertEqual('some value', transport.getHeader('X-Test'));
-            assertNull(null, transport.getHeader('X-Inexistant'));
+            assertNull(transport.getHeader('X-Inexistant'));
+          }
+        }));
+      } else {
+        info(message);
+      }
+    }},
+    
+    testParametersCanBeHash: function() {with(this) {
+      if (isRunningFromRake) {
+        new Ajax.Request("/response", extendDefault({
+          parameters: $H({ "one": "two", "three": "four" }),
+          onComplete: function(transport) {
+            assertEqual("two", transport.getHeader("one"));
+            assertEqual("four", transport.getHeader("three"));
+            assertNull(transport.getHeader("toObject"));
           }
         }));
       } else {

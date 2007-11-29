@@ -1,3 +1,7 @@
+*SVN*
+
+* Ensure that an Ajax.Request's parameters option can be a Hash.  Closes #10172.  [kangax, sam] 
+
 * Ensure no comment nodes are returned in Selector queries (IE improperly returns comment nodes on getElementsByTagName("*")). Change Element#descendants to use Element#getElementsBySelector in order to avoid this issue. Closes #10220. [Jeff Gobel, Andrew Dupont]
 
 * Re-enable the XPath approach in Selector for Safari 3. Falls back to the non-XPath version when it sees a problematic token. [Andrew Dupont]
