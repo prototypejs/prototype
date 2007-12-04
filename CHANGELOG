@@ -1,5 +1,7 @@
 *SVN*
 
+* Change document.viewport.getDimensions to exclude scrollbars in all cases. Closes #10148, #9288. [Nick Stackenburg]
+
 * Add logic to Element#getStyle in Opera that fixes inaccurate reporting of computed 'width' and 'height' properties. [Andrew Dupont]
 
 * Ensure that an Ajax.Request's parameters option can be a Hash.  Closes #10172.  [kangax, sam] 

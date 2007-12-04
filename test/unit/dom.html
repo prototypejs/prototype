@@ -82,6 +82,15 @@
 
     #notInlineAbsoluted { position: absolute; }
     
+    #elementToViewportDimensions {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 10px;
+      width: 10px;
+      background: #000;
+    }
+    
     /* for scroll test on really big screens */
     body {
       height: 40000px;
@@ -371,6 +380,8 @@
   <div id="anonymous_element_3"></div>
 </div>
 
+<div id='elementToViewportDimensions' style='display: none'></div>
+
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
@@ -399,6 +410,41 @@
   Element.addMethods($w("li div"), {
     orangeJuice: function(element) { return "orange juice"; }
   });
+  
+  // Based on properties check from http://www.quirksmode.org/viewport/compatibility.html
+  var documentViewportProperties = {
+    properties : [
+      'self.pageXOffset', 'self.pageYOffset',
+      'self.screenX', 'self.screenY',
+      'self.innerHeight', 'self.innerWidth',
+      'self.outerHeight', 'self.outerWidth',
+      'self.screen.height', 'self.screen.width',
+      'self.screen.availHeight', 'self.screen.availWidth',
+      'self.screen.availTop', 'self.screen.availLeft',
+      'self.screen.Top', 'self.screen.Left', 
+      'self.screenTop', 'self.screenLeft',
+      'document.body.clientHeight', 'document.body.clientWidth',
+      'document.body.scrollHeight', 'document.body.scrollWidth',
+      'document.body.scrollLeft', 'document.body.scrollTop',
+      'document.body.offsetHeight', 'document.body.offsetWidth',
+      'document.body.offsetTop', 'document.body.offsetLeft'
+    ].inject([], function(properties, prop) {
+      if(!self.screen && prop.include('self.screen')) return;
+      if (!document.body && prop.include('document.body')) return;
+      properties.push(prop);
+      if (prop.include('.body') && document.documentElement)
+        properties.push(prop.sub('.body', '.documentElement'));
+      return properties;
+    }),
+
+    inspect : function() {
+      var props = [];
+      this.properties.each(function(prop) {
+        if (eval(prop)) props[prop] = eval(prop);
+      });
+      return props;
+    }
+  };
 
   new Test.Unit.Runner({
 
@@ -1568,6 +1614,21 @@
       }.bind(this));
     }},
     
+    testElementToViewportDimensionsDoesNotAffectDocumentProperties: function() {with(this) {
+      // No properties on the document should be affected when resizing
+      // an absolute positioned(0,0) element to viewport dimensions
+      var vd = document.viewport.getDimensions();
+
+      var before = documentViewportProperties.inspect();
+      $('elementToViewportDimensions').setStyle({ height: vd.height + 'px', width: vd.width + 'px' }).show();
+      var after = documentViewportProperties.inspect();
+      $('elementToViewportDimensions').hide();
+
+      documentViewportProperties.properties.each(function(prop) {
+        assertEqual(before[prop], after[prop], prop + ' was affected');
+      });	  
+    }},
+
     testViewportScrollOffsets: function() {with(this) {
       preservingBrowserDimensions(function() {
         window.scrollTo(0, 0);
