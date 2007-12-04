@@ -108,7 +108,7 @@
       assertEnumEqual([$('strong')], $$('strong'));
       assertEnumEqual([], $$('nonexistent'));
       
-      var allNodes = $A(document.getElementsByTagName('*')).select( function() {
+      var allNodes = $A(document.getElementsByTagName('*')).select( function(node) {
         return node.tagName !== '!';
       });      
       assertEnumEqual(allNodes, $$('*'));
