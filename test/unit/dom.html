@@ -419,8 +419,14 @@
     }},
     
     testGetElementsByClassName: function() {with(this) {
-      var div = $('class_names'), list = $('class_names_ul');
+      if (document.getElementsByClassName.toString().include('[native code]')) {
+        info("browser uses native getElementsByClassName; skipping tests");
+        return;
+      } 
 
+      
+      var div = $('class_names'), list = $('class_names_ul');
+      
       assertElementsMatch(document.getElementsByClassName('A'), 'p.A', 'ul#class_names_ul.A', 'li.A.C');
       
       if (Prototype.Browser.IE)
@@ -1105,8 +1111,13 @@
     testElementSetOpacity: function() { with(this) {
       [0,0.1,0.5,0.999].each(function(opacity){
         $('style_test_3').setOpacity(opacity);
+        
         // b/c of rounding issues on IE special case
-        assert($('style_test_3').getStyle('opacity').toString().startsWith(opacity));
+        var realOpacity = $('style_test_3').getStyle('opacity');
+        
+        // opera rounds off to two significant digits, so we check for a
+        // ballpark figure
+        assert((Number(realOpacity) - opacity) <= 0.002, 'setting opacity to ' + opacity);        
       });
       
       assertEqual(0,
@@ -1130,7 +1141,7 @@
         $('style_test_1').getStyle('display'));
       
       // not displayed, so "null" ("auto" is tranlated to "null")
-      assertNull(Element.getStyle('style_test_1','width'));
+      assertNull(Element.getStyle('style_test_1', 'width'), 'elements that are hidden should return null on getStyle("width")');
       
       $('style_test_1').show();
       
@@ -1194,7 +1205,7 @@
       
       // getStyle on width/height should return values according to
       // the CSS box-model, which doesn't include 
-      // margins, paddings or borders
+      // margin, padding, or borders
       // TODO: This test fails on IE because there seems to be no way
       // to calculate this properly (clientWidth/Height returns 0)
       if(!navigator.appVersion.match(/MSIE/)) {
@@ -1552,8 +1563,8 @@
         window.resizeBy(50, 50);
         var after  = document.viewport.getDimensions();
       
-        assertEqual(before.width + 50, after.width, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THESE TESTS TO PASS");
-        assertEqual(before.height + 50, after.height, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THESE TESTS TO PASS");
+        assertEqual(before.width + 50, after.width, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
+        assertEqual(before.height + 50, after.height, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
       }.bind(this));
     }},
     
@@ -1567,7 +1578,7 @@
       
         window.resizeTo(200, 650);
         window.scrollTo(25, 35);
-        assertEqual(25, document.viewport.getScrollOffsets().left);
+        assertEqual(25, document.viewport.getScrollOffsets().left, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THESE TESTS TO PASS");
       
         window.resizeTo(850, 650);
       }.bind(this));
