@@ -107,7 +107,11 @@
       assertEnumEqual($A(document.getElementsByTagName('li')), $$('li'));
       assertEnumEqual([$('strong')], $$('strong'));
       assertEnumEqual([], $$('nonexistent'));
-      assertEnumEqual($A(document.getElementsByTagName('*')), $$('*'));
+      
+      var allNodes = $A(document.getElementsByTagName('*')).select( function() {
+        return node.tagName !== '!';
+      });      
+      assertEnumEqual(allNodes, $$('*'));
     }},
     
     testSelectorWithId: function() {with(this) {
