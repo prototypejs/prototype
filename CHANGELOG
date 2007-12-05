@@ -1,4 +1,4 @@
-*SVN*
+*1.6.0.1* (December 4, 2007)
 
 * Change document.viewport.getDimensions to exclude scrollbars in all cases. Closes #10148, #9288. [Nick Stackenburg]
 
