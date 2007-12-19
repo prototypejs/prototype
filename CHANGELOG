@@ -1,5 +1,7 @@
 *SVN*
 
+* Optimize Element#up/down/next/previous. [Dylan Bruzenak, Nick Stackenburg, Andrew Dupont]
+
 * Handle case-sensitivity in Selector tag names better. Closes #5052. [mexx, Andrew Dupont]
 
 *1.6.0.1* (December 4, 2007)
