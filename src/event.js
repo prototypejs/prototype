@@ -242,11 +242,12 @@ Object.extend(Event, (function() {
       if (element == document && document.createEvent && !element.dispatchEvent)
         element = document.documentElement;
         
+      var event;
       if (document.createEvent) {
-        var event = document.createEvent("HTMLEvents");
+        event = document.createEvent("HTMLEvents");
         event.initEvent("dataavailable", true, true);
       } else {
-        var event = document.createEventObject();
+        event = document.createEventObject();
         event.eventType = "ondataavailable";
       }
 

@@ -1,4 +1,5 @@
 *SVN*
+* Fix incorrect variable declaration in Event.fire. Closes #10329. [rubley]
 
 * Fix the way Selector handles [pseudoclass + combinator] with no space in between. Closes #9696. [kangax, fearphage, Andrew Dupont]
 
