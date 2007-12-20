@@ -1,6 +1,8 @@
 *SVN*
 
-* Optimize Element#up/down/next/previous. [Dylan Bruzenak, Nick Stackenburg, Andrew Dupont]
+* Fix the way Selector handles [pseudoclass + combinator] with no space in between. Closes #9696. [kangax, fearphage, Andrew Dupont]
+
+* Optimize Element#up/down/next/previous. Closes #10353. [Dylan Bruzenak, Nick Stackenburg, Andrew Dupont]
 
 * Handle case-sensitivity in Selector tag names better. Closes #5052. [mexx, Andrew Dupont]
 

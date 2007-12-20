@@ -100,7 +100,7 @@
 
   // Added by TDD - 2007.02.20
   $RunBenchmarks = false;
-
+  
   new Test.Unit.Runner({
     
     testSelectorWithTagName: function() {with(this) {
@@ -372,6 +372,8 @@
       assertEnumEqual([$('em')], $$('#p a:not(a[rel$="nofollow"]) > em'), 'attribute 4')
       assertEnumEqual([$('item_2')], $$('#list li:not(#item_1):not(#item_3)'), 'adjacent :not clauses');
       assertEnumEqual([$('son')], $$('#grandfather > div:not(#uncle) #son'));
+      assertEnumEqual([$('em')], $$('#p a:not(a[rel$="nofollow"]) em'), 'attribute 4 + all descendants');
+      assertEnumEqual([$('em')], $$('#p a:not(a[rel$="nofollow"])>em'), 'attribute 4 (without whitespace)');
     }},
     
     testSelectorWithEnabledDisabledChecked: function() {with(this) {
@@ -398,6 +400,8 @@
       assertEnumEqual($$('ul > li:last-child'), $$('ul > li:nth-last-child(1)'));
       assertEnumEqual($$('#troubleForm *:enabled'), $$('#troubleForm *:not(:disabled)'));
       assertEnumEqual($$('ul > li:nth-child(n-999)'), $$('ul > li'));
+      assertEnumEqual($$('ul>li'), $$('ul > li'));
+      assertEnumEqual($$('#p a:not(a[rel$="nofollow"])>em'), $$('#p a:not(a[rel$="nofollow"]) > em'))
     }},
     
     testSelectorsThatShouldReturnNothing: function() {with(this) {
