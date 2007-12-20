@@ -32,6 +32,9 @@
   var globalArgsTest = 'nothing to see here';
 
   new Test.Unit.Runner({
+    test$A: function(){ with(this) {
+      assertEnumEqual([], $A({}));
+    }},
     
     testToArrayOnArguments: function(){ with(this) {
       function toArrayOnArguments(){
