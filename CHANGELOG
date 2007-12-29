@@ -1,5 +1,7 @@
 *SVN*
 
+* Ensure Ajax.Response#getHeader returns null for missing headers. [Tobie Langel]
+
 * Ensure $A creates an empty array when its argument's length is undefined. Closes #10574. [henryju, Tobie Langel]
 
 * Fix incorrect variable declaration in Event.fire. Closes #10329. [rubley]
