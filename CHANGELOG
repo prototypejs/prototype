@@ -1,5 +1,7 @@
 *SVN*
 
+* Ensure Ajax.Response#getHeader returns null for missing headers in Opera. [Tobie Langel]
+
 * Allow WEBrick to simulate slow or dropped connections and to ease Ajax request inspection. [Tobie Langel]
 
 * Ensure Ajax.Response#getHeader returns null for missing headers. [Tobie Langel]

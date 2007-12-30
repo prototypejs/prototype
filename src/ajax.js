@@ -209,8 +209,7 @@ Ajax.Request = Class.create(Ajax.Base, {
   
   getHeader: function(name) {
     try {
-      var header = this.transport.getResponseHeader(name);
-      return Object.isUndefined(header) ? null : header;
+      return this.transport.getResponseHeader(name) || null;
     } catch (e) { return null }
   },
   
