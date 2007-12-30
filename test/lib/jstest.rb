@@ -207,21 +207,12 @@ class WEBrick::HTTPServlet::AbstractServlet
     res['Pragma'] = 'no-cache'
     res['Expires'] = Time.now - 100**4
   end
-  
-  def set_default_content_type(res, path)
-    res['Content-Type'] = case path
-      when /\.js$/   then 'text/javascript'
-      when /\.html$/ then 'text/html'
-      when /\.css$/  then 'text/css'
-      else 'text/plain'
-    end
-  end
 end
 
 class BasicServlet < WEBrick::HTTPServlet::AbstractServlet
   def do_GET(req, res)
-    set_default_content_type(res, req.path)
     prevent_caching(res)
+    res['Content-Type'] = "text/plain"
     
     req.query.each do |k, v|
       res[k] = v unless k == 'responseBody'
@@ -263,6 +254,15 @@ class NonCachingFileHandler < WEBrick::HTTPServlet::FileHandler
     super
     set_default_content_type(res, req.path)
     prevent_caching(res)
+  end
+  
+  def set_default_content_type(res, path)
+    res['Content-Type'] = case path
+      when /\.js$/   then 'text/javascript'
+      when /\.html$/ then 'text/html'
+      when /\.css$/  then 'text/css'
+      else 'text/plain'
+    end
   end
 end
 
