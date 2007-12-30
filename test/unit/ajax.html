@@ -230,11 +230,11 @@
     
     testContentTypeSetForSimulatedVerbs: function() {with(this) {
       if (isRunningFromRake) {
-        new Ajax.Request('/content-type', extendDefault({
+        new Ajax.Request('/inspect', extendDefault({
           method: 'put',
           contentType: 'application/bogus',
           onComplete: function(response) {
-            assertEqual('application/bogus; charset=UTF-8', response.responseText);
+            assertEqual('application/bogus; charset=UTF-8', response.responseJSON.headers['content-type']);
           }
         }));
       } else {
