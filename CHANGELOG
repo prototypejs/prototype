@@ -1,5 +1,7 @@
 *SVN*
 
+* Make Element#insert standard-compliant. Fixes an issue in FF3b2 when inserting HTML or text inside DOM nodes which aren't (yet) appended to the document. [Tobie Langel]
+
 * Add some missing semicolons to the source tree.  Closes #10659.  [Richard Quadling]
 
 * Ensure Ajax.Response#getHeader returns null for missing headers in Opera. [Tobie Langel]

@@ -119,24 +119,28 @@ Element.Methods = {
         Object.isElement(insertions) || (insertions && (insertions.toElement || insertions.toHTML)))
           insertions = {bottom:insertions};
     
-    var content, t, range;
+    var content, insert, tagName, childNodes;
     
     for (position in insertions) {
       content  = insertions[position];
       position = position.toLowerCase();
-      t = Element._insertionTranslations[position];
+      insert = Element._insertionTranslations[position];
 
       if (content && content.toElement) content = content.toElement();
       if (Object.isElement(content)) {
-        t.insert(element, content);
+        insert(element, content);
         continue;
       }
     
       content = Object.toHTML(content);
       
-      range = element.ownerDocument.createRange();
-      t.initializeRange(element, range);
-      t.insert(element, range.createContextualFragment(content.stripScripts()));
+      tagName = ((position == 'before' || position == 'after')
+        ? element.parentNode : element).tagName.toUpperCase();
+      
+      childNodes = Element._getContentFromAnonymousElement(tagName, content.stripScripts());
+      
+      if (position == 'top' || position == 'after') childNodes.reverse();
+      childNodes.each(insert.curry(element));
       
       content.evalScripts.bind(content).defer();
     }
@@ -663,46 +667,6 @@ Element._attributeTranslations = {
   }
 };
 
-
-if (!document.createRange || Prototype.Browser.Opera) {
-  Element.Methods.insert = function(element, insertions) {
-    element = $(element);
-
-    if (Object.isString(insertions) || Object.isNumber(insertions) ||
-        Object.isElement(insertions) || (insertions && (insertions.toElement || insertions.toHTML)))
-          insertions = { bottom: insertions };
-    
-    var t = Element._insertionTranslations, content, position, pos, tagName;
-    
-    for (position in insertions) {
-      content  = insertions[position];
-      position = position.toLowerCase();
-      pos      = t[position];
-
-      if (content && content.toElement) content = content.toElement();
-      if (Object.isElement(content)) {
-        pos.insert(element, content);
-        continue;
-      }
-     
-      content = Object.toHTML(content);
-      tagName = ((position == 'before' || position == 'after')
-        ? element.parentNode : element).tagName.toUpperCase();
-     
-      if (t.tags[tagName]) {
-        var fragments = Element._getContentFromAnonymousElement(tagName, content.stripScripts());
-        if (position == 'top' || position == 'after') fragments.reverse();
-        fragments.each(pos.insert.curry(element));
-      }
-      else element.insertAdjacentHTML(pos.adjacency, content.stripScripts());
-      
-      content.evalScripts.bind(content).defer();
-    }
-    
-    return element;
-  };
-}
-
 if (Prototype.Browser.Opera) { 
   Element.Methods.getStyle = Element.Methods.getStyle.wrap( 
     function(proceed, element, style) {
@@ -992,45 +956,25 @@ Element._returnOffset = function(l, t) {
 
 Element._getContentFromAnonymousElement = function(tagName, html) {
   var div = new Element('div'), t = Element._insertionTranslations.tags[tagName];
-  div.innerHTML = t[0] + html + t[1];
-  t[2].times(function() { div = div.firstChild });
+  if (t) {
+    div.innerHTML = t[0] + html + t[1];
+    t[2].times(function() { div = div.firstChild });
+  } else div.innerHTML = html;
   return $A(div.childNodes);
 };
 
 Element._insertionTranslations = {
-  before: {
-    adjacency: 'beforeBegin',
-    insert: function(element, node) {
-      element.parentNode.insertBefore(node, element);
-    },
-    initializeRange: function(element, range) {
-      range.setStartBefore(element);      
-    }
+  before: function(element, node) {
+    element.parentNode.insertBefore(node, element);
   },
-  top: {
-    adjacency: 'afterBegin',
-    insert: function(element, node) {
-      element.insertBefore(node, element.firstChild);
-    },
-    initializeRange: function(element, range) {
-      range.selectNodeContents(element);
-      range.collapse(true);
-    }
+  top: function(element, node) {
+    element.insertBefore(node, element.firstChild);
   },
-  bottom: {
-    adjacency: 'beforeEnd',
-    insert: function(element, node) {
-      element.appendChild(node);
-    }
+  bottom: function(element, node) {
+    element.appendChild(node);
   },
-  after: {
-    adjacency: 'afterEnd',
-    insert: function(element, node) {
-      element.parentNode.insertBefore(node, element.nextSibling);
-    },
-    initializeRange: function(element, range) {
-      range.setStartAfter(element);
-    }
+  after: function(element, node) {
+    element.parentNode.insertBefore(node, element.nextSibling);
   },
   tags: {
     TABLE:  ['<table>',                '</table>',                   1],
@@ -1042,7 +986,6 @@ Element._insertionTranslations = {
 };
 
 (function() {
-  this.bottom.initializeRange = this.top.initializeRange;
   Object.extend(this.tags, {
     THEAD: this.tags.TBODY,
     TFOOT: this.tags.TBODY,

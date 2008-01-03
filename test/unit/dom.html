@@ -596,6 +596,22 @@
       assertEqual('test1337', getInnerHTML('element-insertions-main'));
     }},
     
+    testNewElementInsert: function() {with(this) {
+      var container = new Element('div');
+      element = new Element('div');
+      container.insert(element);
+      
+      element.insert({ before: '<p>a paragraph</p>' });
+      assertEqual('<p>a paragraph</p><div></div>', getInnerHTML(container));
+      element.insert({ after: 'some text' });
+      assertEqual('<p>a paragraph</p><div></div>some text', getInnerHTML(container));
+      
+      element.insert({ top: '<p>a paragraph</p>' });
+      assertEqual('<p>a paragraph</p>', getInnerHTML(element));
+      element.insert('some text');
+      assertEqual('<p>a paragraph</p>some text', getInnerHTML(element));
+    }},
+    
     testInsertionBackwardsCompatibility: function() {with(this) {
       new Insertion.Before('element-insertions-main', 'some backward-compatibility testing before');
       assert(getInnerHTML('element-insertions-container').include('some backward-compatibility testing before'));
