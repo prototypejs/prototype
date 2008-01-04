@@ -31,7 +31,7 @@
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
 
-  var eventResults = { };
+  var eventResults = { }, documentLoaded = document.loaded;
 
   new Test.Unit.Runner({
     
@@ -202,6 +202,11 @@
       span.observe("test:somethingHappened", observer);
       assertEqual(span, span.observe("test:somethingHappened", observer)); // try to reuse the same observer
       span.stopObserving();
+    }},
+
+    testDocumentLoaded: function() { with(this) {
+      assert(!documentLoaded);
+      assert(document.loaded);
     }},
     
     testDocumentContentLoadedEventFiresBeforeWindowLoad: function() { with(this) {

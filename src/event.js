@@ -276,20 +276,21 @@ Element.addMethods({
 Object.extend(document, {
   fire:          Element.Methods.fire.methodize(),
   observe:       Element.Methods.observe.methodize(),
-  stopObserving: Element.Methods.stopObserving.methodize()
+  stopObserving: Element.Methods.stopObserving.methodize(),
+  loaded:        false
 });
 
 (function() {
   /* Support for the DOMContentLoaded event is based on work by Dan Webb, 
      Matthias Miller, Dean Edwards and John Resig. */
 
-  var timer, fired = false;
+  var timer;
   
   function fireContentLoadedEvent() {
-    if (fired) return;
+    if (document.loaded) return;
     if (timer) window.clearInterval(timer);
     document.fire("dom:loaded");
-    fired = true;
+    document.loaded = true;
   }
   
   if (document.addEventListener) {
