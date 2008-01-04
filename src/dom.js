@@ -918,7 +918,7 @@ if (Prototype.Browser.IE || Prototype.Browser.Opera) {
   };
 }
 
-if (document.createElement('div').outerHTML) {
+if ('outerHTML' in document.createElement('div')) {
   Element.Methods.replace = function(element, content) {
     element = $(element);
     
