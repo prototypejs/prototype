@@ -127,7 +127,7 @@ Test.Unit.Logger = Class.create({
     '<thead><tr><th>Status</th><th>Test</th><th>Message</th></tr></thead>' +
     '<tbody class="loglines"></tbody>' +
     '</table>';
-    this.element.update(html)
+    this.element.update(html);
     
   },
   
