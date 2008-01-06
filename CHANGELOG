@@ -1,4 +1,5 @@
 *SVN*
+* Fix Selector.matchElements to allow for coma-separated selectors in Element#up/next/previous and Event#findElement. [Samuel Lebeau, Tobie Langel]
 
 * Test.Unit refactoring. Allow running multiple instances of Test.Unit.Runner on the same page. Allow rake to run specific testcases (e.g.: rake test BROWSERS=firefox TESTS=array TESTCASES=testUniq,test$w). Closes #10704, #10705, #10706. [nicwilliams, Tobie Langel]
 

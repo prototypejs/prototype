@@ -235,13 +235,12 @@
     testEventFindElement: function() { with(this) {
       var span = $("span"), event;
       event = span.fire("test:somethingHappened");
-      assertEqual(span, event.findElement());
-      assertEqual(span, event.findElement('span'));
-      assertEqual($("inner"), event.findElement('p'));
+      assertElementMatches(event.findElement(), 'span#span');
+      assertElementMatches(event.findElement('span'), 'span#span');
+      assertElementMatches(event.findElement('p'), 'p#inner');
       assertEqual(null, event.findElement('div.does_not_exist'));
+      assertElementMatches(event.findElement('.does_not_exist, span'), 'span#span');
     }}
-    
-    
   });
 
   document.observe("dom:loaded", function(event) {

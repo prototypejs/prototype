@@ -618,7 +618,7 @@ Object.extend(Selector, {
   },
 
   matchElements: function(elements, expression) {
-    var matches = new Selector(expression).findElements(), h = Selector.handlers;
+    var matches = $$(expression), h = Selector.handlers;
     h.mark(matches);
     for (var i = 0, results = [], element; element = elements[i]; i++)
       if (element._counted) results.push(element);

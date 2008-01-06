@@ -215,6 +215,7 @@
       assertElementsMatch(Selector.matchElements($('list').descendants(), 'li'), '#item_1', '#item_2', '#item_3');
       assertElementsMatch(Selector.matchElements($('fixtures').descendants(), 'a.internal'), '#link_1', '#link_2');
       assertEnumEqual([], Selector.matchElements($('fixtures').descendants(), 'p.last'));
+      assertElementsMatch(Selector.matchElements($('fixtures').descendants(), '.inexistant, a.internal'), '#link_1', '#link_2');
     }},
     
     testSelectorFindElement: function() {with(this) {

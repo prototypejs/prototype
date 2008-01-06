@@ -942,6 +942,7 @@
       assertElementMatches(element.up('ul', 1), 'ul#navigation_test');
       assertEqual(undefined, element.up('garbage'));
       assertEqual(undefined, element.up(6));
+      assertElementMatches(element.up('.non-existant, ul'), 'ul');
       
       var dummy = $(document.createElement('DIV'));
       dummy.innerHTML = '<div></div>'.times(3);
@@ -955,6 +956,7 @@
       assertElementMatches(element.down(1), 'em');
       assertElementMatches(element.down('li', 5), 'li.last');
       assertElementMatches(element.down('ul').down('li', 1), 'li#navigation_test_f');
+      assertElementMatches(element.down('.non-existant, .first'), 'li.first');
       
       var dummy = $(document.createElement('DIV'));
       dummy.innerHTML = '<div></div>'.times(3);
@@ -968,6 +970,7 @@
       assertElementMatches(element.previous('.first'), 'li.first');
       assertEqual(undefined, element.previous(3));
       assertEqual(undefined, $('navigation_test').down().previous());
+      assertElementMatches(element.previous('.non-existant, .first'), 'li.first');
       
       var dummy = $(document.createElement('DIV'));
       dummy.innerHTML = '<div></div>'.times(3);
@@ -982,6 +985,7 @@
       assertElementMatches(element.next('.last'), 'li.last');
       assertEqual(undefined, element.next(3));
       assertEqual(undefined, element.next(2).next());
+      assertElementMatches(element.next('.non-existant, .last'), 'li.last');
       
       var dummy = $(document.createElement('DIV'));
       dummy.innerHTML = '<div></div>'.times(3);
