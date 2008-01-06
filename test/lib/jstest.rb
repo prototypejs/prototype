@@ -308,7 +308,12 @@ class JavaScriptTestTask < ::Rake::TaskLib
           browser.setup
           puts "\nStarted tests in #{browser}"
           @tests.each do |test|
-            browser.visit("http://localhost:4711#{test}?resultsURL=http://localhost:4711/results&t=" + ("%.6f" % Time.now.to_f))
+            params = "resultsURL=http://localhost:4711/results&t=" + ("%.6f" % Time.now.to_f)
+            if test.is_a?(Hash)
+              params << "&tests=#{test[:testcases]}" if test[:testcases]
+              test = test[:url]
+            end
+            browser.visit("http://localhost:4711#{test}?#{params}")
  
             result = @queue.pop
             result.each { |k, v| results[k] += v }
@@ -349,7 +354,8 @@ class JavaScriptTestTask < ::Rake::TaskLib
     @server.mount(path, NonCachingFileHandler, dir)
   end
 
-  # test should be specified as a url
+  # test should be specified as a url or as a hash of the form
+  # {:url => "url", :testcases => "testFoo,testBar"}
   def run(test)
     @tests<<test
   end

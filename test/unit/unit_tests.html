@@ -22,6 +22,7 @@
 
 <!-- Log output -->
 <div id="testlog"> </div>
+<div id="testlog_2"> </div>
 
 <!-- Test elements follow -->
 <div id="test_1" class="a bbbbbbbbbbbb cccccccccc dddd"> </div>
@@ -173,7 +174,18 @@
       assertNotVisible('testcss1_span'); // hidden by parent
     }}
       
-  }, "testlog");
+  });
+  
+  new Test.Unit.Runner({
+    testDummy: function() { with(this) {
+      assert(true);
+    }},
+    
+    testMultipleTestRunner: function() { with(this) {
+      assertEqual('passed', $('testlog_2').down('td', 1).innerHTML);
+    }}
+      
+  }, {testLog: 'testlog_2'});
 // ]]>
 </script>
 </body>

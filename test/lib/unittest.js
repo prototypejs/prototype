@@ -35,16 +35,14 @@ Event.simulateMouse = function(element, eventName) {
     false, false, false, false, 0, $(element));
   
   if(this.mark) Element.remove(this.mark);
-  this.mark = document.createElement('div');
+  
+  var style = 'position: absolute; width: 5px; height: 5px;' + 
+    'top: #{pointerY}px; left: #{pointerX}px;'.interpolate(options) + 
+    'border-top: 1px solid red; border-left: 1px solid red;'
+    
+  this.mark = new Element('div', { style: style });
   this.mark.appendChild(document.createTextNode(" "));
   document.body.appendChild(this.mark);
-  this.mark.style.position = 'absolute';
-  this.mark.style.top = options.pointerY + "px";
-  this.mark.style.left = options.pointerX + "px";
-  this.mark.style.width = "5px";
-  this.mark.style.height = "5px;";
-  this.mark.style.borderTop = "1px solid red;"
-  this.mark.style.borderLeft = "1px solid red;"
   
   if(this.step)
     alert('['+new Date().getTime().toString()+'] '+eventName+'/'+Test.Unit.inspect(options));
@@ -78,104 +76,110 @@ Event.simulateKeys = function(element, command) {
   }
 };
 
-var Test = {}
-Test.Unit = {};
+var Test = {
+  Unit: {
+    inspect: Object.inspect // security exception workaround
+  }
+};
 
-// security exception workaround
-Test.Unit.inspect = Object.inspect;
-
-Test.Unit.Logger = Class.create();
-Test.Unit.Logger.prototype = {
-  initialize: function(log) {
-    this.log = $(log);
-    if (this.log) {
-      this._createLogTable();
-    }
+Test.Unit.Logger = Class.create({
+  initialize: function(element) {
+    this.element = $(element);
+    if (this.element) this._createLogTable();
   },
+  
   start: function(testName) {
-    if (!this.log) return;
-    this.testName = testName;
-    this.lastLogLine = document.createElement('tr');
-    this.statusCell = document.createElement('td');
-    this.nameCell = document.createElement('td');
-    this.nameCell.appendChild(document.createTextNode(testName));
-    this.messageCell = document.createElement('td');
-    this.lastLogLine.appendChild(this.statusCell);
-    this.lastLogLine.appendChild(this.nameCell);
-    this.lastLogLine.appendChild(this.messageCell);
-    this.loglines.appendChild(this.lastLogLine);
+    if (!this.element) return;
+    this.element.down('tbody').insert('<tr><td>' + testName + '</td><td></td><td></td></tr>');
   },
+  
+  setStatus: function(status) {
+    this.getLastLogLine().addClassName(status).down('td', 1).update(status);
+  },
+  
   finish: function(status, summary) {
-    if (!this.log) return;
-    this.lastLogLine.className = status;
-    this.statusCell.innerHTML = status;
-    this.messageCell.innerHTML = this._toHTML(summary);
+    if (!this.element) return;
+    this.setStatus(status);
+    this.message(summary);
   },
+  
   message: function(message) {
-    if (!this.log) return;
-    this.messageCell.innerHTML = this._toHTML(message);
+    if (!this.element) return;
+    this.getMessageCell().update(this._toHTML(message));
   },
+  
   summary: function(summary) {
-    if (!this.log) return;
-    this.logsummary.innerHTML = this._toHTML(summary);
+    if (!this.element) return;
+    this.element.down('div').update(this._toHTML(summary));
   },
+  
+  getLastLogLine: function() {
+    return this.element.select('tr').last()
+  },
+  
+  getMessageCell: function() {
+    return this.getLastLogLine().down('td', 2);
+  },
+  
   _createLogTable: function() {
-    this.log.innerHTML =
-    '<div id="logsummary"></div>' +
-    '<table id="logtable">' +
+    var html = '<div class="logsummary">running...</div>' +
+    '<table class="logtable">' +
     '<thead><tr><th>Status</th><th>Test</th><th>Message</th></tr></thead>' +
-    '<tbody id="loglines"></tbody>' +
+    '<tbody class="loglines"></tbody>' +
     '</table>';
-    this.logsummary = $('logsummary')
-    this.loglines = $('loglines');
+    this.element.update(html)
+    
   },
+  
+  appendActionButtons: function(actions) {
+    actions = $H(actions);
+    if (!actions.any()) return;
+    var div = new Element("div", {className: 'action_buttons'});
+    actions.inject(div, function(container, action) {
+      var button = new Element("input").setValue(action.key).observe("click", action.value);
+      button.type = "button";
+      return container.insert(button);
+    });
+    this.getMessageCell().insert(div);
+  },
+  
   _toHTML: function(txt) {
     return txt.escapeHTML().replace(/\n/g,"<br/>");
   }
-}
+});
 
-Test.Unit.Runner = Class.create();
-Test.Unit.Runner.prototype = {
+Test.Unit.Runner = Class.create({
   initialize: function(testcases) {
-    this.options = Object.extend({
+    var options = this.options = Object.extend({
       testLog: 'testlog'
     }, arguments[1] || {});
-    this.options.resultsURL = this.parseResultsURLQueryParameter();
-    if (this.options.testLog) {
-      this.options.testLog = $(this.options.testLog) || null;
-    }
-    if(this.options.tests) {
-      this.tests = [];
-      for(var i = 0; i < this.options.tests.length; i++) {
-        if(/^test/.test(this.options.tests[i])) {
-          this.tests.push(new Test.Unit.Testcase(this.options.tests[i], testcases[this.options.tests[i]], testcases["setup"], testcases["teardown"]));
-        }
-      }
-    } else {
-      if (this.options.test) {
-        this.tests = [new Test.Unit.Testcase(this.options.test, testcases[this.options.test], testcases["setup"], testcases["teardown"])];
-      } else {
-        this.tests = [];
-        for(var testcase in testcases) {
-          if(/^test/.test(testcase)) {
-            this.tests.push(new Test.Unit.Testcase(testcase, testcases[testcase], testcases["setup"], testcases["teardown"]));
-          }
-        }
-      }
-    }
+    
+    options.resultsURL = this.queryParams.resultsURL;
+    options.testLog = $(options.testLog);
+    
+    this.tests = this.getTests(testcases, options);
     this.currentTest = 0;
-    this.logger = new Test.Unit.Logger(this.options.testLog);
-    Event.observe(window, "load", function() { 
-      setTimeout(this.runTests.bind(this), 100);
+    this.logger = new Test.Unit.Logger(options.testLog);
+    Event.observe(window, "load", function() {
+      this.runTests.bind(this).delay(0.1);
     }.bind(this));
   },
-  parseResultsURLQueryParameter: function() {
-    return window.location.search.parseQuery()["resultsURL"];
+  
+  queryParams: window.location.search.parseQuery(),
+  
+  getTests: function(testcases, options) {
+    var tests;
+    if (this.queryParams.tests) tests = this.queryParams.tests.split(',');
+    else if (options.tests) tests = options.tests;
+    else if (options.test) tests = [option.test];
+    else tests = Object.keys(testcases).grep(/^test/);
+    
+    return tests.map(function(test) {
+      if (testcases[test])
+        return new Test.Unit.Testcase(test, testcases[test], testcases.setup, testcases.teardown);
+    }).compact();
   },
-  // Returns:
-  //  "ERROR" if there was an error,
-  //  "FAILURE" if there was a failure, or
-  //  "SUCCESS" if there was neither
+  
   getResult: function() {
     var results = {
       tests: this.tests.length,
@@ -198,100 +202,38 @@ Test.Unit.Runner.prototype = {
         { method: 'get', parameters: this.getResult(), asynchronous: false });
     }
   },
+  
   runTests: function() {
-    var test = this.tests[this.currentTest];
-    if (!test) {
-      // finished!
-      this.postResults();
-      this.logger.summary(this.summary());
-      return;
-    }
-    if(!test.isWaiting) {
-      this.logger.start(test.name);
-    }
+    var test = this.tests[this.currentTest], actions;
+    
+    if (!test) return this.finish();
+    if (!test.isWaiting) this.logger.start(test.name);
     test.run();
     if(test.isWaiting) {
       this.logger.message("Waiting for " + test.timeToWait + "ms");
       setTimeout(this.runTests.bind(this), test.timeToWait || 1000);
-    } else {
-      this.logger.finish(test.status(), test.summary());
-      var actionButtons = test.actionButtons();
-      if (actionButtons) 
-        $(this.logger.lastLogLine).down('td', 2).appendChild(actionButtons);
-        
-      this.currentTest++;
-      // tail recursive, hopefully the browser will skip the stackframe
-      this.runTests();
+      return;
     }
+    
+    this.logger.finish(test.status(), test.summary());
+    if (actions = test.actions) this.logger.appendActionButtons(actions);
+    this.currentTest++;
+    // tail recursive, hopefully the browser will skip the stackframe
+    this.runTests();
+  },
+  
+  finish: function() {
+    this.postResults();
+    this.logger.summary(this.summary());
   },
   
   summary: function() {
     return '#{tests} tests, #{assertions} assertions, #{failures} failures, #{errors} errors'
       .interpolate(this.getResult());
   }
-}
+});
 
-Test.Unit.Assertions = Class.create();
-Test.Unit.Assertions.prototype = {
-  initialize: function() {
-    this.assertions = 0;
-    this.failures   = 0;
-    this.errors     = 0;
-    this.messages   = [];
-    this.actions    = {};
-  },
-  summary: function() {
-    return (
-      this.assertions + " assertions, " + 
-      this.failures   + " failures, " +
-      this.errors     + " errors" + "\n" +
-      this.messages.join("\n"));
-  },
-  actionButtons: function() {
-    if (!Object.keys(this.actions).any()) return false;
-    var div = $(document.createElement("div"));
-    div.addClassName("action_buttons");
-  
-    for (var title in this.actions) {
-      var button = $(document.createElement("input"));
-      button.value = title;
-      button.type = "button";
-      button.observe("click", this.actions[title]);
-      div.appendChild(button);
-    }
-    return div;
-  },
-  pass: function() {
-    this.assertions++;
-  },
-  fail: function(message) {
-    this.failures++;
-
-    var line = "";
-    try {
-      throw new Error("stack");
-    } catch(e){
-      line = (/\.html:(\d+)/.exec(e.stack || '') || ['',''])[1];
-    }
-
-    this.messages.push("Failure: " + message + (line ? " Line #" + line : ""));
-  },
-  info: function(message) {
-    this.messages.push("Info: " + message);
-  },
-  error: function(error, test) {
-    this.errors++;
-    this.actions['retry with throw'] = function() { test.run(true) };
-    this.messages.push(error.name + ": "+ error.message + "(" + Test.Unit.inspect(error) + ")");
-  },
-  status: function() {
-    if (this.failures > 0) return 'failed';
-    if (this.errors > 0) return 'error';
-    return 'passed';
-  },
-  isRunningFromRake: (function() {
-    return window.location.port == 4711;
-  })(),
+Test.Unit.Assertions = {
   assert: function(expression) {
     var message = arguments[1] || 'assert: got "' + Test.Unit.inspect(expression) + '"';
     try { expression ? this.pass() : 
@@ -497,42 +439,41 @@ Test.Unit.Assertions.prototype = {
   },
   assertElementMatches: function(element, expression) {
     this.assertElementsMatch([element], expression);
-  },
-  benchmark: function(operation, iterations) {
-    var startAt = new Date();
-    (iterations || 1).times(operation);
-    var timeTaken = ((new Date())-startAt);
-    this.info((arguments[2] || 'Operation') + ' finished ' + 
-       iterations + ' iterations in ' + (timeTaken/1000)+'s' );
-    return timeTaken;
   }
-}
+};
 
-Test.Unit.Testcase = Class.create();
-Object.extend(Object.extend(Test.Unit.Testcase.prototype, Test.Unit.Assertions.prototype), {
+Test.Unit.Testcase = Class.create(Test.Unit.Assertions, {
   initialize: function(name, test, setup, teardown) {
-    Test.Unit.Assertions.prototype.initialize.bind(this)();
     this.name           = name;
-    this.test           = test || function() {};
-    this.setup          = setup || function() {};
-    this.teardown       = teardown || function() {};
-    this.isWaiting      = false;
-    this.timeToWait     = 1000;
+    this.test           = test || Prototype.emptyFunction;
+    this.setup          = setup || Prototype.emptyFunction;
+    this.teardown       = teardown || Prototype.emptyFunction;
+    this.messages       = [];
+    this.actions        = {};
   },
+  
+  isWaiting:  false,
+  timeToWait: 1000,
+  assertions: 0,
+  failures:   0,
+  errors:     0,
+  isRunningFromRake: window.location.port == 4711,
+  
   wait: function(time, nextPart) {
     this.isWaiting = true;
     this.test = nextPart;
     this.timeToWait = time;
   },
+  
   run: function(rethrow) {
     try {
       try {
-        if (!this.isWaiting) this.setup.bind(this)();
+        if (!this.isWaiting) this.setup();
         this.isWaiting = false;
-        this.test.bind(this)();
+        this.test();
       } finally {
         if(!this.isWaiting) {
-          this.teardown.bind(this)();
+          this.teardown();
         }
       }
     }
@@ -540,5 +481,50 @@ Object.extend(Object.extend(Test.Unit.Testcase.prototype, Test.Unit.Assertions.p
       if (rethrow) throw e;
       this.error(e, this); 
     }
+  },
+  
+  summary: function() {
+    var msg = '#{assertions} assertions, #{failures} failures, #{errors} errors\n';
+    return msg.interpolate(this) + this.messages.join("\n");
+  },
+
+  pass: function() {
+    this.assertions++;
+  },
+  
+  fail: function(message) {
+    this.failures++;
+    var line = "";
+    try {
+      throw new Error("stack");
+    } catch(e){
+      line = (/\.html:(\d+)/.exec(e.stack || '') || ['',''])[1];
+    }
+    this.messages.push("Failure: " + message + (line ? " Line #" + line : ""));
+  },
+  
+  info: function(message) {
+    this.messages.push("Info: " + message);
+  },
+  
+  error: function(error, test) {
+    this.errors++;
+    this.actions['retry with throw'] = function() { test.run(true) };
+    this.messages.push(error.name + ": "+ error.message + "(" + Test.Unit.inspect(error) + ")");
+  },
+  
+  status: function() {
+    if (this.failures > 0) return 'failed';
+    if (this.errors > 0) return 'error';
+    return 'passed';
+  },
+  
+  benchmark: function(operation, iterations) {
+    var startAt = new Date();
+    (iterations || 1).times(operation);
+    var timeTaken = ((new Date())-startAt);
+    this.info((arguments[2] || 'Operation') + ' finished ' + 
+       iterations + ' iterations in ' + (timeTaken/1000)+'s' );
+    return timeTaken;
   }
 });

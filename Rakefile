@@ -37,16 +37,17 @@ task :test => [:dist, :test_units]
 require 'test/lib/jstest'
 desc "Runs all the JavaScript unit tests and collects the results"
 JavaScriptTestTask.new(:test_units) do |t|
+  testcases        = ENV['TESTCASES']
   tests_to_run     = ENV['TESTS']    && ENV['TESTS'].split(',')
   browsers_to_test = ENV['BROWSERS'] && ENV['BROWSERS'].split(',')
-
+  
   t.mount("/dist")
   t.mount("/test")
   
   Dir["test/unit/*.html"].sort.each do |test_file|
-    test_file = "/#{test_file}"
-    test_name = test_file[/.*\/(.+?)\.html/, 1]
-    t.run(test_file) unless tests_to_run && !tests_to_run.include?(test_name)
+    tests = testcases ? { :url => "/#{test_file}", :testcases => testcases } : "/#{test_file}"
+    test_filename = test_file[/.*\/(.+?)\.html/, 1]
+    t.run(tests) unless tests_to_run && !tests_to_run.include?(test_filename)
   end
   
   %w( safari firefox ie konqueror opera ).each do |browser|

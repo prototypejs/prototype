@@ -1,5 +1,7 @@
 *SVN*
 
+* Test.Unit refactoring. Allow running multiple instances of Test.Unit.Runner on the same page. Allow rake to run specific testcases (e.g.: rake test BROWSERS=firefox TESTS=array TESTCASES=testUniq,test$w). Closes #10704, #10705, #10706. [nicwilliams, Tobie Langel]
+
 * Optimize property detection of outerHTML. Avoids triggering FOUC in Safari 3.0.4. Closes #10702. [subimage, Tobie Langel]
 
 * Add document.loaded, a boolean that is set to true once dom:loaded is fired. Setting document.loaded to true before the document is loaded prevents dom:loaded from being fired. [Tobie Langel]

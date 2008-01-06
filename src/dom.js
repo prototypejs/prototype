@@ -185,7 +185,7 @@ Element.Methods = {
   },
   
   descendants: function(element) {
-    return $(element).getElementsBySelector("*");
+    return $(element).select("*");
   },
   
   firstDescendant: function(element) {
