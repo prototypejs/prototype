@@ -157,7 +157,7 @@ Test.Unit.Runner = Class.create({
     options.resultsURL = this.queryParams.resultsURL;
     options.testLog = $(options.testLog);
     
-    this.tests = this.getTests(testcases, options);
+    this.tests = this.getTests(testcases);
     this.currentTest = 0;
     this.logger = new Test.Unit.Logger(options.testLog);
     Event.observe(window, "load", function() {
@@ -167,8 +167,8 @@ Test.Unit.Runner = Class.create({
   
   queryParams: window.location.search.parseQuery(),
   
-  getTests: function(testcases, options) {
-    var tests;
+  getTests: function(testcases) {
+    var tests, options = this.options;
     if (this.queryParams.tests) tests = this.queryParams.tests.split(',');
     else if (options.tests) tests = options.tests;
     else if (options.test) tests = [option.test];
