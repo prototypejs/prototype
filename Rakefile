@@ -9,6 +9,7 @@ PROTOTYPE_VERSION  = '1.6.0.1'
 
 task :default => [:dist, :package, :clean_package_source]
 
+desc "Builds the distribution"
 task :dist do
   $:.unshift File.join(PROTOTYPE_ROOT, 'lib')
   require 'protodoc'
@@ -32,6 +33,7 @@ Rake::PackageTask.new('prototype', PROTOTYPE_VERSION) do |package|
   )
 end
 
+desc "Builds the distribution, runs the JavaScript unit tests and collects their results."
 task :test => [:dist, :test_units]
 
 require 'test/lib/jstest'
