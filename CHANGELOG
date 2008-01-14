@@ -1,5 +1,7 @@
 *SVN*
 
+* Add Test.Unit.MessageTemplate class. Add flunk, buildMessage and assertBlock methods to Test.Unit.Assertions. Refactor accordingly. [Tobie Langel]
+
 * Remove useless binding in Template#evaluate. [Tobie Langel]
 
 * Make Object.inspect more robust. [Tobie Langel]

@@ -65,6 +65,10 @@
         info('These tests are *not* running from rake.')
       }
     }},
+
+    testBuildMessage:  function() {
+      this.assertEqual("'foo' 'bar'", this.buildMessage('', '? ?', 'foo', 'bar'))
+    },
     
     testAssertEqual: function() { with(this) {
       assertEqual(0, 0);
@@ -172,6 +176,11 @@
       assertVisible('testcss1_span');
       Element.hide('testcss1');
       assertNotVisible('testcss1_span'); // hidden by parent
+    }},
+
+    testAssertElementsMatch: function() { with(this) {
+      assertElementsMatch($$('#tlist'), '#tlist');   
+      assertElementMatches($('tlist'), '#tlist');   
     }}
       
   });
