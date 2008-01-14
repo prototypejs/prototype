@@ -1,5 +1,7 @@
 *SVN*
 
+* Remove useless binding in Template#evaluate. [Tobie Langel]
+
 * Make Object.inspect more robust. [Tobie Langel]
 
 * Add a description to :test and :dist rake tasks. [Christoph Sturm]

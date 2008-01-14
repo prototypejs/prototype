@@ -260,7 +260,7 @@ var Template = Class.create({
       }
       
       return before + String.interpret(ctx);
-    }.bind(this));
+    });
   }
 });
 Template.Pattern = /(^|.|\r|\n)(#\{(.*?)\})/;
