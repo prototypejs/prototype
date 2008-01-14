@@ -1,5 +1,7 @@
 *SVN*
 
+* Make Object.inspect more robust. [Tobie Langel]
+
 * Add a description to :test and :dist rake tasks. [Christoph Sturm]
 
 * Fix Selector.matchElements to allow for coma-separated selectors in Element#up/next/previous and Event#findElement. [Samuel Lebeau, Tobie Langel]

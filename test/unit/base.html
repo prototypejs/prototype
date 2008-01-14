@@ -266,6 +266,7 @@
       assertEqual('null', Object.inspect(null));
       assertEqual("'foo\\\\b\\\'ar'", Object.inspect('foo\\b\'ar'));
       assertEqual('[]', Object.inspect([]));
+      assertNothingRaised(function() { Object.inspect(window.Node) });
     }},
     
     testObjectToJSON: function() { with(this) {
