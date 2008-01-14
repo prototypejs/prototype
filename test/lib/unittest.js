@@ -381,7 +381,7 @@ Test.Unit.Assertions = {
   },
   
   assertHidden: function(element, message) {
-    message = this.buildMessage(message || 'assertHidden', '? is displayed.', element, actual);
+    message = this.buildMessage(message || 'assertHidden', '? isn\'t hidden.', element);
     this.assertBlock(message, function() { return element.style.display == 'none' });
   },
   
