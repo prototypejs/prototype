@@ -121,7 +121,7 @@ Element.Methods = {
     
     var content, insert, tagName, childNodes;
     
-    for (position in insertions) {
+    for (var position in insertions) {
       content  = insertions[position];
       position = position.toLowerCase();
       insert = Element._insertionTranslations[position];
