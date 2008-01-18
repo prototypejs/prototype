@@ -184,6 +184,8 @@
       assertEnumEqual($('checked_radio', 'unchecked_radio'), $$('[type=radio]'));
       assertEnumEqual($$('*[type=checkbox]'), $$('[type=checkbox]'));
       assertEnumEqual($('with_title', 'commaParent'), $$('[title]'));
+      assertEnumEqual($$('#troubleForm *[type=radio]'), $$('#troubleForm [type=radio]'));
+      assertEnumEqual($$('#troubleForm *[type]'), $$('#troubleForm [type]'));
     }},
     
     testSelectorWithUniversalAndHyphenTokenizedAttributeValue: function() {with(this) {

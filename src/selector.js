@@ -241,13 +241,13 @@ Object.extend(Selector, {
   },
   
   criteria: {
-    tagName:      'n = h.tagName(n, r, "#{1}", c);   c = false;',  
-    className:    'n = h.className(n, r, "#{1}", c); c = false;',
-    id:           'n = h.id(n, r, "#{1}", c);        c = false;',
-    attrPresence: 'n = h.attrPresence(n, r, "#{1}"); c = false;',
+    tagName:      'n = h.tagName(n, r, "#{1}", c);      c = false;',  
+    className:    'n = h.className(n, r, "#{1}", c);    c = false;',
+    id:           'n = h.id(n, r, "#{1}", c);           c = false;',
+    attrPresence: 'n = h.attrPresence(n, r, "#{1}", c); c = false;',
     attr: function(m) {
       m[3] = (m[5] || m[6]);
-      return new Template('n = h.attr(n, r, "#{1}", "#{3}", "#{2}"); c = false;').evaluate(m);
+      return new Template('n = h.attr(n, r, "#{1}", "#{3}", "#{2}", c); c = false;').evaluate(m);
     },
     pseudo: function(m) {
       if (m[6]) m[6] = m[6].replace(/"/g, '\\"');
@@ -457,16 +457,18 @@ Object.extend(Selector, {
       return results;
     },    
     
-    attrPresence: function(nodes, root, attr) {
+    attrPresence: function(nodes, root, attr, combinator) {
       if (!nodes) nodes = root.getElementsByTagName("*");
+      if (nodes && combinator) nodes = this[combinator](nodes);
       var results = [];
       for (var i = 0, node; node = nodes[i]; i++)
         if (Element.hasAttribute(node, attr)) results.push(node);
       return results;      
     },
     
-    attr: function(nodes, root, attr, value, operator) {
+    attr: function(nodes, root, attr, value, operator, combinator) {
       if (!nodes) nodes = root.getElementsByTagName("*");
+      if (nodes && combinator) nodes = this[combinator](nodes);
       var handler = Selector.operators[operator], results = [];
       for (var i = 0, node; node = nodes[i]; i++) {
         var nodeValue = Element.readAttribute(node, attr);
