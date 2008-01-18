@@ -374,7 +374,8 @@ Element.Methods = {
         do { ancestor = ancestor.parentNode; }
         while (!(nextAncestor = ancestor.nextSibling) && ancestor.parentNode);
       }
-      if (nextAncestor) return (e > a && e < nextAncestor.sourceIndex);      
+      if (nextAncestor && nextAncestor.sourceIndex)
+       return (e > a && e < nextAncestor.sourceIndex);
     }
     
     while (element = element.parentNode)

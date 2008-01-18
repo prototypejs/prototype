@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix Element#descendantOf logic in IE. Closes #10413. [martymix, kamil.szot]
+
 * Fix missing "var" in Element#insert. Closes #10838. [Lantash]
 
 * Add Test.Unit.MessageTemplate class. Add flunk, buildMessage and assertBlock methods to Test.Unit.Assertions. Refactor accordingly. [Tobie Langel]

@@ -91,6 +91,14 @@
       background: #000;
     }
     
+    #getStyle_test {
+      margin-left: 2em;
+      margin-right: 0.1em;
+      font-size: 95%;
+      height: 13ex;
+      width: 50%;
+    }
+    
     /* for scroll test on really big screens */
     body {
       height: 40000px;
@@ -189,6 +197,8 @@
 
 <div><div></div> </div><span> </span>
 </div>
+
+<div id="getStyle_test">Testing getStyle</div>
 
 
 <div id="nav_tests_isolator">
@@ -1256,13 +1266,17 @@
       $('op3').setStyle({opacity: 0});
       assertEqual(0, $('op3').getStyle('opacity'));
       
-      if(navigator.appVersion.match(/MSIE/)) {
+      if(Prototype.Browser.IE) {
         assertEqual('alpha(opacity=30)', $('op1').getStyle('filter'));
         assertEqual('progid:DXImageTransform.Microsoft.Blur(strength=10)alpha(opacity=30)', $('op2').getStyle('filter'));
         $('op2').setStyle({opacity:''});
         assertEqual('progid:DXImageTransform.Microsoft.Blur(strength=10)', $('op2').getStyle('filter'));
         assertEqual('alpha(opacity=0)', $('op3').getStyle('filter'));
         assertEqual(0.3, $('op4-ie').getStyle('opacity'));
+        
+        // make sure IE returns px values for non-px units
+        assert($('getStyle_test').getStyle('margin-left').include('px'));
+        
       }
       // verify that value is still found when using camelized
       // strings (function previously used getPropertyValue()
@@ -1274,7 +1288,7 @@
       // margin, padding, or borders
       // TODO: This test fails on IE because there seems to be no way
       // to calculate this properly (clientWidth/Height returns 0)
-      if(!navigator.appVersion.match(/MSIE/)) {
+      if(!Prototype.Browser.IE) {
         assertEqual("14px", $('style_test_dimensions').getStyle('width'));
         assertEqual("17px", $('style_test_dimensions').getStyle('height'));
       }
