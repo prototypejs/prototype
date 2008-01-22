@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix "function $A" declaration inside of a conditional (confuses IE). Fixes #10882. [Jacco, Andrew Dupont]
+
 * Fixed selector parsing so that "#foo [bar=baz]" is treated the same way as "#foo *[bar=baz]". Closes #10734. [jlukas, kangax, Andrew Dupont]
 
 * Fix Element#descendantOf logic in IE. Closes #10413. [martymix, kamil.szot]
