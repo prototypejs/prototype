@@ -1,6 +1,8 @@
 *SVN*
 
-* Fix "function $A" declaration inside of a conditional (confuses IE). Fixes #10882. [Jacco, Andrew Dupont]
+* Test for attribute existence before applying more complex CSS3 selectors. Closes #10870. [arty, Tobie Langel]
+
+* Fix "function $A" declaration inside of a conditional (confuses IE). Closes #10882. [Jacco, Andrew Dupont]
 
 * Fixed selector parsing so that "#foo [bar=baz]" is treated the same way as "#foo *[bar=baz]". Closes #10734. [jlukas, kangax, Andrew Dupont]
 

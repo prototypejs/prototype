@@ -245,6 +245,9 @@
       assert(!span.match('span span'), 'different ancestry');
       assert(!span.match('span > span'), 'different parent');
       assert(!span.match('span:nth-child(5)'), 'different pseudoclass');
+      
+      assert(!$('link_2').match('a[rel^=external]'));
+      assert($('link_1').match('a[rel^=external]'));
     }},
 
     testSelectorWithSpaceInAttributeValue: function() {with(this) {
