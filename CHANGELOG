@@ -1,5 +1,7 @@
 *SVN*
 
+* Add tests for Element#match.  [Tobie Langel]
+
 * Fix Element#writeAttribute to work with 'cellspacing' and 'cellpadding' attributes in IE. Closes #9983. [/dev/urandom, Tobie Langel]
 
 * Prevent a potential security issue for cross-site ajax requests. [Alexey Feldgendler, sam, Tobie Langel]
