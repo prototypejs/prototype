@@ -249,6 +249,8 @@
       
       assert(!$('link_2').match('a[rel^=external]'));
       assert($('link_1').match('a[rel^=external]'));
+      assert($('link_1').match('a[rel^="external"]'));
+      assert($('link_1').match("a[rel^='external']"));
       
       assert(span.match({ match: function(element) { return true }}), 'custom selector');
       assert(!span.match({ match: function(element) { return false }}), 'custom selector');

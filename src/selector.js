@@ -297,7 +297,7 @@ Object.extend(Selector, {
 
     attr: function(element, matches) {
       var nodeValue = Element.readAttribute(element, matches[1]);
-      return nodeValue && Selector.operators[matches[2]](nodeValue, matches[3]);
+      return nodeValue && Selector.operators[matches[2]](nodeValue, matches[5] || matches[6]);
     }    
   },
   
