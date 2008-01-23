@@ -1,5 +1,7 @@
 *SVN*
 
+* Fix Element#writeAttribute to work with 'cellspacing' and 'cellpadding' attributes in IE. Closes #9983. [/dev/urandom, Tobie Langel]
+
 * Prevent a potential security issue for cross-site ajax requests. [Alexey Feldgendler, sam, Tobie Langel]
 
 * Test for attribute existence before applying more complex CSS3 selectors. Closes #10870. [arty, Tobie Langel]

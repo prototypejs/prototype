@@ -281,7 +281,7 @@
   </select>
 </form>
 
-<table id="write_attribute_table">
+<table id="write_attribute_table" cellpadding="6" cellspacing="4">
   <tr><td id="write_attribute_td">A</td><td>B</td></tr>
   <tr><td>C</td></tr>
   <tr><td>D</td><td>E</td><td>F</td></tr>
@@ -1313,6 +1313,10 @@
       var elements = $('custom_attributes').immediateDescendants();
       assertEnumEqual(['1', '2'], elements.invoke('readAttribute', 'foo'));
       assertEnumEqual(['2', null], elements.invoke('readAttribute', 'bar'));
+
+      var table = $('write_attribute_table');
+      assertEqual('4', table.readAttribute('cellspacing'));
+      assertEqual('6', table.readAttribute('cellpadding'));
     }},
     
     testElementWriteAttribute: function() {with(this) {
@@ -1363,6 +1367,12 @@
       assertEqual('some-other-id',  label.writeAttribute({htmlFor:   'some-other-id'}). readAttribute('for'));
       
       assert(p.writeAttribute({style: 'width: 5px;'}).readAttribute('style').toLowerCase().include('width'));      
+
+      var table = $('write_attribute_table');
+      table.writeAttribute('cellspacing', '2')
+      table.writeAttribute('cellpadding', '3')
+      assertEqual('2', table.readAttribute('cellspacing'));
+      assertEqual('3', table.readAttribute('cellpadding'));
     }},
     
     testElementWriteAttributeWithCustom: function() {with(this) {

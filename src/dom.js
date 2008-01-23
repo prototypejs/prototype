@@ -799,7 +799,10 @@ else if (Prototype.Browser.IE) {
   };
   
   Element._attributeTranslations.write = {
-    names: Object.clone(Element._attributeTranslations.read.names),
+    names: Object.extend({
+      cellpadding: 'cellPadding',
+      cellspacing: 'cellSpacing'
+    }, Element._attributeTranslations.read.names),
     values: {
       checked: function(element, value) {
         element.checked = !!value;
