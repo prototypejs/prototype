@@ -410,6 +410,45 @@
       } else {
         info(message);
       }
+    }},
+    
+    testIsSameOriginMethod: function() {with(this) {
+      var isSameOrigin = Ajax.Request.prototype.isSameOrigin;
+      assert(isSameOrigin.call({ url: '/foo/bar.html' }), '/foo/bar.html');
+      assert(isSameOrigin.call({ url: window.location.toString() }), window.location);
+      assert(!isSameOrigin.call({ url: 'http://example.com' }), 'http://example.com');
+
+      if (isRunningFromRake) {
+        Ajax.Request.prototype.isSameOrigin = function() {
+          return false
+        };
+
+        $("content").update('same origin policy');
+        new Ajax.Request("/response", extendDefault({
+          parameters: Fixtures.js,
+          onComplete: function(transport) { 
+            assertEqual("same origin policy", $("content").innerHTML);
+          }
+        }));
+
+        new Ajax.Request("/response", extendDefault({
+          parameters: Fixtures.invalidJson,
+          onException: function(request, error) {
+            assert(error.message.include('Badly formed JSON string'));
+          }
+        }));
+
+        new Ajax.Request("/response", extendDefault({
+          parameters: { 'X-JSON': '{});window.attacked = true;({}' },
+          onException: function(request, error) {
+            assert(error.message.include('Badly formed JSON string'));
+          }
+        }));
+
+        Ajax.Request.prototype.isSameOrigin = isSameOrigin;
+      } else {
+        info(message);
+      }
     }}
   });
 // ]]>
