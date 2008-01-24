@@ -124,6 +124,12 @@
       <input type="checkbox" id="ffe_ti2_checkbox" tabindex="0" />
       <input type="submit" id="ffe_ti2_submit" tabindex="1" />
     </form>
+    
+    <form id="trouble_form">
+    	<input type="text" name="length" value="foo" />
+    	<input type="text" name="toString" value="55" />
+    	<input type="text" name="valueOf" value="bar" />
+    </form>
   </div>
 
   <!-- Tests follow -->
@@ -400,6 +406,10 @@
                       $('form').serialize({ submit: false }));
       assertHashEqual({ val1:4, action:'blah' },
                       $('form').serialize({ submit: 'inexistent' }));
+                      
+      // try to serialize form containing toString, valueOf and length -named elements
+      assertHashEqual({ length: 'foo', toString: 55, valueOf: 'bar' },
+                      $('trouble_form').serialize(true));
     }},
     
     testFormMethodsOnExtendedElements: function() {with(this) {

@@ -14,7 +14,7 @@ var Form = {
         key = element.name; value = $(element).getValue();
         if (value != null && (element.type != 'submit' || (!submitted &&
             submit !== false && (!submit || key == submit) && (submitted = true)))) { 
-          if (key in result) {
+          if (key in result && !Object.isFunction(result[key])) {
             // a key is already present; construct an array of values
             if (!Object.isArray(result[key])) result[key] = [result[key]];
             result[key].push(value);
