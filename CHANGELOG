@@ -1,5 +1,7 @@
 *SVN*
 
+* Make Ajax.Request#isSameOrigin JavaScript Lint compliant. [Andrew Dupont]
+
 * Properly serialize form fields with names that collide with built-in JS properties (like "length" or "toString"). Closes #9609. [gryn, kangax]
 
 * Make Object.isArray correctly identify arrays created in another frame. Closes #10374. [pointy, Dean Edwards, Andrew Dupont, Tobie Langel]
