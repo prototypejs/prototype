@@ -1,5 +1,7 @@
 *SVN*
 
+* Make Object.isArray correctly identify arrays created in another frame. Closes #10374. [pointy, Dean Edwards, Andrew Dupont, Tobie Langel]
+
 * Fixed issue where Element#match failed on attribute selectors with single or double quotes. Closes #10067. [Cezary Okupski, Andrew Dupont]
 
 * Add tests for Element#match.  [Tobie Langel]

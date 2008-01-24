@@ -22,7 +22,12 @@
 
 <!-- Log output -->
 <div id="testlog"> </div>
-<div id="test"></div> 
+<div id="test"></div>
+<ul id="list">
+  <li></li>
+  <li></li>
+  <li></li>
+</ul>
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
@@ -311,6 +316,16 @@
       assert(Object.isArray([0]));
       assert(Object.isArray([0, 1]));
       assert(!Object.isArray({}));
+      assert(!Object.isArray($('list').childNodes));
+      assert(!Object.isArray());
+      assert(!Object.isArray(''));
+      assert(!Object.isArray('foo'));
+      assert(!Object.isArray(0));
+      assert(!Object.isArray(1));
+      assert(!Object.isArray(null));
+      assert(!Object.isArray(true));
+      assert(!Object.isArray(false));
+      assert(!Object.isArray(undefined));
     }},
     
     testObjectIsHash: function() { with(this) {

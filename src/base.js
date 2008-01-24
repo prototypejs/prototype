@@ -132,7 +132,8 @@ Object.extend(Object, {
   },
   
   isArray: function(object) {
-    return object && object.constructor === Array;
+    return object != null && typeof object == "object" &&
+      'splice' in object && 'join' in object;
   },
   
   isHash: function(object) {
