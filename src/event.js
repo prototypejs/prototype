@@ -128,11 +128,11 @@ Event.extend = (function() {
 
 Object.extend(Event, (function() {
   var cache = Event.cache;
-  
+
   function getEventID(element) {
-    if (element._eventID) return element._eventID;
+    if (element._prototypeEventID) return element._prototypeEventID[0];
     arguments.callee.id = arguments.callee.id || 1;
-    return element._eventID = ++arguments.callee.id;
+    return element._prototypeEventID = [++arguments.callee.id];
   }
   
   function getDOMEventName(eventName) {

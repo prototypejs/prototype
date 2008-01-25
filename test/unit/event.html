@@ -26,6 +26,7 @@
 <div id="outer" style="display: none">
   <p id="inner">One two three <span id="span">four</span></p>
 </div>
+<div id="container"><div></div></div>
 
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
@@ -174,7 +175,7 @@
       var span = $("span"), observer = function() { }, eventID;
       
       span.observe("test:somethingHappened", observer);
-      eventID = span._eventID;
+      eventID = span._prototypeEventID;
       
       assert(Event.cache[eventID]);
       assert(Object.isArray(Event.cache[eventID]["test:somethingHappened"]));
@@ -240,6 +241,12 @@
       assertElementMatches(event.findElement('p'), 'p#inner');
       assertEqual(null, event.findElement('div.does_not_exist'));
       assertElementMatches(event.findElement('.does_not_exist, span'), 'span#span');
+    }},
+    
+    testEventIDDuplication: function() { with(this) {
+      $('container').down().observe("test:somethingHappened", Prototype.emptyFunction);
+      $('container').innerHTML += $('container').innerHTML;
+      assertUndefined($('container').down(1)._prototypeEventID);
     }}
   });
 

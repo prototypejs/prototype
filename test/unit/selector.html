@@ -88,7 +88,7 @@
     <input type="hidden" id="commaChild" name="foo" value="#commaOne,#commaTwo" />
     <input type="hidden" id="commaTwo" name="foo2" value="oops" />
   </form>
-  
+  <div id="counted_container"><div class="is_counted"></div></div>
 </div> <!-- #fixtures -->
 
 <!-- Log output -->
@@ -442,8 +442,29 @@
       assert(typeof results[0].show == 'function');
       assert(typeof results[1].show == 'function');
       assert(typeof results[2].show == 'function');
+    }},
+    
+    testCountedIsNotAnAttribute: function() { with(this) {
+      var el = $('list');
+      Selector.handlers.mark([el]);
+      assert(!el.innerHTML.include("_counted"));
+      Selector.handlers.unmark([el]);
+      assert(!el.innerHTML.include("_counted"));      
+    }},
+
+    testCopiedNodesGetIncluded: function(){ with(this) {
+      assertElementsMatch(
+        Selector.matchElements($('counted_container').descendants(), 'div'),
+        'div.is_counted'
+      );
+      $('counted_container').innerHTML += $('counted_container').innerHTML;
+      assertElementsMatch(
+        Selector.matchElements($('counted_container').descendants(), 'div'), 'div.is_counted', 
+        'div.is_counted'
+      );
     }}
   });
+  
 // ]]>
 </script>
 </body>
