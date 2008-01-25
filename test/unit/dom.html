@@ -367,7 +367,10 @@
     <div style="height:10px;font-size:2px">test<span id="inline">test</span></div>
     <div id="absolute_relative_undefined">XYZ</div>
   </div>
-</div>
+  <div id="absolute_fixed" style="position: fixed; top: 10px; left: 10px">
+    <span id="absolute_fixed_absolute" style="position: absolute; top: 10px; left: 10px">foo</span>
+    <span id="absolute_fixed_undefined" style="display:block">bar</span>
+  </div></div>
 <div id="notInlineAbsoluted"></div>
 <div id="inlineAbsoluted" style="position: absolute"></div>
 
@@ -1091,13 +1094,11 @@
       assert($('grand-child').descendantOf('child'), 'grand-child < child');
       assert($('great-grand-child').descendantOf('child'), 'great-grand-child < child');
       
-      window.debug = true;
       assert($('sibling').descendantOf('ancestor'), 'sibling < ancestor');
       assert($('grand-sibling').descendantOf('sibling'), 'grand-sibling < sibling');
       assert($('grand-sibling').descendantOf('ancestor'), 'grand-sibling < ancestor');
       
       assert($('grand-sibling').descendantOf(document.body), 'grand-sibling < body');      
-      window.debug = false;
       
       assert(!$('great-grand-child').descendantOf('great-grand-child'), 'great-grand-child < great-grand-child');
       assert(!$('great-grand-child').descendantOf('sibling'), 'great-grand-child < sibling');
@@ -1105,7 +1106,7 @@
       assert(!$('great-grand-child').descendantOf('not-in-the-family'), 'great-grand-child < not-in-the-family');
       assert(!$('child').descendantOf('not-in-the-family'), 'child < not-in-the-family');
       
-      assert(!$(document.body).descendantOf('great-grand-child'));
+      assert(!$(document.body).descendantOf('great-grand-child'));      
     }},  
     
     testChildOf: function() {with(this) {
@@ -1604,6 +1605,12 @@
         $('absolute_relative').positionedOffset());
       assertEnumEqual([0,10],
         $('absolute_relative_undefined').positionedOffset());
+      assertEnumEqual([10,10],
+        $('absolute_fixed_absolute').positionedOffset());
+        
+      var afu = $('absolute_fixed_undefined');
+      assertEnumEqual([afu.offsetLeft, afu.offsetTop],
+        afu.positionedOffset());
     }},
     
     testViewportOffset: function() {with(this) {
