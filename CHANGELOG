@@ -1,5 +1,7 @@
 *SVN*
 
+* Roll back the fix for #9609, since it does not work in Opera. Instead, avoid using "valueOf" or "toString" as field names in forms.
+
 * Prevent DOM node expandos _countedByPrototype and _prototypeEventID from being serialized into (inner|outer)HTML in IE. Closes #10909. [dcpedit, Tobie Langel, Andrew Dupont]
 
 * Make Ajax.Request#isSameOrigin JavaScript Lint compliant. [Andrew Dupont]
