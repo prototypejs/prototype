@@ -1,5 +1,7 @@
 *SVN*
 
+* Update the list of officially supported browsers in the README.  [sam]
+
 * Add tests for Element#descendantOf that deal with dynamically-created elements. [Andrew Dupont]
 
 * Ensure positionedOffset properly considers "position: fixed" elements. Also ensures IE reports offsets correctly by triggering hasLayout when a "static" element has a "fixed" element as an offset parent. Closes #10644. [heygrady, kangax, Andrew Dupont]
