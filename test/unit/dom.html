@@ -1106,7 +1106,14 @@
       assert(!$('great-grand-child').descendantOf('not-in-the-family'), 'great-grand-child < not-in-the-family');
       assert(!$('child').descendantOf('not-in-the-family'), 'child < not-in-the-family');
       
-      assert(!$(document.body).descendantOf('great-grand-child'));      
+      assert(!$(document.body).descendantOf('great-grand-child'));
+
+      // dynamically-created elements
+      $('ancestor').insert(new Element('div', { id: 'weird-uncle' }));
+      assert($('weird-uncle').descendantOf('ancestor'));
+      
+      $(document.body).insert(new Element('div', { id: 'impostor' }));
+      assert(!$('impostor').descendantOf('ancestor'));
     }},  
     
     testChildOf: function() {with(this) {
