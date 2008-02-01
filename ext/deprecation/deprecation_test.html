@@ -1,0 +1,281 @@
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Prototype Unit test file</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <script src="../../dist/prototype.js" type="text/javascript"></script>
+    <script src="deprecation.js" type="text/javascript"></script>
+    <script src="../../test/lib/unittest.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../../test/test.css" type="text/css" />
+  </head>
+  <body>
+  <h1>Prototype Unit test file</h1>
+  <p>
+    Test of deprecation.js
+  </p>
+
+  <div id="foo">foo</div>
+  <div id="bar">bar</div>
+  <div id="bla">bla</div>
+
+<!-- Log output -->
+<div id="testlog"> </div>
+
+
+<!-- Tests follow -->
+<script type="text/javascript" charset="utf-8">
+  var log = {
+    message: [],
+    type: []
+  };
+  DeprecationNotifier.notify = DeprecationNotifier.notify.wrap(function(proceed, message, type) {
+    if (!proceed(message, type)) return; // DeprecationNotifier.notify return false if the message is not logged.
+    log.message.push(message);
+    log.type.push(type);
+  });
+  
+  DeprecationNotifier.log = function(message) {
+    console.log(message.replace(/@[^\n]+/, ''))
+  }
+  
+  Array.prototype.beforeLast = function() {
+    return this[this.length - 2];
+  }
+  
+  Test.Unit.Testcase.addMethods({
+    assertDeprecationNotified: function(expected) {
+      var actualMessage = log.message.beforeLast() || log.message.last();
+      var actualType = log.type.beforeLast() || log.type.last();
+      this.assertEqual(expected, actualMessage, 'assertDeprecationNotified');
+      this.assertEqual('deprecation', actualType, 'assertDeprecationNotified');
+      log.message.push(null);
+      log.type.push(null);
+    },
+    
+    assertRemovalNotified: function(expected) {
+      var actualMessage = log.message.beforeLast() || log.message.last();
+      var actualType = log.type.beforeLast() || log.type.last();
+      this.assertEqual(expected, actualMessage, 'assertRemovalNotified');
+      this.assertEqual('removal', actualType, 'assertRemovalNotified');
+      log.message.push(null);
+      log.type.push(null);
+    },
+    
+    assertModificationNotified: function(expected) {
+      var actualMessage = log.message.beforeLast() || log.message.last();
+      var actualType = log.type.beforeLast() || log.type.last();
+      this.assertEqual(expected, actualMessage, 'assertModificationNotified');
+      this.assertEqual('modification', actualType, 'assertModificationNotified');
+      log.message.push(null);
+      log.type.push(null);
+    },
+    
+    assertNotNotified: function() {
+      this.assertNull(log.message.last(), 'assertNotNotified');
+      this.assertNull(log.type.last());
+      log.message.push(null);
+      log.type.push(null);
+    }
+  });
+  
+  new Test.Unit.Runner({
+    testGetStack: function(){ with(this) {
+      assertMatch(/deprecation_test\.html:\d+\n$/, DeprecationNotifier.getStack());
+    }},
+
+    testDisplay: function(){ with(this) {
+      Toggle.display('foo');
+      assertDeprecationNotified('Toggle.display has been deprecated, please use Element.toggle instead.');
+        
+      Element.show('foo', 'bar', 'bla');
+      assertRemovalNotified('Passing an arbitrary number of elements to Element.show is no longer supported.\n' +
+        'Use [id_1, id_2, ...].each(Element.show) or $(id_1, id_2, ...).invoke("show") instead.');
+      
+      $('foo', 'bar', 'bla').each(Element.hide);
+      assertNotNotified();
+      
+      Element.show('foo');
+      assertNotNotified();
+      
+      Element.hide('foo', 'bar', 'bla');
+      assertRemovalNotified('Passing an arbitrary number of elements to Element.hide is no longer supported.\n' +
+        'Use [id_1, id_2, ...].each(Element.hide) or $(id_1, id_2, ...).invoke("hide") instead.');
+      
+      Element.toggle('foo', 'bar', 'bla');
+      assertRemovalNotified('Passing an arbitrary number of elements to Element.toggle is no longer supported.\n' +
+        'Use [id_1, id_2, ...].each(Element.toggle) or $(id_1, id_2, ...).invoke("toggle") instead.');
+    }},
+    
+    testElementStyle: function(){ with(this) {
+      Element.setStyle('foo', { 'fontSize': '18px' });
+      assertNotNotified();
+      
+      Element.setStyle('foo', { 'font-size': '18px' });
+      assertRemovalNotified('Use of uncamelized style-property names is no longer supported.\n' + 
+        'Use either camelized style-property names or a regular CSS string instead (see online documentation).')
+      
+      Element.setStyle('foo', 'font-size: 18px;');
+      assertNotNotified();
+      
+      $('foo').setStyle({ 'font-size': '18px' });
+      assertRemovalNotified('Use of uncamelized style-property names is no longer supported.\n' + 
+        'Use either camelized style-property names or a regular CSS string instead (see online documentation).')
+    }},
+
+    testClassNames: function(){ with(this) {
+      new Element.ClassNames('foo');
+      assertDeprecationNotified('Element.ClassNames has been deprecated.')
+      
+      $('foo').classNames();
+      assertDeprecationNotified('Element#classNames has been deprecated.\n' +
+        'If you need to access CSS class names as an array, try: $w(element.classname).')
+
+      Element.getElementsByClassName('foo', 'className');
+      assertDeprecationNotified('Element#getElementsByClassName has been deprecated, please use Element#select instead.')
+      
+      document.getElementsByClassName('className');
+      assertDeprecationNotified('document.getElementsByClassName has been deprecated, please use $$ instead.')
+    }},
+    
+    testDomSelectors: function(){ with(this) {
+      Element.childOf('foo', 'bar');
+      assertDeprecationNotified('Element#childOf has been deprecated, please use Element#descendantOf instead.');
+
+      $('foo').immediateDescendants();
+      assertDeprecationNotified('Element#immediateDescendants has been deprecated, please use Element#childElements instead.');
+      
+      $('foo').getElementsBySelector('a');
+      assertDeprecationNotified('Element#getElementsBySelector has been deprecated, please use Element#select instead.');
+
+      $('foo').select('a');
+      assertNotNotified();
+    }},
+    
+    testField: function(){ with(this) {
+      Field.clear('foo', 'bar', 'bla');
+      assertRemovalNotified('Passing an arbitrary number of elements to Field.clear is no longer supported.\n' +
+        'Use [id_1, id_2, ...].each(Form.Element.clear) or $(id_1, id_2, ...).invoke("clear") instead.');
+        
+      Field.present('foo', 'bar', 'bla');
+      assertRemovalNotified('Passing an arbitrary number of elements to Field.present is no longer supported.\n' +
+        'Use [id_1, id_2, ...].each(Form.Element.present) or $(id_1, id_2, ...).invoke("present") instead.');
+    }},
+    
+    testInsertion: function(){ with(this) {
+      Insertion.Before('foo', 'text');
+      assertDeprecationNotified('Insertion.Before has been deprecated, please use Element#insert instead.');
+
+      Insertion.Top('foo', 'text');
+      assertDeprecationNotified('Insertion.Top has been deprecated, please use Element#insert instead.');
+
+      Insertion.Bottom('foo', 'text');
+      assertDeprecationNotified('Insertion.Bottom has been deprecated, please use Element#insert instead.');
+
+      Insertion.After('foo', 'text');
+      assertDeprecationNotified('Insertion.After has been deprecated, please use Element#insert instead.');
+    }},
+    
+    testPosition: function(){ with(this) {
+      Position.prepare('foo');
+      assertDeprecationNotified('Position.prepare has been deprecated.');
+
+      Position.within('foo');
+      assertDeprecationNotified('Position.within has been deprecated.');
+
+      Position.withinIncludingScrolloffsets('foo');
+      assertDeprecationNotified('Position.withinIncludingScrolloffsets has been deprecated.');
+
+      Position.overlap('foo');
+      assertDeprecationNotified('Position.overlap has been deprecated.');
+
+      Position.cumulativeOffset('foo');
+      assertDeprecationNotified('Position.cumulativeOffset has been deprecated, please use Element#cumulativeOffset instead.');
+
+      Position.positionedOffset('foo');
+      assertDeprecationNotified('Position.positionedOffset has been deprecated, please use Element#positionedOffset instead.');
+
+      Position.absolutize('foo');
+      assertDeprecationNotified('Position.absolutize has been deprecated, please use Element#absolutize instead.');
+
+      Position.relativize('foo');
+      assertDeprecationNotified('Position.relativize has been deprecated, please use Element#relativize instead.');
+
+      Position.realOffset('foo');
+      assertDeprecationNotified('Position.realOffset has been deprecated, please use Element#cumulativeScrollOffset instead.');
+
+      Position.offsetParent('foo');
+      assertDeprecationNotified('Position.offsetParent has been deprecated, please use Element#getOffsetParent instead.');
+
+      Position.page('foo');
+      assertDeprecationNotified('Position.page has been deprecated, please use Element#viewportOffset instead.');
+
+      Position.clone('foo', 'bar');
+      assertDeprecationNotified('Position.clone has been deprecated, please use Element#clonePosition instead.');
+    }},
+
+    testEvent: function(){ with(this) {
+      Event.unloadCache();
+      assertDeprecationNotified('Event.unloadCache has been deprecated.')
+    }},
+    
+    testHash: function(){ with(this) {
+      Hash.toQueryString({});
+      assertDeprecationNotified('Hash.toQueryString has been deprecated.\n' + 
+        'Use the instance method Hash#toQueryString or Object.toQueryString instead.');
+      
+      var h = $H({ foo: 2 });
+      
+      h.remove('foo');
+      assertRemovalNotified('Hash#remove is no longer supported, use Hash#unset instead.\n' + 
+        'Please note that Hash#unset only accepts one argument.');
+      
+      h.merge('foo');
+        assertModificationNotified('Hash#merge is no longer destructive: it operates on a clone of the Hash instance.\n' + 'If you need a destructive merge, use Hash#update instead.');
+      
+      h['foo'];
+      assertRemovalNotified('Directly accessing a property of an instance of Hash is no longer supported.\n' + 
+        'Please use Hash#get(\'foo\') instead.')
+      
+      h.foo = 3;
+      assertRemovalNotified('Directly setting a property on an instance of Hash is no longer supported.\n' + 
+        'Please use Hash#set(\'foo\', 3) instead.')
+        
+      h.bar = 'bar';
+      h.toJSON();
+      assertRemovalNotified('Directly setting a property on an instance of Hash is no longer supported.\n' + 
+        'Please use Hash#set(\'bar\', \'bar\') instead.')
+        
+      h.bar;
+      assertRemovalNotified('Directly accessing a property of an instance of Hash is no longer supported.\n' + 
+        'Please use Hash#get(\'bar\') instead.')
+        
+      h.baz = 'baz';
+      h.bar;
+      assertRemovalNotified('Directly setting a property on an instance of Hash is no longer supported.\n' + 
+        'Please use Hash#set(\'baz\', \'baz\') instead.')
+      
+      h.set('toJSON', 'arg'); // make sure hash methods are not overwritten
+      assertRespondsTo('toJSON', h)
+    }},
+    
+    testLogDeprecationOption: function(){ with(this) {
+      DeprecationNotifier.logDeprecation = false;
+      var h = $H({ foo: 2 });
+      
+      h.merge({ foo: 3 });
+      assertModificationNotified('Hash#merge is no longer destructive: it operates on a clone of the Hash instance.\n' + 'If you need a destructive merge, use Hash#update instead.');
+      
+      h.remove('foo');
+      assertRemovalNotified('Hash#remove is no longer supported, use Hash#unset instead.\n' + 
+        'Please note that Hash#unset only accepts one argument.');
+      
+      document.getElementsByClassName('className');
+      assertNotNotified();
+      DeprecationNotifier.logDeprecation = true;
+    }}
+  });
+  
+</script>
+</body>
+</html>
