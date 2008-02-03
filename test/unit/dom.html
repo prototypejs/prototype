@@ -1644,6 +1644,15 @@
         elt.absolutize();
         assertUndefined(elt._originalLeft, 'absolutize() did not detect absolute positioning');
       });
+      // invoking on "absolute" positioned element should return element 
+      var element = $('absolute_fixed_undefined').setStyle({position: 'absolute'});
+      assertEqual(element, element.absolutize());
+    }},
+    
+    testRelativize: function() {with(this) {
+      // invoking on "relative" positioned element should return element
+      var element = $('absolute_fixed_undefined').setStyle({position: 'relative'});
+      assertEqual(element, element.relativize());
     }},
     
     testViewportDimensions: function() {with(this) {

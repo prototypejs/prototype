@@ -1,3 +1,5 @@
+* Make Element#absolutize and Element#relativize always return element. Closes #10983. [kangax]
+
 * Add deprecation extension. [Tobie Langel]
 
 *1.6.0.2* (January 25, 2008)
