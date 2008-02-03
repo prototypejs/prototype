@@ -1,3 +1,5 @@
+* Prevent Enumerable#eachSlice from entering into an endless loop if passed an argument smaller than 1. Closes #10665. [kangax, Tobie Langel]
+
 * Allow Selector to correctly detect the presence of namespaced attributes. Closes #10987. [Samuel Lebeau, Tobie Langel]
 
 * Make Element#absolutize and Element#relativize always return element. Closes #10983. [kangax]
