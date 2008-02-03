@@ -1,3 +1,5 @@
+* Allow Selector to correctly detect the presence of namespaced attributes. Closes #10987. [Samuel Lebeau, Tobie Langel]
+
 * Make Element#absolutize and Element#relativize always return element. Closes #10983. [kangax]
 
 * Add deprecation extension. [Tobie Langel]

@@ -268,6 +268,9 @@
         assertUndefined(new Selector('body p[xml:lang]').xpath);
       } else
         info("Could not test XPath bypass: no XPath to begin with!");
+      
+      assertElementsMatch($$('[xml:lang]'), 'html', '#item_3');
+      assertElementsMatch($$('*[xml:lang]'), 'html', '#item_3');
     }},
 
     testSelectorWithChild: function() { with(this) {
