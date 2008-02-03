@@ -1618,6 +1618,18 @@
       var afu = $('absolute_fixed_undefined');
       assertEnumEqual([afu.offsetLeft, afu.offsetTop],
         afu.positionedOffset());
+        
+      var element = new Element('div'), offset = element.positionedOffset();
+      assertEnumEqual([0,0], offset);
+      assertIdentical(0, offset.top);
+      assertIdentical(0, offset.left);
+    }},
+    
+    testCumulativeOffset: function() {with(this) {
+      var element = new Element('div'), offset = element.cumulativeOffset();
+      assertEnumEqual([0,0], offset);
+      assertIdentical(0, offset.top);
+      assertIdentical(0, offset.left);
     }},
     
     testViewportOffset: function() {with(this) {
@@ -1629,6 +1641,10 @@
         $('absolute_relative').viewportOffset());
       assertEnumEqual([20,30],
         $('absolute_relative_undefined').viewportOffset());
+      var element = new Element('div'), offset = element.viewportOffset();
+      assertEnumEqual([0,0], offset);
+      assertIdentical(0, offset.top);
+      assertIdentical(0, offset.left);
     }},
     
     testOffsetParent: function() {with(this) {
@@ -1636,6 +1652,8 @@
       assertEqual('body_absolute', $('absolute_relative').getOffsetParent().id);
       assertEqual('absolute_relative', $('inline').getOffsetParent().id);
       assertEqual('absolute_relative', $('absolute_relative_undefined').getOffsetParent().id);
+      
+      assertEqual(document.body, new Element('div').getOffsetParent());
     }},
 
     testAbsolutize: function() {with(this) {
