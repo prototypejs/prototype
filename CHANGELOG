@@ -1,3 +1,5 @@
+* Avoid breaking Element.prototype in browsers which support it. Closes #11004. [cfis, Tobie Langel]
+
 * Prevent Element#cumulativeOffset, Element#getOffsetParent, Element#positionedOffset, Element#viewportOffset and Element#clonePosition from throwing an error in IE when called on a parent-less element. Closes #9416, #10192, #10248. [ronstoney, psiborg, kangax]
 
 * Prevent Enumerable#eachSlice from entering into an endless loop if passed an argument smaller than 1. Closes #10665. [kangax, Tobie Langel]

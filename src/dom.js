@@ -57,6 +57,7 @@ if (!Node.ELEMENT_NODE) {
     return Element.writeAttribute(cache[tagName].cloneNode(false), attributes);
   };
   Object.extend(this.Element, element || { });
+  if (element) this.Element.prototype = element.prototype;
 }).call(window);
 
 Element.cache = { };
