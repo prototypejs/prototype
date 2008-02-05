@@ -518,7 +518,7 @@ Element.Methods = {
       valueL += element.offsetLeft || 0;
       element = element.offsetParent;
       if (element) {
-        if (element.tagName == 'BODY') break;
+        if (element.tagName.toUpperCase() == 'BODY') break;
         var p = Element.getStyle(element, 'position');
         if (p !== 'static') break;
       }
@@ -603,7 +603,7 @@ Element.Methods = {
 
     element = forElement;
     do {
-      if (!Prototype.Browser.Opera || element.tagName == 'BODY') {
+      if (!Prototype.Browser.Opera || element.tagName.toUpperCase() == 'BODY') {
         valueT -= element.scrollTop  || 0;
         valueL -= element.scrollLeft || 0;
       }
@@ -903,7 +903,7 @@ else if (Prototype.Browser.WebKit) {
       (value < 0.00001) ? 0 : value;
     
     if (value == 1)
-      if(element.tagName == 'IMG' && element.width) { 
+      if(element.tagName.toUpperCase() == 'IMG' && element.width) { 
         element.width++; element.width--;
       } else try {
         var n = document.createTextNode(' ');
@@ -1060,7 +1060,7 @@ Element.extend = (function() {
         element.nodeType != 1 || element == window) return element;
 
     var methods = Object.clone(Methods),
-      tagName = element.tagName, property, value;
+      tagName = element.tagName.toUpperCase(), property, value;
     
     // extend methods for specific tags
     if (ByTag[tagName]) Object.extend(methods, ByTag[tagName]);
