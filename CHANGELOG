@@ -1,4 +1,4 @@
-* Make Prototype tagName comparisons XHTML-compliant. Closes #11012, #11013, #11014. [cfis, Tobie Langel]
+* Make tagName comparisons XHTML-compliant. Closes #11012, #11013, #11014. [cfis, Tobie Langel]
 
 * Avoid breaking Element.prototype in browsers which support it. Closes #11004. [cfis, Tobie Langel]
 
