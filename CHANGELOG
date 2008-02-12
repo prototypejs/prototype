@@ -1,3 +1,5 @@
+* Change deprecation extension to use Firebug's console.warn and console.error. [Andrew Dupont, Tobie Langel]
+
 * Make tagName comparisons XHTML-compliant. Closes #11012, #11013, #11014. [cfis, Tobie Langel]
 
 * Avoid breaking Element.prototype in browsers which support it. Closes #11004. [cfis, Tobie Langel]

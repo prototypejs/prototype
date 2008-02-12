@@ -35,10 +35,6 @@
     log.type.push(type);
   });
   
-  DeprecationNotifier.log = function(message) {
-    console.log(message.replace(/@[^\n]+/, ''))
-  }
-  
   Array.prototype.beforeLast = function() {
     return this[this.length - 2];
   }

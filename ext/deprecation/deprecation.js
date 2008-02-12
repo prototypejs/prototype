@@ -5,7 +5,7 @@
  *  terms as Prototype (MIT-style license).
  *  For details, see the Prototype web site: http://www.prototypejs.org/
  *  
- *  Include this file right below prototype.js. All warning message
+ *  Include this file right below prototype.js. All warning messages
  *  will be logged to the console.
  *  
  *  Note: You can turn off deprecation messages (and log only removal and
@@ -46,7 +46,7 @@ var DeprecationNotifier = {
       message: message,
       stack: this.getStack(),
       type: type.capitalize()
-    }));
+    }), type);
     return true;
   },
   
@@ -55,13 +55,15 @@ var DeprecationNotifier = {
       throw new Error("stack");
     } catch(e) {
       return e.stack.match(this.Regexp).reject(function(path) {
-        return /(prototype|unittest|deprecation)\.js/.test(path)
+        return /(prototype|unittest|deprecation)\.js/.test(path);
       }).join("\n");
     }
   },
   
-  log: function(message) {
-    console.log(message)
+  log: function(message, type) {
+    if (type === 'removal') {
+      console.error(message);
+    } else console.warn(message);
   }
 };
 
