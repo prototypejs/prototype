@@ -61,7 +61,7 @@ var DeprecationNotifier = {
   },
   
   log: function(message, type) {
-    if (type === 'removal') {
+    if (type !== 'deprecation') {
       console.error(message);
     } else console.warn(message);
   }
@@ -295,7 +295,18 @@ DeprecationNotifier.init([
   {
     methodName: 'unloadCache',
     namespace: Event,
-    message: 'Event.unloadCache has been deprecated.'
+    message: 'Event.unloadCache has been deprecated.',
+    type: 'removal'
+  },
+  
+  {
+    methodName: 'create',
+    namespace: Class,
+    message: 'The class API has been fully revised and now allows for mixins and inheritance.\n' + 
+      'You can find more about it here: http://prototypejs.org/learn/class-inheritance',
+    condition: function() {
+      return !arguments.length;
+    }
   }
 ]);
 

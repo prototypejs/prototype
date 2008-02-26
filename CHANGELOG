@@ -1,3 +1,9 @@
+* deprecation extension: mark Class.create() used without arguments as deprecated. [Tobie Langel]
+
+* deprecation extension: mark Event.unloadCache as removed rather than deprecated. [Tobie Langel]
+
+* deprecation extension: log everything *but* deprecations with console.error. [Tobie Langel]
+
 * Change deprecation extension to use Firebug's console.warn and console.error. [Andrew Dupont, Tobie Langel]
 
 * Make tagName comparisons XHTML-compliant. Closes #11012, #11013, #11014. [cfis, Tobie Langel]

@@ -212,7 +212,7 @@
 
     testEvent: function(){ with(this) {
       Event.unloadCache();
-      assertDeprecationNotified('Event.unloadCache has been deprecated.')
+      assertRemovalNotified('Event.unloadCache has been deprecated.')
     }},
     
     testHash: function(){ with(this) {
@@ -253,6 +253,14 @@
       
       h.set('toJSON', 'arg'); // make sure hash methods are not overwritten
       assertRespondsTo('toJSON', h)
+    }},
+
+    testClass: function(){ with(this) {
+      Class.create();
+      assertDeprecationNotified('The class API has been fully revised and now allows for mixins and inheritance.\n' + 
+        'You can find more about it here: http://prototypejs.org/learn/class-inheritance');
+      Class.create({});
+      assertNotNotified();
     }},
     
     testLogDeprecationOption: function(){ with(this) {
