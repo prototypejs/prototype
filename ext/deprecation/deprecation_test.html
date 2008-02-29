@@ -219,6 +219,10 @@
       Hash.toQueryString({});
       assertDeprecationNotified('Hash.toQueryString has been deprecated.\n' + 
         'Use the instance method Hash#toQueryString or Object.toQueryString instead.');
+
+     Hash.toJSON({});
+      assertRemovalNotified('Hash.toJSON has been removed.\n' + 
+        'Use the instance method Hash#toJSON or Object.toJSON instead.');
       
       var h = $H({ foo: 2 });
       

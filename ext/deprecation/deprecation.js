@@ -277,6 +277,14 @@ DeprecationNotifier.init([
   },
   
   {
+    methodName: 'toJSON',
+    namespace: Hash,
+    message: 'Hash.toJSON has been removed.\n' + 
+      'Use the instance method Hash#toJSON or Object.toJSON instead.',
+    type: 'removal'
+  },
+  
+  {
     methodName: 'remove',
     namespace: Hash.prototype,
     message: 'Hash#remove is no longer supported, use Hash#unset instead.\n' + 
