@@ -1,3 +1,5 @@
+* Minor clean-up of selector.js. Closes #10844. [RQuadling]
+
 * Make String#unescapeHTML strip tags in IE. Closes #10173. [kangax]
 
 * Stop form observers in unit tests. Closes #10938. [kangax]
