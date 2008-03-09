@@ -1,3 +1,5 @@
+* Stop form observers in unit tests. Closes #10938. [kangax]
+
 * Performance improvements for Enumerables. Closes #11264. [Ben, Samuel Lebeau]
 
 * deprecation extension: mark Hash.toJSON() as removed. [Tobie Langel]
