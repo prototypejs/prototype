@@ -211,7 +211,7 @@ if (Prototype.Browser.WebKit || Prototype.Browser.IE) Object.extend(String.proto
     return this.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   },
   unescapeHTML: function() {
-    return this.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+    return this.stripTags().replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
   }
 });
 

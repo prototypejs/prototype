@@ -287,6 +287,7 @@
       assertEqual(largeTextUnescaped, largeTextEscaped.unescapeHTML());
       
       assertEqual('1\n2', '1\n2'.unescapeHTML());
+      assertEqual('Pride & Prejudice', '<h1>Pride &amp; Prejudice</h1>'.unescapeHTML());
       
       benchmark(function(){
         largeTextEscaped.unescapeHTML();

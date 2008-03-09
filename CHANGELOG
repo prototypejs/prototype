@@ -1,3 +1,5 @@
+* Make String#unescapeHTML strip tags in IE. Closes #10173. [kangax]
+
 * Stop form observers in unit tests. Closes #10938. [kangax]
 
 * Performance improvements for Enumerables. Closes #11264. [Ben, Samuel Lebeau]
