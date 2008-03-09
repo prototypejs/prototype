@@ -3,10 +3,9 @@ var $break = { };
 var Enumerable = {
   each: function(iterator, context) {
     var index = 0;
-    iterator = iterator.bind(context);
     try {
       this._each(function(value) {
-        iterator(value, index++);
+        iterator.call(context, value, index++);
       });
     } catch (e) {
       if (e != $break) throw e;
@@ -15,7 +14,6 @@ var Enumerable = {
   },
   
   eachSlice: function(number, iterator, context) {
-    iterator = iterator ? iterator.bind(context) : Prototype.K;
     var index = -number, slices = [], array = this.toArray();
     if (number < 1) return array;
     while ((index += number) < array.length)
@@ -24,39 +22,38 @@ var Enumerable = {
   },
 
   all: function(iterator, context) {
-    iterator = iterator ? iterator.bind(context) : Prototype.K;
+    iterator = iterator || Prototype.K;
     var result = true;
     this.each(function(value, index) {
-      result = result && !!iterator(value, index);
+      result = result && !!iterator.call(context, value, index);
       if (!result) throw $break;
     });
     return result;
   },
 
   any: function(iterator, context) {
-    iterator = iterator ? iterator.bind(context) : Prototype.K;
+    iterator = iterator || Prototype.K;
     var result = false;
     this.each(function(value, index) {
-      if (result = !!iterator(value, index))
+      if (result = !!iterator.call(context, value, index))
         throw $break;
     });
     return result;
   },
 
   collect: function(iterator, context) {
-    iterator = iterator ? iterator.bind(context) : Prototype.K;
+    iterator = iterator || Prototype.K;
     var results = [];
     this.each(function(value, index) {
-      results.push(iterator(value, index));
+      results.push(iterator.call(context, value, index));
     });
     return results;
   },
   
   detect: function(iterator, context) {
-    iterator = iterator.bind(context);
     var result;
     this.each(function(value, index) {
-      if (iterator(value, index)) {
+      if (iterator.call(context, value, index)) {
         result = value;
         throw $break;
       }
@@ -65,17 +62,16 @@ var Enumerable = {
   },
   
   findAll: function(iterator, context) {
-    iterator = iterator.bind(context);
     var results = [];
     this.each(function(value, index) {
-      if (iterator(value, index))
+      if (iterator.call(context, value, index))
         results.push(value);
     });
     return results;
   },
   
   grep: function(filter, iterator, context) {
-    iterator = iterator ? iterator.bind(context) : Prototype.K;
+    iterator = iterator || Prototype.K;
     var results = [];
 
     if (Object.isString(filter))
@@ -83,7 +79,7 @@ var Enumerable = {
       
     this.each(function(value, index) {
       if (filter.match(value))
-        results.push(iterator(value, index));
+        results.push(iterator.call(context, value, index));
     });
     return results;
   },
@@ -111,9 +107,8 @@ var Enumerable = {
   },
   
   inject: function(memo, iterator, context) {
-    iterator = iterator.bind(context);
     this.each(function(value, index) {
-      memo = iterator(memo, value, index);
+      memo = iterator.call(context, memo, value, index);
     });
     return memo;
   },
@@ -126,10 +121,10 @@ var Enumerable = {
   },
   
   max: function(iterator, context) {
-    iterator = iterator ? iterator.bind(context) : Prototype.K;
+    iterator = iterator || Prototype.K;
     var result;
     this.each(function(value, index) {
-      value = iterator(value, index);
+      value = iterator.call(context, value, index);
       if (result == null || value >= result)
         result = value;
     });
@@ -137,10 +132,10 @@ var Enumerable = {
   },
   
   min: function(iterator, context) {
-    iterator = iterator ? iterator.bind(context) : Prototype.K;
+    iterator = iterator || Prototype.K;
     var result;
     this.each(function(value, index) {
-      value = iterator(value, index);
+      value = iterator.call(context, value, index);
       if (result == null || value < result)
         result = value;
     });
@@ -148,10 +143,10 @@ var Enumerable = {
   },
   
   partition: function(iterator, context) {
-    iterator = iterator ? iterator.bind(context) : Prototype.K;
+    iterator = iterator || Prototype.K;
     var trues = [], falses = [];
     this.each(function(value, index) {
-      (iterator(value, index) ? 
+      (iterator.call(context, value, index) ?
         trues : falses).push(value);
     });
     return [trues, falses];
@@ -166,19 +161,20 @@ var Enumerable = {
   },
   
   reject: function(iterator, context) {
-    iterator = iterator.bind(context);
     var results = [];
     this.each(function(value, index) {
-      if (!iterator(value, index))
+      if (!iterator.call(context, value, index))
         results.push(value);
     });
     return results;
   },
   
   sortBy: function(iterator, context) {
-    iterator = iterator.bind(context);
     return this.map(function(value, index) {
-      return {value: value, criteria: iterator(value, index)};
+      return {
+        value: value,
+        criteria: iterator.call(context, value, index)
+      };
     }).sort(function(left, right) {
       var a = left.criteria, b = right.criteria;
       return a < b ? -1 : a > b ? 1 : 0;
