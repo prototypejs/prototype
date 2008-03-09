@@ -1,3 +1,5 @@
+* Make Element#writeAttribute handle frameborder attribute in IE. Closes #11068. [staaky, Tobie Langel]
+
 * Minor clean-up of selector.js. Closes #10844. [RQuadling]
 
 * Make String#unescapeHTML strip tags in IE. Closes #10173. [kangax]

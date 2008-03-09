@@ -1384,6 +1384,9 @@
       table.writeAttribute('cellpadding', '3')
       assertEqual('2', table.readAttribute('cellspacing'));
       assertEqual('3', table.readAttribute('cellpadding'));
+
+      var iframe = new Element('iframe', { frameborder: 0 });
+      assertIdentical(0, parseInt(iframe.readAttribute('frameborder')));
     }},
     
     testElementWriteAttributeWithCustom: function() {with(this) {
