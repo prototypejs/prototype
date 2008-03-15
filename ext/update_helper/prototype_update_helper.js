@@ -1,73 +1,26 @@
-/*  Prototype Deprecation Notifier for Prototype 1.6.0.2
- *  (c) 2008 Tobie Langel
+<%= include "update_helper.js" %>
+
+/* UpdateHelper for Prototype <%= PROTOTYPE_VERSION %> (c) 2008 Tobie Langel
+ * 
+ * UpdateHelper for Prototype is freely distributable under the same
+ * terms as Prototype (MIT-style license).
+ * For details, see the Prototype web site: http://www.prototypejs.org/
+ * 
+ * Include this file right below prototype.js. All messages
+ * will be logged to the console.
+ * 
+ * Note: You can tune the level of warning by redefining
+ * prototypeUpdateHelper.logLevel with one of the appropriate constansts
+ * (UpdateHelper.Info, UpdateHelper.Warn or UpdateHelper.Error), e.g.:
+ * 
+ *     prototypeUpdateHelper.logLevel = UpdateHelper.Warn;
  *
- *  Prototype Deprecation Notifier is freely distributable under the same
- *  terms as Prototype (MIT-style license).
- *  For details, see the Prototype web site: http://www.prototypejs.org/
- *  
- *  Include this file right below prototype.js. All warning messages
- *  will be logged to the console.
- *  
- *  Note: You can turn off deprecation messages (and log only removal and
- *  modification messages) by specifying:
- *  DeprecationNotifier.logDeprecation = false;
+ * This, for example, will prevent deprecation messages from being logged.
  * 
  *                THIS SCRIPT WORKS IN FIREFOX ONLY
  *--------------------------------------------------------------------------*/
 
-var DeprecationNotifier = {
-  logDeprecation:  true,
-  MessageTemplate: new Template('Prototype #{type} Warning: #{message}\n#{stack}'),
-  Regexp:          new RegExp("@" + window.location.protocol + ".*?\\d+\\n", "g"),
-
-  init: function(deprecatedMethods) {
-    if (!Prototype.Browser.Gecko) return;
-    deprecatedMethods.each(function(d) {
-      var condition = d.condition,
-          type      = d.type || 'deprecation',
-          message   = d.message,
-          namespace = d.namespace,
-          method    = d.methodName;
-          
-      namespace[method] = (namespace[method] || function() {}).wrap(function(proceed) {
-        var args = $A(arguments).splice(1);
-        if (!condition || condition.apply(this, args))
-          DeprecationNotifier.notify(message, type);
-        return proceed.apply(proceed, args);
-      });
-    });
-    Element.addMethods();
-  },
-  
-  notify: function(message, type) {
-    if (type == 'deprecation' && !DeprecationNotifier.logDeprecation)
-      return false;
-    this.log(this.MessageTemplate.evaluate({
-      message: message,
-      stack: this.getStack(),
-      type: type.capitalize()
-    }), type);
-    return true;
-  },
-  
-  getStack: function() {
-    try {
-      throw new Error("stack");
-    } catch(e) {
-      return e.stack.match(this.Regexp).reject(function(path) {
-        return /(prototype|unittest|deprecation)\.js/.test(path);
-      }).join("\n");
-    }
-  },
-  
-  log: function(message, type) {
-    if (type !== 'deprecation') {
-      console.error(message);
-    } else console.warn(message);
-  }
-};
-
-DeprecationNotifier.init([
+var prototypeUpdateHelper = new UpdateHelper([
   {
     methodName: 'display',
     namespace: Toggle,
@@ -79,7 +32,7 @@ DeprecationNotifier.init([
     namespace: Element.Methods,
     message: 'Passing an arbitrary number of elements to Element.show is no longer supported.\n' +
       'Use [id_1, id_2, ...].each(Element.show) or $(id_1, id_2, ...).invoke("show") instead.',
-    type: 'removal',
+    type: 'error',
     condition: function() { return arguments.length > 1 && !Object.isNumber(arguments[1]) }
   },
   
@@ -88,7 +41,7 @@ DeprecationNotifier.init([
     namespace: Element.Methods,
     message: 'Passing an arbitrary number of elements to Element.hide is no longer supported.\n' +
       'Use [id_1, id_2, ...].each(Element.hide) or $(id_1, id_2, ...).invoke("hide") instead.',
-    type: 'removal',
+    type: 'error',
     condition: function() { return arguments.length > 1 && !Object.isNumber(arguments[1]) }
   },
   
@@ -97,7 +50,7 @@ DeprecationNotifier.init([
     namespace: Element.Methods,
     message: 'Passing an arbitrary number of elements to Element.toggle is no longer supported.\n' +
       'Use [id_1, id_2, ...].each(Element.toggle) or $(id_1, id_2, ...).invoke("toggle") instead.',
-    type: 'removal',
+    type: 'error',
     condition: function() { return arguments.length > 1 && !Object.isNumber(arguments[1]) }
   },
   
@@ -106,7 +59,7 @@ DeprecationNotifier.init([
     namespace: Form.Element.Methods,
     message: 'Passing an arbitrary number of elements to Field.clear is no longer supported.\n' +
       'Use [id_1, id_2, ...].each(Form.Element.clear) or $(id_1, id_2, ...).invoke("clear") instead.',
-    type: 'removal',
+    type: 'error',
     condition: function() { return arguments.length > 1 && !Object.isNumber(arguments[1]) }
   },
   
@@ -115,7 +68,7 @@ DeprecationNotifier.init([
     namespace: Form.Element.Methods,
     message: 'Passing an arbitrary number of elements to Field.present is no longer supported.\n' +
       'Use [id_1, id_2, ...].each(Form.Element.present) or $(id_1, id_2, ...).invoke("present") instead.',
-    type: 'removal',
+    type: 'error',
     condition: function() { return arguments.length > 1 && !Object.isNumber(arguments[1]) }
   },
   
@@ -239,7 +192,7 @@ DeprecationNotifier.init([
     namespace: Element.Methods,
     message: 'Use of uncamelized style-property names is no longer supported.\n' + 
       'Use either camelized style-property names or a regular CSS string instead (see online documentation).',
-    type: 'removal',
+    type: 'error',
     condition: function(element, style) {
       return !Object.isString(style) && Object.keys(style).join('').include('-');
     }
@@ -281,7 +234,7 @@ DeprecationNotifier.init([
     namespace: Hash,
     message: 'Hash.toJSON has been removed.\n' + 
       'Use the instance method Hash#toJSON or Object.toJSON instead.',
-    type: 'removal'
+    type: 'error'
   },
   
   {
@@ -289,22 +242,22 @@ DeprecationNotifier.init([
     namespace: Hash.prototype,
     message: 'Hash#remove is no longer supported, use Hash#unset instead.\n' + 
       'Please note that Hash#unset only accepts one argument.',
-    type: 'removal'
+    type: 'error'
   },
   
   {
     methodName: 'merge',
     namespace: Hash.prototype,
-    message: 'Hash#merge is no longer destructive: it operates on a clone of the Hash instance.\n' + 
+    message: 'Hash#merge is no longer destructive and now operates on a clone of the Hash instance.\n' + 
       'If you need a destructive merge, use Hash#update instead.',
-    type: 'modification'
+    type: 'warn'
   },
   
   {
     methodName: 'unloadCache',
     namespace: Event,
     message: 'Event.unloadCache has been deprecated.',
-    type: 'removal'
+    type: 'error'
   },
   
   {
@@ -312,17 +265,13 @@ DeprecationNotifier.init([
     namespace: Class,
     message: 'The class API has been fully revised and now allows for mixins and inheritance.\n' + 
       'You can find more about it here: http://prototypejs.org/learn/class-inheritance',
-    condition: function() {
-      return !arguments.length;
-    }
+    condition: function() { return !arguments.length }
   }
 ]);
 
 // Special casing for Hash.
 
 (function() {
-  if (!Prototype.Browser.Gecko) return;
-  
   var __properties = Object.keys(Hash.prototype).concat(['_object', '__properties']);
   
   var messages = {
@@ -337,7 +286,7 @@ DeprecationNotifier.init([
       property: property,
       value: Object.inspect(value)
     });
-    DeprecationNotifier.notify(message, 'removal');
+    prototypeUpdateHelper.notify(message, 'error');
   }
   
   function defineSetters(obj, prop) {

@@ -7,7 +7,7 @@ PROTOTYPE_DIST_DIR = File.join(PROTOTYPE_ROOT, 'dist')
 PROTOTYPE_PKG_DIR  = File.join(PROTOTYPE_ROOT, 'pkg')
 PROTOTYPE_VERSION  = '1.6.0.2'
 
-task :default => [:dist, :package, :clean_package_source]
+task :default => [:dist, :dist_helper, :package, :clean_package_source]
 
 desc "Builds the distribution"
 task :dist do
@@ -17,6 +17,18 @@ task :dist do
   Dir.chdir(PROTOTYPE_SRC_DIR) do
     File.open(File.join(PROTOTYPE_DIST_DIR, 'prototype.js'), 'w+') do |dist|
       dist << Protodoc::Preprocessor.new('prototype.js')
+    end
+  end
+end
+
+desc "Builds the updating helper"
+task :dist_helper do
+  $:.unshift File.join(PROTOTYPE_ROOT, 'lib')
+  require 'protodoc'
+  
+  Dir.chdir(File.join(PROTOTYPE_ROOT, 'ext', 'update_helper')) do
+    File.open(File.join(PROTOTYPE_DIST_DIR, 'prototype_update_helper.js'), 'w+') do |dist|
+      dist << Protodoc::Preprocessor.new('prototype_update_helper.js')
     end
   end
 end
