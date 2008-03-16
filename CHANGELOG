@@ -1,3 +1,5 @@
+* Remove usage of the `with` statement from unit tests. [Tobie Langel]
+
 * Complete rewrite of the deprecation helper, now renamed UpdateHelper and useable by third-party libs. [Tobie Langel]
 
 * Make Element#writeAttribute handle frameborder attribute in IE. Closes #11068. [staaky, Tobie Langel]

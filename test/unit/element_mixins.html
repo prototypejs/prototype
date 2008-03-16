@@ -36,36 +36,36 @@ Form.Element.Methods.coffee = Prototype.K;
 Element.addMethods();
 
   new Test.Unit.Runner({
-    testInput: function() {with(this) {
-      assert($("input").present != null);
-      assert(typeof $("input").present == 'function');
-      assert($("input").select != null);
-      assertRespondsTo('present', Form.Element);
-      assertRespondsTo('present', Form.Element.Methods);
-      assertRespondsTo('coffee', $('input'));
-      assertIdentical(Prototype.K, Form.Element.coffee);
-      assertIdentical(Prototype.K, Form.Element.Methods.coffee);
-    }},
+    testInput: function() {
+      this.assert($("input").present != null);
+      this.assert(typeof $("input").present == 'function');
+      this.assert($("input").select != null);
+      this.assertRespondsTo('present', Form.Element);
+      this.assertRespondsTo('present', Form.Element.Methods);
+      this.assertRespondsTo('coffee', $('input'));
+      this.assertIdentical(Prototype.K, Form.Element.coffee);
+      this.assertIdentical(Prototype.K, Form.Element.Methods.coffee);
+    },
     
-    testForm: function() {with(this) {
-      assert($("form").reset != null);
-      assert($("form").getInputs().length == 2);
-    }},
+    testForm: function() {
+      this.assert($("form").reset != null);
+      this.assert($("form").getInputs().length == 2);
+    },
     
-    testEvent: function() {with(this) {
-      assert($("form").observe != null)
+    testEvent: function() {
+      this.assert($("form").observe != null)
       // Can't really test this one with TestUnit...
       $('form').observe("submit", function(e) { 
         alert("yeah!"); 
         Event.stop(e); 
       });
-    }},
+    },
     
-    testCollections: function() {with(this) {
-      assert($$("input").all(function(input) {
+    testCollections: function() {
+      this.assert($$("input").all(function(input) {
         return (input.focus != null);
       }));
-    }}
+    }
   });
 // ]]>
 </script>

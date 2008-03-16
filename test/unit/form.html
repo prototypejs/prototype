@@ -149,29 +149,29 @@
     
     // Make sure to set defaults in the test forms, as some browsers override this
     // with previously entered values on page reload
-    setup: function(){ with(this) {
+    setup: function(){
       $$('form').each(function(f){ f.reset() });
       // hidden value does not reset (for some reason)
       $('bigform')['tf_hidden'].value = '';
-    }},
+    },
     
-    testDollarF: function(){ with(this) {
-      assertEqual("4", $F("input_enabled"));
-    }},
+    testDollarF: function(){
+      this.assertEqual("4", $F("input_enabled"));
+    },
     
-    testFormElementEventObserver: function(){ with(this) {
+    testFormElementEventObserver: function(){
       var callbackCounter = 0;
       var observer = new Form.Element.EventObserver('input_enabled', function(){
         callbackCounter++;
       });
       
-      assertEqual(0, callbackCounter);
+      this.assertEqual(0, callbackCounter);
       $('input_enabled').value = 'boo!';
       observer.onElementEvent(); // can't test the event directly, simulating
-      assertEqual(1, callbackCounter);
-    }},
+      this.assertEqual(1, callbackCounter);
+    },
 
-    testFormElementObserver: function(){ with(this) {
+    testFormElementObserver: function(){
       var timedCounter = 0;
       // First part: regular field
       var observer = new Form.Element.Observer('input_enabled', 0.5, function() {
@@ -179,18 +179,18 @@
       });
 
       // Test it's unchanged yet
-      assertEqual(0, timedCounter);
+      this.assertEqual(0, timedCounter);
       // Test it doesn't change on first check
-      wait(550, function() {
-        assertEqual(0, timedCounter);
+      this.wait(550, function() {
+        this.assertEqual(0, timedCounter);
         // Change, test it doesn't immediately change
         $('input_enabled').value = 'yowza!';
-        assertEqual(0, timedCounter);
+        this.assertEqual(0, timedCounter);
         // Test it changes on next check, but not again on the next
-        wait(550, function() {
-          assertEqual(1, timedCounter);
-          wait(550, function() {
-            assertEqual(1, timedCounter);
+        this.wait(550, function() {
+          this.assertEqual(1, timedCounter);
+          this.wait(550, function() {
+            this.assertEqual(1, timedCounter);
             observer.stop();
           });
         });
@@ -206,27 +206,27 @@
       });
 
       // Test it's unchanged yet
-      assertEqual(0, timedCounter);
+      this.assertEqual(0, timedCounter);
       // Test it doesn't change on first check
-      wait(550, function() {
-        assertEqual(0, timedCounter);
+      this.wait(550, function() {
+        this.assertEqual(0, timedCounter);
         // Change, test it doesn't immediately change
         // NOTE: it is important that the 3rd be re-selected, for the
         // serialize form to obtain the expected value :-)
         $('multiSel1_opt3').selected = true;
-        assertEqual(0, timedCounter);
+        this.assertEqual(0, timedCounter);
         // Test it changes on next check, but not again on the next
-        wait(550, function() {
-          assertEqual(1, timedCounter);
-          wait(550, function() {
-            assertEqual(1, timedCounter);
+        this.wait(550, function() {
+          this.assertEqual(1, timedCounter);
+          this.wait(550, function() {
+            this.assertEqual(1, timedCounter);
             observer.stop();
           });
         });
       });
-    }},
+    },
     
-    testFormObserver: function(){ with(this) {
+    testFormObserver: function(){
       var timedCounter = 0;
       // should work the same way was Form.Element.Observer
       var observer = new Form.Observer('form', 0.5, function(form, value) {
@@ -234,69 +234,69 @@
       });
 
       // Test it's unchanged yet
-      assertEqual(0, timedCounter);
+      this.assertEqual(0, timedCounter);
       // Test it doesn't change on first check
-      wait(550, function() {
-        assertEqual(0, timedCounter);
+      this.wait(550, function() {
+        this.assertEqual(0, timedCounter);
         // Change, test it doesn't immediately change
         $('input_enabled').value = 'yowza!';
-        assertEqual(0, timedCounter);
+        this.assertEqual(0, timedCounter);
         // Test it changes on next check, but not again on the next
-        wait(550, function() {
-          assertEqual(1, timedCounter);
-          wait(550, function() {
-            assertEqual(1, timedCounter);
+        this.wait(550, function() {
+          this.assertEqual(1, timedCounter);
+          this.wait(550, function() {
+            this.assertEqual(1, timedCounter);
             observer.stop();
           });
         });
       });
-    }},
+    },
     
-    testFormEnabling: function(){ with(this) {
+    testFormEnabling: function(){
       var form = $('bigform')
       var input1 = $('dummy_disabled');
       var input2 = $('focus_text');
       
-      assertDisabled(input1);
-      assertEnabled(input2);
+      this.assertDisabled(input1);
+      this.assertEnabled(input2);
       
       form.disable();
-      assertDisabled(input1, input2);
+      this.assertDisabled(input1, input2);
       form.enable();
-      assertEnabled(input1, input2);
+      this.assertEnabled(input1, input2);
       input1.disable();
-      assertDisabled(input1);
+      this.assertDisabled(input1);
       
       // non-form elements:
       var fieldset = $('selects_fieldset');
       var fields = fieldset.immediateDescendants();
-      fields.each(function(select) { assertEnabled(select) });
+      fields.each(function(select) { this.assertEnabled(select) }, this);
       
       Form.disable(fieldset)
-      fields.each(function(select) { assertDisabled(select) });
+      fields.each(function(select) { this.assertDisabled(select) }, this);
       
       Form.enable(fieldset)
-      fields.each(function(select) { assertEnabled(select) });
-    }},
+      fields.each(function(select) { this.assertEnabled(select) }, this);
+    },
     
-    testFormElementEnabling: function(){ with(this) {
+    testFormElementEnabling: function(){
       var field = $('input_disabled');
       field.enable();
-      assertEnabled(field);
+      this.assertEnabled(field);
       field.disable();
-      assertDisabled(field);
+      this.assertDisabled(field);
       
       var field = $('input_enabled');
-      assertEnabled(field);
+      this.assertEnabled(field);
       field.disable();
-      assertDisabled(field);
+      this.assertDisabled(field);
       field.enable();
-      assertEnabled(field);
-    }},
+      this.assertEnabled(field);
+    },
 
     // due to the lack of a DOM hasFocus() API method,
     // we're simulating things here a little bit
-    testFormActivating: function(){ with(this) {
+    testFormActivating: function(){
       // Firefox, IE, and Safari 2+
       function getSelection(element){
         try {
@@ -311,52 +311,52 @@
       
       // Form.focusFirstElement shouldn't focus disabled elements
       var element = Form.findFirstElement('bigform');
-      assertEqual('submit', element.id);
+      this.assertEqual('submit', element.id);
       
       // Test IE doesn't select text on buttons
       Form.focusFirstElement('bigform');
-      if(document.selection) assertEqual('', getSelection(element));
+      if(document.selection) this.assertEqual('', getSelection(element));
       
       // Form.Element.activate shouldn't select text on buttons
       element = $('focus_text');
-      assertEqual('', getSelection(element));
+      this.assertEqual('', getSelection(element));
         
       // Form.Element.activate should select text on text input elements
       element.activate();
-      assertEqual('Hello', getSelection(element));
+      this.assertEqual('Hello', getSelection(element));
 
       // Form.Element.activate shouldn't raise an exception when the form or field is hidden
-      assertNothingRaised(function() {
+      this.assertNothingRaised(function() {
         $('form_focus_hidden').focusFirstElement();
       });
-    }},
+    },
     
-    testFormGetElements: function() {with(this) {
+    testFormGetElements: function() {
       var elements = Form.getElements('various'),
         names = $w('tf_selectOne tf_textarea tf_checkbox tf_selectMany tf_text tf_radio tf_hidden tf_password');
-      assertEnumEqual(names, elements.pluck('name'))
-    }},
+      this.assertEnumEqual(names, elements.pluck('name'))
+    },
     
-    testFormGetInputs: function() {with(this){
+    testFormGetInputs: function() {
       var form = $('form');
       [form.getInputs(), Form.getInputs(form)].each(function(inputs){
-        assertEqual(inputs.length, 5);
-        assert(inputs instanceof Array);
-        assert(inputs.all(function(input) { return (input.tagName == "INPUT"); }));
-      });
-    }},
+        this.assertEqual(inputs.length, 5);
+        this.assert(inputs instanceof Array);
+        this.assert(inputs.all(function(input) { return (input.tagName == "INPUT"); }));
+      }, this);
+    },
 
-    testFormFindFirstElement: function() {with(this) {
-      assertEqual($('ffe_checkbox'), $('ffe').findFirstElement());
-      assertEqual($('ffe_ti_submit'), $('ffe_ti').findFirstElement());
-      assertEqual($('ffe_ti2_checkbox'), $('ffe_ti2').findFirstElement());
-    }},
+    testFormFindFirstElement: function() {
+      this.assertEqual($('ffe_checkbox'), $('ffe').findFirstElement());
+      this.assertEqual($('ffe_ti_submit'), $('ffe_ti').findFirstElement());
+      this.assertEqual($('ffe_ti2_checkbox'), $('ffe_ti2').findFirstElement());
+    },
     
-    testFormSerialize: function() {with(this){
+    testFormSerialize: function() {
       // form is initially empty
       var form = $('bigform');
       var expected = { tf_selectOne:'', tf_textarea:'', tf_text:'', tf_hidden:'', tf_password:'' };
-      assertHashEqual(expected, Form.serialize('various', true));
+      this.assertHashEqual(expected, Form.serialize('various', true));
         
       // set up some stuff
       form['tf_selectOne'].selectedIndex = 1;
@@ -370,48 +370,48 @@
         tf_hidden:"moo%hoo&test", tf_password:'sekrit code', tf_checkbox:'on', tf_radio:'on' }
 
       // return params
-      assertHashEqual(expected, Form.serialize('various', true));
+      this.assertHashEqual(expected, Form.serialize('various', true));
       // return string
-      assertEnumEqual(Object.toQueryString(expected).split('&').sort(),
+      this.assertEnumEqual(Object.toQueryString(expected).split('&').sort(),
                       Form.serialize('various').split('&').sort());
-      assertEqual('string', typeof $('form').serialize({ hash:false }));
+      this.assertEqual('string', typeof $('form').serialize({ hash:false }));
 
       // Checks that disabled element is not included in serialized form.
       $('input_enabled').enable();
-      assertHashEqual({ val1:4, action:'blah', first_submit:'Commit it!' },
+      this.assertHashEqual({ val1:4, action:'blah', first_submit:'Commit it!' },
                       $('form').serialize(true));
 
       // should not eat empty values for duplicate names 
       $('checkbox_hack').checked = false;
       var data = Form.serialize('value_checks', true); 
-      assertEnumEqual(['', 'siamese'], data['twin']); 
-      assertEqual('0', data['checky']);
+      this.assertEnumEqual(['', 'siamese'], data['twin']); 
+      this.assertEqual('0', data['checky']);
       
       $('checkbox_hack').checked = true; 
-      assertEnumEqual($w('1 0'), Form.serialize('value_checks', true)['checky']);
+      this.assertEnumEqual($w('1 0'), Form.serialize('value_checks', true)['checky']);
 
       // all kinds of SELECT controls
       var params = Form.serialize('selects_fieldset', true);
       var expected = { 'nvm[]':['One', 'Three'], evu:'', 'evm[]':['', 'Three'] };
-      assertHashEqual(expected, params);
+      this.assertHashEqual(expected, params);
       params = Form.serialize('selects_wrapper', true);
-      assertHashEqual(Object.extend(expected, { vu:1, 'vm[]':[1, 3], nvu:'One' }), params);
+      this.assertHashEqual(Object.extend(expected, { vu:1, 'vm[]':[1, 3], nvu:'One' }), params);
 
       // explicit submit button
-      assertHashEqual({ val1:4, action:'blah', second_submit:'Delete it!' },
+      this.assertHashEqual({ val1:4, action:'blah', second_submit:'Delete it!' },
                       $('form').serialize({ submit: 'second_submit' }));
-      assertHashEqual({ val1:4, action:'blah' },
+      this.assertHashEqual({ val1:4, action:'blah' },
                       $('form').serialize({ submit: false }));
-      assertHashEqual({ val1:4, action:'blah' },
+      this.assertHashEqual({ val1:4, action:'blah' },
                       $('form').serialize({ submit: 'inexistent' }));
                       
-    }},
+    },
     
-    testFormMethodsOnExtendedElements: function() {with(this) {
+    testFormMethodsOnExtendedElements: function() {
       var form = $('form');
-      assertEqual(Form.serialize('form'), form.serialize());
-      assertEqual(Form.Element.serialize('input_enabled'), $('input_enabled').serialize());
-      assertNotEqual(form.serialize, $('input_enabled').serialize);
+      this.assertEqual(Form.serialize('form'), form.serialize());
+      this.assertEqual(Form.Element.serialize('input_enabled'), $('input_enabled').serialize());
+      this.assertNotEqual(form.serialize, $('input_enabled').serialize);
       
       Element.addMethods('INPUT',  { anInputMethod: function(input)  { return 'input'  } });
       Element.addMethods('SELECT', { aSelectMethod: function(select) { return 'select' } });
@@ -420,74 +420,73 @@
       var input = form['tf_text'], select = form['tf_selectOne'];
       input._extendedByPrototype = select._extendedByPrototype = false;
 
-      assert($(input).anInputMethod);
-      assert(!input.aSelectMethod);
-      assertEqual('input', input.anInputMethod());
+      this.assert($(input).anInputMethod);
+      this.assert(!input.aSelectMethod);
+      this.assertEqual('input', input.anInputMethod());
 
-      assert($(select).aSelectMethod);
-      assert(!select.anInputMethod);      
-      assertEqual('select', select.aSelectMethod());
-    }},
+      this.assert($(select).aSelectMethod);
+      this.assert(!select.anInputMethod);      
+      this.assertEqual('select', select.aSelectMethod());
+    },
     
-    testFormRequest: function() {with(this) {
+    testFormRequest: function() {
       request = $("form").request();
-      assert($("form").hasAttribute("method"));
-      assert(request.url.include("fixtures/empty.js?val1=4"));
-      assertEqual("get", request.method);
+      this.assert($("form").hasAttribute("method"));
+      this.assert(request.url.include("fixtures/empty.js?val1=4"));
+      this.assertEqual("get", request.method);
       
       request = $("form").request({ method: "put", parameters: {val2: "hello"} });
-      assert(request.url.endsWith("fixtures/empty.js"));
-      assertEqual(4, request.options.parameters['val1']);
-      assertEqual('hello', request.options.parameters['val2']);
-      assertEqual("post", request.method);
-      assertEqual("put", request.parameters['_method']);
+      this.assert(request.url.endsWith("fixtures/empty.js"));
+      this.assertEqual(4, request.options.parameters['val1']);
+      this.assertEqual('hello', request.options.parameters['val2']);
+      this.assertEqual("post", request.method);
+      this.assertEqual("put", request.parameters['_method']);
 
       // with empty action attribute
       request = $("ffe").request({ method: 'post' });
-      assert(request.url.include("unit/form.html"),
+      this.assert(request.url.include("unit/form.html"),
         'wrong default action for form element with empty action attribute');
-    }},
+    },
     
-    testFormElementMethodsChaining: function(){ with(this) {
+    testFormElementMethodsChaining: function(){
       var methods = $w('clear activate disable enable'),
         formElements = $('form').getElements();
       methods.each(function(method){
         formElements.each(function(element){
           var returned = element[method]();
-          assertIdentical(element, returned);
-        });
-      });
-    }},
+          this.assertIdentical(element, returned);
+        }, this);
+      }, this);
+    },
 
-    testSetValue: function(){ with(this) {
+    testSetValue: function(){
       // text input
       var input = $('input_enabled'), oldValue = input.getValue();
-      assertEqual(input, input.setValue('foo'), 'setValue chaining is broken');
-      assertEqual('foo', input.getValue(), 'value improperly set');
+      this.assertEqual(input, input.setValue('foo'), 'setValue chaining is broken');
+      this.assertEqual('foo', input.getValue(), 'value improperly set');
       input.setValue(oldValue);
-      assertEqual(oldValue, input.getValue(), 'value improperly restored to original');
+      this.assertEqual(oldValue, input.getValue(), 'value improperly restored to original');
 
       // checkbox
       input = $('checkbox_hack');
       input.setValue(false);
-      assertEqual(null, input.getValue(), 'checkbox should be unchecked');
+      this.assertEqual(null, input.getValue(), 'checkbox should be unchecked');
       input.setValue(true);
-      assertEqual("1", input.getValue(), 'checkbox should be checked');
+      this.assertEqual("1", input.getValue(), 'checkbox should be checked');
       // selectbox
       input = $('bigform')['vu'];
       input.setValue('3');
-      assertEqual('3', input.getValue(), 'single select option improperly set');
+      this.assertEqual('3', input.getValue(), 'single select option improperly set');
       input.setValue('1');
-      assertEqual('1', input.getValue());
+      this.assertEqual('1', input.getValue());
       // multiple select
       input = $('bigform')['vm[]'];
       input.setValue(['2', '3']);
-      assertEnumEqual(['2', '3'], input.getValue(),
+      this.assertEnumEqual(['2', '3'], input.getValue(),
         'multiple select options improperly set');
       input.setValue(['1', '3']);
-      assertEnumEqual(['1', '3'], input.getValue());
-    }}
-    
+      this.assertEnumEqual(['1', '3'], input.getValue());
+    }
   });
 // ]]>
 </script>
