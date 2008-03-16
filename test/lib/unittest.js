@@ -155,12 +155,12 @@ Test.Unit.Runner = Class.create({
     }, arguments[1] || {});
     
     options.resultsURL = this.queryParams.resultsURL;
-    options.testLog = $(options.testLog);
     
     this.tests = this.getTests(testcases);
     this.currentTest = 0;
-    this.logger = new Test.Unit.Logger(options.testLog);
+
     Event.observe(window, "load", function() {
+      this.logger = new Test.Unit.Logger($(options.testLog));
       this.runTests.bind(this).delay(0.1);
     }.bind(this));
   },

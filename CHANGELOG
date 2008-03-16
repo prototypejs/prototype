@@ -1,3 +1,7 @@
+* Instanciate Test.Unit.Logger on window load. [Tobie Langel]
+
+* Unit tests clean-up. [Tobie Langel]
+
 * Refactor String#escapeHTML to avoid using the `with` statement. [Tobie Langel]
 
 * Remove usage of the `with` statement from unit tests. [Tobie Langel]
