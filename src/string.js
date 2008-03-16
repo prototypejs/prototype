@@ -228,7 +228,7 @@ Object.extend(String.prototype.escapeHTML, {
   text: document.createTextNode('')
 });
 
-with (String.prototype.escapeHTML) div.appendChild(text);
+String.prototype.escapeHTML.div.appendChild(String.prototype.escapeHTML.text);
 
 var Template = Class.create({
   initialize: function(template, pattern) {
