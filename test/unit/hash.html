@@ -172,6 +172,7 @@
       this.assertEqual("color=r&color=&color=g&color&color=0", $H(Fixtures.multiple_nil).toQueryString());
       this.assertEqual("color=&color",       $H(Fixtures.multiple_all_nil).toQueryString());
       this.assertEqual("",                   $H(Fixtures.multiple_empty).toQueryString());
+      this.assertEqual("",                   $H({foo: {}, bar: {}}).toQueryString());
       this.assertEqual("stuff%5B%5D=%24&stuff%5B%5D=a&stuff%5B%5D=%3B", $H(Fixtures.multiple_special).toQueryString());
       this.assertHashEqual(Fixtures.multiple_special, $H(Fixtures.multiple_special).toQueryString().toQueryParams());
       this.assertIdentical(Object.toQueryString, Hash.toQueryString);
