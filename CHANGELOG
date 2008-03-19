@@ -1,3 +1,5 @@
+* Avoid re-extending element in Element#getDimensions. [kangax]
+
 * Prevent Hash#toQueryString from serializing objets. [kangax, Tobie Langel]
 
 * Fix Event#pointer in IE standard mode. Closes #9920. [kangax, Tobie Langel]

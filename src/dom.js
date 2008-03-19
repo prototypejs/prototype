@@ -434,7 +434,7 @@ Element.Methods = {
   
   getDimensions: function(element) {
     element = $(element);
-    var display = $(element).getStyle('display');
+    var display = element.getStyle('display');
     if (display != 'none' && display != null) // Safari bug
       return {width: element.offsetWidth, height: element.offsetHeight};
     
