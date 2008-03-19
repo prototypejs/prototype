@@ -71,11 +71,14 @@ Event.Methods = (function() {
     },
 
     pointer: function(event) {
+      var docElement = document.documentElement, body = document.body;
       return {
         x: event.pageX || (event.clientX + 
-          (document.documentElement.scrollLeft || document.body.scrollLeft)),
+          (docElement.scrollLeft || body.scrollLeft) -
+          (docElement.clientLeft || 0)),
         y: event.pageY || (event.clientY + 
-          (document.documentElement.scrollTop || document.body.scrollTop))
+          (docElement.scrollTop || body.scrollTop) -
+          (docElement.clientTop || 0))
       };
     },
 

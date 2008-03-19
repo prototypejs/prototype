@@ -1,3 +1,5 @@
+* Fix Event#pointer in IE standard mode. Closes #9920. [kangax, Tobie Langel]
+
 * Instanciate Test.Unit.Logger on window load. [Tobie Langel]
 
 * Unit tests clean-up. [Tobie Langel]
