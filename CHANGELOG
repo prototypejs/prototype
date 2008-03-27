@@ -1,3 +1,5 @@
+* Integrate support for the W3C Selectors API into the Selector class. Will now use the API when possible (browser supports the API *and* recognizes the given selector). Means minor changes to the semantics of :enabled, :disabled, and :empty in order to comply with CSS spec.
+
 * Avoid re-extending element in Element#getDimensions. [kangax]
 
 * Prevent Hash#toQueryString from serializing objets. [kangax, Tobie Langel]

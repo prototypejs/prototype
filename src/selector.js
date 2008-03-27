@@ -5,7 +5,17 @@
 var Selector = Class.create({
   initialize: function(expression) {
     this.expression = expression.strip();
-    this.compileMatcher();    
+    
+    if (this.shouldUseSelectorsAPI()) {
+      this.mode = 'selectorsAPI';
+    } else if (this.shouldUseXPath()) {
+      this.mode = 'xpath';
+      this.compileXPathMatcher();
+    } else {
+      this.mode = "normal";
+      this.compileMatcher();
+    }
+    
   },
   
   shouldUseXPath: function() {
@@ -20,16 +30,30 @@ var Selector = Class.create({
     
     // XPath can't do namespaced attributes, nor can it read
     // the "checked" property from DOM nodes
-    if ((/(\[[\w-]*?:|:checked)/).test(this.expression))
+    if ((/(\[[\w-]*?:|:checked)/).test(e))
       return false;
 
     return true;
   },
   
-  compileMatcher: function() {
-    if (this.shouldUseXPath())
-      return this.compileXPathMatcher();
+  shouldUseSelectorsAPI: function() {
+    if (!Prototype.BrowserFeatures.SelectorsAPI) return false;
     
+    if (!Selector._div) Selector._div = new Element('div');
+
+    // Make sure the browser treats the selector as valid. Test on an 
+    // isolated element to minimize cost of this check.
+    
+    try {
+      Selector._div.querySelector(this.expression);
+    } catch(e) {
+      return false;
+    }
+    
+    return true;    
+  },
+  
+  compileMatcher: function() {
     var e = this.expression, ps = Selector.patterns, h = Selector.handlers, 
         c = Selector.criteria, le, p, m;
 
@@ -86,8 +110,16 @@ var Selector = Class.create({
   
   findElements: function(root) {
     root = root || document;
-    if (this.xpath) return document._getElementsByXPath(this.xpath, root);
-    return this.matcher(root);
+    var results;
+
+    switch (this.mode) {
+      case 'selectorsAPI':
+        return $A(root.querySelectorAll(this.expression));
+      case 'xpath':
+        return document._getElementsByXPath(this.xpath, root);
+      default:
+       return this.matcher(root);
+    }
   },
   
   match: function(element) {
@@ -178,10 +210,10 @@ Object.extend(Selector, {
       'first-child': '[not(preceding-sibling::*)]',
       'last-child':  '[not(following-sibling::*)]',
       'only-child':  '[not(preceding-sibling::* or following-sibling::*)]',
-      'empty':       "[count(*) = 0 and (count(text()) = 0 or translate(text(), ' \t\r\n', '') = '')]",
+      'empty':       "[count(*) = 0 and (count(text()) = 0)]",
       'checked':     "[@checked]",
-      'disabled':    "[@disabled]",
-      'enabled':     "[not(@disabled)]",
+      'disabled':    "[(@disabled) and (@type!='hidden')]",
+      'enabled':     "[not(@disabled) and (@type!='hidden')]",
       'not': function(m) {
         var e = m[6], p = Selector.patterns,
             x = Selector.xpath, le, v;
@@ -575,7 +607,7 @@ Object.extend(Selector, {
     'empty': function(nodes, value, root) {
       for (var i = 0, results = [], node; node = nodes[i]; i++) {
         // IE treats comments as element nodes
-        if (node.tagName == '!' || (node.firstChild && !node.innerHTML.match(/^\s*$/))) continue;
+        if (node.tagName == '!' || node.firstChild) continue;
         results.push(node);
       }
       return results;
@@ -593,7 +625,8 @@ Object.extend(Selector, {
     
     'enabled': function(nodes, value, root) {
       for (var i = 0, results = [], node; node = nodes[i]; i++)
-        if (!node.disabled) results.push(node);
+        if (!node.disabled && (!node.type || node.type !== 'hidden'))
+          results.push(node);
       return results;
     },
     
