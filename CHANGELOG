@@ -1,3 +1,5 @@
+* Prevent exception when using Selector to search for an attribute that is not present. [gryn, Andrew Dupont]
+
 * Fix issues where Firefox improperly returns the wrong node from a call to Event.element. Also fixes possible exception in Event.element in IE. [jdalton, Andrew Dupont]
 
 * Fix issue where Safari 3 deletes custom properties from the document object when the page is returned to via the back button. [mzsanford, kangax, Andrew Dupont]
