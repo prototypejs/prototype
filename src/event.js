@@ -188,10 +188,20 @@ Object.extend(Event, (function() {
         cache[id][eventName] = null;
   }
   
+  
+  // Internet Explorer needs to remove event handlers on page unload
+  // in order to avoid memory leaks.
   if (window.attachEvent) {
     window.attachEvent("onunload", destroyCache);
   }
   
+  // Safari has a dummy event handler on page unload so that it won't
+  // use its bfcache. Safari <= 3.1 has an issue with restoring the "document"
+  // object when page is returned to via the back button using its bfcache.
+  if (Prototype.Browser.WebKit) {    
+    window.addEventListener('unload', Prototype.emptyFunction, false);
+  }
+    
   return {
     observe: function(element, eventName, handler) {
       element = $(element);
