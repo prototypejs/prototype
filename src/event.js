@@ -59,8 +59,23 @@ Event.Methods = (function() {
     isRightClick:  function(event) { return isButton(event, 2) },
     
     element: function(event) {
-      var node = Event.extend(event).target;
-      return Element.extend(node.nodeType == Node.TEXT_NODE ? node.parentNode : node);
+      event = Event.extend(event);
+      
+      var node = eventTarget, type = event.type;
+      
+      if (event.currentTarget) {
+        // Firefox screws up the "click" event when moving between radio buttons
+        // via arrow keys. It also screws up the "load" and "error" events on images,
+        // reporting the document as the target instead of the original image.
+        var currentTarget = event.currentTarget;
+        var tagName = currentTarget.tagName.toUpperCase();
+        if (['load', 'error'].include(type) ||
+         (tagName === 'INPUT' && currentTarget.type === 'radio' && type === 'click'))
+          node = currentTarget;
+      }
+      
+      return Element.extend(node && node.nodeType == Node.TEXT_NODE ?
+       node.parentNode : node);
     },
 
     findElement: function(event, expression) {
@@ -188,10 +203,20 @@ Object.extend(Event, (function() {
         cache[id][eventName] = null;
   }
   
+  
+  // Internet Explorer needs to remove event handlers on page unload
+  // in order to avoid memory leaks.
   if (window.attachEvent) {
     window.attachEvent("onunload", destroyCache);
   }
   
+  // Safari has a dummy event handler on page unload so that it won't
+  // use its bfcache. Safari <= 3.1 has an issue with restoring the "document"
+  // object when page is returned to via the back button using its bfcache.
+  if (Prototype.Browser.WebKit) {    
+    window.addEventListener('unload', Prototype.emptyFunction, false);
+  }
+    
   return {
     observe: function(element, eventName, handler) {
       element = $(element);
