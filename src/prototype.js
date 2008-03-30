@@ -13,6 +13,7 @@ var Prototype = {
 
   BrowserFeatures: {
     XPath: !!document.evaluate,
+    SelectorsAPI: !!document.querySelector,
     ElementExtensions: !!window.HTMLElement,
     SpecificElementExtensions: 
       document.createElement('div').__proto__ &&
