@@ -113,11 +113,11 @@ var Selector = Class.create({
     
     switch (this.mode) {
       case 'selectorsAPI':
-        // querySelectorAll queries document-wide, then filters to children
+        // querySelectorAll queries document-wide, then filters to descendants
         // of the context element. That's not what we want.
         // Add an explicit context to the selector if necessary.
         if (root !== document) {
-          var oldId = root.id, id = $(root.identify());
+          var oldId = root.id, id = $(root).identify();
           e = "#" + id + " " + e;
         }
 
