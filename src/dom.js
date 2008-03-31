@@ -363,24 +363,16 @@ Element.Methods = {
   
   descendantOf: function(element, ancestor) {
     element = $(element), ancestor = $(ancestor);
-    var originalAncestor = ancestor;
 
     if (element.compareDocumentPosition)
       return (element.compareDocumentPosition(ancestor) & 8) === 8;
       
-    if (element.sourceIndex && !Prototype.Browser.Opera) {
-      var e = element.sourceIndex, a = ancestor.sourceIndex,
-       nextAncestor = ancestor.nextSibling;
-      if (!nextAncestor) {
-        do { ancestor = ancestor.parentNode; }
-        while (!(nextAncestor = ancestor.nextSibling) && ancestor.parentNode);
-      }
-      if (nextAncestor && nextAncestor.sourceIndex)
-       return (e > a && e < nextAncestor.sourceIndex);
-    }
+    if (ancestor.contains)
+      return ancestor.contains(element);
     
     while (element = element.parentNode)
-      if (element == originalAncestor) return true;
+      if (element == ancestor) return true;
+      
     return false;
   },
   
