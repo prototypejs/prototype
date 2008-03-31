@@ -188,7 +188,7 @@
     },
     
     testSelectorWithTagNameAndNegatedAttributeValue: function() {
-      this.assertEnumEqual([], $$('a[href!=#]'));
+      this.assertEnumEqual([], $$('a[href!="#"]'));
     },
 
     testSelectorWithBracketAttributeValue: function() {
@@ -461,6 +461,13 @@
         Selector.matchElements($('counted_container').descendants(), 'div'), 'div.is_counted', 
         'div.is_counted'
       );
+    },
+    
+    testElementDown: function() {
+      var a = $('dupL4'); 
+      var b = $('dupContainer').down('#dupL4');
+      
+      this.assertEqual(a, b);
     }
   });
   

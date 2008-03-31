@@ -117,11 +117,13 @@ Test.Unit.Logger = Class.create({
   },
   
   getLastLogLine: function() {
+    //return this.element.descendants('tr').last();
     var trs = this.element.getElementsByTagName('tr');
     return $(trs[trs.length - 1]);
   },
   
   getMessageCell: function() {
+    return this.getLastLogLine().down('td', 2);
     var tds = this.getLastLogLine().getElementsByTagName('td');
     return $(tds[2]);
   },

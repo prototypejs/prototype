@@ -42,8 +42,7 @@ var Selector = Class.create({
     if (!Selector._div) Selector._div = new Element('div');
 
     // Make sure the browser treats the selector as valid. Test on an 
-    // isolated element to minimize cost of this check.
-    
+    // isolated element to minimize cost of this check.    
     try {
       Selector._div.querySelector(this.expression);
     } catch(e) {
@@ -110,11 +109,22 @@ var Selector = Class.create({
   
   findElements: function(root) {
     root = root || document;
-    var results;
-
+    var e = this.expression, results;
+    
     switch (this.mode) {
       case 'selectorsAPI':
-        return $A(root.querySelectorAll(this.expression));
+        // querySelectorAll queries document-wide, then filters to children
+        // of the context element. That's not what we want.
+        // Add an explicit context to the selector if necessary.
+        if (root !== document) {
+          var oldId = root.id, id = $(root.identify());
+          e = "#" + id + " " + e;
+        }
+
+        results = $A(root.querySelectorAll(e)).map(Element.extend);
+        root.id = oldId;
+
+        return results;
       case 'xpath':
         return document._getElementsByXPath(this.xpath, root);
       default:
@@ -644,6 +654,7 @@ Object.extend(Selector, {
   },
     
   operators: {
+    '=':  function(nv, v) { return nv == v; },
     '^=': function(nv, v) { return nv == v || nv && nv.startsWith(v); },
     '$=': function(nv, v) { return nv == v || nv && nv.endsWith(v); },
     '*=': function(nv, v) { return nv == v || nv && nv.include(v); },
