@@ -1,3 +1,5 @@
+* Fix issue where Safari improperly reports an element as a descendant of itself.
+
 * Greatly simplify IE's implementation of Element#descendantOf.
 
 * Prevent exception when using Selector to search for an attribute that is not present. [gryn, Andrew Dupont]

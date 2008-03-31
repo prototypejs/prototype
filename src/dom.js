@@ -368,7 +368,7 @@ Element.Methods = {
       return (element.compareDocumentPosition(ancestor) & 8) === 8;
       
     if (ancestor.contains)
-      return ancestor.contains(element);
+      return ancestor.contains(element) && ancestor !== element;
     
     while (element = element.parentNode)
       if (element == ancestor) return true;
