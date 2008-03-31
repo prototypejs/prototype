@@ -86,15 +86,17 @@ Test.Unit.Logger = Class.create({
   initialize: function(element) {
     this.element = $(element);
     if (this.element) this._createLogTable();
+    this.tbody = $(this.element.getElementsByTagName('tbody')[0]);
   },
   
   start: function(testName) {
     if (!this.element) return;
-    this.element.down('tbody').insert('<tr><td>' + testName + '</td><td></td><td></td></tr>');
+    this.tbody.insert('<tr><td>' + testName + '</td><td></td><td></td></tr>');
   },
   
   setStatus: function(status) {
-    this.getLastLogLine().addClassName(status).down('td', 1).update(status);
+    this.getLastLogLine().addClassName(status);
+    $(this.getLastLogLine().getElementsByTagName('td')[1]).update(status);
   },
   
   finish: function(status, summary) {
@@ -110,15 +112,18 @@ Test.Unit.Logger = Class.create({
   
   summary: function(summary) {
     if (!this.element) return;
-    this.element.down('div').update(this._toHTML(summary));
+    var div = $(this.element.getElementsByTagName('div')[0]);
+    div.update(this._toHTML(summary));
   },
   
   getLastLogLine: function() {
-    return this.element.select('tr').last()
+    var trs = this.element.getElementsByTagName('tr');
+    return $(trs[trs.length - 1]);
   },
   
   getMessageCell: function() {
-    return this.getLastLogLine().down('td', 2);
+    var tds = this.getLastLogLine().getElementsByTagName('td');
+    return $(tds[2]);
   },
   
   _createLogTable: function() {
@@ -144,7 +149,7 @@ Test.Unit.Logger = Class.create({
   },
   
   _toHTML: function(txt) {
-    return txt.escapeHTML().replace(/\n/g,"<br/>");
+    return txt.escapeHTML().replace(/\n/g,"<br />");
   }
 });
 

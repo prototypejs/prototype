@@ -167,8 +167,8 @@
     },
     
     testSelectorWithTagNameAndWhitespaceTokenizedAttributeValue: function() {
-      this.assertEnumEqual($('link_1', 'link_2'), $$('a[class~="internal"]'));
-      this.assertEnumEqual($('link_1', 'link_2'), $$('a[class~=internal]'));
+      this.assertEnumEqual($('link_1', 'link_2'), $$('a[class~="internal"]'), "a[class~=\"internal\"]");
+      this.assertEnumEqual($('link_1', 'link_2'), $$('a[class~=internal]'), "a[class~=internal]");
     },
     
     testSelectorWithAttributeAndNoTagName: function() {
@@ -199,12 +199,14 @@
     },
     
     test$$WithNestedAttributeSelectors: function() {
-      this.assertEnumEqual([$('strong')], $$('div[style] p[id] strong'));
+      this.assertEnumEqual([$('strong')], $$('div[style] p[id] strong'), 'div[style] p[id] strong');
     },
     
     testSelectorWithMultipleConditions: function() {
-      this.assertEnumEqual([$('link_3')], $$('a[class~=external][href="#"]'));
-      this.assertEnumEqual([], $$('a[class~=external][href!="#"]'));
+      this.assertEnumEqual([$('link_3')], $$('a[class~=external][href="#"]'),
+       'a[class~=external][href="#"]');
+      this.assertEnumEqual([], $$('a[class~=external][href!="#"]'),
+       'a[class~=external][href!="#"]');
     },
     
     testSelectorMatchElements: function() {
@@ -393,7 +395,8 @@
     
     testSelectorWithEmpty: function() {
       $('level3_1').innerHTML = "";
-      this.assertEnumEqual($('level3_1', 'level3_2', 'level2_3'), $$('#level1 *:empty'));
+      this.assertEnumEqual($('level3_1', 'level3_2', 'level2_3'),
+       $$('#level1 *:empty'), '#level1 *:empty');
       this.assertEnumEqual([], $$('#level_only_child:empty'), 'newlines count as content!');
     },    
     
