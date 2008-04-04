@@ -61,7 +61,7 @@ Event.Methods = (function() {
     element: function(event) {
       event = Event.extend(event);
       
-      var node = eventTarget, type = event.type;
+      var node = event.target, type = event.type;
       
       if (event.currentTarget) {
         // Firefox screws up the "click" event when moving between radio buttons
