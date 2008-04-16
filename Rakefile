@@ -46,7 +46,7 @@ Rake::PackageTask.new('prototype', PROTOTYPE_VERSION) do |package|
 end
 
 desc "Builds the distribution, runs the JavaScript unit tests and collects their results."
-task :test => [:dist, :test_units]
+task :test => [:build_tests, :dist, :test_units]
 
 require 'test/lib/jstest'
 desc "Runs all the JavaScript unit tests and collects the results"
@@ -58,9 +58,9 @@ JavaScriptTestTask.new(:test_units) do |t|
   t.mount("/dist")
   t.mount("/test")
   
-  Dir["test/unit/*.html"].sort.each do |test_file|
+  Dir["test/unit/tmp/*_test.html"].sort.each do |test_file|
     tests = testcases ? { :url => "/#{test_file}", :testcases => testcases } : "/#{test_file}"
-    test_filename = test_file[/.*\/(.+?)\.html/, 1]
+    test_filename = test_file[/.*\/(.+?)_test\.html/, 1]
     t.run(tests) unless tests_to_run && !tests_to_run.include?(test_filename)
   end
   
@@ -69,6 +69,8 @@ JavaScriptTestTask.new(:test_units) do |t|
   end
 end
 
-task :clean_package_source do
-  rm_rf File.join(PROTOTYPE_PKG_DIR, "prototype-#{PROTOTYPE_VERSION}")
+task :build_tests do
+  Dir["test/unit/*_test.js"].each do |test_file|
+    TestBuilder.new(test_file).render
+  end
 end

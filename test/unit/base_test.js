@@ -1,31 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <title>Prototype Unit test file</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <script src="../../dist/prototype.js" type="text/javascript"></script>
-  <script src="../lib/unittest.js" type="text/javascript"></script>
-  <link rel="stylesheet" href="../test.css" type="text/css" />
-</head>
-<body>
-<h1>Prototype Unit test file</h1>
-<p>
-  Test of utility functions in base.js
-</p>
-
-<!-- Log output -->
-<div id="testlog"> </div>
-<div id="test"></div>
-<ul id="list">
-  <li></li>
-  <li></li>
-  <li></li>
-</ul>
-<!-- Tests follow -->
-<script type="text/javascript" language="javascript" charset="utf-8">
-// <![CDATA[
-  var Person = function(name){
+var Person = function(name){
       this.name = name;
   };
   
@@ -628,8 +601,3 @@
       this.assertEqual("valueOf", new Foo().valueOf());
     }
   });
-
-// ]]>
-</script>
-</body>
-</html>

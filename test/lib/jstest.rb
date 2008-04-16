@@ -3,6 +3,7 @@ require 'thread'
 require 'webrick'
 require 'fileutils'
 include FileUtils
+require 'erb'
 
 class Browser
   def supported?; true; end
@@ -378,5 +379,40 @@ class JavaScriptTestTask < ::Rake::TaskLib
       end
 
     @browsers<<browser
+  end
+end
+
+class TestBuilder
+  UNITTEST_DIR       = File.expand_path('test')
+  TEMPLATE           = File.join(UNITTEST_DIR, 'lib', 'template.erb')
+  FIXTURES_EXTENSION = "html"
+  FIXTURES_DIR       = File.join(UNITTEST_DIR, 'unit', 'fixtures')
+  
+  def initialize(filename)
+    @filename          = filename
+    @js_filename       = File.basename(@filename)
+    @basename          = @js_filename.sub("_test.js", "")
+    @fixtures_filename = "#{@basename}.#{FIXTURES_EXTENSION}"
+    @title             = @basename.gsub("_", " ").strip.capitalize
+  end
+  
+  def find_fixtures
+    @fixtures = ""
+    file = File.join(FIXTURES_DIR, @fixtures_filename)
+    if File.exists?(file)
+      File.open(file).each { |line| @fixtures << line }
+    end
+  end
+  
+  def render
+    find_fixtures
+    File.open(destination, "w+") do |file|
+      file << ERB.new(IO.read(TEMPLATE), nil, "%").result(binding)
+    end
+  end
+  
+  def destination
+    basename = File.basename(@filename, ".js")
+    File.join(UNITTEST_DIR, 'unit', 'tmp', "#{basename}.html")
   end
 end
