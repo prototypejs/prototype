@@ -1,4 +1,3 @@
-var testVar = 'to be updated', testVar2 = '';
 var getInnerHTML = function(id) {
   return $(id).innerHTML.toString().toLowerCase().gsub(/[\r\n\t]/, '');
 };
@@ -7,23 +6,6 @@ var createParagraph = function(text) {
   p.appendChild(document.createTextNode(text));
   return p;
 }
-Element.addMethods({
-  hashBrowns: function(element) { return 'hash browns'; }
-});
-
-Element.addMethods("LI", {
-  pancakes: function(element) { return "pancakes"; }
-});
-
-Element.addMethods("DIV", {
-  waffles: function(element) { return "waffles"; }
-});
-
-Element.addMethods($w("li div"), {
-  orangeJuice: function(element) { return "orange juice"; }
-});
-
-var documentViewportProperties;
 
 new Test.Unit.Runner({
   setup: function() {

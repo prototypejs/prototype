@@ -1,6 +1,3 @@
-Form.Element.Methods.coffee = Prototype.K;
-Element.addMethods();
-
 new Test.Unit.Runner({
   testInput: function() {
     this.assert($("input").present != null);
