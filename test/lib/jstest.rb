@@ -305,9 +305,9 @@ class JavaScriptTestTask < ::Rake::TaskLib
           
           @tests.each do |test|
             browser.visit(get_url(test))
-            results = TestResults.new(@queue.pop.query)
+            results = TestResults.new(@queue.pop.query, test[:url])
             print results
-            test_suite_results.add(results, test[:url])
+            test_suite_results << results
           end
           
           print "\nFinished in #{Time.now - t0} seconds."
@@ -365,12 +365,13 @@ class JavaScriptTestTask < ::Rake::TaskLib
 end
 
 class TestResults
-  attr_reader :tests, :assertions, :failures, :errors
-  def initialize(query)
+  attr_reader :tests, :assertions, :failures, :errors, :filename
+  def initialize(query, filename)
     @tests      = query['tests'].to_i
     @assertions = query['assertions'].to_i
     @failures   = query['failures'].to_i
     @errors     = query['errors'].to_i
+    @filename   = filename
   end
   
   def error?
@@ -398,13 +399,13 @@ class TestSuiteResults
     @failure_files = []
   end
   
-  def add(result, file)
+  def <<(result)
     @tests      += result.tests
     @assertions += result.assertions
     @failures   += result.failures
     @errors     += result.errors
-    @error_files.push(file)   if result.error?
-    @failure_files.push(file) if result.failure?
+    @error_files.push(result.filename)   if result.error?
+    @failure_files.push(result.filename) if result.failure?
   end
   
   def error?
