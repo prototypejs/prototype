@@ -433,14 +433,11 @@ class TestBuilder
   TEMPLATE           = File.join(UNITTEST_DIR, 'lib', 'template.erb')
   FIXTURES_DIR       = File.join(UNITTEST_DIR, 'unit', 'fixtures')
   
-  def initialize(filename)
+  def initialize(filename, template = TEMPLATE)
     @filename          = filename
+    @template          = template
     @js_filename       = File.basename(@filename)
     @basename          = @js_filename.sub("_test.js", "")
-    @title             = @basename.gsub("_", " ").strip.capitalize
-    @html_fixtures     = html_fixtures
-    @js_fixtures_filename  = external_fixtures("js")
-    @css_fixtures_filename = external_fixtures("css")
   end
   
   def html_fixtures
@@ -450,14 +447,19 @@ class TestBuilder
     content
   end
   
-  def external_fixtures(type)
-    filename = "#{@basename}.#{type}"
+  def external_fixtures(extension)
+    filename = "#{@basename}.#{extension}"
     File.exists?(File.join(FIXTURES_DIR, filename)) ? filename : nil
   end
   
   def render
+    @title                 = @basename.gsub("_", " ").strip.capitalize
+    @html_fixtures         = html_fixtures
+    @js_fixtures_filename  = external_fixtures("js")
+    @css_fixtures_filename = external_fixtures("css")
+    
     File.open(destination, "w+") do |file|
-      file << ERB.new(IO.read(TEMPLATE), nil, "%").result(binding)
+      file << ERB.new(IO.read(@template), nil, "%").result(binding)
     end
   end
   
