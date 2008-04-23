@@ -429,9 +429,10 @@ class TestSuiteResults
 end
 
 class TestBuilder
-  UNITTEST_DIR       = File.expand_path('test')
-  TEMPLATE           = File.join(UNITTEST_DIR, 'lib', 'template.erb')
-  FIXTURES_DIR       = File.join(UNITTEST_DIR, 'unit', 'fixtures')
+  UNITTEST_DIR = File.expand_path('test')
+  FIXTURES_DIR = File.join(UNITTEST_DIR, 'unit', 'fixtures')
+  TMP_DIR      = File.join(UNITTEST_DIR, 'unit', 'tmp')
+  TEMPLATE     = File.join(UNITTEST_DIR, 'lib', 'template.erb')
   
   def initialize(filename, template = TEMPLATE)
     @filename          = filename
@@ -465,6 +466,6 @@ class TestBuilder
   
   def destination
     filename = File.basename(@filename, ".js")
-    File.join(UNITTEST_DIR, 'unit', 'tmp', "#{filename}.html")
+    File.join(TMP_DIR, "#{filename}.html")
   end
 end
