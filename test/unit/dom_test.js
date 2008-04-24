@@ -444,9 +444,11 @@ new Test.Unit.Runner({
   testElementIdentify: function() {
     var parent = $('identification');
     this.assertEqual(parent.down().identify(), 'predefined_id');
-    this.assertEqual(parent.down(1).identify(), 'anonymous_element_1');
-    this.assertEqual(parent.down(2).identify(), 'anonymous_element_2');
-    this.assertEqual(parent.down(3).identify(), 'anonymous_element_4');
+    this.assert(parent.down(1).identify().startsWith('anonymous_element_'));
+    this.assert(parent.down(2).identify().startsWith('anonymous_element_'));
+    this.assert(parent.down(3).identify().startsWith('anonymous_element_'));
+    
+    this.assert(parent.down(3).id !== parent.down(2).id);
   },
      
   testElementClassNameMethod: function() {
