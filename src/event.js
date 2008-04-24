@@ -86,7 +86,8 @@ Event.Methods = (function() {
     },
 
     pointer: function(event) {
-      var docElement = document.documentElement, body = document.body;
+      var docElement = document.documentElement,
+      body = document.body || { scrollLeft: 0, scrollTop: 0 };
       return {
         x: event.pageX || (event.clientX + 
           (docElement.scrollLeft || body.scrollLeft) -
