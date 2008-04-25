@@ -44,7 +44,7 @@ From the root Prototype directory,
 == Contributing to Prototype
 
 Check out the Prototype source with 
-  git clone git://github.com/sstephenson/prototype.git
+  $ git clone git://github.com/sstephenson/prototype.git
 
 Find out how to contribute:
   http://prototypejs.org/contribute
