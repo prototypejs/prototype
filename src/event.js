@@ -63,7 +63,7 @@ Event.Methods = (function() {
       
       var node = event.target, type = event.type;
       
-      if (event.currentTarget) {
+      if (event.currentTarget && event.currentTarget.tagName) {
         // Firefox screws up the "click" event when moving between radio buttons
         // via arrow keys. It also screws up the "load" and "error" events on images,
         // reporting the document as the target instead of the original image.

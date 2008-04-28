@@ -1,3 +1,5 @@
+* Fix Event#element accessing inexistent tagName property (e.g. when element is a document). (kangax)
+
 * Amended failing Element#identify test.
 
 * Refactor unit tests. Unit tests are now dynamically generated from a JavaScript test file and optional HTML, JS and CSS fixtures. [Tobie Langel]
