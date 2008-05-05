@@ -7,8 +7,8 @@ Object.extend(Number.prototype, {
     return this + 1;
   },
   
-  times: function(iterator) {
-    $R(0, this, true).each(iterator);
+  times: function(iterator, context) {
+    $R(0, this, true).each(iterator, context);
     return this;
   },
   

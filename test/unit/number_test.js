@@ -30,5 +30,15 @@ new Test.Unit.Runner({
     this.assertEqual('null', Number.NaN.toJSON());
     this.assertEqual('0', (0).toJSON());
     this.assertEqual('-293', (-293).toJSON());
+  },
+  
+  testNumberTimes: function() {
+    var results = [];
+    (5).times(function(i) { results.push(i) });
+    this.assertEnumEqual($R(0, 4), results);
+    
+    results = [];
+    (5).times(function(i) { results.push(i * this.i) }, { i: 2 });
+    this.assertEnumEqual([0, 2, 4, 6, 8], results);
   }
 });
