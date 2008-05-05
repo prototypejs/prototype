@@ -159,7 +159,7 @@ Object.extend(Object, {
 
 Object.extend(Function.prototype, {
   argumentNames: function() {
-    var names = this.toString().match(/^[\s\(]*function[^(]*\((.*?)\)/)[1].split(",").invoke("strip");
+    var names = this.toString().match(/^[\s\(]*function[^(]*\((.*?)\)/)[1].split(/\s*,\s*/);
     return names.length == 1 && !names[0] ? [] : names;
   },
   
