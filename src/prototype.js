@@ -16,9 +16,9 @@ var Prototype = {
     SelectorsAPI: !!document.querySelector,
     ElementExtensions: !!window.HTMLElement,
     SpecificElementExtensions: 
-      document.createElement('div').__proto__ &&
-      document.createElement('div').__proto__ !== 
-        document.createElement('form').__proto__
+      document.createElement('div')['__proto__'] &&
+      document.createElement('div')['__proto__'] !== 
+        document.createElement('form')['__proto__']
   },
 
   ScriptFragment: '<script[^>]*>([\\S\\s]*?)<\/script>',
