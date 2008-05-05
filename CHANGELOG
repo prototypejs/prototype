@@ -1,6 +1,6 @@
 * Replace all instances of foo.__proto__ by foo['__proto__'] for Caja-compliance. (Tobie Langel)
 
-* Speed up Function#argumentNames. Avoid Enum dependency. (samleb, Tobie Langel)
+* Speed up Function#argumentNames. Avoid Enum dependency. (Samuel Lebeau, Tobie Langel)
 
 * Fix Event#element accessing inexistent tagName property (e.g. when element is a document). (kangax)
 
