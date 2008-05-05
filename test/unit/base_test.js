@@ -3,6 +3,7 @@ new Test.Unit.Runner({
     this.assertEnumEqual([], (function() {}).argumentNames());
     this.assertEnumEqual(["one"], (function(one) {}).argumentNames());
     this.assertEnumEqual(["one", "two", "three"], (function(one, two, three) {}).argumentNames());
+    this.assertEnumEqual(["one", "two", "three"], (function(  one  , two  , three   ) {}).argumentNames());
     this.assertEqual("$super", (function($super) {}).argumentNames().first());
     
     function named1() {};
