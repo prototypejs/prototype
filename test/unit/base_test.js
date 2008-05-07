@@ -193,6 +193,13 @@ new Test.Unit.Runner({
     this.assert(Object.isHash($H()));
     this.assert(Object.isHash(new Hash()));
     this.assert(!Object.isHash({}));
+    this.assert(!Object.isHash(null));
+    this.assert(!Object.isHash());
+    this.assert(!Object.isHash(''));
+    this.assert(!Object.isHash(2));
+    this.assert(!Object.isHash(false));
+    this.assert(!Object.isHash(true));
+    this.assert(!Object.isHash([]));
   },
   
   testObjectIsElement: function() {

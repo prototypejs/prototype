@@ -1,3 +1,5 @@
+* More unit tests for Object.isHash. (Tobie Langel)
+
 * Allow Function#argumentNames to handle line breaks between arguments. (Geoff M. Granum, Tobie Langel) [#63 state:resolved]
 
 * For consistency, add additional optional parameter "context" to Number.prototype.times. (Samuel Lebeau)
