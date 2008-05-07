@@ -1,3 +1,5 @@
+* Avoid potential memory leaks in Firefox. (wpc, Tobie Langel) [#12 state:resolved]
+
 * More unit tests for Object.isHash. (Tobie Langel)
 
 * Allow Function#argumentNames to handle line breaks between arguments. (Geoff M. Granum, Tobie Langel) [#63 state:resolved]
