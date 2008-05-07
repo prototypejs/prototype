@@ -1,3 +1,5 @@
+* Allow Function#argumentNames to handle line breaks between arguments. (Geoff M. Granum, Tobie Langel) [#63 state:resolved]
+
 * For consistency, add additional optional parameter "context" to Number.prototype.times. (Samuel Lebeau)
 
 * Replace all instances of foo.__proto__ by foo['__proto__'] for Caja-compliance. (Tobie Langel)
