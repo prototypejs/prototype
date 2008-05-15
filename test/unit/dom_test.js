@@ -1002,6 +1002,18 @@ new Test.Unit.Runner({
     this.assertEqual('26',        p.readAttribute('age'));
   },
   
+  testElementHasAttribute: function() {
+    var label = $('write_attribute_label');
+    this.assertIdentical(true,  label.hasAttribute('for'));
+    this.assertIdentical(false, label.hasAttribute('htmlFor'));
+    this.assertIdentical(false, label.hasAttribute('className'));
+    this.assertIdentical(false, label.hasAttribute('rainbows'));
+    
+    var input = $('write_attribute_input');
+    this.assertNotIdentical(null, input.hasAttribute('readonly'));
+    this.assertNotIdentical(null, input.hasAttribute('readOnly'));
+  },
+  
   testNewElement: function() {
     this.assert(new Element('h1'));
     

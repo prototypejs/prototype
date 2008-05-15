@@ -1028,7 +1028,7 @@ Element.Methods.Simulated = {
   hasAttribute: function(element, attribute) {
     attribute = Element._attributeTranslations.has[attribute] || attribute;
     var node = $(element).getAttributeNode(attribute);
-    return node && node.specified;
+    return !!(node && node.specified);
   }
 };
 
