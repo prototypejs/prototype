@@ -1,3 +1,5 @@
+* Stop Form.Element.disable from stealing focus. (jddalton)
+
 * Ensure Element.hide and Element.show return an element, even if you pass an element ID. (Andrew Dupont)
 
 * Fix an issue where Element#getStyle('height') returns null if the height is set to "auto." (kangax, jddalton)
