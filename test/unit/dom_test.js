@@ -385,11 +385,11 @@ new Test.Unit.Runner({
     
     $('testoption-replace').replace('<option>hello</option>');
     this.assert($('testoption-replace-container').innerHTML.include('hello'));
-         
-    $('testinput-replace').replace('<p>hello world</p>');
+    
+    Element.replace('testinput-replace', '<p>hello world</p>');
     this.assertEqual('<p>hello world</p>', getInnerHTML('testform-replace'));
 
-    $('testform-replace').replace('<form></form>');
+    Element.replace('testform-replace', '<form></form>');
     this.assertEqual('<p>some text</p><form></form><p>some text</p>', getInnerHTML('testform-replace-container'));
   },
   
