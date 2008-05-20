@@ -655,6 +655,7 @@ Object.extend(Selector, {
     
   operators: {
     '=':  function(nv, v) { return nv == v; },
+    '!=': function(nv, v) { return nv != v; },
     '^=': function(nv, v) { return nv == v || nv && nv.startsWith(v); },
     '$=': function(nv, v) { return nv == v || nv && nv.endsWith(v); },
     '*=': function(nv, v) { return nv == v || nv && nv.include(v); },
