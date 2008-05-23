@@ -498,6 +498,17 @@ new Test.Unit.Runner({
       valueOf: function() { return "valueOf" }
     });
     
+    var Parent = Class.create({
+      m1: function(){ return 'm1' },
+      m2: function(){ return 'm2' }
+    });
+    var Child = Class.create(Parent, {
+      m1: function($super) { return 'm1 child' },
+      m2: function($super) { return 'm2 child' }
+    });
+    
+    this.assert(new Child().m1.toString().indexOf('m1 child') > -1);
+    
     this.assertEqual("toString", new Foo().toString());
     this.assertEqual("valueOf", new Foo().valueOf());
   }

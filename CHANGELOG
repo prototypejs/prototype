@@ -1,3 +1,5 @@
+* Fix toString/valueOf sharing same method reference via closure in Class#addMethods. Use plain property assignment, since Object.extend fails to enumerate over toString/valueOf. (kangax)
+
 * Stop Form.Element.disable from stealing focus. (jddalton)
 
 * Ensure Element.hide and Element.show return an element, even if you pass an element ID. (Andrew Dupont)
