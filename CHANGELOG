@@ -1,3 +1,5 @@
+* Ensure Hash does not return keys from the prototype chain (e.g., constructor, valueOf, toString). (kangax)
+
 * Fix toString/valueOf sharing same method reference via closure in Class#addMethods. Use plain property assignment, since Object.extend fails to enumerate over toString/valueOf. (kangax)
 
 * Stop Form.Element.disable from stealing focus. (jddalton)

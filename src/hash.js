@@ -28,7 +28,9 @@ var Hash = Class.create(Enumerable, (function() {
     },
 
     get: function(key) {
-      return this._object[key];
+      // simulating poorly supported hasOwnProperty
+      if (this._object[key] !== Object.prototype[key])
+        return this._object[key];
     },
 
     unset: function(key) {
