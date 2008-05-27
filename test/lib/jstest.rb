@@ -86,9 +86,7 @@ class IEBrowser < Browser
       ie = WIN32OLE.new('InternetExplorer.Application')
       ie.visible = true
       ie.Navigate(url)
-      while ie.ReadyState != 4 do
-        sleep(1)
-      end
+      sleep 0.01 while ie.Busy || ie.ReadyState != 4
     end
   end
 
