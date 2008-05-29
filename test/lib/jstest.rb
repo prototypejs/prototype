@@ -289,7 +289,7 @@ class JavaScriptTestTask < ::Rake::TaskLib
 
   def define
     task @name do
-      trap("INT") { @server.shutdown }
+      trap("INT") { @server.shutdown; exit }
       t = Thread.new { @server.start }
       
       # run all combinations of browsers and tests
