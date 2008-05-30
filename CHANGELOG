@@ -1,3 +1,5 @@
+* Ensure Object.isElement handles "falsy" values properly. (kangax)
+
 * Fix exiting test task on INT signal. (Samuel Lebeau)
 
 * Fix unit test freeze in IE. (Tobie Langel)

@@ -207,6 +207,13 @@ new Test.Unit.Runner({
     this.assert(Object.isElement(new Element('div')));
     this.assert(Object.isElement($('testlog')));
     this.assert(!Object.isElement(document.createTextNode('bla')));
+
+    // falsy variables should not mess up return value type
+    this.assertIdentical(false, Object.isElement(0));
+    this.assertIdentical(false, Object.isElement(''));
+    this.assertIdentical(false, Object.isElement(NaN));
+    this.assertIdentical(false, Object.isElement(null));
+    this.assertIdentical(false, Object.isElement(undefined));
   },
   
   testObjectIsFunction: function() {
