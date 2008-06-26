@@ -1,4 +1,6 @@
-* Coerce Opera's version string into a number whenever we need to sniff. [Sam Holman, jddalton]
+* Rename variable in Form.Element.Serializers.select. (jddalton)
+
+* Coerce Opera's version string into a number whenever we need to sniff. (Sam Holman, jddalton)
 
 * Ensure Object.isElement handles "falsy" values properly. (kangax)
 
