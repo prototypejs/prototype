@@ -457,7 +457,7 @@ Element.Methods = {
       element.style.position = 'relative';
       // Opera returns the offset relative to the positioning context, when an
       // element is position relative but top and left have not been defined
-      if (window.opera) {
+      if (Prototype.Browser.Opera) {
         element.style.top = 0;
         element.style.left = 0;
       }  

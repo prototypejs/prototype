@@ -1,3 +1,5 @@
+* Use different tactic to sniff for Opera in order to avoid false positives in IE. [Tobie Langel, jddalton]
+
 * Rename variable in Form.Element.Serializers.select. (jddalton)
 
 * Coerce Opera's version string into a number whenever we need to sniff. (Sam Holman, jddalton)
