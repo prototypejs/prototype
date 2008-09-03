@@ -233,7 +233,7 @@ Element.Methods = {
     element = $(element);
     if (arguments.length == 1) return element.firstDescendant();
     return Object.isNumber(expression) ? element.descendants()[expression] :
-      element.select(expression)[index || 0];
+      Element.select(element, expression)[index || 0];
   },
 
   previous: function(element, expression, index) {

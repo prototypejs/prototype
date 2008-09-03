@@ -1,4 +1,4 @@
-* Avoid potential memory leaks in Firefox. (wpc, Tobie Langel) [#12 state:resolved]
+* Element#down on an input element should not raise error. (humeniuc, kangax)
 
 * More unit tests for Object.isHash. (Tobie Langel)
 

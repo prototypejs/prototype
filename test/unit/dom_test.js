@@ -561,6 +561,10 @@ new Test.Unit.Runner({
     var dummy = $(document.createElement('DIV'));
     dummy.innerHTML = '<div></div>'.times(3);
     this.assert(typeof dummy.down().setStyle == 'function');
+    
+    var input = $$('input')[0];
+    this.assertNothingRaised(function(){ input.down('span') });
+    this.assertUndefined(input.down('span'));
   },
   
   testElementPrevious: function() {
