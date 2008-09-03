@@ -715,6 +715,10 @@ new Test.Unit.Runner({
     
     $(document.body).insert(new Element('div', { id: 'impostor' }));
     this.assert(!$('impostor').descendantOf('ancestor'));
+    
+    // test descendantOf document
+    this.assert($(document.body).descendantOf(document));  
+    this.assert($(document.documentElement).descendantOf(document));  
   },  
   
   testChildOf: function() {
