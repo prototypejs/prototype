@@ -271,7 +271,9 @@ new Test.Unit.Runner({
                     $('form').serialize({ submit: false }));
     this.assertHashEqual({ val1:4, action:'blah' },
                     $('form').serialize({ submit: 'inexistent' }));
-                    
+
+    // file input should not be serialized  
+    this.assertEqual('', $('form_with_file_input').serialize());   
   },
   
   testFormMethodsOnExtendedElements: function() {

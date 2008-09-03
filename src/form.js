@@ -12,7 +12,7 @@ var Form = {
     var data = elements.inject({ }, function(result, element) {
       if (!element.disabled && element.name) {
         key = element.name; value = $(element).getValue();
-        if (value != null && (element.type != 'submit' || (!submitted &&
+        if (value != null && element.type != 'file' && (element.type != 'submit' || (!submitted &&
             submit !== false && (!submit || key == submit) && (submitted = true)))) { 
           if (key in result) {
             // a key is already present; construct an array of values

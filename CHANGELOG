@@ -1,3 +1,5 @@
+* Form#serializeElements should not serialize file inputs. (kangax, Lonesome Boy)
+
 * Fix an issue with calling Event.pointer before the DOM is loaded. (kangax, jddalton) [#4 state:resolved]
 
 * Element#down on an input element should not raise error. (humeniuc, kangax)
