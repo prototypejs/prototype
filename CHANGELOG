@@ -1,3 +1,5 @@
+* Fix an issue where Element#getStyle('height') returns null if the height is set to "auto." (kangax, jddalton)
+
 * Add unit tests for Element#descendantOf. (jddalton)
 
 * Form#serializeElements should not serialize file inputs. (kangax, Lonesome Boy)
