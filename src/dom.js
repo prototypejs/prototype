@@ -74,12 +74,14 @@ Element.Methods = {
   },
 
   hide: function(element) {
-    $(element).style.display = 'none';
+    element = $(element);
+    element.style.display = 'none';
     return element;
   },
   
   show: function(element) {
-    $(element).style.display = '';
+    element = $(element);
+    element.style.display = '';
     return element;
   },
 
