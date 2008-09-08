@@ -275,8 +275,8 @@ new Test.Unit.Runner({
   },
 
   testTemplateEvaluationWithFalses: function() {
-    var source = '<tr><td>#{zero}</td><td>#{false_}</td><td>#{undef}</td><td>#{null_}</td><td>#{empty}</td></tr>';
-    var falses = {zero:0, false_:false, undef:undefined, null_:null, empty:""};
+    var source = '<tr><td>#{zero}</td><td>#{_false}</td><td>#{undef}</td><td>#{_null}</td><td>#{empty}</td></tr>';
+    var falses = {zero:0, _false:false, undef:undefined, _null:null, empty:""};
     var template = new Template(source);
     
     this.assertEqual('<tr><td>0</td><td>false</td><td></td><td></td><td></td></tr>',

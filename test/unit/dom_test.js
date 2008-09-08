@@ -195,8 +195,7 @@ new Test.Unit.Runner({
   },
   
   testNewElementInsert: function() {
-    var container = new Element('div');
-    element = new Element('div');
+    var container = new Element('div'), element = new Element('div');
     container.insert(element);
     
     element.insert({ before: '<p>a paragraph</p>' });

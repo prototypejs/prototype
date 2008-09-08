@@ -299,7 +299,7 @@ new Test.Unit.Runner({
   },
   
   testFormRequest: function() {
-    request = $("form").request();
+    var request = $("form").request();
     this.assert($("form").hasAttribute("method"));
     this.assert(request.url.include("fixtures/empty.js?val1=4"));
     this.assertEqual("get", request.method);

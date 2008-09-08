@@ -452,7 +452,7 @@ Test.Unit.Assertions = {
   },
   
   assertElementsMatch: function() {
-    var pass = true, expressions = $A(arguments), elements = $A(expressions.shift());
+    var message, pass = true, expressions = $A(arguments), elements = $A(expressions.shift());
     if (elements.length != expressions.length) {
       message = this.buildMessage('assertElementsMatch', 'size mismatch: ? elements, ? expressions (?).', elements.length, expressions.length, expressions);
       this.flunk(message);
