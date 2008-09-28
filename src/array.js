@@ -31,13 +31,15 @@ Array.from = $A;
 
 (function() {
   var arrayProto = Array.prototype,
-      slice = arrayProto.slice;
+      slice = arrayProto.slice,
+      _each = arrayProto.forEach; // use native browser JS 1.6 implementation if available
   
   function each(iterator) {
     for (var i = 0, length = this.length; i < length; i++)
       iterator(this[i]);
   }
-
+  if (!_each) _each = each;
+  
   function clear() {
     this.length = 0;
     return this;
@@ -150,7 +152,6 @@ Array.from = $A;
   if (!arrayProto._reverse)
     arrayProto._reverse = arrayProto.reverse;
   
-  var _each = 'forEach' in arrayProto ? arrayProto.forEach : each;
   Object.extend(arrayProto, {
     _each:     _each,
     clear:     clear,
