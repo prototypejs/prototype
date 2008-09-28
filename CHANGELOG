@@ -1,6 +1,6 @@
-* Improve NodeList detection for Safari's $A function. [Garrett Smith, jddalton]
+* Improve NodeList detection for Safari's $A function. (Garrett Smith, jddalton)
 
-* Use different tactic to sniff for Opera in order to avoid false positives in IE. [Tobie Langel, jddalton]
+* Use different tactic to sniff for Opera in order to avoid false positives in IE. (Tobie Langel, jddalton)
 
 * Rename variable in Form.Element.Serializers.select. (jddalton)
 
