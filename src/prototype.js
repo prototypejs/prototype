@@ -51,12 +51,22 @@ var Try = {
   }
 };
 
-<%= include 'class.js', 'object.js', 'function.js', 'date.js', 'regexp.js', 'periodical_executer.js' %>
+<%= include 'lang/class.js', 'lang/object.js', 'lang/function.js' %>
 
-<%= include 'string.js', 'template.js' %>
+<%= include 'lang/date.js', 'lang/regexp.js', 'lang/periodical_executer.js' %>
 
-<%= include 'enumerable.js', 'array.js', 'number.js', 'hash.js', 'range.js' %>
+<%= include 'lang/string.js', 'lang/template.js' %>
 
-<%= include 'ajax.js', 'dom.js', 'selector.js', 'form.js', 'event.js', 'deprecated.js' %>
+<%= include 'lang/enumerable.js', 'lang/array.js', 'lang/hash.js' %>
+
+<%= include 'lang/number.js', 'lang/range.js' %>
+
+<%= include 'ajax/ajax.js', 'ajax/responders.js', 'ajax/base.js', 'ajax/request.js', 'ajax/reponse.js' %>
+
+<%= include 'ajax/updater.js', 'ajax/periodical_updater.js' %>
+
+<%= include 'dom/dom.js', 'dom/selector.js', 'dom/form.js', 'dom/event.js' %>
+
+<%= include 'deprecated.js' %>
 
 Element.addMethods();
