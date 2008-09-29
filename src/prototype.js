@@ -61,7 +61,7 @@ var Try = {
 
 <%= include 'lang/number.js', 'lang/range.js' %>
 
-<%= include 'ajax/ajax.js', 'ajax/responders.js', 'ajax/base.js', 'ajax/request.js', 'ajax/reponse.js' %>
+<%= include 'ajax/ajax.js', 'ajax/responders.js', 'ajax/base.js', 'ajax/request.js', 'ajax/response.js' %>
 
 <%= include 'ajax/updater.js', 'ajax/periodical_updater.js' %>
 
