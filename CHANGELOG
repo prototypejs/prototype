@@ -1,3 +1,5 @@
+* Add support for the Chrome browser in jstest.rb. (Andrew Dupont)
+
 * Workaround a JavaScript exception in Opera. (Thomas Fuchs)
 
 * Improve NodeList detection for Safari's $A function. (Garrett Smith, jddalton)

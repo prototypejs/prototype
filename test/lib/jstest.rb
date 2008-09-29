@@ -50,6 +50,32 @@ class FirefoxBrowser < Browser
   end
 end
 
+class ChromeBrowser < Browser
+  def initialize(path = nil)
+    @path = path || File.join(
+      ENV['UserPath'] || "C:/Documents and Settings/Administrator",
+      "Local Settings",
+      "Application Data",
+      "Google",
+      "Chrome",
+      "Application",
+      "chrome.exe"
+    )
+  end
+  
+  def supported?
+    windows?
+  end
+  
+  def visit(url)
+    system("#{@path} #{url}")
+  end
+  
+  def to_s
+    "Chrome"
+  end
+end
+
 class SafariBrowser < Browser
   def supported?
     macos?
@@ -354,6 +380,8 @@ class JavaScriptTestTask < ::Rake::TaskLib
           KonquerorBrowser.new
         when :opera
           OperaBrowser.new
+        when :chrome
+          ChromeBrowser.new
         else
           browser
       end

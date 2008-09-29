@@ -69,7 +69,7 @@ JavaScriptTestTask.new(:test_units => [:build_unit_tests]) do |t|
     end
   end
   
-  %w( safari firefox ie konqueror opera ).each do |browser|
+  %w( safari firefox ie konqueror opera chrome ).each do |browser|
     t.browser(browser.to_sym) unless browsers_to_test && !browsers_to_test.include?(browser)
   end
 end
