@@ -7,7 +7,7 @@ PROTOTYPE_DIST_DIR = File.join(PROTOTYPE_ROOT, 'dist')
 PROTOTYPE_PKG_DIR  = File.join(PROTOTYPE_ROOT, 'pkg')
 PROTOTYPE_TEST_DIR = File.join(PROTOTYPE_ROOT, 'test')
 PROTOTYPE_TMP_DIR  = File.join(PROTOTYPE_TEST_DIR, 'unit', 'tmp')
-PROTOTYPE_VERSION  = '1.6.0.2'
+PROTOTYPE_VERSION  = '1.6.0.3'
 
 task :default => [:dist, :dist_helper, :package, :clean_package_source]
 

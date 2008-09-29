@@ -1,3 +1,5 @@
+*1.6.0.3* (September 29, 2008)
+
 * Add support for the Chrome browser in jstest.rb. (Andrew Dupont)
 
 * Workaround a JavaScript exception in Opera. (Thomas Fuchs)
