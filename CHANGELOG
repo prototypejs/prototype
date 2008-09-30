@@ -1,3 +1,5 @@
+* Performance improvements in Function methods (Samuel Lebeau, kangax, jddalton, Tobie Langel).
+
 *1.6.0.3* (September 29, 2008)
 
 * Add support for the Chrome browser in jstest.rb. (Andrew Dupont)

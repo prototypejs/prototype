@@ -1,10 +1,6 @@
 Object.extend(Function.prototype, (function() {
   var slice = Array.prototype.slice;
   
-  function toArray(args) {
-    return slice.call(args, 0);
-  }
-  
   function combine(array, args) {
     var arrayLength = array.length, length = args.length;
     while (length--) array[arrayLength + length] = args[length];
@@ -17,37 +13,37 @@ Object.extend(Function.prototype, (function() {
     return names.length == 1 && !names[0] ? [] : names;
   }
 
-  function bind() {
+  function bind(context) {
     if (arguments.length < 2 && Object.isUndefined(arguments[0])) return this;
-    var __method = this, args = toArray(arguments), object = args.shift();
+    var __method = this, args = slice.call(arguments, 1);
     return function() {
       var combinedArgs = combine(args.clone(), arguments);
-      return __method.apply(object, combinedArgs);
+      return __method.apply(context, combinedArgs);
     }
   }
 
-  function bindAsEventListener() {
-    var __method = this, args = toArray(arguments), object = args.shift();
+  function bindAsEventListener(context) {
+    var __method = this, args = slice.call(arguments, 1);
     return function(event) {
       var combinedArgs = combine([event || window.event], args);
-      return __method.apply(object, combinedArgs);
+      return __method.apply(context, combinedArgs);
     }
   }
 
   function curry() {
     if (!arguments.length) return this;
-    var __method = this, args = toArray(arguments);
+    var __method = this, args = slice.call(arguments, 0);
     return function() {
       var combinedArgs = combine(args.clone(), arguments);
       return __method.apply(this, combinedArgs);
     }
   }
 
-  function delay() { 
-    var __method = this, args = toArray(arguments), timeout = args.shift() * 1000; 
+  function delay(timeout) { 
+    var __method = this, args = slice.call(arguments, 1); 
     return window.setTimeout(function() {
       return __method.apply(__method, args);
-    }, timeout);
+    }, timeout * 1000);
   }
 
   function defer() {
