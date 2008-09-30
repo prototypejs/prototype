@@ -19,28 +19,28 @@ Object.extend(Function.prototype, (function() {
   }
 
   function bind(context) {
-    if (arguments.length < 2 && Object.isUndefined(arguments[0])) return this;
-    var __method = this, args = slice.call(arguments, 1);
+    if (arguments.length < 2 && Object.isUndefined(context)) return this;
+    var __method = this, curried = slice.call(arguments, 1);
     return function() {
-      var a = merge(args, arguments);
-      return __method.apply(context, a);
+      var args = merge(curried, arguments);
+      return __method.apply(context, args);
     }
   }
 
   function bindAsEventListener(context) {
-    var __method = this, args = slice.call(arguments, 1);
+    var __method = this, curried = slice.call(arguments, 1);
     return function(event) {
-      var a = update([event || window.event], args);
-      return __method.apply(context, a);
+      var args = update([event || window.event], curried);
+      return __method.apply(context, args);
     }
   }
 
   function curry() {
     if (!arguments.length) return this;
-    var __method = this, args = slice.call(arguments, 0);
+    var __method = this, curried = slice.call(arguments, 0);
     return function() {
-      var a = merge(args, arguments);
-      return __method.apply(this, a);
+      var args = merge(curried, arguments);
+      return __method.apply(this, args);
     }
   }
 
@@ -60,8 +60,8 @@ Object.extend(Function.prototype, (function() {
   function wrap(wrapper) {
     var __method = this;
     return function() {
-      var a = update([__method.bind(this)], arguments);
-      return wrapper.apply(this, a);
+      var args = update([__method.bind(this)], arguments);
+      return wrapper.apply(this, args);
     }
   }
 
@@ -69,8 +69,8 @@ Object.extend(Function.prototype, (function() {
     if (this._methodized) return this._methodized;
     var __method = this;
     return this._methodized = function() {
-      var a = update([this], arguments);
-      return __method.apply(null, a);
+      var args = update([this], arguments);
+      return __method.apply(null, args);
     };
   }
   
