@@ -201,7 +201,7 @@ Object.extend(String.prototype, (function() {
   }
 
   function empty() {
-    return this === '';
+    return this == '';
   }
 
   function blank() {
