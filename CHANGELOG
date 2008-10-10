@@ -1,3 +1,5 @@
+* Selector.patterns should be represented as an ordered structure. (ADO, kangax)
+
 * Work around an issue with assigning a variable within a "return" statement in V8/Google Chrome. (Chris Lear, Oleg K, Maikel Punie, Andrew Dupont)
 
 *1.6.0.3* (September 29, 2008)
