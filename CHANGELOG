@@ -1,3 +1,5 @@
+* Selector.patterns should be represented as an ordered structure. (ADO, kangax)
+
 * Performance improvements in Function methods (Samuel Lebeau, kangax, jddalton, Tobie Langel).
 
 *1.6.0.3* (September 29, 2008)

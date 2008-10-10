@@ -54,7 +54,7 @@ var Selector = Class.create({
   
   compileMatcher: function() {
     var e = this.expression, ps = Selector.patterns, h = Selector.handlers, 
-        c = Selector.criteria, le, p, m;
+        c = Selector.criteria, le, p, m, len = ps.length, name;
 
     if (Selector._cache[e]) {
       this.matcher = Selector._cache[e]; 
@@ -66,11 +66,12 @@ var Selector = Class.create({
 
     while (e && le != e && (/\S/).test(e)) {
       le = e;
-      for (var i in ps) {
-        p = ps[i];
+      for (var i = 0; i<len; i++) {
+        p = ps[i].re;
+        name = ps[i].name;
         if (m = e.match(p)) {
-          this.matcher.push(Object.isFunction(c[i]) ? c[i](m) :
-            new Template(c[i]).evaluate(m));
+          this.matcher.push(Object.isFunction(c[name]) ? c[name](m) :
+            new Template(c[name]).evaluate(m));
           e = e.replace(m[0], '');
           break;
         }
@@ -84,7 +85,7 @@ var Selector = Class.create({
   
   compileXPathMatcher: function() {
     var e = this.expression, ps = Selector.patterns,
-        x = Selector.xpath, le, m;
+        x = Selector.xpath, le, m, len = ps.length, name;
 
     if (Selector._cache[e]) {
       this.xpath = Selector._cache[e]; return;
@@ -93,10 +94,11 @@ var Selector = Class.create({
     this.matcher = ['.//*'];
     while (e && le != e && (/\S/).test(e)) {
       le = e;
-      for (var i in ps) {
-        if (m = e.match(ps[i])) {
-          this.matcher.push(Object.isFunction(x[i]) ? x[i](m) : 
-            new Template(x[i]).evaluate(m));
+      for (var i = 0; i<len; i++) {
+        name = ps[i].name;
+        if (m = e.match(ps[i].re)) {
+          this.matcher.push(Object.isFunction(x[name]) ? x[name](m) : 
+            new Template(x[name]).evaluate(m));
           e = e.replace(m[0], '');
           break;
         }
@@ -136,17 +138,18 @@ var Selector = Class.create({
     this.tokens = [];
 
     var e = this.expression, ps = Selector.patterns, as = Selector.assertions;
-    var le, p, m;
+    var le, p, m, len = ps.length, name;
     
     while (e && le !== e && (/\S/).test(e)) {
       le = e;
-      for (var i in ps) {
-        p = ps[i];
+      for (var i = 0; i<len; i++) {
+        p = ps[i].re;
+        name = ps[i].name;
         if (m = e.match(p)) {
           // use the Selector.assertions methods unless the selector
           // is too complex.
-          if (as[i]) {
-            this.tokens.push([i, Object.clone(m)]);
+          if (as[name]) {
+            this.tokens.push([name, Object.clone(m)]);
             e = e.replace(m[0], '');
           } else {
             // reluctantly do a document-wide search
@@ -226,14 +229,15 @@ Object.extend(Selector, {
       'enabled':     "[not(@disabled) and (@type!='hidden')]",
       'not': function(m) {
         var e = m[6], p = Selector.patterns,
-            x = Selector.xpath, le, v;
+            x = Selector.xpath, le, v, len = p.length, name;
             
         var exclusion = [];
         while (e && le != e && (/\S/).test(e)) {
           le = e;
-          for (var i in p) {
-            if (m = e.match(p[i])) {
-              v = Object.isFunction(x[i]) ? x[i](m) : new Template(x[i]).evaluate(m);
+          for (var i = 0; i<len; i++) {
+            name = p[i].name
+            if (m = e.match(p[i].re)) {
+              v = Object.isFunction(x[name]) ? x[name](m) : new Template(x[name]).evaluate(m);
               exclusion.push("(" + v.substring(1, v.length - 1) + ")");
               e = e.replace(m[0], '');
               break;
@@ -301,23 +305,22 @@ Object.extend(Selector, {
     laterSibling: 'c = "laterSibling";'
   },
 
-  patterns: {
+  patterns: [
     // combinators must be listed first
     // (and descendant needs to be last combinator)
-    laterSibling: /^\s*~\s*/,
-    child:        /^\s*>\s*/,
-    adjacent:     /^\s*\+\s*/,
-    descendant:   /^\s/,
+    { name: 'laterSibling', re: /^\s*~\s*/ },
+    { name: 'child',        re: /^\s*>\s*/ },
+    { name: 'adjacent',     re: /^\s*\+\s*/ },
+    { name: 'descendant',   re: /^\s/ },
 
     // selectors follow
-    tagName:      /^\s*(\*|[\w\-]+)(\b|$)?/,
-    id:           /^#([\w\-\*]+)(\b|$)/,
-    className:    /^\.([\w\-\*]+)(\b|$)/,
-    pseudo:      
-/^:((first|last|nth|nth-last|only)(-child|-of-type)|empty|checked|(en|dis)abled|not)(\((.*?)\))?(\b|$|(?=\s|[:+~>]))/,
-    attrPresence: /^\[((?:[\w]+:)?[\w]+)\]/,
-    attr:         /\[((?:[\w-]*:)?[\w-]+)\s*(?:([!^$*~|]?=)\s*((['"])([^\4]*?)\4|([^'"][^\]]*?)))?\]/
-  },
+    { name: 'tagName',      re: /^\s*(\*|[\w\-]+)(\b|$)?/ },
+    { name: 'id',           re: /^#([\w\-\*]+)(\b|$)/ },
+    { name: 'className',    re: /^\.([\w\-\*]+)(\b|$)/ },
+    { name: 'pseudo',       re: /^:((first|last|nth|nth-last|only)(-child|-of-type)|empty|checked|(en|dis)abled|not)(\((.*?)\))?(\b|$|(?=\s|[:+~>]))/ },
+    { name: 'attrPresence', re: /^\[((?:[\w]+:)?[\w]+)\]/ },
+    { name: 'attr',         re: /\[((?:[\w-]*:)?[\w-]+)\s*(?:([!^$*~|]?=)\s*((['"])([^\4]*?)\4|([^'"][^\]]*?)))?\]/ }
+  ],
   
   // for Selector.match and Element#match
   assertions: {
