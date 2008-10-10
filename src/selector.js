@@ -66,7 +66,7 @@ var Selector = Class.create({
 
     while (e && le != e && (/\S/).test(e)) {
       le = e;
-      for (var i=0; i<len; i++) {
+      for (var i = 0; i<len; i++) {
         p = ps[i].re;
         name = ps[i].name;
         if (m = e.match(p)) {
@@ -94,7 +94,7 @@ var Selector = Class.create({
     this.matcher = ['.//*'];
     while (e && le != e && (/\S/).test(e)) {
       le = e;
-      for (var i=0; i<len; i++) {
+      for (var i = 0; i<len; i++) {
         name = ps[i].name;
         if (m = e.match(ps[i].re)) {
           this.matcher.push(Object.isFunction(x[name]) ? x[name](m) : 
@@ -142,7 +142,7 @@ var Selector = Class.create({
     
     while (e && le !== e && (/\S/).test(e)) {
       le = e;
-      for (var i=0; i<len; i++) {
+      for (var i = 0; i<len; i++) {
         p = ps[i].re;
         name = ps[i].name;
         if (m = e.match(p)) {
@@ -234,7 +234,7 @@ Object.extend(Selector, {
         var exclusion = [];
         while (e && le != e && (/\S/).test(e)) {
           le = e;
-          for (var i=0; i<len; i++) {
+          for (var i = 0; i<len; i++) {
             name = p[i].name
             if (m = e.match(p[i].re)) {
               v = Object.isFunction(x[name]) ? x[name](m) : new Template(x[name]).evaluate(m);
