@@ -13,6 +13,16 @@ new Test.Unit.Runner({
     this.assertEnumEqual(["one"], named2.argumentNames());
     function named3(one, two, three) {};
     this.assertEnumEqual(["one", "two", "three"], named3.argumentNames());
+    function named4(/*foo*/ foo, /* bar */ bar, /*****/ baz) {}
+    this.assertEnumEqual($w("foo bar baz"), named4.argumentNames());
+    
+    function named5(
+      /*foo*/ foo, 
+      /**/bar,
+      /* baz */ /* baz */ baz,
+      // Skip a line just to screw with the regex...
+      /* thud */ thud) {}    
+    this.assertEnumEqual($w("foo bar baz thud"), named5.argumentNames());
   },
   
   testFunctionBind: function() {
