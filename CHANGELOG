@@ -1,3 +1,5 @@
+* Fix issue where Function#argumentNames returned incorrect results in IE when comments were intermixed with argument names. (Christophe Porteneuve, T.J. Crowder)
+
 * Selector.patterns should be represented as an ordered structure. (ADO, kangax)
 
 * Performance improvements in Function methods (Samuel Lebeau, kangax, jddalton, Tobie Langel).
