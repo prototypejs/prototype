@@ -1,10 +1,10 @@
 /* Based on Alex Arnell's inheritance implementation. */
-var Class = {
-  create: function() {
+var Class = (function() {
+  function create() {
     var parent = null, properties = $A(arguments);
     if (Object.isFunction(properties[0]))
       parent = properties.shift();
-    
+      
     function klass() {
       this.initialize.apply(this, arguments);
     }
@@ -14,7 +14,7 @@ var Class = {
     klass.subclasses = [];
     
     if (parent) {
-      var subclass = function() { };
+      var subclass = function() {};
       subclass.prototype = parent.prototype;
       klass.prototype = new subclass;
       parent.subclasses.push(klass);
@@ -25,15 +25,12 @@ var Class = {
       
     if (!klass.prototype.initialize)
       klass.prototype.initialize = Prototype.emptyFunction;
-    
+      
     klass.prototype.constructor = klass;
-    
-    return klass;
+    return klass;      
   }
-};
-
-Class.Methods = {
-  addMethods: function(source) {
+  
+  function addMethods(source) {
     var ancestor   = this.superclass && this.superclass.prototype;
     var properties = Object.keys(source);
     
@@ -46,7 +43,7 @@ Class.Methods = {
           value.argumentNames().first() == "$super") {
         var method = value;
         value = (function(m) {
-          return function() { return ancestor[m].apply(this, arguments) };
+          return function() { return ancestor[m].apply(this, arguments); };
         })(property).wrap(method);
 
         value.valueOf = method.valueOf.bind(method);
@@ -55,6 +52,13 @@ Class.Methods = {
       this.prototype[property] = value;
     }
     
-    return this;
+    return this;    
   }
-};
+  
+  return {
+    create: create,
+    Methods: {
+      addMethods: addMethods
+    }
+  };
+})();
