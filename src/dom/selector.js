@@ -193,7 +193,6 @@ if (Prototype.BrowserFeatures.SelectorsAPI &&
     div.appendChild(span);
     var isIgnored = (div.querySelector('#prototype_test_id .test') !== null);
     div = span = null;
-    alert(isIgnored);
     return isIgnored;
   })();
 }
