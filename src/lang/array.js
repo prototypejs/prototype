@@ -134,14 +134,14 @@ Array.from = $A;
   }
   
   function concat() {
-    var array = [];
-    for (var i = 0, length = this.length; i < length; i++) array.push(this[i]);
+    var array = slice.call(this, 0), item;
     for (var i = 0, length = arguments.length; i < length; i++) {
-      if (Object.isArray(arguments[i])) {
-        for (var j = 0, arrayLength = arguments[i].length; j < arrayLength; j++) 
-          array.push(arguments[i][j]);
+      item = arguments[i];
+      if (Object.isArray(item) && !('callee' in item)) {
+        for (var j = 0, arrayLength = item.length; j < arrayLength; j++)
+          array.push(item[j]);
       } else { 
-        array.push(arguments[i]);
+        array.push(item);
       }
     }
     return array;
@@ -170,6 +170,13 @@ Array.from = $A;
     inspect:   inspect,
     toJSON:    toJSON
   });
+  
+  // fix for opera
+  var CONCAT_ARGUMENTS_BUGGY = (function() {
+    return [].concat(arguments)[0][0] !== 1;
+  })(1,2)
+  
+  if (CONCAT_ARGUMENTS_BUGGY) arrayProto.concat = concat;
   
   // use native browser JS 1.6 implementation if available
   if (!arrayProto.indexOf) arrayProto.indexOf = indexOf;

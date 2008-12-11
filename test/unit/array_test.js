@@ -185,5 +185,10 @@ new Test.Unit.Runner({
     this.assertEnumEqual(['a'], $w('a '));
     this.assertEnumEqual(['a'], $w(' a'));
     this.assertEnumEqual(['a', 'b', 'c', 'd'], $w(' a   b\nc\t\nd\n'));
+  },
+  
+  testConcat: function(){
+    var args = (function() { return [].concat(arguments) })(1, 2);
+    this.assertIdentical(1, args[0][0]);
   }
 });
