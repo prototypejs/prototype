@@ -164,7 +164,7 @@
 
   function _getEventID(element) {
     if (element._prototypeEventID) return element._prototypeEventID[0];
-    return element._prototypeEventID = [++arguments.callee.id];
+    return element._prototypeEventID = [++_getEventID.id];
   }
   _getEventID.id = 1;
 
