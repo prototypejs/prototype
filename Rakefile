@@ -1,13 +1,14 @@
 require 'rake'
 require 'rake/packagetask'
 
-PROTOTYPE_ROOT     = File.expand_path(File.dirname(__FILE__))
-PROTOTYPE_SRC_DIR  = File.join(PROTOTYPE_ROOT, 'src')
-PROTOTYPE_DIST_DIR = File.join(PROTOTYPE_ROOT, 'dist')
-PROTOTYPE_PKG_DIR  = File.join(PROTOTYPE_ROOT, 'pkg')
-PROTOTYPE_TEST_DIR = File.join(PROTOTYPE_ROOT, 'test')
-PROTOTYPE_TMP_DIR  = File.join(PROTOTYPE_TEST_DIR, 'unit', 'tmp')
-PROTOTYPE_VERSION  = '1.6.0.3'
+PROTOTYPE_ROOT          = File.expand_path(File.dirname(__FILE__))
+PROTOTYPE_SRC_DIR       = File.join(PROTOTYPE_ROOT, 'src')
+PROTOTYPE_DIST_DIR      = File.join(PROTOTYPE_ROOT, 'dist')
+PROTOTYPE_PKG_DIR       = File.join(PROTOTYPE_ROOT, 'pkg')
+PROTOTYPE_TEST_DIR      = File.join(PROTOTYPE_ROOT, 'test')
+PROTOTYPE_TEST_UNIT_DIR = File.join(PROTOTYPE_TEST_DIR, 'unit')
+PROTOTYPE_TMP_DIR       = File.join(PROTOTYPE_TEST_UNIT_DIR, 'tmp')
+PROTOTYPE_VERSION       = '1.6.0.3'
 
 task :default => [:dist, :dist_helper, :package, :clean_package_source]
 
@@ -47,46 +48,71 @@ Rake::PackageTask.new('prototype', PROTOTYPE_VERSION) do |package|
   )
 end
 
-desc "Builds the distribution and the test suite, runs the tests and collects their results."
-task :test => [:dist, :test_units]
-
-require 'test/lib/jstest'
-desc "Runs all the JavaScript unit tests and collects the results"
-JavaScriptTestTask.new(:test_units => [:build_unit_tests]) do |t|
-  testcases        = ENV['TESTCASES']
-  tests_to_run     = ENV['TESTS']    && ENV['TESTS'].split(',')
-  browsers_to_test = ENV['BROWSERS'] && ENV['BROWSERS'].split(',')
-  
-  t.mount("/dist")
-  t.mount("/test")
-  
-  Dir.mkdir(PROTOTYPE_TMP_DIR) unless File.exist?(PROTOTYPE_TMP_DIR)
-  
-  Dir["test/unit/tmp/*_test.html"].each do |file|
-    test_name = File.basename(file).sub("_test.html", "")
-    unless tests_to_run && !tests_to_run.include?(test_name)
-      t.run("/#{file}", testcases)
-    end
-  end
-  
-  %w( safari firefox ie konqueror opera chrome ).each do |browser|
-    t.browser(browser.to_sym) unless browsers_to_test && !browsers_to_test.include?(browser)
-  end
-end
-
-task :build_unit_tests do
-  Dir[File.join('test', 'unit', '*_test.js')].each do |file|
-    PageBuilder.new(file, 'prototype.erb').render
-  end
-end
-
 task :clean_package_source do
   rm_rf File.join(PROTOTYPE_PKG_DIR, "prototype-#{PROTOTYPE_VERSION}")
 end
 
-desc 'Generates an empty tmp directory for building tests.'
+task :test => ['test:build', 'test:run']
+namespace :test do
+  desc 'Runs all the JavaScript unit tests and collects the results'
+  task :run => [:require] do
+    testcases        = ENV['TESTCASES']
+    browsers_to_test = ENV['BROWSERS'] && ENV['BROWSERS'].split(',')
+    tests_to_run     = ENV['TESTS'] && ENV['TESTS'].split(',')
+    runner           = UnittestJS::WEBrickRunner::Runner.new(:test_dir => PROTOTYPE_TMP_DIR)
+
+    Dir[File.join(PROTOTYPE_TMP_DIR, '*_test.html')].each do |file|
+      file = File.basename(file)
+      test = file.sub('_test.html', '')
+      unless tests_to_run && !tests_to_run.include?(test)
+        runner.add_test(file, testcases)
+      end
+    end
+    
+    UnittestJS::Browser::SUPPORTED.each do |browser|
+      unless browsers_to_test && !browsers_to_test.include?(browser)
+        runner.add_browser(browser.to_sym)
+      end
+    end
+    
+    trap('INT') { runner.teardown; exit }
+    runner.run
+  end
+  
+  task :build => [:clean, :dist] do
+    builder = UnittestJS::Builder::SuiteBuilder.new({
+      :input_dir  => PROTOTYPE_TEST_UNIT_DIR,
+      :assets_dir => PROTOTYPE_DIST_DIR
+    })
+    selected_tests = (ENV['TESTS'] || '').split(',')
+    builder.collect(*selected_tests)
+    builder.render
+  end
+  
+  task :clean => [:require] do
+    UnittestJS::Builder.empty_dir!(PROTOTYPE_TMP_DIR)
+  end
+  
+  task :require do
+    lib = 'vendor/unittest_js/lib/unittest_js'
+    unless File.exists?(lib)
+      puts "\nYou'll need UnittestJS to run the tests. Just run:\n\n"
+      puts "  $ git submodule init"
+      puts "  $ git submodule update"
+      puts "\nand you should be all set.\n\n"
+    end
+    require lib
+  end
+end
+
+task :test_units do
+  puts '"rake test_units" is deprecated. Please use "rake test" instead.'
+end
+
+task :build_unit_tests do
+  puts '"rake test_units" is deprecated. Please use "rake test:build" instead.'
+end
+
 task :clean_tmp do
-  puts 'Generating an empty tmp directory for building tests.'
-  FileUtils.rm_rf(PROTOTYPE_TMP_DIR) if File.exist?(PROTOTYPE_TMP_DIR)
-  Dir.mkdir(PROTOTYPE_TMP_DIR)
+  puts '"rake clean_tmp" is deprecated. Please use "rake test:clean" instead.'
 end

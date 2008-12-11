@@ -45,6 +45,9 @@ From the root Prototype directory,
 
 Check out the Prototype source with 
   $ git clone git://github.com/sstephenson/prototype.git
+  $ cd prototype
+  $ git submodule init
+  $ git submodule update
 
 Find out how to contribute:
   http://prototypejs.org/contribute
