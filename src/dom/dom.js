@@ -61,6 +61,7 @@ if (!Node.ELEMENT_NODE) {
 })(this);
 
 Element.cache = { };
+Element.idCounter = 1;
 
 Element.Methods = {
   visible: function(element) {
@@ -266,9 +267,9 @@ Element.Methods = {
   
   identify: function(element) {
     element = $(element);
-    var id = element.readAttribute('id'), self = arguments.callee;
+    var id = element.readAttribute('id');
     if (id) return id;
-    do { id = 'anonymous_element_' + self.counter++ } while ($(id));
+    do { id = 'anonymous_element_' + Element.idCounter++ } while ($(id));
     element.writeAttribute('id', id);
     return id;
   },
@@ -645,8 +646,6 @@ Element.Methods = {
     return element;
   }
 };
-
-Element.Methods.identify.counter = 1;
 
 Object.extend(Element.Methods, {
   getElementsBySelector: Element.Methods.select,
