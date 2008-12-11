@@ -172,7 +172,6 @@ Array.from = $A;
   });
   
   // use native browser JS 1.6 implementation if available
-  if (!'indexOf'     in arrayProto) arrayProto.indexOf     = indexOf;
-  if (!'lastIndexOf' in arrayProto) arrayProto.lastIndexOf = lastIndexOf;
-  if (!'concat'      in arrayProto) arrayProto.concat      = concat;
+  if (!arrayProto.indexOf) arrayProto.indexOf = indexOf;
+  if (!arrayProto.lastIndexOf) arrayProto.lastIndexOf = lastIndexOf;
 })();
