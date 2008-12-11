@@ -42,9 +42,9 @@ if (!Node.ELEMENT_NODE) {
   });
 }
 
-(function() {
-  var element = this.Element;
-  this.Element = function(tagName, attributes) {
+(function(global) {
+  var element = global.Element;
+  global.Element = function(tagName, attributes) {
     attributes = attributes || { };
     tagName = tagName.toLowerCase();
     var cache = Element.cache;
@@ -56,9 +56,9 @@ if (!Node.ELEMENT_NODE) {
     if (!cache[tagName]) cache[tagName] = Element.extend(document.createElement(tagName));
     return Element.writeAttribute(cache[tagName].cloneNode(false), attributes);
   };
-  Object.extend(this.Element, element || { });
-  if (element) this.Element.prototype = element.prototype;
-}).call(window);
+  Object.extend(global.Element, element || { });
+  if (element) global.Element.prototype = element.prototype;
+})(this);
 
 Element.cache = { };
 
