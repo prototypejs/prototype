@@ -48,17 +48,17 @@
   }
 
   function keys(object) {
-    var keys = [];
+    var results = [];
     for (var property in object)
-      keys.push(property);
-    return keys;
+      results.push(property);
+    return results;
   }
 
   function values(object) {
-    var values = [];
+    var results = [];
     for (var property in object)
-      values.push(object[property]);
-    return values;
+      results.push(object[property]);
+    return results;
   }
 
   function clone(object) {
