@@ -1,348 +1,378 @@
-if (!window.Event) var Event = { };
+(function() {
+  var Event = {
+    KEY_BACKSPACE: 8,
+    KEY_TAB:       9,
+    KEY_RETURN:   13,
+    KEY_ESC:      27,
+    KEY_LEFT:     37,
+    KEY_UP:       38,
+    KEY_RIGHT:    39,
+    KEY_DOWN:     40,
+    KEY_DELETE:   46,
+    KEY_HOME:     36,
+    KEY_END:      35,
+    KEY_PAGEUP:   33,
+    KEY_PAGEDOWN: 34,
+    KEY_INSERT:   45,
 
-Object.extend(Event, {
-  KEY_BACKSPACE: 8,
-  KEY_TAB:       9,
-  KEY_RETURN:   13,
-  KEY_ESC:      27,
-  KEY_LEFT:     37,
-  KEY_UP:       38,
-  KEY_RIGHT:    39,
-  KEY_DOWN:     40,
-  KEY_DELETE:   46,
-  KEY_HOME:     36,
-  KEY_END:      35,
-  KEY_PAGEUP:   33,
-  KEY_PAGEDOWN: 34,
-  KEY_INSERT:   45,
-  
-  cache: { },
+    cache: {}
+  };
 
-  relatedTarget: function(event) {
-    var element;
-    switch(event.type) {
-      case 'mouseover': element = event.fromElement; break;
-      case 'mouseout':  element = event.toElement;   break;
-      default: return null;
-    }
-    return Element.extend(element);
-  }
-});
-
-Event.Methods = (function() {
-  var isButton;
-
+  var _isButton;
   if (Prototype.Browser.IE) {
+    // IE doesn't map left/right/middle the same way.
     var buttonMap = { 0: 1, 1: 4, 2: 2 };
-    isButton = function(event, code) {
-      return event.button == buttonMap[code];
+    _isButton = function(event, code) {
+      return event.button === buttonMap[code];
     };
-    
   } else if (Prototype.Browser.WebKit) {
-    isButton = function(event, code) {
+    // In Safari we have to account for when the user holds down
+    // the "meta" key.
+    _isButton = function(event, code) {
       switch (code) {
         case 0: return event.which == 1 && !event.metaKey;
         case 1: return event.which == 1 && event.metaKey;
         default: return false;
       }
     };
-    
   } else {
-    isButton = function(event, code) {
+    _isButton = function(event, code) {
       return event.which ? (event.which === code + 1) : (event.button === code);
     };
   }
 
-  return {
-    isLeftClick:   function(event) { return isButton(event, 0) },
-    isMiddleClick: function(event) { return isButton(event, 1) },
-    isRightClick:  function(event) { return isButton(event, 2) },
-    
-    element: function(event) {
-      event = Event.extend(event);
-      
-      var node          = event.target,
-          type          = event.type,
-          currentTarget = event.currentTarget;
-      
-      if (currentTarget && currentTarget.tagName) {
-        // Firefox screws up the "click" event when moving between radio buttons
-        // via arrow keys. It also screws up the "load" and "error" events on images,
-        // reporting the document as the target instead of the original image.
-        if (type === 'load' || type === 'error' ||
-          (type === 'click' && currentTarget.tagName.toLowerCase() === 'input'
-            && currentTarget.type === 'radio'))
-              node = currentTarget;
-      }
-      if (node.nodeType == Node.TEXT_NODE) node = node.parentNode;
-      return Element.extend(node);
-    },
+  function isLeftClick(event)   { return _isButton(event, 0) }
+  function isMiddleClick(event) { return _isButton(event, 1) }
+  function isRightClick(event)  { return _isButton(event, 2) }
 
-    findElement: function(event, expression) {
-      var element = Event.element(event);
-      if (!expression) return element;
-      var elements = [element].concat(element.ancestors());
-      return Selector.findElement(elements, expression, 0);
-    },
+  function element(event) {
+    event = Event.extend(event);
 
-    pointer: function(event) {
-      var docElement = document.documentElement,
-      body = document.body || { scrollLeft: 0, scrollTop: 0 };
-      return {
-        x: event.pageX || (event.clientX + 
-          (docElement.scrollLeft || body.scrollLeft) -
-          (docElement.clientLeft || 0)),
-        y: event.pageY || (event.clientY + 
-          (docElement.scrollTop || body.scrollTop) -
-          (docElement.clientTop || 0))
-      };
-    },
+    var node = event.target, type = event.type,
+     currentTarget = event.currentTarget;
 
-    pointerX: function(event) { return Event.pointer(event).x },
-    pointerY: function(event) { return Event.pointer(event).y },
-
-    stop: function(event) {
-      Event.extend(event);
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopped = true;
+    if (currentTarget && currentTarget.tagName) {
+      // Firefox screws up the "click" event when moving between radio buttons
+      // via arrow keys. It also screws up the "load" and "error" events on images,
+      // reporting the document as the target instead of the original image.
+      if (type === 'load' || type === 'error' ||
+        (type === 'click' && currentTarget.tagName.toLowerCase() === 'input'
+          && currentTarget.type === 'radio'))
+            node = currentTarget;
     }
-  };
-})();
 
-Event.extend = (function() {
+    // Fix a Safari bug where a text node gets passed as the target of an
+    // anchor click rather than the anchor itself.
+    if (node.nodeType == Node.TEXT_NODE)
+      node = node.parentNode;
+
+    return Element.extend(node);
+  }
+
+  function findElement(event, expression) {
+    var element = Event.element(event);
+    if (!expression) return element;
+    var elements = [element].concat(element.ancestors());
+    return Selector.findElement(elements, expression, 0);
+  }
+
+  function pointer(event) {
+    var docElement = document.documentElement,
+     body = document.body || { scrollLeft: 0, scrollTop: 0 };
+    return {
+      x: event.pageX || (event.clientX +
+        (docElement.scrollLeft || body.scrollLeft) -
+        (docElement.clientLeft || 0)),
+      y: event.pageY || (event.clientY +
+        (docElement.scrollTop || body.scrollTop) -
+        (docElement.clientTop || 0))
+    };
+  }
+
+  function pointerX(event) { return Event.pointer(event).x }
+  function pointerY(event) { return Event.pointer(event).y }
+
+  function stop(event) {
+    Event.extend(event);
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Set a "stopped" property so that a custom event can be inspected
+    // after the fact to determine whether or not it was stopped.
+    event.stopped = true;
+  }
+
+  Event.Methods = {
+    isLeftClick: isLeftClick,
+    isMiddleClick: isMiddleClick,
+    isRightClick: isRightClick,
+
+    element: element,
+    findElement: findElement,
+
+    pointer: pointer,
+    pointerX: pointerX,
+    pointerY: pointerY,
+
+    stop: stop
+  };
+
+
+  // Compile the list of methods that get extended onto Events.
   var methods = Object.keys(Event.Methods).inject({ }, function(m, name) {
     m[name] = Event.Methods[name].methodize();
     return m;
   });
-  
+
   if (Prototype.Browser.IE) {
+    function _relatedTarget(event) {
+      var element;
+      switch (event.type) {
+        case 'mouseover': element = event.fromElement; break;
+        case 'mouseout':  element = event.toElement;   break;
+        default: return null;
+      }
+      return Element.extend(element);
+    }
+
     Object.extend(methods, {
       stopPropagation: function() { this.cancelBubble = true },
       preventDefault:  function() { this.returnValue = false },
-      inspect: function() { return "[object Event]" }
+      inspect: function() { return '[object Event]' }
     });
 
-    return function(event) {
+    // IE's method for extending events.
+    Event.extend = function(event) {
       if (!event) return false;
       if (event._extendedByPrototype) return event;
-      
+
       event._extendedByPrototype = Prototype.emptyFunction;
       var pointer = Event.pointer(event);
       Object.extend(event, {
         target: event.srcElement,
-        relatedTarget: Event.relatedTarget(event),
+        relatedTarget: _relatedTarget(event),
         pageX:  pointer.x,
         pageY:  pointer.y
       });
       return Object.extend(event, methods);
     };
-    
   } else {
-    Event.prototype = Event.prototype || document.createEvent("HTMLEvents")['__proto__'];
+    Event.prototype = window.Event.prototype || document.createEvent('HTMLEvents').__proto__;
     Object.extend(Event.prototype, methods);
-    return Prototype.K;
+    Event.extend = Prototype.K;
   }
-})();
 
-Object.extend(Event, (function() {
-  var cache = Event.cache;
-
-  function getEventID(element) {
+  function _getEventID(element) {
     if (element._prototypeEventID) return element._prototypeEventID[0];
-    arguments.callee.id = arguments.callee.id || 1;
     return element._prototypeEventID = [++arguments.callee.id];
   }
-  
-  function getDOMEventName(eventName) {
-    if (eventName && eventName.include(':')) return "dataavailable";
+  _getEventID.id = 1;
+
+  function _getDOMEventName(eventName) {
+    if (eventName && eventName.include(':')) return 'dataavailable';
     return eventName;
   }
-  
-  function getCacheForID(id) {
-    return cache[id] = cache[id] || { };
+
+  function _getCacheForID(id) {
+    return Event.cache[id] = Event.cache[id] || { };
   }
-  
-  function getWrappersForEventName(id, eventName) {
-    var c = getCacheForID(id);
+
+  function _getRespondersForEvent(id, eventName) {
+    var c = _getCacheForID(id);
     return c[eventName] = c[eventName] || [];
   }
-  
-  function createWrapper(element, eventName, handler) {
-    var id = getEventID(element);
-    var c = getWrappersForEventName(id, eventName);
-    if (c.pluck("handler").include(handler)) return false;
-    
-    var wrapper = function(event) {
+
+  function _createResponder(element, eventName, handler) {
+    var id = _getEventID(element), r = _getRespondersForEvent(id, eventName);
+
+    // Work around the issue that permits a handler to be attached more than
+    // once to the same element & event type.
+    if (r.pluck('handler').include(handler)) return false;
+
+    var responder = function(event) {
       if (!Event || !Event.extend ||
-        (event.eventName && event.eventName != eventName))
-          return false;
-      
+      // If it's a custom event, but not the _correct_ custom event, ignore it.
+       (!Object.isUndefined(event.eventName) && event.eventName !== eventName))
+        return false;
+
       Event.extend(event);
       handler.call(element, event);
     };
-    
-    wrapper.handler = handler;
-    c.push(wrapper);
-    return wrapper;
+
+    responder.handler = handler;
+    r.push(responder);
+    return responder;
   }
-  
-  function findWrapper(id, eventName, handler) {
-    var c = getWrappersForEventName(id, eventName);
-    return c.find(function(wrapper) { return wrapper.handler == handler });
+
+  function _findResponder(id, eventName, handler) {
+    var r = _getRespondersForEvent(id, eventName);
+    return r.find(function(responder) {
+      return responder.handler === handler;
+    });
   }
-  
-  function destroyWrapper(id, eventName, handler) {
-    var c = getCacheForID(id);
-    if (!c[eventName]) return false;
-    c[eventName] = c[eventName].without(findWrapper(id, eventName, handler));
+
+  function _destroyResponder(id, eventName, handler) {
+    var c = _getCacheForID(id);
+    if (Object.isUndefined(c[eventName])) return false;
+    c[eventName] = c[eventName].without(_findResponder(id, eventName, handler));
   }
-  
-  function destroyCache() {
-    for (var id in cache)
-      for (var eventName in cache[id])
-        cache[id][eventName] = null;
+
+  function _destroyCache() {
+    for (var id in Event.cache) {
+      for (var eventName in Event.cache[id])
+        Event.cache[id][eventName] = null;
+    }
   }
-  
-  
+
   // Internet Explorer needs to remove event handlers on page unload
   // in order to avoid memory leaks.
-  if (window.attachEvent) {
-    window.attachEvent("onunload", destroyCache);
-  }
-  
-  // Safari has a dummy event handler on page unload so that it won't
+  if (Prototype.Browser.IE)
+    window.attachEvent('onunload', _destroyCache);
+
+  // Safari needs a dummy event handler on page unload so that it won't
   // use its bfcache. Safari <= 3.1 has an issue with restoring the "document"
   // object when page is returned to via the back button using its bfcache.
-  if (Prototype.Browser.WebKit) {    
+  if (Prototype.Browser.WebKit)
     window.addEventListener('unload', Prototype.emptyFunction, false);
+
+
+  function observe(element, eventName, handler) {
+    element = $(element);
+    var name = _getDOMEventName(eventName),
+     responder = _createResponder(element, eventName, handler);
+
+    if (!responder) return element;
+
+    if (element.addEventListener)
+      element.addEventListener(name, responder, false);
+    else
+      element.attachEvent("on" + name, responder);
+
+    return element;
   }
-    
-  return {
-    observe: function(element, eventName, handler) {
-      element = $(element);
-      var name = getDOMEventName(eventName);
-      
-      var wrapper = createWrapper(element, eventName, handler);
-      if (!wrapper) return element;
-      
-      if (element.addEventListener) {
-        element.addEventListener(name, wrapper, false);
-      } else {
-        element.attachEvent("on" + name, wrapper);
-      }
-      
+
+  function stopObserving(element, eventName, handler) {
+    element = $(element);
+    var id = _getEventID(element), name = _getDOMEventName(eventName);
+
+    if (eventName && !handler) {
+      // If an event name is passed without a handler, we stop observing all
+      // handlers of that type.
+      _getRespondersForEvent(id, eventName).each(function(r) {
+        element.stopObserving(eventName, r.handler);
+      });
       return element;
-    },
-  
-    stopObserving: function(element, eventName, handler) {
-      element = $(element);
-      var id = getEventID(element), name = getDOMEventName(eventName);
-      
-      if (!handler && eventName) {
-        getWrappersForEventName(id, eventName).each(function(wrapper) {
-          element.stopObserving(eventName, wrapper.handler);
-        });
-        return element;
-        
-      } else if (!eventName) {
-        Object.keys(getCacheForID(id)).each(function(eventName) {
-          element.stopObserving(eventName);
-        });
-        return element;
-      }
-      
-      var wrapper = findWrapper(id, eventName, handler);
-      if (!wrapper) return element;
-      
-      if (element.removeEventListener) {
-        element.removeEventListener(name, wrapper, false);
-      } else {
-        element.detachEvent("on" + name, wrapper);
-      }
-      
-      destroyWrapper(id, eventName, handler);
-      
+    } else if (!eventName) {
+      // If both the event name and the handler are omitted, we stop observing
+      // _all_ handlers on the element.
+      Object.keys(_getCacheForID(id)).each(function(eventName) {
+        element.stopObserving(eventName);
+      });
       return element;
-    },
-  
-    fire: function(element, eventName, memo) {
-      element = $(element);
-      if (element == document && document.createEvent && !element.dispatchEvent)
-        element = document.documentElement;
-        
-      var event;
-      if (document.createEvent) {
-        event = document.createEvent("HTMLEvents");
-        event.initEvent("dataavailable", true, true);
-      } else {
-        event = document.createEventObject();
-        event.eventType = "ondataavailable";
-      }
-
-      event.eventName = eventName;
-      event.memo = memo || { };
-
-      if (document.createEvent) {
-        element.dispatchEvent(event);
-      } else {
-        element.fireEvent(event.eventType, event);
-      }
-
-      return Event.extend(event);
     }
-  };
-})());
 
-Object.extend(Event, Event.Methods);
+    var responder = _findResponder(id, eventName, handler);
+    if (!responder) return element;
 
-Element.addMethods({
-  fire:          Event.fire,
-  observe:       Event.observe,
-  stopObserving: Event.stopObserving
-});
+    if (element.removeEventListener)
+      element.removeEventListener(name, responder, false);
+    else
+      element.detachEvent('on' + name, responder);
 
-Object.extend(document, {
-  fire:          Element.Methods.fire.methodize(),
-  observe:       Element.Methods.observe.methodize(),
-  stopObserving: Element.Methods.stopObserving.methodize(),
-  loaded:        false
-});
+    _destroyResponder(id, eventName, handler);
+
+    return element;
+  }
+
+  function fire(element, eventName, memo) {
+    element = $(element);
+    if (element == document && document.createEvent && !element.dispatchEvent)
+      element = document.documentElement;
+
+    var event;
+    if (document.createEvent) {
+      event = document.createEvent('HTMLEvents');
+      event.initEvent('dataavailable', true, true);
+    } else {
+      event = document.createEventObject();
+      event.eventType = 'ondataavailable';
+    }
+
+    event.eventName = eventName;
+    event.memo = memo || { };
+
+    if (document.createEvent)
+      element.dispatchEvent(event);
+    else
+      element.fireEvent(event.eventType, event);
+
+    return Event.extend(event);
+  }
+
+
+  Object.extend(Event, Event.Methods);
+
+  Object.extend(Event, {
+    fire:          fire,
+    observe:       observe,
+    stopObserving: stopObserving
+  });
+
+  Element.addMethods({
+    fire:          fire,
+    observe:       observe,
+    stopObserving: stopObserving
+  });
+
+  Object.extend(document, {
+    fire:          fire.methodize(),
+    observe:       observe.methodize(),
+    stopObserving: stopObserving.methodize(),
+    loaded:        false
+  });
+
+  // Export to the global scope.
+  if (window.Event) Object.extend(window.Event, Event)
+  else window.Event = Event;
+})();
 
 (function() {
   /* Support for the DOMContentLoaded event is based on work by Dan Webb, 
      Matthias Miller, Dean Edwards and John Resig. */
 
-  var timer;
+  var _timer;
   
-  function fireContentLoadedEvent() {
+  function _fireContentLoadedEvent() {
     if (document.loaded) return;
-    if (timer) window.clearInterval(timer);
+    if (_timer) window.clearInterval(_timer);
+    
     document.fire("dom:loaded");
     document.loaded = true;
   }
   
+  function _webkitContentLoadedCheck() {
+    var s = document.readyState;
+    if (s === "loaded" || s === "complete")
+      _fireContentLoadedEvent();
+  }
+  
+  function _IEContentLoadedCheck() {
+    if (this.readyState == "complete") {
+      this.onreadystatechange = null; 
+      _fireContentLoadedEvent();
+    }
+  }
+  
   if (document.addEventListener) {
     if (Prototype.Browser.WebKit) {
-      timer = window.setInterval(function() {
-        if (/loaded|complete/.test(document.readyState))
-          fireContentLoadedEvent();
-      }, 0);
-      
-      Event.observe(window, "load", fireContentLoadedEvent);
-      
+      _timer = window.setInterval(_webkitContentLoadedCheck, 0);
+      Event.observe(window, "load", _fireContentLoadedEvent);
     } else {
-      document.addEventListener("DOMContentLoaded", 
-        fireContentLoadedEvent, false);
+      document.addEventListener("DOMContentLoaded",
+        _fireContentLoadedEvent, false);
     }
-    
   } else {
     document.write("<script id=__onDOMContentLoaded defer src=//:><\/script>");
-    $("__onDOMContentLoaded").onreadystatechange = function() { 
-      if (this.readyState == "complete") {
-        this.onreadystatechange = null; 
-        fireContentLoadedEvent();
-      }
-    }; 
+    $("__onDOMContentLoaded").onreadystatechange = _IEContentLoadedCheck;
   }
 })();
