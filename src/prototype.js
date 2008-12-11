@@ -33,8 +33,27 @@ var Prototype = {
 if (Prototype.Browser.MobileSafari)
   Prototype.BrowserFeatures.SpecificElementExtensions = false;
   
+var Abstract = { };
 
-<%= include 'base.js', 'string.js' %>
+var Try = {
+  these: function() {
+    var returnValue;
+    
+    for (var i = 0, length = arguments.length; i < length; i++) {
+      var lambda = arguments[i];
+      try {
+        returnValue = lambda();
+        break;
+      } catch (e) { }
+    }
+    
+    return returnValue;
+  }
+};
+
+<%= include 'class.js', 'object.js', 'function.js', 'date.js', 'regexp.js', 'periodical_executer.js' %>
+
+<%= include 'string.js', 'template.js' %>
 
 <%= include 'enumerable.js', 'array.js', 'number.js', 'hash.js', 'range.js' %>
 
