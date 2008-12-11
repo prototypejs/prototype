@@ -83,9 +83,8 @@ Object.extend(String.prototype, (function() {
   }
 
   function escapeHTML() {
-    var self = arguments.callee;
-    self.text.data = this;
-    return self.div.innerHTML;
+    escapeHTML.text.data = this;
+    return escapeHTML.div.innerHTML;
   }
 
   function unescapeHTML() {
