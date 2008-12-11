@@ -38,6 +38,8 @@ var Selector = Class.create({
   
   shouldUseSelectorsAPI: function() {
     if (!Prototype.BrowserFeatures.SelectorsAPI) return false;
+        
+    if (Selector.CASE_INSENSITIVE_CLASS_NAMES) return false;
     
     if (!Selector._div) Selector._div = new Element('div');
 
@@ -179,6 +181,24 @@ var Selector = Class.create({
     return "#<Selector:" + this.expression.inspect() + ">";
   }
 });
+
+if (Prototype.BrowserFeatures.SelectorsAPI &&
+ document.compatMode === 'BackCompat') {
+  // Versions of Safari 3 before 3.1.2 treat class names case-insensitively in
+  // quirks mode. If we detect this behavior, we should use a different
+  // approach.
+  Selector.CASE_INSENSITIVE_CLASS_NAMES = (function(){
+    var div = document.createElement('div'),
+     span = document.createElement('span');
+
+    div.id = "prototype_test_id";
+    span.className = 'Test';
+    div.appendChild(span);
+    var isIgnored = (div.querySelector('#prototype_test_id .test') !== null);
+    div = span = null;
+    return isIgnored;
+  })();
+}
 
 Object.extend(Selector, {
   _cache: { },

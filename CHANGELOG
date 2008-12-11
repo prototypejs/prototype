@@ -1,3 +1,5 @@
+* Fix issue where certain versions of Safari treat class names case-insensitively in Selector/$$ queries. (Andrew Dupont, kangax, Brice)
+
 * Fix issue where Function#argumentNames returned incorrect results in IE when comments were intermixed with argument names. (Christophe Porteneuve, T.J. Crowder)
 
 * Selector.patterns should be represented as an ordered structure. (ADO, kangax)
