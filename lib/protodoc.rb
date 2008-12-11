@@ -21,6 +21,7 @@ module Protodoc
     include Environment
     
     def initialize(filename)
+      filename = File.join(filename.split('/'))
       @filename = File.expand_path(filename)
       @template = ERB.new(IO.read(@filename), nil, '%')
     end
