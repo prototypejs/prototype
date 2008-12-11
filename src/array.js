@@ -21,86 +21,95 @@ if (Prototype.Browser.WebKit) {
   };
 }
 
+function $w(string) {
+  if (!Object.isString(string)) return [];
+  string = string.strip();
+  return string ? string.split(/\s+/) : [];
+}
+
 Array.from = $A;
 
-Object.extend(Array.prototype, Enumerable);
-
-if (!Array.prototype._reverse) Array.prototype._reverse = Array.prototype.reverse;
-
-Object.extend(Array.prototype, {
-  _each: function(iterator) {
+(function() {
+  var arrayProto = Array.prototype,
+      slice = arrayProto.slice,
+      _each = arrayProto.forEach; // use native browser JS 1.6 implementation if available
+  
+  function each(iterator) {
     for (var i = 0, length = this.length; i < length; i++)
       iterator(this[i]);
-  },
+  }
+  if (!_each) _each = each;
   
-  clear: function() {
+  function clear() {
     this.length = 0;
     return this;
-  },
-  
-  first: function() {
+  }
+
+  function first() {
     return this[0];
-  },
-  
-  last: function() {
+  }
+
+  function last() {
     return this[this.length - 1];
-  },
-  
-  compact: function() {
+  }
+
+  function compact() {
     return this.select(function(value) {
       return value != null;
     });
-  },
-  
-  flatten: function() {
+  }
+
+  function flatten() {
     return this.inject([], function(array, value) {
-      return array.concat(Object.isArray(value) ?
-        value.flatten() : [value]);
+      if (Object.isArray(value))
+        return array.concat(value.flatten());
+      array.push(value);
+      return array;
     });
-  },
-  
-  without: function() {
-    var values = $A(arguments);
+  }
+
+  function without() {
+    var values = slice.call(arguments, 0);
     return this.select(function(value) {
       return !values.include(value);
     });
-  },
-  
-  reverse: function(inline) {
+  }
+
+  function reverse(inline) {
     return (inline !== false ? this : this.toArray())._reverse();
-  },
-  
-  reduce: function() {
+  }
+
+  function reduce() {
     return this.length > 1 ? this : this[0];
-  },
-  
-  uniq: function(sorted) {
+  }
+
+  function uniq(sorted) {
     return this.inject([], function(array, value, index) {
       if (0 == index || (sorted ? array.last() != value : !array.include(value)))
         array.push(value);
       return array;
     });
-  },
-  
-  intersect: function(array) { 
+  }
+
+  function intersect(array) { 
     return this.uniq().findAll(function(item) { 
       return array.detect(function(value) { return item === value });
     }); 
-  },
-  
-  clone: function() {
-    return [].concat(this);
-  },
-  
-  size: function() {
+  }
+
+  function clone() {
+    return slice.call(this, 0);
+  }
+
+  function size() {
     return this.length;
-  },
-  
-  inspect: function() {
+  }
+
+  function inspect() {
     return '[' + this.map(Object.inspect).join(', ') + ']';
-  },
-  
-  toJSON: function() {
+  }
+
+  function toJSON() {
     var results = [];
     this.each(function(object) {
       var value = Object.toJSON(object);
@@ -108,37 +117,23 @@ Object.extend(Array.prototype, {
     });
     return '[' + results.join(', ') + ']';
   }
-});
-
-// use native browser JS 1.6 implementation if available
-if (Object.isFunction(Array.prototype.forEach))
-  Array.prototype._each = Array.prototype.forEach;
-
-if (!Array.prototype.indexOf) Array.prototype.indexOf = function(item, i) {
-  i || (i = 0);
-  var length = this.length;
-  if (i < 0) i = length + i;
-  for (; i < length; i++)
-    if (this[i] === item) return i;
-  return -1;
-};
-
-if (!Array.prototype.lastIndexOf) Array.prototype.lastIndexOf = function(item, i) {
-  i = isNaN(i) ? this.length : (i < 0 ? this.length + i : i) + 1;
-  var n = this.slice(0, i).reverse().indexOf(item);
-  return (n < 0) ? n : i - n - 1;
-};
-
-Array.prototype.toArray = Array.prototype.clone;
-
-function $w(string) {
-  if (!Object.isString(string)) return [];
-  string = string.strip();
-  return string ? string.split(/\s+/) : [];
-}
-
-if (Prototype.Browser.Opera){
-  Array.prototype.concat = function() {
+  
+  function indexOf(item, i) {
+    i || (i = 0);
+    var length = this.length;
+    if (i < 0) i = length + i;
+    for (; i < length; i++)
+      if (this[i] === item) return i;
+    return -1;
+  }
+  
+  function lastIndexOf(item, i) {
+    i = isNaN(i) ? this.length : (i < 0 ? this.length + i : i) + 1;
+    var n = this.slice(0, i).reverse().indexOf(item);
+    return (n < 0) ? n : i - n - 1;
+  }
+  
+  function concat() {
     var array = [];
     for (var i = 0, length = this.length; i < length; i++) array.push(this[i]);
     for (var i = 0, length = arguments.length; i < length; i++) {
@@ -150,5 +145,34 @@ if (Prototype.Browser.Opera){
       }
     }
     return array;
-  };
-}
+  }
+  
+  Object.extend(arrayProto, Enumerable);
+  
+  if (!arrayProto._reverse)
+    arrayProto._reverse = arrayProto.reverse;
+  
+  Object.extend(arrayProto, {
+    _each:     _each,
+    clear:     clear,
+    first:     first,
+    last:      last,
+    compact:   compact,
+    flatten:   flatten,
+    without:   without,
+    reverse:   reverse,
+    reduce:    reduce,
+    uniq:      uniq,
+    intersect: intersect,
+    clone:     clone,
+    toArray:   clone,
+    size:      size,
+    inspect:   inspect,
+    toJSON:    toJSON
+  });
+  
+  // use native browser JS 1.6 implementation if available
+  if (!'indexOf'     in arrayProto) arrayProto.indexOf     = indexOf;
+  if (!'lastIndexOf' in arrayProto) arrayProto.lastIndexOf = lastIndexOf;
+  if (!'concat'      in arrayProto) arrayProto.concat      = concat;
+})();
