@@ -116,3 +116,33 @@ end
 task :clean_tmp do
   puts '"rake clean_tmp" is deprecated. Please use "rake test:clean" instead.'
 end
+
+namespace :caja do
+  task :test => ['test:build', 'test:run']
+  
+  namespace :test do
+    task :run => ['rake:test:run']
+
+    task :build => [:require, 'rake:test:clean', :dist] do 
+      builder = UnittestJS::CajaBuilder::SuiteBuilder.new({
+        :input_dir          => PROTOTYPE_TEST_UNIT_DIR,
+        :assets_dir         => PROTOTYPE_DIST_DIR,
+        :whitelist_dir      => File.join(PROTOTYPE_TEST_DIR, 'unit', 'caja_whitelists'),
+        :html_attrib_schema => 'html_attrib.json'
+      })
+      selected_tests = (ENV['TESTS'] || '').split(',')
+      builder.collect(*selected_tests)
+      builder.render
+    end
+  end
+  task :require => ['rake:test:require'] do
+    lib = 'vendor/caja_builder/lib/caja_builder'
+    unless File.exists?(lib)
+      puts "\nYou'll need UnittestJS to run the tests. Just run:\n\n"
+      puts "  $ git submodule init"
+      puts "  $ git submodule update"
+      puts "\nand you should be all set.\n\n"
+    end
+    require lib
+  end
+end
