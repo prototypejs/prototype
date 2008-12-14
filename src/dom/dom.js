@@ -1214,11 +1214,15 @@ Element.addMethods({
   getStorage: function(element) {
     if (!(element = $(element))) return;
     
-    if (Object.isUndefined(element._prototypeUID))
-      element._prototypeUID = [Element.Storage.UID++];
-      
-    var uid = element._prototypeUID[0];
-    
+    var uid;
+    if (element === window) {
+      uid = 0;
+    } else {
+      if (Object.isUndefined(element._prototypeUID))
+        element._prototypeUID = [Element.Storage.UID++];
+      uid = element._prototypeUID[0];
+    }
+        
     if (!Element.Storage[uid])
       Element.Storage[uid] = $H();
     
@@ -1232,8 +1236,7 @@ Element.addMethods({
   
   retrieve: function(element, key, defaultValue) {
     if (!(element = $(element))) return;
-    
-    var hash = element.getStorage(), value = hash.get(key);
+    var hash = Element.getStorage(element), value = hash.get(key);
     
     if (Object.isUndefined(value)) {
       hash.set(key, defaultValue);

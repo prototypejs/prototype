@@ -1,4 +1,4 @@
-* Added Element#store and Element#retrieve for safe, hash-backed storage of element metadata (no memory leaks). Also added Element#getStorage for working with the element's storage hash directly. Hat tip: Mootools. (ZenCocoon, Andrew Dupont)
+* Add Element#store and Element#retrieve for safe, hash-backed storage of element metadata (no memory leaks). Also add Element#getStorage for working with the element's storage hash directly. Hat tip: Mootools. (ZenCocoon, Andrew Dupont)
 
 * Fix issue where certain versions of Safari treat class names case-insensitively in Selector/$$ queries. (Andrew Dupont, kangax, Brice)
 
