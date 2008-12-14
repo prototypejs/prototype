@@ -1,3 +1,5 @@
+* Add non-bubbling custom events. A new final argument to Element#fire defaults to `true`; pass `false` to prevent bubbling when firing a custom event. (Andrew Dupont)
+
 * Alter event system to use new element storage API rather than have its own global hashtable. (Andrew Dupont)
 
 * Add Element#store and Element#retrieve for safe, hash-backed storage of element metadata (no memory leaks). Also add Element#getStorage for working with the element's storage hash directly. Hat tip: Mootools. (ZenCocoon, Andrew Dupont)
