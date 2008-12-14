@@ -1,3 +1,11 @@
+/** section: lang, alias of: Array.from
+ *    $A(iterable) -> Array
+ * 
+ *  Accepts an array-like collection (anything with numeric indices) and returns 
+ *  its equivalent as an actual Array object. 
+ *  This method is a convenience alias of [[Array.from]], but is the preferred way
+ *  of casting to an Array.
+ **/
 function $A(iterable) {
   if (!iterable) return [];
   if (iterable.toArray) return iterable.toArray();
@@ -21,6 +29,14 @@ if (Prototype.Browser.WebKit) {
   };
 }
 
+/** section: lang
+ *  $w(string) -> Array
+ *  - string (String): A string with zero or more spaces.
+ *
+ *  Splits a string into an array, treating all whitespace as delimiters.
+ *
+ *  Equivalent to Ruby's `%w{foo bar}` or Perl's `qw(foo bar)`.
+**/
 function $w(string) {
   if (!Object.isString(string)) return [];
   string = string.strip();
@@ -29,6 +45,9 @@ function $w(string) {
 
 Array.from = $A;
 
+/** section: lang
+ * Array
+**/
 (function() {
   var arrayProto = Array.prototype,
       slice = arrayProto.slice,
@@ -40,25 +59,49 @@ Array.from = $A;
   }
   if (!_each) _each = each;
   
+  /**
+   *  Array#clear() -> Array
+   *  Empties an array.
+  **/
   function clear() {
     this.length = 0;
     return this;
   }
 
+  /**
+   *  Array#first() -> ?
+   *  Returns the array's first item.
+  **/
   function first() {
     return this[0];
   }
 
+  /**
+   *  Array#last() -> ?
+   *  Returns the array's last item.
+  **/
   function last() {
     return this[this.length - 1];
   }
 
+  /**
+   *  Array#compact() -> Array
+   *  Trims the array of `null`, `undefined`, or other "falsy" values.
+  **/
   function compact() {
     return this.select(function(value) {
       return value != null;
     });
   }
 
+  /**
+   *  Array#flatten() -> Array
+   *  Returns a “flat” (one-dimensional) version of the array.
+   *
+   *  Nested arrays are recursively injected “inline”. This can prove very
+   *  useful when handling the results of a recursive collection algorithm,
+   *  for instance.
+  **/
   function flatten() {
     return this.inject([], function(array, value) {
       if (Object.isArray(value))
@@ -68,6 +111,13 @@ Array.from = $A;
     });
   }
 
+  /**
+   *  Array#without(value...) -> Array
+   *  - value (?): A value to exclude.
+   *
+   *  Produces a new version of the array that does not contain any of the
+   *  specified values.
+  **/
   function without() {
     var values = slice.call(arguments, 0);
     return this.select(function(value) {
@@ -75,14 +125,34 @@ Array.from = $A;
     });
   }
 
+  /**
+   *  Array#reverse([inline = false]) -> Array
+   *  - inline (Boolean): Whether to modify the array in place. If `false`,
+   *      clones the original array first.
+   *
+   *  Returns the reversed version of the array.
+  **/
   function reverse(inline) {
     return (inline !== false ? this : this.toArray())._reverse();
   }
 
+  /**
+   * Array#reduce() -> Array
+   *  Reduces arrays: one-element arrays are turned into their unique item,
+   *  while multiple-element arrays are returned untouched.
+  **/
   function reduce() {
     return this.length > 1 ? this : this[0];
   }
 
+  /**
+   *  Array#uniq([sorted = false]) -> Array
+   *  - sorted (Boolean): Whether the array has already been sorted. If `true`,
+   *      a less-costly algorithm will be used.
+   *
+   *  Produces a duplicate-free version of an array. If no duplicates are
+   *  found, the original array is returned.
+  **/
   function uniq(sorted) {
     return this.inject([], function(array, value, index) {
       if (0 == index || (sorted ? array.last() != value : !array.include(value)))
@@ -91,24 +161,53 @@ Array.from = $A;
     });
   }
 
+  /**
+   *  Array#intersect(array) -> Array
+   *  - array (Array): A collection of values.
+   *
+   *  Returns an array containing every item that is shared between the two
+   *  given arrays.
+  **/
   function intersect(array) { 
     return this.uniq().findAll(function(item) { 
       return array.detect(function(value) { return item === value });
     }); 
   }
 
+  /** alias of: Array#toArray
+   *  Array#clone() -> Array
+   *
+   *  Returns a duplicate of the array, leaving the original array intact.
+  **/
   function clone() {
     return slice.call(this, 0);
   }
 
+  /** related to: Enumerable#size
+   *  Array#size() -> Number
+   *  Returns the size of the array.
+   *
+   *  This is just a local optimization of the mixed-in [[Enumerable#size]]
+   *  which avoids array cloning and uses the array’s native length property.
+  **/
   function size() {
     return this.length;
   }
 
+  /** related to: Object.inspect
+   *  Array#inspect() -> String
+   *
+   *  Returns the debug-oriented string representation of an array.
+  **/
   function inspect() {
     return '[' + this.map(Object.inspect).join(', ') + ']';
   }
 
+  /** related to: Object.toJSON
+   *  Array#toJSON() -> String
+   *
+   *  Returns a JSON string representation of the array.
+  **/
   function toJSON() {
     var results = [];
     this.each(function(object) {
@@ -118,6 +217,15 @@ Array.from = $A;
     return '[' + results.join(', ') + ']';
   }
   
+  /**
+   *  Array#indexOf(item[, offset = 0]) -> Number
+   *  - item (?): A value that may or may not be in the array.
+   *  - offset (Number): The number of initial items to skip before beginning the
+   *      search.
+   *
+   *  Returns the position of the first occurrence of `item` within the array — or
+   *  `-1` if `item` doesn’t exist in the array.
+  **/
   function indexOf(item, i) {
     i || (i = 0);
     var length = this.length;
@@ -127,12 +235,26 @@ Array.from = $A;
     return -1;
   }
   
+  /** related to: Array#indexOf
+   *  Array#lastIndexOf(item[, offset]) -> Number
+   *  - item (?): A value that may or may not be in the array.
+   *  - offset (Number): The number of items at the end to skip before beginning
+   *      the search.
+   *
+   *  Returns the position of the last occurrence of `item` within the array — or
+   *  `-1` if `item` doesn’t exist in the array.
+  **/
   function lastIndexOf(item, i) {
     i = isNaN(i) ? this.length : (i < 0 ? this.length + i : i) + 1;
     var n = this.slice(0, i).reverse().indexOf(item);
     return (n < 0) ? n : i - n - 1;
   }
   
+  /**
+   *  Array#concat(args...) -> Array
+   *
+   *  TODO: Array#concat
+  **/
   function concat() {
     var array = slice.call(this, 0), item;
     for (var i = 0, length = arguments.length; i < length; i++) {

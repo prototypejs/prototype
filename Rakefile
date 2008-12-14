@@ -10,29 +10,41 @@ PROTOTYPE_TEST_UNIT_DIR = File.join(PROTOTYPE_TEST_DIR, 'unit')
 PROTOTYPE_TMP_DIR       = File.join(PROTOTYPE_TEST_UNIT_DIR, 'tmp')
 PROTOTYPE_VERSION       = '1.6.0.3'
 
+$:.unshift File.join(PROTOTYPE_ROOT, 'lib')
+
 task :default => [:dist, :dist_helper, :package, :clean_package_source]
 
 desc "Builds the distribution."
 task :dist do
-  $:.unshift File.join(PROTOTYPE_ROOT, 'lib')
   require 'protodoc'
-  
-  Dir.chdir(PROTOTYPE_SRC_DIR) do
-    File.open(File.join(PROTOTYPE_DIST_DIR, 'prototype.js'), 'w+') do |dist|
-      dist << Protodoc::Preprocessor.new('prototype.js')
-    end
+
+  File.open(File.join(PROTOTYPE_DIST_DIR, 'prototype.js'), 'w+') do |dist|
+    source = File.join(PROTOTYPE_SRC_DIR, 'prototype.js')
+    dist << Protodoc::Preprocessor.new(source, :strip_documentation => true)
+  end
+end
+
+desc "Builds the documentation."
+task :doc do
+  require 'protodoc'
+  require 'pdoc'
+
+  Tempfile.open("prototype-doc") do |temp|
+    source = File.join(PROTOTYPE_SRC_DIR, 'prototype.js')
+    temp << Protodoc::Preprocessor.new(source, :strip_documentation => false)
+    temp.flush
+    rm_rf PROTOTYPE_DOC_DIR
+    PDoc::Runner.new(temp.path, :output => PROTOTYPE_DOC_DIR).run
   end
 end
 
 desc "Builds the updating helper."
 task :dist_helper do
-  $:.unshift File.join(PROTOTYPE_ROOT, 'lib')
   require 'protodoc'
-  
-  Dir.chdir(File.join(PROTOTYPE_ROOT, 'ext', 'update_helper')) do
-    File.open(File.join(PROTOTYPE_DIST_DIR, 'prototype_update_helper.js'), 'w+') do |dist|
-      dist << Protodoc::Preprocessor.new('prototype_update_helper.js')
-    end
+
+  File.open(File.join(PROTOTYPE_DIST_DIR, 'prototype_update_helper.js'), 'w+') do |dist|
+    source = File.join(PROTOTYPE_ROOT, 'ext', 'update_helper', 'prototype_update_helper.js')
+    dist << Protodoc::Preprocessor.new(source)
   end
 end
 

@@ -1,4 +1,12 @@
+/** section: lang
+ * String
+**/
 Object.extend(String, {
+  /**
+   *  String.interpret(value) -> String
+   *
+   *  TODO: String.interpret
+  **/
   interpret: function(value) {
     return value == null ? '' : String(value);
   },
@@ -20,6 +28,13 @@ Object.extend(String.prototype, (function() {
     return function(match) { return template.evaluate(match) };
   }
   
+  /**
+   *  String#gsub(pattern, replacement) -> String
+   *
+   *  Returns the string with every occurence of a given pattern replaced by either
+   *  a regular string, the returned value of a function or a [[Template]] string.
+   *  The pattern can be a string or a regular expression.
+  **/
   function gsub(pattern, replacement) {
     var result = '', source = this, match;
     replacement = prepareReplacement(replacement);
@@ -36,6 +51,13 @@ Object.extend(String.prototype, (function() {
     return result;
   }
 
+  /**
+   *  String#sub(pattern, replacement[, count = 1]) -> String
+   *
+   *  Returns a string with the first count occurrences of pattern replaced by either
+   *  a regular string, the returned value of a function or a [[Template]] string.
+   *  The pattern can be a string or a regular expression.
+  **/
   function sub(pattern, replacement, count) {
     replacement = prepareReplacement(replacement);
     count = Object.isUndefined(count) ? 1 : count;
@@ -46,11 +68,24 @@ Object.extend(String.prototype, (function() {
     });
   }
 
+  /** related to: String#gsub
+   *  String#scan(pattern, iterator) -> String
+   *
+   *  Allows iterating over every occurrence of the given pattern (which can be a 
+   *  string or a regular expression).
+   *  Returns the original string.
+  **/
   function scan(pattern, iterator) {
     this.gsub(pattern, iterator);
     return String(this);
   }
 
+  /**
+   *  String#truncate([length = 30[, suffix = '...']]) -> String
+   *
+   *  Truncates a string to given `length` and appends `suffix` to it (indicating
+   *  that it is only an excerpt).
+  **/
   function truncate(length, truncation) {
     length = length || 30;
     truncation = Object.isUndefined(truncation) ? '...' : truncation;
@@ -58,18 +93,39 @@ Object.extend(String.prototype, (function() {
       this.slice(0, length - truncation.length) + truncation : String(this);
   }
 
+  /**
+   *  String#strip() -> String
+   *
+   *  Strips all leading and trailing whitespace from a string.
+  **/
   function strip() {
     return this.replace(/^\s+/, '').replace(/\s+$/, '');
   }
 
+  /**
+   *  String#stripTags() -> String
+   *
+   *  Strips a string of any HTML tag.
+  **/
   function stripTags() {
     return this.replace(/<\/?[^>]+>/gi, '');
   }
 
+  /**
+   *  String#stripScripts() -> String
+   *
+   *  Strips a string of anything that looks like an HTML script block.
+  **/
   function stripScripts() {
     return this.replace(new RegExp(Prototype.ScriptFragment, 'img'), '');
   }
 
+  /**
+   *  String#extractScripts() -> Array
+   *
+   *  Exctracts the content of any script block present in the string and returns
+   *  them as an array of strings.
+  **/
   function extractScripts() {
     var matchAll = new RegExp(Prototype.ScriptFragment, 'img');
     var matchOne = new RegExp(Prototype.ScriptFragment, 'im');
@@ -78,15 +134,31 @@ Object.extend(String.prototype, (function() {
     });
   }
 
+  /**
+   *  String#evalScripts() -> Array
+   *
+   *  Evaluates the content of any script block present in the string.
+   *  Returns an array containing the value returned by each script.
+  **/
   function evalScripts() {
     return this.extractScripts().map(function(script) { return eval(script) });
   }
 
+  /**
+   *  String#escapeHTML() -> String
+   *
+   *  Converts HTML special characters to their entity equivalents.
+  **/
   function escapeHTML() {
     escapeHTML.text.data = this;
     return escapeHTML.div.innerHTML;
   }
 
+  /** related to: String#escapeHTML
+   *  String#unescapeHTML() -> String
+   *
+   *  Strips tags and converts the entity forms of special HTML characters to their normal form.
+  **/
   function unescapeHTML() {
     var div = new Element('div');
     div.innerHTML = this.stripTags();
@@ -95,6 +167,11 @@ Object.extend(String.prototype, (function() {
       div.childNodes[0].nodeValue) : '';
   }
 
+  /** alias of: String#parseQuery, related to: Hash#toQueryString
+   *  String#toQueryParams([separator = '&']) -> Object
+   *
+   *  Parses a URI-like query string and returns an object composed of parameter/value pairs.
+  **/
   function toQueryParams(separator) {
     var match = this.strip().match(/([^?#]*)(#.*)?$/);
     if (!match) return { };
@@ -115,19 +192,42 @@ Object.extend(String.prototype, (function() {
     });
   }
 
+  /**
+   *  String#toArray() -> Array
+   *
+   *  Splits the string character-by-character and returns an array with the result.
+  **/
   function toArray() {
     return this.split('');
   }
 
+  /**
+   *  String#succ() -> String
+   *
+   *  Used internally by ObjectRange.
+   *  Converts the last character of the string to the following character in the 
+   *  Unicode alphabet.
+  **/
   function succ() {
     return this.slice(0, this.length - 1) +
       String.fromCharCode(this.charCodeAt(this.length - 1) + 1);
   }
 
+  /**
+   *  String#times(count) -> String
+   *
+   *  Concatenates the string `count` times.
+  **/
   function times(count) {
     return count < 1 ? '' : new Array(count + 1).join(this);
   }
 
+  /**
+   *  String#camelize() -> String
+   *
+   *  Converts a string separated by dashes into a camelCase equivalent. 
+   *  For instance, 'foo-bar' would be converted to 'fooBar'.
+  **/
   function camelize() {
     var parts = this.split('-'), len = parts.length;
     if (len == 1) return parts[0];
@@ -142,18 +242,39 @@ Object.extend(String.prototype, (function() {
     return camelized;
   }
 
+  /**
+   *  String#capitalize() -> String
+   *
+   *  Capitalizes the first letter of a string and downcases all the others.
+  **/
   function capitalize() {
     return this.charAt(0).toUpperCase() + this.substring(1).toLowerCase();
   }
 
+  /**
+   *  String#underscore() -> String
+   *
+   *  Converts a camelized string into a series of words separated by an underscore ("_").
+  **/
   function underscore() {
     return this.gsub(/::/, '/').gsub(/([A-Z]+)([A-Z][a-z])/,'#{1}_#{2}').gsub(/([a-z\d])([A-Z])/,'#{1}_#{2}').gsub(/-/,'_').toLowerCase();
   }
 
+  /**
+   *  String#dasherize() -> String
+   *
+   *  Replaces every instance of the underscore character ("_") by a dash ("-").
+  **/
   function dasherize() {
     return this.gsub(/_/,'-');
   }
 
+  /** related to: Object.inspect
+   *  String#inspect([useDoubleQuotes = false]) -> String
+   *
+   *  Returns a debug-oriented version of the string (i.e. wrapped in single or 
+   *  double quotes, with backslashes and quotes escaped).
+  **/
   function inspect(useDoubleQuotes) {
     var escapedString = this.gsub(/[\x00-\x1f\\]/, function(match) {
       var character = String.specialChar[match[0]];
@@ -163,14 +284,31 @@ Object.extend(String.prototype, (function() {
     return "'" + escapedString.replace(/'/g, '\\\'') + "'";
   }
 
+  /** related to: Object.toJSON
+   *  String#toJSON() -> String
+   *
+   *  Returns a JSON string.
+  **/
   function toJSON() {
     return this.inspect(true);
   }
 
+  /**
+   *  String#unfilterJSON([filter = Prototype.JSONFilter]) -> String
+   *
+   *  Strips comment delimiters around Ajax JSON or JavaScript responses.
+   *  This security method is called internally.
+  **/
   function unfilterJSON(filter) {
     return this.sub(filter || Prototype.JSONFilter, '#{1}');
   }
 
+  /**
+   *  String#isJSON() -> Boolean
+   *
+   *  Check if the string is valid JSON by the use of regular expressions. 
+   *  This security method is called internally.
+  **/
   function isJSON() {
     var str = this;
     if (str.blank()) return false;
@@ -178,6 +316,13 @@ Object.extend(String.prototype, (function() {
     return (/^[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]*$/).test(str);
   }
 
+  /**
+   *  String#evalJSON([sanitize = false]) -> object
+   *
+   *  Evaluates the JSON in the string and returns the resulting object. 
+   *  If the optional sanitize parameter is set to true, the string is checked for 
+   *  possible malicious attempts and eval is not called if one is detected.
+  **/
   function evalJSON(sanitize) {
     var json = this.unfilterJSON();
     try {
@@ -186,27 +331,57 @@ Object.extend(String.prototype, (function() {
     throw new SyntaxError('Badly formed JSON string: ' + this.inspect());
   }
 
+  /**
+   *  String#include(substring) -> Boolean
+   *
+   *  Check if the string contains a substring.
+  **/
   function include(pattern) {
     return this.indexOf(pattern) > -1;
   }
 
+  /**
+   *  String#startsWith(substring) -> Boolean
+   *
+   *  Checks if the string starts with substring.
+  **/
   function startsWith(pattern) {
     return this.indexOf(pattern) === 0;
   }
 
+  /**
+   *  String#endsWith(substring) -> Boolean
+   *
+   *  Checks if the string ends with substring.
+  **/
   function endsWith(pattern) {
     var d = this.length - pattern.length;
     return d >= 0 && this.lastIndexOf(pattern) === d;
   }
 
+  /**
+   *  String#empty() -> Boolean
+   *
+   *  Checks if the string is empty.
+  **/
   function empty() {
     return this == '';
   }
 
+  /**
+   *  String#blank() -> Boolean
+   *
+   *  Check if the string is 'blank', meaning either empty or containing only whitespace.
+  **/
   function blank() {
     return /^\s*$/.test(this);
   }
 
+  /**
+   *  String#interpolate(object[, pattern]) -> String
+   *
+   *  Treats the string as a Template and fills it with object’s properties.
+  **/
   function interpolate(object, pattern) {
     return new Template(this, pattern).evaluate(object);
   }

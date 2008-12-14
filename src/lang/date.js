@@ -1,3 +1,12 @@
+/** section: lang
+ * Date
+**/
+
+/**
+ *  Date#toJSON -> String
+ *  
+ *  TODO: Date#toJSON
+**/
 Date.prototype.toJSON = function() {
   return '"' + this.getUTCFullYear() + '-' +
     (this.getUTCMonth() + 1).toPaddedString(2) + '-' +

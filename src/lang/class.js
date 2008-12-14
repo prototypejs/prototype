@@ -1,5 +1,35 @@
 /* Based on Alex Arnell's inheritance implementation. */
+
+/** section: lang
+ * Class
+**/
 var Class = (function() {
+  /**
+   *  Class.create([superclass][, methods...]) -> Class
+   *  - superclass (Class): The optional superclass to inherit methods from.
+   *  - methods (Object): An object whose properties will be "mixed-in" to the
+   *      new class. Any number of mixins can be added; later mixins take
+   *      precedence.
+   *
+   *  Creates a class.
+   *
+   *  Class.create returns a function that, when called, will fire its own
+   *  `initialize` method.
+   *
+   *  `Class.create` accepts two kinds of arguments. If the first argument is
+   *  a `Class`, it's treated as the new class's superclass, and all its
+   *  methods are inherited. Otherwise, any arguments passed are treated as
+   *  objects, and their methods are copied over as instance methods of the new
+   *  class. Later arguments take precedence over earlier arguments.
+   *
+   *  If a subclass overrides an instance method declared in a superclass, the
+   *  subclass's method can still access the original method. To do so, declare
+   *  the subclass's method as normal, but insert `$super` as the first
+   *  argument. This makes `$super` available as a method for use within the
+   *  function.
+   *
+   *  To extend a class after it has been defined, use [[Class#addMethods]].
+  **/
   function create() {
     var parent = null, properties = $A(arguments);
     if (Object.isFunction(properties[0]))
@@ -30,6 +60,23 @@ var Class = (function() {
     return klass;      
   }
   
+  /**
+   *  Class#addMethods(methods) -> Class
+   *  - methods (Object): The methods to add to the class.
+   *
+   *  Adds methods to an existing class.
+   *
+   *  `Class#addMethods` is a method available on classes that have been
+   *  defined with `Class.create`. It can be used to add new instance methods
+   *  to that class, or overwrite existing methods, after the class has been
+   *  defined.
+   *
+   *  New methods propagate down the inheritance chain. If the class has
+   *  subclasses, those subclasses will receive the new methods — even in the
+   *  context of `$super` calls. The new methods also propagate to instances of
+   *  the class and of all its subclasses, even those that have already been
+   *  instantiated.
+  **/
   function addMethods(source) {
     var ancestor   = this.superclass && this.superclass.prototype;
     var properties = Object.keys(source);
