@@ -1365,6 +1365,23 @@ new Test.Unit.Runner({
     constants.each(function(pair) {
       this.assertEqual(Node[pair.key], pair.value);
     }, this);
+  },
+  
+  testElementStorage: function() {
+    var element = $('test-empty');
+    element.store('foo', 'bar');
+    this.assertEqual("bar", element.retrieve("foo"), "Setting and reading a property");
+    element.store('foo', 'thud');
+    this.assertEqual("thud", element.retrieve("foo"), "Re-setting and reading property");
+
+    element.store('bar', 'narf');
+    this.assertEnumEqual($w('foo bar'), element.getStorage().keys(), "Getting the storage hash");    
+    element.getStorage().unset('bar');
+    this.assertEnumEqual($w('foo'), element.getStorage().keys(), "Getting the storage hash after unsetting a key");
+    
+    
+    var clonedElement = $('test-empty').cloneNode(false);    
+    this.assert(!('_prototypeUID' in clonedElement), "Cloning a node should not confuse the storage engine");
   }
 });
 
