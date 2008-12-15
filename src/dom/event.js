@@ -380,8 +380,8 @@
     if (document.loaded) return;
     if (_timer) window.clearInterval(_timer);
     
-    document.fire("dom:loaded");
     document.loaded = true;
+    document.fire("dom:loaded");
   }
   
   function _webkitContentLoadedCheck() {
