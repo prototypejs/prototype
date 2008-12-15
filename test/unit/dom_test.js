@@ -1371,8 +1371,9 @@ new Test.Unit.Runner({
     var element = $('test-empty');
     element.store('foo', 'bar');
     this.assertEqual("bar", element.retrieve("foo"), "Setting and reading a property");
-    element.store('foo', 'thud');
+    var result = element.store('foo', 'thud');
     this.assertEqual("thud", element.retrieve("foo"), "Re-setting and reading property");
+    this.assertIdentical(element, result, "Element#store should return element");
 
     element.store('bar', 'narf');
     this.assertEnumEqual($w('foo bar'), element.getStorage().keys(), "Getting the storage hash");    
@@ -1381,7 +1382,7 @@ new Test.Unit.Runner({
     
     this.assertUndefined(element.retrieve('bar'), "Undefined key should return undefined if default value is not defined");
     this.assertEqual("default", element.retrieve('bar', 'default'), "Return default value if undefined key");
-    this.assertEqual("default", element.retrieve('bar'), "Makes sure default value as been set properly");
+    this.assertEqual("default", element.retrieve('bar'), "Makes sure default value has been set properly");
     
     var clonedElement = $('test-empty').cloneNode(false);    
     this.assert(!('_prototypeUID' in clonedElement), "Cloning a node should not confuse the storage engine");

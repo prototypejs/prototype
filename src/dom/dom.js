@@ -1232,6 +1232,7 @@ Element.addMethods({
   store: function(element, key, value) {
     if (!(element = $(element))) return;
     element.getStorage().set(key, value);
+    return element;
   },
   
   retrieve: function(element, key, defaultValue) {
