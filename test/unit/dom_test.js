@@ -1380,6 +1380,11 @@ new Test.Unit.Runner({
     element.getStorage().unset('bar');
     this.assertEnumEqual($w('foo'), element.getStorage().keys(), "Getting the storage hash after unsetting a key");
     
+    element.store({ 'narf': 'narf', 'zort': 'zort' });
+    
+    this.assertEqual("narf", element.retrieve('narf'), "Storing multiple properties at once");
+    this.assertEqual("zort", element.retrieve('zort'), "Storing multiple properties at once");
+    
     this.assertUndefined(element.retrieve('bar'), "Undefined key should return undefined if default value is not defined");
     this.assertEqual("default", element.retrieve('bar', 'default'), "Return default value if undefined key");
     this.assertEqual("default", element.retrieve('bar'), "Makes sure default value has been set properly");
