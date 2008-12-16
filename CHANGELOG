@@ -1,4 +1,4 @@
-* Optimize document.viewport.get(Dimensions|Width|Height). (Nick Stackenburg, Andrew Dupont)
+* Optimize document.viewport.get(Dimensions|Width|Height). (Nick Stakenburg, Andrew Dupont)
 
 * Fix issue where Object#isString and Object#isNumber return false for String and Number "wrapper" objects. (atrepp, Samuel Lebeau, Andrew Dupont)
 
@@ -206,13 +206,13 @@
 
 * Fix the way Selector handles [pseudoclass + combinator] with no space in between. Closes #9696. [kangax, fearphage, Andrew Dupont]
 
-* Optimize Element#up/down/next/previous. Closes #10353. [Dylan Bruzenak, Nick Stackenburg, Andrew Dupont]
+* Optimize Element#up/down/next/previous. Closes #10353. [Dylan Bruzenak, Nick Stakenburg, Andrew Dupont]
 
 * Handle case-sensitivity in Selector tag names better. Closes #5052. [mexx, Andrew Dupont]
 
 *1.6.0.1* (December 4, 2007)
 
-* Change document.viewport.getDimensions to exclude scrollbars in all cases. Closes #10148, #9288. [Nick Stackenburg]
+* Change document.viewport.getDimensions to exclude scrollbars in all cases. Closes #10148, #9288. [Nick Stakenburg]
 
 * Add logic to Element#getStyle in Opera that fixes inaccurate reporting of computed 'width' and 'height' properties. [Andrew Dupont]
 
