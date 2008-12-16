@@ -1175,36 +1175,44 @@ Element.addMethods = function(methods) {
 
 document.viewport = {
   getDimensions: function() {
-    var dimensions = { }, B = Prototype.Browser;
-    $w('width height').each(function(d) {
-      var D = d.capitalize();
-      if (B.WebKit && !document.evaluate) {
-        // Safari <3.0 needs self.innerWidth/Height
-        dimensions[d] = self['inner' + D];
-      } else if (B.Opera && parseFloat(window.opera.version()) < 9.5) {
-        // Opera <9.5 needs document.body.clientWidth/Height
-        dimensions[d] = document.body['client' + D]
-      } else {
-        dimensions[d] = document.documentElement['client' + D];
-      }
-    });
-    return dimensions;
+    return { width: this.getWidth(), height: this.getHeight() };
   },
 
-  getWidth: function() {
-    return this.getDimensions().width;
-  },
-
-  getHeight: function() {
-    return this.getDimensions().height;
-  },
-  
   getScrollOffsets: function() {
     return Element._returnOffset(
       window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
-      window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop);
+      window.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop);
   }
 };
+
+(function(viewport) {
+  var B = Prototype.Browser, doc = document, element, property = {};
+   
+  function getRootElement() {
+    // Older versions of Safari.
+    if (B.WebKit && !doc.evaluate)
+      return document;
+    
+    // Older versions of Opera.
+    if (B.Opera && window.parseFloat(window.opera.version()) < 9.5)
+      return document.body;
+    
+    return document.documentElement;
+  }
+
+  function define(D) {
+    if (!element) element = getRootElement();
+    
+    property[D] = 'client' + D;
+
+    viewport['get' + D] = function() { return element[property[D]] };
+    return viewport['get' + D]();
+  }
+
+  viewport.getWidth  = define.curry('Width');
+  viewport.getHeight = define.curry('Height');
+})(document.viewport);
+
 
 Element.Storage = {
   UID: 1

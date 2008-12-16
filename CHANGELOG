@@ -1,3 +1,5 @@
+* Optimize document.viewport.get(Dimensions|Width|Height). (Nick Stackenburg, Andrew Dupont)
+
 * Fix issue where Object#isString and Object#isNumber return false for String and Number "wrapper" objects. (atrepp, Samuel Lebeau, Andrew Dupont)
 
 * Set document.loaded = true before firing dom:loaded custom event. (Andrew Dupont)
