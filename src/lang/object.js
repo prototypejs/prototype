@@ -83,11 +83,11 @@
   }
 
   function isString(object) {
-    return typeof object === "string";
+    return typeof (object && object.valueOf()) === "string";
   }
 
   function isNumber(object) {
-    return typeof object === "number";
+    return typeof (object && object.valueOf()) === "number";
   }
 
   function isUndefined(object) {
