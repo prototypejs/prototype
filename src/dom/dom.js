@@ -1240,11 +1240,11 @@ Element.addMethods({
   store: function(element, key, value) {
     if (!(element = $(element))) return;
     
-    if (Object.isString(key)) {
-      element.getStorage().set(key, value);
-    } else {
+    if (arguments.length === 2) {
       // Assume we've been passed an object full of key/value pairs.
       element.getStorage().update(key);
+    } else {
+      element.getStorage().set(key, value);
     }
     
     return element;
