@@ -2,7 +2,7 @@
 
 * Allow Element#store to accept an object containing several key/value pairs. (ZenCocoon, Andrew Dupont)
 
-* Change Element#retrieve to return the element itself (for chaining). (Andrew Dupont)
+* Change Element#store to return the element itself (for chaining). (Andrew Dupont)
 
 * Add non-bubbling custom events. A new final argument to Element#fire defaults to `true`; pass `false` to prevent bubbling when firing a custom event. (Andrew Dupont)
 
