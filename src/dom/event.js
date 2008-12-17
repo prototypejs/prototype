@@ -371,42 +371,42 @@
 })();
 
 (function() {
-  /* Support for the DOMContentLoaded event is based on work by Dan Webb, 
-     Matthias Miller, Dean Edwards and John Resig. */
+  /* Support for the DOMContentLoaded event is based on work by Dan Webb,
+     Matthias Miller, Dean Edwards, John Resig, and Diego Perini. */
 
-  var _timer;
-  
-  function _fireContentLoadedEvent() {
+  var timer;
+
+  function fireContentLoadedEvent() {
     if (document.loaded) return;
-    if (_timer) window.clearInterval(_timer);
-    
+    if (timer) window.clearTimeout(timer);
     document.loaded = true;
-    document.fire("dom:loaded");
+    document.fire('dom:loaded');
   }
-  
-  function _webkitContentLoadedCheck() {
-    var s = document.readyState;
-    if (s === "loaded" || s === "complete")
-      _fireContentLoadedEvent();
-  }
-  
-  function _IEContentLoadedCheck() {
-    if (this.readyState == "complete") {
-      this.onreadystatechange = null; 
-      _fireContentLoadedEvent();
+
+  function checkReadyState() {
+    if (document.readyState === 'complete') {
+      document.stopObserving('readystatechange', checkReadyState);
+      fireContentLoadedEvent();
     }
   }
-  
-  if (document.addEventListener) {
-    if (Prototype.Browser.WebKit) {
-      _timer = window.setInterval(_webkitContentLoadedCheck, 0);
-      Event.observe(window, "load", _fireContentLoadedEvent);
-    } else {
-      document.addEventListener("DOMContentLoaded",
-        _fireContentLoadedEvent, false);
+
+  function pollDoScroll() {
+    try { document.documentElement.doScroll('left'); }
+    catch(e) {
+      timer = pollDoScroll.defer();
+      return;
     }
+    fireContentLoadedEvent();
+  }
+
+  if (document.addEventListener) {    
+    document.addEventListener('DOMContentLoaded', fireContentLoadedEvent, false);
   } else {
-    document.write("<script id=__onDOMContentLoaded defer src=//:><\/script>");
-    $("__onDOMContentLoaded").onreadystatechange = _IEContentLoadedCheck;
+    document.observe('readystatechange', checkReadyState);
+    if (window === top)
+      timer = pollDoScroll.defer();
   }
+
+  // Worst-case fallback
+  Event.observe(window, 'load', fireContentLoadedEvent);
 })();

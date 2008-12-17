@@ -1,3 +1,5 @@
+* Switch to the "doScroll approach" for the dom:loaded custom event. (javier, Diego Perini, Nick Stakenburg, Andrew Dupont)
+
 * Optimize document.viewport.get(Dimensions|Width|Height). (Nick Stakenburg, Andrew Dupont)
 
 * Fix issue where Object#isString and Object#isNumber return false for String and Number "wrapper" objects. (atrepp, Samuel Lebeau, Andrew Dupont)
