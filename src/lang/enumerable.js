@@ -75,7 +75,7 @@ var Enumerable = (function() {
     var results = [];
 
     if (Object.isString(filter))
-      filter = new RegExp(filter);
+      filter = new RegExp(RegExp.escape(filter));
       
     this.each(function(value, index) {
       if (filter.match(value))

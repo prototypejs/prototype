@@ -136,6 +136,14 @@ new Test.Unit.Runner({
 
     this.assertEnumEqual($('grepHeader', 'grepCell'),
       $('grepTable', 'grepTBody', 'grepRow', 'grepHeader', 'grepCell').grep(new Selector('.cell')));
+
+    // troublesome characters
+    this.assertEnumEqual(['?a', 'c?'], ['?a','b','c?'].grep('?'));
+    this.assertEnumEqual(['*a', 'c*'], ['*a','b','c*'].grep('*'));
+    this.assertEnumEqual(['+a', 'c+'], ['+a','b','c+'].grep('+'));
+    this.assertEnumEqual(['{1}a', 'c{1}'], ['{1}a','b','c{1}'].grep('{1}'));
+    this.assertEnumEqual(['(a', 'c('], ['(a','b','c('].grep('('));
+    this.assertEnumEqual(['|a', 'c|'], ['|a','b','c|'].grep('|'));
   },
   
   testInclude: function() {
