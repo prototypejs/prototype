@@ -2,7 +2,7 @@
  * class ObjectRange
 **/
 
-/**
+/** section: lang
  *  $R(start, end[, exclusive = false]) -> ObjectRange
  *
  *  Creates a new ObjectRange object. 
