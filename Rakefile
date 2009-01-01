@@ -28,6 +28,7 @@ desc "Builds the documentation."
 task :doc do
   require 'protodoc'
   require 'pdoc'
+  require 'tempfile'
 
   Tempfile.open("prototype-doc") do |temp|
     source = File.join(PROTOTYPE_SRC_DIR, 'prototype.js')
