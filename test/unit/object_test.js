@@ -135,6 +135,7 @@ new Test.Unit.Runner({
     this.assert(!Object.isString({}));
     this.assert(!Object.isString(false));
     this.assert(!Object.isString(undefined));
+    this.assert(!Object.isString(document), 'host objects should return false rather than throw exceptions');
   },
 
   testObjectIsNumber: function() {
@@ -149,6 +150,7 @@ new Test.Unit.Runner({
     this.assert(!Object.isNumber({}));
     this.assert(!Object.isNumber(false));
     this.assert(!Object.isNumber(undefined));
+    this.assert(!Object.isNumber(document), 'host objects should return false rather than throw exceptions');
   },
 
   testObjectIsUndefined: function() {
