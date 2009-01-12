@@ -4,3 +4,6 @@
 [submodule "vendor/caja_builder"]
 	path = vendor/caja_builder
 	url = git://github.com/tobie/unittest_js_caja_builder.git
+[submodule "vendor/pdoc"]
+  path = vendor/pdoc
+	url = git://github.com/tobie/pdoc.git
