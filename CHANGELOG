@@ -1,4 +1,6 @@
-* Further fix to ensure Object#is(String|Number) do not throw exceptions on host objects in IE. (grepmaster, kangax, Tobie Langel, Andrew Dupont)
+* Switch Object.is(Array|String|Number) to use the vastly-superior approach discovered by Juriy. (kangax)
+
+* Further fix to ensure Object.is(String|Number) do not throw exceptions on host objects in IE. (grepmaster, kangax, Tobie Langel, Andrew Dupont)
 
 * Ensure Enumerable#grep can handle strings with RegExp metacharacters. (Marton Kiss-Albert, kangax)
 

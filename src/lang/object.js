@@ -1,4 +1,10 @@
 (function() {
+  
+  function getClass(object) {
+    return Object.prototype.toString.call(object)
+     .match(/^\[object\s(.*)\]$/)[1]; 
+  }
+  
   function extend(destination, source) {
     for (var property in source)
       destination[property] = source[property];
@@ -70,8 +76,7 @@
   }
 
   function isArray(object) {
-    return object != null && typeof object === "object" &&
-      'splice' in object && 'join' in object;
+    return getClass(object) === "Array";
   }
 
   function isHash(object) {
@@ -83,19 +88,11 @@
   }
 
   function isString(object) {
-    try {
-      return typeof (object && object.valueOf()) === "string";      
-    } catch(e) {
-      return false;
-    }
+    return getClass(object) === "String";
   }
 
   function isNumber(object) {
-    try {
-      return typeof (object && object.valueOf()) === "number";
-    } catch(e) {
-      return false;
-    }
+    return getClass(object) === "Number";
   }
 
   function isUndefined(object) {
