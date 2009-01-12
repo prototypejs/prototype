@@ -4,6 +4,7 @@ require 'rake/packagetask'
 PROTOTYPE_ROOT          = File.expand_path(File.dirname(__FILE__))
 PROTOTYPE_SRC_DIR       = File.join(PROTOTYPE_ROOT, 'src')
 PROTOTYPE_DIST_DIR      = File.join(PROTOTYPE_ROOT, 'dist')
+PROTOTYPE_DOC_DIR       = File.join(PROTOTYPE_ROOT, 'doc')
 PROTOTYPE_PKG_DIR       = File.join(PROTOTYPE_ROOT, 'pkg')
 PROTOTYPE_TEST_DIR      = File.join(PROTOTYPE_ROOT, 'test')
 PROTOTYPE_TEST_UNIT_DIR = File.join(PROTOTYPE_TEST_DIR, 'unit')
@@ -24,20 +25,34 @@ task :dist do
   end
 end
 
-desc "Builds the documentation."
-task :doc do
-  require 'protodoc'
-  require 'pdoc'
-  require 'tempfile'
+namespace :doc do
+  desc "Builds the documentation."
+  task :build => [:require] do
+    require 'protodoc'
+    require 'tempfile'
 
-  Tempfile.open("prototype-doc") do |temp|
-    source = File.join(PROTOTYPE_SRC_DIR, 'prototype.js')
-    temp << Protodoc::Preprocessor.new(source, :strip_documentation => false)
-    temp.flush
-    rm_rf PROTOTYPE_DOC_DIR
-    PDoc::Runner.new(temp.path, :output => PROTOTYPE_DOC_DIR).run
+    Tempfile.open("prototype-doc") do |temp|
+      source = File.join(PROTOTYPE_SRC_DIR, 'prototype.js')
+      temp << Protodoc::Preprocessor.new(source, :strip_documentation => false)
+      temp.flush
+      rm_rf PROTOTYPE_DOC_DIR
+      PDoc::Runner.new(temp.path, :output => PROTOTYPE_DOC_DIR).run
+    end
+  end  
+  
+  task :require do
+    lib = 'vendor/pdoc/lib/pdoc'
+    unless File.exists?(lib)
+      puts "\nYou'll need PDoc to generate the documentation. Just run:\n\n"
+      puts "  $ git submodule init"
+      puts "  $ git submodule update"
+      puts "\nand you should be all set.\n\n"
+    end
+    require lib
   end
 end
+
+task :doc => ['doc:build']
 
 desc "Builds the updating helper."
 task :dist_helper do
