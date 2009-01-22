@@ -16,11 +16,25 @@ var Prototype = {
   BrowserFeatures: {
     XPath: !!document.evaluate,
     SelectorsAPI: !!document.querySelector,
-    ElementExtensions: !!window.HTMLElement,
-    SpecificElementExtensions: 
-      document.createElement('div')['__proto__'] &&
-      document.createElement('div')['__proto__'] !== 
-        document.createElement('form')['__proto__']
+    ElementExtensions: (function() {
+      if (window.HTMLElement && window.HTMLElement.prototype)
+        return true;      
+      if (window.Element && window.Element.prototype)
+        return true;
+    })(),
+    SpecificElementExtensions: (function() {      
+      // First, try the named class
+      if (typeof window.HTMLDivElement !== 'undefined')
+        return true;
+        
+      var div = document.createElement('div');
+      if (div['__proto__'] && div['__proto__'] !== 
+       document.createElement('form')['__proto__']) {
+        return true;
+      }
+      
+      return false;      
+    })()
   },
 
   ScriptFragment: '<script[^>]*>([\\S\\s]*?)<\/script>',
