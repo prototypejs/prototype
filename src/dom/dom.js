@@ -284,7 +284,8 @@ Element.Methods = {
         return (!element.attributes || !element.attributes[name]) ? null : 
          element.attributes[name].value;
       }
-    }
+    }      
+    
     return element.getAttribute(name);
   },
   
@@ -809,7 +810,13 @@ else if (Prototype.Browser.IE) {
         },
         _getEv: function(element, attribute) {
           attribute = element.getAttribute(attribute);
-          return attribute ? attribute.toString().slice(23, -2) : null;
+          
+          // TODO: Need something less ugly here.
+          if (!attribute) return null;
+          attribute = attribute.toString();
+          attribute = attribute.split('{')[1];
+          attribute = attribute.split('}')[0];
+          return attribute.strip();
         },
         _flag: function(element, attribute) {
           return $(element).hasAttribute(attribute) ? attribute : null;
@@ -1035,12 +1042,17 @@ Element.Methods.ByTag = { };
 
 Object.extend(Element, Element.Methods);
 
-if (!Prototype.BrowserFeatures.ElementExtensions && 
-    document.createElement('div')['__proto__']) {
-  window.HTMLElement = { };
-  window.HTMLElement.prototype = document.createElement('div')['__proto__'];
-  Prototype.BrowserFeatures.ElementExtensions = true;
-}
+(function(div) {
+  
+  if (!Prototype.BrowserFeatures.ElementExtensions && div['__proto__']) {
+    window.HTMLElement = { };
+    window.HTMLElement.prototype = div['__proto__'];
+    Prototype.BrowserFeatures.ElementExtensions = true;
+  }
+  
+  div = null;
+  
+})(document.createElement('div'))
 
 Element.extend = (function() {
   if (Prototype.BrowserFeatures.SpecificElementExtensions)
@@ -1148,14 +1160,18 @@ Element.addMethods = function(methods) {
     klass = 'HTML' + tagName.capitalize() + 'Element';
     if (window[klass]) return window[klass];
     
-    window[klass] = { };
-    window[klass].prototype = document.createElement(tagName)['__proto__'];
-    return window[klass];
+    var element = document.createElement(tagName);    
+    var proto = element['__proto__'] || element.constructor.prototype;    
+    element = null;
+    return proto;
   }
   
+  var elementPrototype = window.HTMLElement ? HTMLElement.prototype :
+   Element.prototype;
+  
   if (F.ElementExtensions) {
-    copy(Element.Methods, HTMLElement.prototype);
-    copy(Element.Methods.Simulated, HTMLElement.prototype, true);
+    copy(Element.Methods, elementPrototype);
+    copy(Element.Methods.Simulated, elementPrototype, true);
   }
   
   if (F.SpecificElementExtensions) {
