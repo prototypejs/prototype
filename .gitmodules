@@ -1,9 +1,13 @@
 [submodule "vendor/unittest_js"]
-	path = vendor/unittest_js
-	url = git://github.com/tobie/unittest_js.git
+  path = vendor/unittest_js
+  url = git://github.com/tobie/unittest_js.git
 [submodule "vendor/caja_builder"]
-	path = vendor/caja_builder
-	url = git://github.com/tobie/unittest_js_caja_builder.git
+  path = vendor/caja_builder
+  url = git://github.com/tobie/unittest_js_caja_builder.git
 [submodule "vendor/pdoc"]
   path = vendor/pdoc
-	url = git://github.com/tobie/pdoc.git
+  url = git://github.com/tobie/pdoc.git
+[submodule "vendor/sprockets"]
+  path = vendor/sprockets
+  url = git://github.com/sstephenson/sprockets.git
+
