@@ -1,4 +1,4 @@
-<%= include "update_helper.js" %>
+//= require "update_helper"
 
 /* UpdateHelper for Prototype <%= PROTOTYPE_VERSION %> (c) 2008 Tobie Langel
  * 

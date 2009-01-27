@@ -12,17 +12,32 @@ PROTOTYPE_TMP_DIR       = File.join(PROTOTYPE_TEST_UNIT_DIR, 'tmp')
 PROTOTYPE_VERSION       = '1.6.0.3'
 
 $:.unshift File.join(PROTOTYPE_ROOT, 'lib')
+$:.unshift File.join(PROTOTYPE_ROOT, 'vendor', 'sprockets', 'lib')
 
 task :default => [:dist, :dist_helper, :package, :clean_package_source]
 
+def sprocketize(path, source, destination = source)
+  begin
+    require "sprockets"
+  rescue LoadError => e
+    puts "\nYou'll need Sprockets to build Prototype. Just run:\n\n"
+    puts "  $ git submodule init"
+    puts "  $ git submodule update"
+    puts "\nand you should be all set.\n\n"
+  end
+  
+  environment  = Sprockets::Environment.new(File.join(PROTOTYPE_ROOT, path), [File.join(PROTOTYPE_ROOT, "src")])
+  preprocessor = Sprockets::Preprocessor.new(environment)
+  preprocessor.require(environment.find(source).source_file)
+
+  File.open(File.join(PROTOTYPE_DIST_DIR, destination), 'w+') do |dist|
+    dist.write(preprocessor.output_file)
+  end
+end
+
 desc "Builds the distribution."
 task :dist do
-  require 'protodoc'
-
-  File.open(File.join(PROTOTYPE_DIST_DIR, 'prototype.js'), 'w+') do |dist|
-    source = File.join(PROTOTYPE_SRC_DIR, 'prototype.js')
-    dist << Protodoc::Preprocessor.new(source, :strip_documentation => true)
-  end
+  sprocketize("src", "prototype.js")
 end
 
 namespace :doc do
@@ -56,12 +71,7 @@ task :doc => ['doc:build']
 
 desc "Builds the updating helper."
 task :dist_helper do
-  require 'protodoc'
-
-  File.open(File.join(PROTOTYPE_DIST_DIR, 'prototype_update_helper.js'), 'w+') do |dist|
-    source = File.join(PROTOTYPE_ROOT, 'ext', 'update_helper', 'prototype_update_helper.js')
-    dist << Protodoc::Preprocessor.new(source)
-  end
+  sprocketize("ext/update_helper", "prototype_update_helper.js")
 end
 
 Rake::PackageTask.new('prototype', PROTOTYPE_VERSION) do |package|

@@ -1,5 +1,11 @@
-<%= include 'HEADER' %>
-
+/*  Prototype JavaScript framework, version <%= PROTOTYPE_VERSION %>
+ *  (c) 2005-2009 Sam Stephenson
+ *
+ *  Prototype is freely distributable under the terms of an MIT-style license.
+ *  For details, see the Prototype web site: http://www.prototypejs.org/
+ *
+ *--------------------------------------------------------------------------*/
+ 
 var Prototype = {
   Version: '<%= PROTOTYPE_VERSION %>',
   
@@ -47,55 +53,8 @@ var Prototype = {
 if (Prototype.Browser.MobileSafari)
   Prototype.BrowserFeatures.SpecificElementExtensions = false;
   
-var Abstract = { };
+//= require "lang"
+//= require "ajax"
+//= require "dom"
 
-/**
- * == lang ==
- * Language extensions.
-**/
-
-/** section: lang
- * Try
-**/
-
-/**
- *  Try.these(function...) -> ?
- *  - function (Function): A function that may throw an exception.
- *  Accepts an arbitrary number of functions and returns the result of the
- *  first one that doesn't throw an error.
- **/
-var Try = {
-  these: function() {
-    var returnValue;
-    
-    for (var i = 0, length = arguments.length; i < length; i++) {
-      var lambda = arguments[i];
-      try {
-        returnValue = lambda();
-        break;
-      } catch (e) { }
-    }
-    
-    return returnValue;
-  }
-};
-
-<%= include 'lang/class.js', 'lang/object.js', 'lang/function.js' %>
-
-<%= include 'lang/date.js', 'lang/regexp.js', 'lang/periodical_executer.js' %>
-
-<%= include 'lang/string.js', 'lang/template.js' %>
-
-<%= include 'lang/enumerable.js', 'lang/array.js', 'lang/hash.js' %>
-
-<%= include 'lang/number.js', 'lang/range.js' %>
-
-<%= include 'ajax/ajax.js', 'ajax/responders.js', 'ajax/base.js', 'ajax/request.js', 'ajax/response.js' %>
-
-<%= include 'ajax/updater.js', 'ajax/periodical_updater.js' %>
-
-<%= include 'dom/dom.js', 'dom/selector.js', 'dom/form.js', 'dom/event.js' %>
-
-<%= include 'deprecated.js' %>
-
-Element.addMethods();
+//= require "deprecated"
