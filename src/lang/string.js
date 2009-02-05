@@ -39,6 +39,11 @@ Object.extend(String.prototype, (function() {
     var result = '', source = this, match;
     replacement = prepareReplacement(replacement);
 
+    if (!(pattern.length || pattern.source)) {
+      replacement = replacement('');
+      return replacement + source.split('').join(replacement) + replacement;
+    }
+
     while (source.length > 0) {
       if (match = source.match(pattern)) {
         result += source.slice(0, match.index);
