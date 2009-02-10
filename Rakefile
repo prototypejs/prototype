@@ -9,7 +9,7 @@ PROTOTYPE_PKG_DIR       = File.join(PROTOTYPE_ROOT, 'pkg')
 PROTOTYPE_TEST_DIR      = File.join(PROTOTYPE_ROOT, 'test')
 PROTOTYPE_TEST_UNIT_DIR = File.join(PROTOTYPE_TEST_DIR, 'unit')
 PROTOTYPE_TMP_DIR       = File.join(PROTOTYPE_TEST_UNIT_DIR, 'tmp')
-PROTOTYPE_VERSION       = '1.6.0.3'
+PROTOTYPE_VERSION       = YAML.load(IO.read(File.join(PROTOTYPE_SRC_DIR, 'constants.yml')))['PROTOTYPE_VERSION']
 
 $:.unshift File.join(PROTOTYPE_ROOT, 'lib')
 $:.unshift File.join(PROTOTYPE_ROOT, 'vendor', 'sprockets', 'lib')
