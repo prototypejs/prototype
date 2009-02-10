@@ -1,3 +1,5 @@
+* Switch to Sprockets for building the Prototype distfiles. (sam)
+
 * Switch Object.is(Array|String|Number) to use the vastly-superior approach discovered by Juriy. (kangax)
 
 * Further fix to ensure Object.is(String|Number) do not throw exceptions on host objects in IE. (grepmaster, kangax, Tobie Langel, Andrew Dupont)
