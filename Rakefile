@@ -11,7 +11,6 @@ PROTOTYPE_TEST_UNIT_DIR = File.join(PROTOTYPE_TEST_DIR, 'unit')
 PROTOTYPE_TMP_DIR       = File.join(PROTOTYPE_TEST_UNIT_DIR, 'tmp')
 PROTOTYPE_VERSION       = YAML.load(IO.read(File.join(PROTOTYPE_SRC_DIR, 'constants.yml')))['PROTOTYPE_VERSION']
 
-$:.unshift File.join(PROTOTYPE_ROOT, 'lib')
 $:.unshift File.join(PROTOTYPE_ROOT, 'vendor', 'sprockets', 'lib')
 
 task :default => [:dist, :dist_helper, :package, :clean_package_source]
@@ -26,13 +25,13 @@ def sprocketize(path, source, destination = source)
     puts "\nand you should be all set.\n\n"
   end
   
-  environment  = Sprockets::Environment.new(File.join(PROTOTYPE_ROOT, path), [File.join(PROTOTYPE_ROOT, "src")])
-  preprocessor = Sprockets::Preprocessor.new(environment)
-  preprocessor.require(environment.find(source).source_file)
-
-  File.open(File.join(PROTOTYPE_DIST_DIR, destination), 'w+') do |dist|
-    dist.write(preprocessor.output_file)
-  end
+  secretary = Sprockets::Secretary.new(
+    :root         => File.join(PROTOTYPE_ROOT, path),
+    :load_path    => [PROTOTYPE_SRC_DIR],
+    :source_files => [source]
+  )
+  
+  secretary.concatenation.save_to(File.join(PROTOTYPE_DIST_DIR, destination))
 end
 
 desc "Builds the distribution."
