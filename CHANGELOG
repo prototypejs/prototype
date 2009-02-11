@@ -1,3 +1,7 @@
+* Don't switch fixed position elements to absolute in Element.getDimensions [#543 state:resolved] (James Wheare)
+
+* Avoid infinite loops when calling String#sub with empty pattern [#534 state:resolved] (Samuel Lebeau)
+
 * Switch to Sprockets for building the Prototype distfiles. (sam)
 
 * Switch Object.is(Array|String|Number) to use the vastly-superior approach discovered by Juriy. (kangax)
