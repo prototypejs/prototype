@@ -1,3 +1,5 @@
+* Ensure Element#descendants always returns an array. [#373 state:resolved] (kangax)
+
 * Don't switch fixed position elements to absolute in Element.getDimensions [#543 state:resolved] (James Wheare)
 
 * Avoid infinite loops when calling String#sub with empty pattern [#534 state:resolved] (Samuel Lebeau)
