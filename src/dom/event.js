@@ -403,7 +403,7 @@
     document.addEventListener('DOMContentLoaded', fireContentLoadedEvent, false);
   } else {
     document.observe('readystatechange', checkReadyState);
-    if (window === top)
+    if (window == top)
       timer = pollDoScroll.defer();
   }
 
