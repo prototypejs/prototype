@@ -122,9 +122,11 @@ var Selector = Class.create({
         // Add an explicit context to the selector if necessary.
         if (root !== document) {
           var oldId = root.id, id = $(root).identify();
+          // Escape special characters in the ID.
+          id = id.replace(/[\.:]/g, "\\$0");
           e = "#" + id + " " + e;
         }
-
+        
         results = $A(root.querySelectorAll(e)).map(Element.extend);
         root.id = oldId;
 

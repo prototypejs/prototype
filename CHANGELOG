@@ -1,3 +1,5 @@
+* Escape ":" and "." characters when doing contextual CSS selection in browsers that support querySelectorAll. [#559 state:resolved] (fxtentacle, Andrew Dupont)
+
 * Ensure the `target` property on events is never undefined in IE. [#383 state:resolved] (Mathias Karstädt, Diego Perini, Andrew Dupont)
 
 * Ensure Element#descendants always returns an array. [#373 state:resolved] (kangax)
