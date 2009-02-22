@@ -26,6 +26,10 @@ new Test.Unit.Runner({
     this.assertEqual("4", $F("input_enabled"));
   },
   
+  testFormReset: function() {
+    this.assertRespondsTo('reset', Form.reset('form'));
+  },  
+  
   testFormElementEventObserver: function(){
     var callbackCounter = 0;
     var observer = new Form.Element.EventObserver('input_enabled', function(){

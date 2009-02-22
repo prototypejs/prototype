@@ -1,6 +1,7 @@
 var Form = {
   reset: function(form) {
-    $(form).reset();
+    form = $(form);
+    form.reset();
     return form;
   },
   
