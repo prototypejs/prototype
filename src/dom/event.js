@@ -142,18 +142,22 @@
     });
 
     // IE's method for extending events.
-    Event.extend = function(event) {
+    Event.extend = function(event, element) {
       if (!event) return false;
       if (event._extendedByPrototype) return event;
 
       event._extendedByPrototype = Prototype.emptyFunction;
       var pointer = Event.pointer(event);
+      
+      // The optional `element` argument gives us a fallback value for the
+      // `target` property in case IE doesn't give us through `srcElement`.
       Object.extend(event, {
-        target: event.srcElement,
+        target: event.srcElement || element,
         relatedTarget: _relatedTarget(event),
         pageX:  pointer.x,
         pageY:  pointer.y
       });
+      
       return Object.extend(event, methods);
     };
   } else {
@@ -171,7 +175,7 @@
       // First time we've handled this element. Put it into the cache.
       CACHE.push(element);
       registry = Element.retrieve(element, 'prototype_event_registry', $H());    
-    }    
+    }
 
     var respondersForEvent = registry.get(eventName);
     if (Object.isUndefined()) {
@@ -195,13 +199,13 @@
         if (event.eventName !== eventName)
           return false;
           
-        Event.extend(event);
+        Event.extend(event, element);
         handler.call(element, event);
       };
     } else {
       // Ordinary event.
       responder = function(event) {
-        Event.extend(event);
+        Event.extend(event, element);
         handler.call(element, event);
       };
     }

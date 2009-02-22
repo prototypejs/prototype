@@ -229,10 +229,15 @@
   
   <script type="text/javascript">
     $('addunload').observe('click', function(e){
-      if (this._done) return
+      if (this._done) return;
 
       window.onunload = function(){ alert('inline unload fired!') }
-      Event.observe(window, 'unload', function(){ alert('observed unload fired!') })
+      Event.observe(window, 'unload', function(event){
+        if (!event.target) {
+          alert('FAILURE: event.target should not be null!');
+        }
+        alert('observed unload fired!')
+      });
 
       this.update('Registered two unload events, one inline ("onunload") and one regular - try to refresh, both should fire')
       this._done = true

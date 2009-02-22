@@ -1,3 +1,5 @@
+* Ensure the `target` property on events is never undefined in IE. [#383 state:resolved] (Mathias Karstädt, Diego Perini, Andrew Dupont)
+
 * Ensure Element#descendants always returns an array. [#373 state:resolved] (kangax)
 
 * Don't switch fixed position elements to absolute in Element.getDimensions [#543 state:resolved] (James Wheare)
