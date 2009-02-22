@@ -1,3 +1,5 @@
+* Fix Selector to match elements with attributes containing hyphens. [#285 state:resolved] (leiyou, jddalton, kangax)
+
 * Make sure Form.reset always returns a reference to the receiver element. [#309 state:resolved] (Phil, kangax)
 
 * Escape ":" and "." characters when doing contextual CSS selection in browsers that support querySelectorAll. [#559 state:resolved] (fxtentacle, Andrew Dupont)
