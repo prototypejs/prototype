@@ -1,3 +1,5 @@
+* Fix issue where a Selector query rooted on a node that had not been attached to the document failed in IE. [#464 state:resolved] (jddalton, kangax, Douglas Fraser, Andrew Dupont)
+
 * Fix Selector to match elements with attributes containing hyphens. [#285 state:resolved] (leiyou, jddalton, kangax)
 
 * Make sure Form.reset always returns a reference to the receiver element. [#309 state:resolved] (Phil, kangax)

@@ -371,6 +371,21 @@ new Test.Unit.Runner({
       'div.is_counted'
     );
   },
+
+  testSelectorNotInsertedNodes: function() {
+    window.debug = true;
+    var wrapper = new Element("div");
+    wrapper.update("<table><tr><td id='myTD'></td></tr></table>");
+    this.assertNotNullOrUndefined(wrapper.select('[id=myTD]')[0],
+      'selecting: [id=myTD]');
+    this.assertNotNullOrUndefined(wrapper.select('#myTD')[0],
+      'selecting: #myTD');
+    this.assertNotNullOrUndefined(wrapper.select('td')[0], 
+      'selecting: td');      
+    this.assert($$('#myTD').length == 0,
+      'should not turn up in document-rooted search');
+    window.debug = false;
+  },   
   
   testElementDown: function() {
     var a = $('dupL4'); 

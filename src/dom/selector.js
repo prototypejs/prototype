@@ -485,8 +485,23 @@ Object.extend(Selector, {
     
     id: function(nodes, root, id, combinator) {
       var targetNode = $(id), h = Selector.handlers;
-      if (!targetNode) return [];
-      if (!nodes && root == document) return [targetNode];
+      
+      if (root == document) {
+        // We don't have to deal with orphan nodes. Easy.
+        if (!targetNode) return [];
+        if (!nodes) return [targetNode];
+      } else {
+        // In IE, we can check sourceIndex to see if root is attached
+        // to the document. If not (or if sourceIndex is not present),
+        // we do it the hard way.
+        if (!root.sourceIndex || root.sourceIndex < 1) {
+          var nodes = root.getElementsByTagName('*');
+          for (var j = 0, node; node = nodes[j]; j++) {
+            if (node.id === id) return [node];
+          }
+        }
+      }
+      
       if (nodes) {
         if (combinator) {
           if (combinator == 'child') {
