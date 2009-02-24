@@ -1,3 +1,19 @@
+/** section: dom
+ *  $(id) -> Element
+ *  $(id...) -> [Element]...
+ *    - id (String | Element): A DOM node or a string that references a node's
+ *      ID.
+ *  
+ *  If provided with a string, returns the element in the document with
+ *  matching ID; otherwise returns the passed element.
+ *  
+ *  Takes in an arbitrary number of arguments. Returns one `Element` if given
+ *  one argument; otherwise returns an array of `Element`s.
+ *  
+ *  All elements returned by the function are "extended" with `Element`
+ *  instance methods.
+**/
+
 function $(element) {
   if (arguments.length > 1) {
     for (var i = 0, elements = [], length = arguments.length; i < length; i++)
@@ -42,6 +58,18 @@ if (!Node.ELEMENT_NODE) {
   });
 }
 
+/** section: dom
+ *  class Element
+**/
+
+/** 
+ *  new Element(tagName[, attributes])
+ *    - tagName (String): The name of the HTML element to create.
+ *    - attributes (Object): A list of attribute/value pairs to set on the
+ *      element.
+ *  
+ *  Creates an HTML element with `tagName` as the tag name.
+**/
 (function(global) {
   var element = global.Element;
   global.Element = function(tagName, attributes) {
@@ -64,34 +92,70 @@ Element.cache = { };
 Element.idCounter = 1;
 
 Element.Methods = {
+  /** 
+   *  Element.visible(@element) -> boolean
+   *  
+   *  Tells whether `element` is visible (i.e., whether its inline `display`
+   *  CSS property is set to `none`.
+  **/
   visible: function(element) {
     return $(element).style.display != 'none';
   },
   
+  /** 
+   *  Element.toggle(@element) -> Element
+   *  
+   *  Toggles the visibility of `element`. Returns `element`.
+  **/
   toggle: function(element) {
     element = $(element);
     Element[Element.visible(element) ? 'hide' : 'show'](element);
     return element;
   },
-
+  
+  
+  /**
+   *  Element.hide(@element) -> Element
+   *  
+   *  Sets `display: none` on `element`. Returns `element`.
+  **/
   hide: function(element) {
     element = $(element);
     element.style.display = 'none';
     return element;
   },
   
+  /**
+   *  Element.show(@element) -> Element
+   *  
+   *  Removes `display: none` on `element`. Returns `element`.
+  **/
   show: function(element) {
     element = $(element);
     element.style.display = '';
     return element;
   },
 
+  /**
+   *  Element.remove(@element) -> Element
+   *  
+   *  Completely removes `element` from the document and returns it.
+  **/
   remove: function(element) {
     element = $(element);
     element.parentNode.removeChild(element);
     return element;
   },
 
+  /** 
+   *  Element.update(@element[, newContent]) -> Element
+   *  
+   *  Replaces _the content_ of `element` with the `newContent` argument and
+   *  returns `element`.
+   *  
+   *  If `newContent` is omitted, the element's content is blanked out (i.e., 
+   *  replaced with an empty string).
+  **/
   update: function(element, content) {
     element = $(element);
     if (content && content.toElement) content = content.toElement();
@@ -102,6 +166,14 @@ Element.Methods = {
     return element;
   },
   
+  /**
+   *  Element.replace(@element[, newContent]) -> Element
+   *  
+   *  Replaces `element` _itself_ with `newContent` and returns `element`.
+   *  
+   *  Keep in mind that this method returns the element that has just been
+   *  removed — not the element that took its place.
+  **/
   replace: function(element, content) {
     element = $(element);
     if (content && content.toElement) content = content.toElement();
@@ -116,6 +188,20 @@ Element.Methods = {
     return element;
   },
   
+  /**
+   *  Element.insert(@element, content) -> Element
+   *    - content (String | Object): The content to insert.
+   *  
+   *  Inserts content at a specific point relative to `element`.
+   *  
+   *  The `content` argument can be a string, in which case the implied
+   *  insertion point is `bottom`. Or it can be an object that specifies
+   *  one or more insertion points (e.g., `{ bottom: "foo", top: "bar" }`).
+   *  
+   *  Accepted insertion points are `before` (as `element`'s previous sibling);
+   *  `after` (as `element's` next sibling); `top` (as `element`'s first
+   *  child); and `bottom` (as `element`'s last child).
+  **/
   insert: function(element, insertions) {
     element = $(element);
     
@@ -152,6 +238,15 @@ Element.Methods = {
     return element;
   },
   
+  /**
+   *  Element.wrap(@element, wrapper[, attributes]) -> Element
+   *    - wrapper (Element | String): An element to wrap `element` inside, or
+   *      else a string representing the tag name of an element to be created.
+   *    - attributes (Object): A set of attributes to apply to the wrapper
+   *      element. Refer to the [[Element]] constructor for usage.
+   *  
+   *  Wraps an element inside another, then returns the wrapper.
+  **/
   wrap: function(element, wrapper, attributes) {
     element = $(element);
     if (Object.isElement(wrapper))
@@ -163,7 +258,12 @@ Element.Methods = {
     wrapper.appendChild(element);
     return wrapper;
   },
-
+  
+  /**
+   *  Element.inspect(@element) -> String
+   *  
+   *  Returns the debug-oriented string representation of `element`.
+  **/
   inspect: function(element) {
     element = $(element);
     var result = '<' + element.tagName.toLowerCase();
@@ -175,6 +275,14 @@ Element.Methods = {
     return result + '>';
   },
   
+  /**
+   *  Element.recursivelyCollect(element, property) -> [Element...]
+   *  
+   *  Recursively collects elements whose relationship to `element` is
+   *  specified by `property`. `property` has to be a _property_ (a method
+   *  won’t do!) of `element` that points to a single DOM node (e.g., 
+   *  `nextSibling` or `parentNode`). 
+  **/
   recursivelyCollect: function(element, property) {
     element = $(element);
     var elements = [];
@@ -184,20 +292,47 @@ Element.Methods = {
     return elements;
   },
   
+  /**
+   *  Element.ancestors(@element) -> [Element...]
+   *  
+   *  Collects all of `element`’s ancestors and returns them as an array of
+   *  elements.
+  **/
   ancestors: function(element) {
     return $(element).recursivelyCollect('parentNode');
   },
   
+  /**
+   *  Element.descendants(@element) -> [Element...]
+   *  
+   *  Collects all of element’s descendants and returns them as an array of
+   *  elements.
+  **/
   descendants: function(element) {
     return Element.select(element, "*");
   },
   
+  /**
+   *  Element.firstDescendant(@element) -> Element
+   *  
+   *  Returns the first child that is an element.
+   *  
+   *  This is opposed to the `firstChild` DOM property, which will return
+   *  any node, including text nodes.
+  **/
   firstDescendant: function(element) {
     element = $(element).firstChild;
     while (element && element.nodeType != 1) element = element.nextSibling;
     return $(element);
   },
   
+  /** alias of: Element.childElements
+   *  
+   *  Element.childElements(@element) -> [Element...]
+   *  
+   *  Collects all of `element`’s immediate descendants (i.e., children) and
+   *  returns them as an array of elements.
+  **/
   immediateDescendants: function(element) {
     if (!(element = $(element).firstChild)) return [];
     while (element && element.nodeType != 1) element = element.nextSibling;
@@ -205,25 +340,58 @@ Element.Methods = {
     return [];
   },
 
+  /**
+   *  Element.previousSiblings(@element) -> [Element...]
+   *  
+   *  Collects all of `element`’s previous siblings and returns them as an
+   *  array of elements.
+  **/
   previousSiblings: function(element) {
     return $(element).recursivelyCollect('previousSibling');
   },
   
+  /**
+   *  Element.nextSiblings(@element) -> [Element...]
+   *  
+   *  Collects all of `element`’s next siblings and returns them as an array
+   *  of elements.
+  **/
   nextSiblings: function(element) {
     return $(element).recursivelyCollect('nextSibling');
   },
   
+  /**
+   *  Element.siblings(@element) -> [Element...]
+   *  Collects all of element’s siblings and returns them as an array of
+   *  elements.
+  **/
   siblings: function(element) {
     element = $(element);
     return element.previousSiblings().reverse().concat(element.nextSiblings());
   },
   
+  /**
+   *  Element.match(@element, selector) -> boolean
+   *    - selector (String): A CSS selector.
+   *  
+   *  Checks if `element` matches the given CSS selector.
+  **/
   match: function(element, selector) {
     if (Object.isString(selector))
       selector = new Selector(selector);
     return selector.match($(element));
   },
   
+  /**
+   *  Element.up(@element[, expression[, index = 0]]) -> Element
+   *  Element.up(@element[, index = 0]) -> Element
+   *    - expression (String): A CSS selector.
+   *  
+   *  Returns `element`’s first ancestor (or the Nth ancestor, if `index`
+   *  is specified) that matches `expression`. If no `expression` is
+   *  provided, all ancestors are considered. If no ancestor matches these
+   *  criteria, `undefined` is returned.
+  **/
   up: function(element, expression, index) {
     element = $(element);
     if (arguments.length == 1) return $(element.parentNode);
@@ -232,6 +400,16 @@ Element.Methods = {
       Selector.findElement(ancestors, expression, index);
   },
   
+  /**
+   *  Element.down(@element[, expression[, index = 0]]) -> Element
+   *  Element.down(@element[, index = 0]) -> Element
+   *    - expression (String): A CSS selector.
+   *  
+   *  Returns `element`’s first descendant (or the Nth descendant, if `index`
+   *  is specified) that matches `expression`. If no `expression` is
+   *  provided, all descendants are considered. If no descendant matches these
+   *  criteria, `undefined` is returned.
+  **/
   down: function(element, expression, index) {
     element = $(element);
     if (arguments.length == 1) return element.firstDescendant();
@@ -239,6 +417,16 @@ Element.Methods = {
       Element.select(element, expression)[index || 0];
   },
 
+  /**
+   *  Element.previous(@element[, expression[, index = 0]]) -> Element
+   *  Element.previous(@element[, index = 0]) -> Element
+   *    - expression (String): A CSS selector.
+   *  
+   *  Returns `element`’s first previous sibling (or the Nth, if `index`
+   *  is specified) that matches `expression`. If no `expression` is
+   *  provided, all previous siblings are considered. If none matches these
+   *  criteria, `undefined` is returned.
+  **/
   previous: function(element, expression, index) {
     element = $(element);
     if (arguments.length == 1) return $(Selector.handlers.previousElementSibling(element));
@@ -247,6 +435,16 @@ Element.Methods = {
       Selector.findElement(previousSiblings, expression, index);   
   },
   
+  /**
+   *  Element.next(@element[, expression[, index = 0]]) -> Element
+   *  Element.next(@element[, index = 0]) -> Element
+   *    - expression (String): A CSS selector.
+   *  
+   *  Returns `element`’s first following sibling (or the Nth, if `index`
+   *  is specified) that matches `expression`. If no `expression` is
+   *  provided, all following siblings are considered. If none matches these
+   *  criteria, `undefined` is returned.
+  **/
   next: function(element, expression, index) {
     element = $(element);
     if (arguments.length == 1) return $(Selector.handlers.nextElementSibling(element));
@@ -255,16 +453,37 @@ Element.Methods = {
       Selector.findElement(nextSiblings, expression, index);
   },
   
+  
+  /**
+   *  Element.select(@element, selector...) -> [Element...]
+   *    - selector (String): A CSS selector.
+   *  
+   *  Takes an arbitrary number of CSS selectors and returns an array of
+   *  descendants of `element` that match any of them.
+  **/
   select: function() {
     var args = $A(arguments), element = $(args.shift());
     return Selector.findChildElements(element, args);
   },
   
+  /**
+   *  Element.adjacent(@element, selector...) -> [Element...]
+   *    - selector (String): A CSS selector.
+   *  
+   *  Finds all siblings of the current element that match the given
+   *  selector(s).
+  **/
   adjacent: function() {
     var args = $A(arguments), element = $(args.shift());
     return Selector.findChildElements(element.parentNode, args).without(element);
   },
   
+  /**
+   *  Element.identify(@element) -> String
+   *  
+   *  Returns `element`'s ID. If `element` does not have an ID, one is
+   *  generated, assigned to `element`, and returned.
+  **/
   identify: function(element) {
     element = $(element);
     var id = element.readAttribute('id');
@@ -274,6 +493,11 @@ Element.Methods = {
     return id;
   },
   
+  /**
+   *  Element.readAttribute(@element, attributeName) -> String | null
+   *  
+   *  Returns the value of `element`'s attribute with the given name.
+  **/
   readAttribute: (function(){
     
     var iframeGetAttributeThrowsError = (function(){
@@ -312,6 +536,13 @@ Element.Methods = {
     }
   })(),
   
+  /**
+   *  Element.writeAttribute(@element, attribute[, value = true]) -> Element
+   *  Element.writeAttribute(@element, attributes) -> Element
+   *  
+   *  Adds, changes, or removes attributes passed as either a hash or a
+   *  name/value pair.
+  **/
   writeAttribute: function(element, name, value) {
     element = $(element);
     var attributes = { }, t = Element._attributeTranslations.write;
@@ -332,18 +563,39 @@ Element.Methods = {
     return element;
   },
   
+  /**
+   *  Element.getHeight(@element) -> Number
+   *  
+   *  Returns the height of `element`.
+  **/
   getHeight: function(element) {
     return $(element).getDimensions().height; 
   },
   
+  /**
+   *  Element.getWidth(@element) -> Number
+   *  
+   *  Returns the width of `element`.
+  **/
   getWidth: function(element) {
     return $(element).getDimensions().width; 
   },
   
+  /**
+   *  Element.classNames(@element) -> [String...]
+   *  
+   *  Returns a new instance of [[Element.ClassNames]], an [[Enumerable]]
+   *  object used to read and write CSS class names of `element`.
+  **/
   classNames: function(element) {
     return new Element.ClassNames(element);
   },
 
+  /**
+   *  Element.hasClassName(@element, className) -> Boolean
+   *  
+   *  Checks whether `element` has the given CSS class name.
+  **/
   hasClassName: function(element, className) {
     if (!(element = $(element))) return;
     var elementClassName = element.className;
@@ -351,6 +603,11 @@ Element.Methods = {
       new RegExp("(^|\\s)" + className + "(\\s|$)").test(elementClassName)));
   },
 
+  /**
+   *  Element.addClassName(@element, className) -> Element
+   *  
+   *  Adds a CSS class to `element`.
+  **/
   addClassName: function(element, className) {
     if (!(element = $(element))) return;
     if (!element.hasClassName(className))
@@ -358,6 +615,11 @@ Element.Methods = {
     return element;
   },
 
+  /**
+   *  Element.removeClassName(@element, className) -> Element
+   *  
+   *  Removes a CSS class from `element`.
+  **/
   removeClassName: function(element, className) {
     if (!(element = $(element))) return;
     element.className = element.className.replace(
@@ -365,13 +627,22 @@ Element.Methods = {
     return element;
   },
   
+  /**
+   *  Element.toggleClassName(@element, className)
+   *  
+   *  Toggles the presence of a CSS class on `element`.
+  **/
   toggleClassName: function(element, className) {
     if (!(element = $(element))) return;
     return element[element.hasClassName(className) ?
       'removeClassName' : 'addClassName'](className);
   },
   
-  // removes whitespace-only text node children
+  /**
+   *  Element.cleanWhitespace(@element) -> Element
+   *  
+   *  Removes whitespace-only text node children from `element`.
+  **/
   cleanWhitespace: function(element) {
     element = $(element);
     var node = element.firstChild;
@@ -384,10 +655,20 @@ Element.Methods = {
     return element;
   },
   
+  /**
+   *  Element.empty(@element) -> Element
+   *  
+   *  Tests whether `element` is empty (i.e., contains only whitespace).
+  **/
   empty: function(element) {
     return $(element).innerHTML.blank();
   },
   
+  /**
+   *  Element.descendantOf(@element, ancestor) -> Boolean
+   *  
+   *  Checks if `element` is a descendant of `ancestor`.
+  **/
   descendantOf: function(element, ancestor) {
     element = $(element), ancestor = $(ancestor);
 
@@ -403,6 +684,11 @@ Element.Methods = {
     return false;
   },
   
+  /**
+   *  Element.scrollTo(@element) -> Element
+   *  
+   *  Scrolls the window so that `element` appears at the top of the viewport.
+  **/
   scrollTo: function(element) {
     element = $(element);
     var pos = element.cumulativeOffset();
@@ -410,6 +696,14 @@ Element.Methods = {
     return element;
   },
   
+  /**
+   *  Element.getStyle(@element, style) -> String | null
+   *    - style (String): The property name to be retrieved.
+   *  
+   *  Returns the given CSS property value of `element`. The property can be
+   *  specified in either its CSS form (`font-size`) or its camelized form
+   *  (`fontSize`).
+  **/
   getStyle: function(element, style) {
     element = $(element);
     style = style == 'float' ? 'cssFloat' : style.camelize();
@@ -422,10 +716,23 @@ Element.Methods = {
     return value == 'auto' ? null : value;
   },
   
+  /**
+   *  Element.getOpacity(@element) -> String | null
+   *  
+   *  Returns the opacity of the element.
+  **/
   getOpacity: function(element) {
     return $(element).getStyle('opacity');
   },
   
+  /**
+   *  Element.setStyle(@element, styles) -> Element
+   *  
+   *  Modifies `element`’s CSS style properties.
+   *  
+   *  Styles are passed as an object of property-value pairs in which the
+   *  properties are specified in their camelized form (e.g., `fontSize`).
+  **/
   setStyle: function(element, styles) {
     element = $(element);
     var elementStyle = element.style, match;
@@ -444,6 +751,11 @@ Element.Methods = {
     return element;
   },
   
+  /**
+   *  Element.setOpacity(@element, value) -> Element
+   *  
+   *  Sets the opacity of `element`.
+  **/
   setOpacity: function(element, value) {
     element = $(element);
     element.style.opacity = (value == 1 || value === '') ? '' : 
@@ -451,6 +763,12 @@ Element.Methods = {
     return element;
   },
   
+  /**
+   *  Element.getDimensions(@element) -> Object
+   *  
+   *  Finds the computed width and height of `element` and returns them as
+   *  key/value pairs of an object.
+  **/
   getDimensions: function(element) {
     element = $(element);
     var display = element.getStyle('display');
@@ -475,6 +793,13 @@ Element.Methods = {
     return {width: originalWidth, height: originalHeight};    
   },
   
+  /**
+   *  Element.makePositioned(@element) -> Element
+   *  
+   *  Allows for the easy creation of a CSS containing block by setting 
+   *  `element`'s CSS `position` to `relative` if its initial position is
+   *  either `static` or `undefined`.
+  **/
   makePositioned: function(element) {
     element = $(element);
     var pos = Element.getStyle(element, 'position');
@@ -490,7 +815,13 @@ Element.Methods = {
     }
     return element;
   },
-
+  
+  /**
+   *  Element.undoPositioned(@element) -> Element
+   *  
+   *  Sets `element` back to the state it was in _before_
+   *  [[Element.makePositioned]] was applied to it.
+  **/
   undoPositioned: function(element) {
     element = $(element);
     if (element._madePositioned) {
@@ -504,6 +835,12 @@ Element.Methods = {
     return element;
   },
 
+  /**
+   *  Element.makeClipping(@element) -> Element
+   *  
+   *  Simulates the poorly-supported CSS `clip` property by setting `element`'s
+   *  `overflow` value to `hidden`.
+  **/
   makeClipping: function(element) {
     element = $(element);
     if (element._overflow) return element;
@@ -513,6 +850,12 @@ Element.Methods = {
     return element;
   },
 
+  /**
+   *  Element.undoClipping(@element) -> Element
+   *  
+   *  Sets `element`’s CSS `overflow` property back to the value it had
+   *  _before_ [[Element.makeClipping]] was applied.
+  **/
   undoClipping: function(element) {
     element = $(element);
     if (!element._overflow) return element;
@@ -521,6 +864,15 @@ Element.Methods = {
     return element;
   },
 
+  /**
+   *  Element.cumulativeOffset(@element) -> Array
+   *  
+   *  Returns the offsets of `element` from the top left corner of the
+   *  document.
+   *  
+   *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
+   *  as properties: `{ left: leftValue, top: topValue }`.
+  **/
   cumulativeOffset: function(element) {
     var valueT = 0, valueL = 0;
     do {
@@ -531,6 +883,15 @@ Element.Methods = {
     return Element._returnOffset(valueL, valueT);
   },
 
+  /**
+   *  Element.positionedOffset(@element) -> Array
+   *  
+   *  Returns `element`’s offset relative to its closest positioned ancestor
+   *  (the element that would be returned by [[Element.getOffsetParent]]).
+   *  
+   *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
+   *  as properties: `{ left: leftValue, top: topValue }`.
+  **/
   positionedOffset: function(element) {
     var valueT = 0, valueL = 0;
     do {
@@ -546,10 +907,15 @@ Element.Methods = {
     return Element._returnOffset(valueL, valueT);
   },
 
+  /**
+   *  Element.absolutize(@element) -> Element
+   *  
+   *  Turns `element` into an absolutely-positioned element _without_ changing
+   *  its position in the page layout.
+  **/
   absolutize: function(element) {
     element = $(element);
     if (element.getStyle('position') == 'absolute') return element;
-    // Position.prepare(); // To be done manually by Scripty when it needs it.
 
     var offsets = element.positionedOffset();
     var top     = offsets[1];
@@ -570,10 +936,17 @@ Element.Methods = {
     return element;
   },
 
+  /**
+   *  Element.relativize(@element) -> Element
+   *  
+   *  Turns `element` into a relatively-positioned element without changing
+   *  its position in the page layout.
+   *  
+   *  Used to undo a call to [[Element.absolutize]].
+  **/
   relativize: function(element) {
     element = $(element);
     if (element.getStyle('position') == 'relative') return element;
-    // Position.prepare(); // To be done manually by Scripty when it needs it.
 
     element.style.position = 'relative';
     var top  = parseFloat(element.style.top  || 0) - (element._originalTop || 0);
@@ -586,6 +959,15 @@ Element.Methods = {
     return element;
   },
 
+  /**
+   *  Element.cumulativeScrollOffset(@element) -> Array
+   *  
+   *  Calculates the cumulative scroll offset of an element in nested
+   *  scrolling containers.
+   *  
+   *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
+   *  as properties: `{ left: leftValue, top: topValue }`.
+  **/
   cumulativeScrollOffset: function(element) {
     var valueT = 0, valueL = 0;
     do {
@@ -596,6 +978,12 @@ Element.Methods = {
     return Element._returnOffset(valueL, valueT);
   },
   
+  /**
+   *  Element.getOffsetParent(@element) -> Element
+   *  
+   *  Returns `element`’s closest _positioned_ ancestor. If none is found, the
+   *  `body` element is returned.
+  **/
   getOffsetParent: function(element) {
     if (element.offsetParent) return $(element.offsetParent);
     if (element == document.body) return $(element);
@@ -607,6 +995,14 @@ Element.Methods = {
     return $(document.body);
   },
 
+  /**
+   *  Element.viewportOffset(@element) -> Array
+   *  
+   *  Returns the X/Y coordinates of element relative to the viewport.
+   *  
+   *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
+   *  as properties: `{ left: leftValue, top: topValue }`.
+  **/
   viewportOffset: function(forElement) {
     var valueT = 0, valueL = 0;
 
@@ -631,7 +1027,19 @@ Element.Methods = {
 
     return Element._returnOffset(valueL, valueT);
   },
-
+  
+  /**
+   *  Element.clonePosition(@element, source[, options]) -> Element
+   *  
+   *  Clones the position and/or dimensions of `source` onto `element` as
+   *  defined by `options`.
+   *  
+   *  Valid keys for `options` are: `setLeft`, `setTop`, `setWidth`, and
+   *  `setHeight` (all booleans which default to `true`); and `offsetTop`
+   *  and `offsetLeft` (numbers which default to `0`). Use these to control
+   *  which aspects of `source`'s layout are cloned and how much to offset
+   *  the resulting position of `element`.
+  **/
   clonePosition: function(element, source) {
     var options = Object.extend({
       setLeft:    true,
@@ -673,7 +1081,14 @@ Element.Methods = {
 };
 
 Object.extend(Element.Methods, {
+  /** alias of: Element.select
+   *  Element.getElementsBySelector(@element, selector) -> [Element...]
+  **/
   getElementsBySelector: Element.Methods.select,
+  
+  /** alias of: Element.immediateDescendants
+   *  Element.childElements(@element) -> [Element...]
+  **/
   childElements: Element.Methods.immediateDescendants
 });
 
@@ -1078,6 +1493,15 @@ Object.extend(Element, Element.Methods);
   
 })(document.createElement('div'))
 
+/**
+ *  Element.extend(element) -> Element
+ *  
+ *  Extends `element` with all of the methods contained in `Element.Methods`
+ *  and `Element.Methods.Simulated`.
+ *  If `element` is an `input`, `textarea`, or `select` tag, it will also be
+ *  extended with the methods from `Form.Element.Methods`. If it is a `form`
+ *  tag, it will also be extended with the methods from `Form.Methods`.
+**/
 Element.extend = (function() {
   if (Prototype.BrowserFeatures.SpecificElementExtensions)
     return Prototype.K;
@@ -1122,6 +1546,16 @@ Element.hasAttribute = function(element, attribute) {
   return Element.Methods.Simulated.hasAttribute(element, attribute);
 };
 
+/**
+ *  Element.addMethods(methods) -> undefined
+ *  Element.addMethods(tagName, methods) -> undefined
+ *  
+ *  Takes a hash of methods and makes them available as methods of extended
+ *  elements and of the `Element` object.
+ *  
+ *  The second usage form is for adding methods only to specific tag names.
+ *  
+**/
 Element.addMethods = function(methods) {
   var F = Prototype.BrowserFeatures, T = Element.Methods.ByTag;
   
@@ -1213,11 +1647,31 @@ Element.addMethods = function(methods) {
   Element.cache = { };
 };
 
+/** section: dom
+ * document.viewport 
+**/
+
 document.viewport = {
+  
+  /**
+   *  document.viewport.getDimensions() -> Object
+   *  
+   *  Returns the size of the viewport.
+   *  
+   *  Returns an object of the form `{ width: Number, height: Number }`.
+  **/
   getDimensions: function() {
     return { width: this.getWidth(), height: this.getHeight() };
   },
 
+  /**
+   *  document.viewport.getScrollOffsets() -> Array
+   *  
+   *  Returns the viewport’s horizontal and vertical scroll offsets.
+   *  
+   *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
+   *  as properties: `{ left: leftValue, top: topValue }`.
+  **/
   getScrollOffsets: function() {
     return Element._returnOffset(
       window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
@@ -1248,8 +1702,19 @@ document.viewport = {
     viewport['get' + D] = function() { return element[property[D]] };
     return viewport['get' + D]();
   }
-
+  
+  /**
+   *  document.viewport.getWidth() -> Number
+   *  
+   *  Returns the width of the viewport.
+  **/
   viewport.getWidth  = define.curry('Width');
+  
+  /**
+   *  document.viewport.getHeight() -> Number
+   *  
+   *  Returns the height of the viewport.
+  **/
   viewport.getHeight = define.curry('Height');
 })(document.viewport);
 
@@ -1259,6 +1724,11 @@ Element.Storage = {
 };
 
 Element.addMethods({
+  /**
+   *  Element.getStorage(@element) -> Hash
+   *  
+   *  Returns the [[Hash]] object that stores custom metadata for this element.
+  **/
   getStorage: function(element) {
     if (!(element = $(element))) return;
     
@@ -1277,6 +1747,13 @@ Element.addMethods({
     return Element.Storage[uid];
   },
   
+  /**
+   *  Element.store(@element, key, value) -> Element
+   *  
+   *  Stores a key/value pair of custom metadata on the element.
+   *  
+   *  The metadata can later be retrieved with [[Element.retrieve]].
+  **/
   store: function(element, key, value) {
     if (!(element = $(element))) return;
     
@@ -1290,6 +1767,14 @@ Element.addMethods({
     return element;
   },
   
+  /**
+   *  Element.retrieve(@element, key[, defaultValue]) -> ?
+   *  
+   *  Retrieves custom metadata set on `element` with [[Element.store]].
+   *  
+   *  If the value is `undefined` and `defaultValue` is given, it will be
+   *  stored on the element as its new value for that key, then returned.
+  **/
   retrieve: function(element, key, defaultValue) {
     if (!(element = $(element))) return;
     var hash = Element.getStorage(element), value = hash.get(key);
