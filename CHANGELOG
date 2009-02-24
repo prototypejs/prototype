@@ -1,3 +1,5 @@
+* Make sure `getAttribute` is used without flag when accessing the "type" attribute of an iframe (IE throws error otherwise). [#118 state:resolved] (Zekid, kangax)
+
 * String#gsub should escape RegExp metacharacters when the first argument is a string. [#469 state:resolved] (michael, kangax)
 
 * Fix order of replacement in String#unescapeHTML [#544 state:resolved] (SWeini, kangax)

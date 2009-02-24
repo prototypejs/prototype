@@ -274,20 +274,43 @@ Element.Methods = {
     return id;
   },
   
-  readAttribute: function(element, name) {
-    element = $(element);
-    if (Prototype.Browser.IE) {
-      var t = Element._attributeTranslations.read;
-      if (t.values[name]) return t.values[name](element, name);
-      if (t.names[name]) name = t.names[name];
-      if (name.include(':')) {
-        return (!element.attributes || !element.attributes[name]) ? null : 
-         element.attributes[name].value;
-      }
-    }      
+  readAttribute: (function(){
     
-    return element.getAttribute(name);
-  },
+    var iframeGetAttributeThrowsError = (function(){
+      var el = document.createElement('iframe'),
+          isBuggy = false;
+          
+      document.documentElement.appendChild(el);
+      try {
+        el.getAttribute('type', 2);
+      } catch(e) {
+        isBuggy = true;
+      }
+      document.documentElement.removeChild(el);
+      el = null;
+      return isBuggy;
+    })();
+    
+    return function(element, name) {
+      element = $(element);
+      // check boolean first, to get out of expression faster
+      if (iframeGetAttributeThrowsError &&
+          name === 'type' && 
+          element.tagName.toUpperCase() == 'IFRAME') {
+        return element.getAttribute('type');
+      }
+      if (Prototype.Browser.IE) {
+        var t = Element._attributeTranslations.read;
+        if (t.values[name]) return t.values[name](element, name);
+        if (t.names[name]) name = t.names[name];
+        if (name.include(':')) {
+          return (!element.attributes || !element.attributes[name]) ? null : 
+           element.attributes[name].value;
+        }
+      }      
+      return element.getAttribute(name);
+    }
+  })(),
   
   writeAttribute: function(element, name, value) {
     element = $(element);
