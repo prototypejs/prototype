@@ -255,6 +255,8 @@ new Test.Unit.Runner({
     this.assertEqual('1\n2', '1\n2'.unescapeHTML());
     this.assertEqual('Pride & Prejudice', '<h1>Pride &amp; Prejudice</h1>'.unescapeHTML());
     
+    this.assertIdentical('&lt;', '&amp;lt;'.unescapeHTML());
+    
     this.benchmark(function() { largeTextEscaped.unescapeHTML() }, 1000);
     
   },
