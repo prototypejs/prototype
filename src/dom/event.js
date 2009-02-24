@@ -1,4 +1,8 @@
 (function() {
+  
+  /** section: dom
+   *  Event
+  **/  
   var Event = {
     KEY_BACKSPACE: 8,
     KEY_TAB:       9,
@@ -41,10 +45,43 @@
     };
   }
 
+  /**
+   *  Event.isLeftClick(@event) -> Boolean
+   *  
+   *  Determines whether a button-related mouse event involved the left
+   *  mouse button.
+   *  
+   *  Keep in mind that the "left" mouse button is actually the "primary" mouse
+   *  button. When a mouse is in left-handed mode, the browser will report
+   *  clicks of the _right_ button as "left-clicks."
+  **/
   function isLeftClick(event)   { return _isButton(event, 0) }
+  
+  /**
+   *  Event.isMiddleClick(@event) -> Boolean
+   *  
+   *  Determines whether a button-related mouse event involved the middle
+   *  mouse button.
+  **/
   function isMiddleClick(event) { return _isButton(event, 1) }
+  
+  /**
+   *  Event.isRightClick(@event) -> Boolean
+   *  
+   *  Determines whether a button-related mouse event involved the right
+   *  mouse button.
+   *  
+   *  Keep in mind that the "left" mouse button is actually the "secondary"
+   *  mouse button. When a mouse is in left-handed mode, the browser will
+   *  report clicks of the _left_ button as "left-clicks."
+  **/
   function isRightClick(event)  { return _isButton(event, 2) }
-
+  
+  /**
+   *  Event.element(@event) -> Element
+   *  
+   *  Returns the DOM element on which the event occurred.
+  **/
   function element(event) {
     event = Event.extend(event);
 
@@ -69,13 +106,30 @@
     return Element.extend(node);
   }
 
+  /**
+   *  Event.findElement(@event, expression) -> Element
+   *  
+   *  Returns the first DOM element that matches a given CSS selector —
+   *  starting with the element on which the event occurred, then moving up
+   *  its ancestor chain.
+  **/
   function findElement(event, expression) {
     var element = Event.element(event);
     if (!expression) return element;
     var elements = [element].concat(element.ancestors());
     return Selector.findElement(elements, expression, 0);
   }
-
+  
+  /**
+   *  Event.pointer(@event) -> Object
+   *  
+   *  Returns the absolute position of the pointer for a mouse event.
+   *  
+   *  Returns an object in the form `{ x: Number, y: Number}`.
+   *  
+   *  Note that this position is absolute on the _page_, not on the
+   *  _viewport_.
+  **/
   function pointer(event) {
     var docElement = document.documentElement,
      body = document.body || { scrollLeft: 0, scrollTop: 0 };
@@ -88,10 +142,39 @@
         (docElement.clientTop || 0))
     };
   }
-
+  
+  /**
+   *  Event.pointerX(event) -> Number
+   *  
+   *  Returns the absolute horizontal position of the pointer for a mouse
+   *  event.
+   *  
+   *  Note that this position is absolute on the _page_, not on the
+   *  _viewport_.
+  **/
   function pointerX(event) { return Event.pointer(event).x }
+
+  /**
+   *  Event.pointerY(event) -> Number
+   *  
+   *  Returns the absolute vertical position of the pointer for a mouse
+   *  event.
+   *  
+   *  Note that this position is absolute on the _page_, not on the
+   *  _viewport_.
+  **/
   function pointerY(event) { return Event.pointer(event).y }
 
+  
+  /**
+   *  Event.stop(@event) -> undefined
+   *  
+   *  Stops the event’s propagation and prevents its eventual default action
+   *  from being triggered.
+   *  
+   *  Stopping an event also sets a `stopped` property on that event for
+   *  future inspection.
+  **/
   function stop(event) {
     Event.extend(event);
     event.preventDefault();
@@ -234,6 +317,11 @@
     window.addEventListener('unload', Prototype.emptyFunction, false);
 
 
+  /**
+   *  Event.observe(element, eventName, handler) -> Element
+   *  
+   *  Registers an event handler on a DOM element.
+  **/
   function observe(element, eventName, handler) {
     element = $(element);
     
@@ -262,6 +350,15 @@
     return element;
   }
 
+  /**
+   *  Event.stopObserving(element[, eventName[, handler]]) -> Element
+   *  
+   *  Unregisters one or more event handlers.
+   *  
+   *  If `handler` is omitted, unregisters all event handlers on `element`
+   *  for that `eventName`. If `eventName` is also omitted, unregisters _all_
+   *  event handlers on `element`.
+  **/
   function stopObserving(element, eventName, handler) {
     element = $(element);
     
@@ -318,6 +415,16 @@
     return element;
   }
 
+  /**
+   *  Event.fire(element, eventName[, memo[, bubble = true]]) -> Event
+   *  - memo (?): Metadata for the event. Will be accessible through the
+   *    event's `memo` property.
+   *  - bubble (Boolean): Whether the event will bubble.
+   *  
+   *  Fires a custom event of name `eventName` with `element` as its target.
+   *  
+   *  Custom events must include a colon (`:`) in their names.
+  **/
   function fire(element, eventName, memo, bubble) {
     element = $(element);
     
@@ -357,15 +464,46 @@
   });
 
   Element.addMethods({
+    /** alias of: Event.fire
+     *  Element.fire(@element, eventName[, memo[, bubble = true]]) -> Event
+    **/
     fire:          fire,
+
+    /** alias of: Event.observe
+     *  Element.observe(@element, eventName, handler) -> Element
+    **/
     observe:       observe,
+    
+    /** alias of: Event.observe
+     *  Element.stopObserving(element[, eventName[, handler]]) -> Element
+    **/
     stopObserving: stopObserving
   });
 
+  /** section: dom
+   *  document
+  **/
   Object.extend(document, {
+    /** related to: Event.fire
+     *  document.fire(eventName[, memo[, bubble = true]]) -> Event
+    **/
     fire:          fire.methodize(),
+    
+    /** related to: Event.observe
+     *  document.observe(eventName, handler) -> Element
+    **/
     observe:       observe.methodize(),
+    
+    /** related to: Event.observe
+     *  document.stopObserving([eventName[, handler]]) -> Element
+    **/
     stopObserving: stopObserving.methodize(),
+    
+    /**
+     *  document.loaded -> Boolean
+     *  
+     *  Whether the full DOM tree is ready for manipulation.
+    **/
     loaded:        false
   });
 
