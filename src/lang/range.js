@@ -6,7 +6,7 @@
  *  $R(start, end[, exclusive = false]) -> ObjectRange
  *
  *  Creates a new ObjectRange object. 
- *  This method is a convenience wrapper around the ObjectRange constructor, 
+ *  This method is a convenience wrapper around the [[ObjectRange]] constructor, 
  *  but $R is the preferred alias.
 **/
 function $R(start, end, exclusive) {
@@ -17,7 +17,10 @@ var ObjectRange = Class.create(Enumerable, (function() {
   /**
    *  new ObjectRange(start, end[, exclusive = false])
    *  
-   *  TODO: new ObjectRange
+   *  Creates a new `ObjectRange`.
+   *  
+   *  The `exclusive` argument specifies whether `end` itself is a part of the
+   *  range.
   **/
   function initialize(start, end, exclusive) {
     this.start = start;

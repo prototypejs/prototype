@@ -5,7 +5,7 @@ Object.extend(String, {
   /**
    *  String.interpret(value) -> String
    *
-   *  TODO: String.interpret
+   *  Coerces `value` into a string. Returns an empty string for `null`.
   **/
   interpret: function(value) {
     return value == null ? '' : String(value);

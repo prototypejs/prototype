@@ -5,7 +5,10 @@ var Template = Class.create({
   /**
    *  new Template(template[, pattern = Template.Pattern])
    *  
-   *  TODO: new Template
+   *  Creates a Template object.
+   *  
+   *  The optional `pattern` argument expects a `RegExp` that defines a custom
+   *  syntax for the replaceable symbols in `template`.
   **/
   initialize: function(template, pattern) {
     this.template = template.toString();

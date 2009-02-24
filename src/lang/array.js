@@ -250,11 +250,7 @@ Array.from = $A;
     return (n < 0) ? n : i - n - 1;
   }
   
-  /**
-   *  Array#concat(args...) -> Array
-   *
-   *  TODO: Array#concat
-  **/
+  // Replaces a built-in function. No PDoc needed.
   function concat() {
     var array = slice.call(this, 0), item;
     for (var i = 0, length = arguments.length; i < length; i++) {
