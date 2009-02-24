@@ -64,6 +64,19 @@ new Test.Unit.Runner({
       source.gsub(/(.)(o+)/, '#{3}'));      
   },
   
+  testGsubWithTroublesomeCharacters: function() {
+    this.assertEqual('ab', 'a|b'.gsub('|', ''));
+    //'ab'.gsub('', ''); // freeze
+    this.assertEqual('ab', 'ab(?:)'.gsub('(?:)', ''));
+    this.assertEqual('ab', 'ab()'.gsub('()', ''));
+    this.assertEqual('ab', 'ab'.gsub('^', ''));
+    this.assertEqual('ab', 'a?b'.gsub('?', ''))
+    this.assertEqual('ab', 'a+b'.gsub('+', ''));
+    this.assertEqual('ab', 'a*b'.gsub('*', ''));
+    this.assertEqual('ab', 'a{1}b'.gsub('{1}', ''));
+    this.assertEqual('ab', 'a.b'.gsub('.', ''));
+  },  
+  
   testSubWithReplacementFunction: function() {
     var source = 'foo boo boz';
 
@@ -303,7 +316,7 @@ new Test.Unit.Runner({
   },
 
   testTemplateEvaluationWithIndexing: function() {
-    var source = '#{0} = #{[0]} - #{1} = #{[1]} - #{[2][0]} - #{[2].name} - #{first[0]} - #{[first][0]} - #{[\\]]} - #{first[\\]]}';
+    var source = '#{0} = #{[0]} - #{1} = #{[1]} - #{[2][0]} - #{[2].name} - #{first[0]} - #{[first][0]} - #{[\]]} - #{first[\]]}';
     var subject = [ 'zero', 'one', [ 'two-zero' ] ];
     subject[2].name = 'two-zero-name';
     subject.first = subject[2];
@@ -316,6 +329,8 @@ new Test.Unit.Runner({
     this.assertEqual('two-zero', new Template('#{first[0]}').evaluate(subject));
     this.assertEqual('\\', new Template('#{[\\]]}').evaluate(subject));
     this.assertEqual('first\\', new Template('#{first[\\]]}').evaluate(subject));
+    this.assertEqual('\\', new Template('#{[\]]}').evaluate(subject));
+    this.assertEqual('first\\', new Template('#{first[\]]}').evaluate(subject));
     this.assertEqual('empty - empty2', new Template('#{[]} - #{m[]}').evaluate({ '': 'empty', m: {'': 'empty2'}}));
     this.assertEqual('zero = zero - one = one - two-zero - two-zero-name - two-zero - two-zero - \\ - first\\', new Template(source).evaluate(subject));
   },

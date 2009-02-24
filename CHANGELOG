@@ -1,3 +1,5 @@
+* String#gsub should escape RegExp metacharacters when the first argument is a string. [#469 state:resolved] (michael, kangax)
+
 * Fix order of replacement in String#unescapeHTML [#544 state:resolved] (SWeini, kangax)
 
 * Fix issue where a Selector query rooted on a node that had not been attached to the document failed in IE. [#464 state:resolved] (jddalton, kangax, Douglas Fraser, Andrew Dupont)
