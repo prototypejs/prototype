@@ -5,7 +5,8 @@
 /**
  *  Date#toJSON -> String
  *  
- *  TODO: Date#toJSON
+ *  Produces a string representation of the date in ISO 8601 format.
+ *  
 **/
 Date.prototype.toJSON = function() {
   return '"' + this.getUTCFullYear() + '-' +

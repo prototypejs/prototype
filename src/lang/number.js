@@ -26,7 +26,9 @@ Object.extend(Number.prototype, (function() {
   /**
    *  Number#times(iterator) -> Number
    *
-   *  Encapsulates a regular [0..n[ loop, Ruby-style.
+   *  Calls `iterator` the specified number of times.
+   *  The function takes an integer as the first parameter; it will start at 0
+   *  and be incremented after each invocation.
   **/
   function times(iterator, context) {
     $R(0, this, true).each(iterator, context);
@@ -48,7 +50,7 @@ Object.extend(Number.prototype, (function() {
   /** related to: Object.toJSON
    *  Number#toJSON() -> String
    *
-   *  Returns a JSON string.
+   *  Returns a JSON string representation of the number.
   **/
   function toJSON() {
     return isFinite(this) ? this.toString() : 'null';

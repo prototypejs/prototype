@@ -16,7 +16,8 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  new Hash([object])
    *
-   *  TODO: new Hash
+   *  Creates a new `Hash`. If `object` is given, the new hash will be populated
+   *  with all the object's properties. See [[$H]].
    **/
   function initialize(object) {
     this._object = Object.isHash(object) ? object.toObject() : Object.clone(object);
@@ -92,7 +93,8 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#index(value) -> String
    *  
-   *  TODO: Hash#index
+   *  Returns the first key in the hash whose value matches `value`.
+   *  Returns `false` if there is no such key.
   **/
   function index(value) {
     var match = this.detect(function(pair) { 
@@ -104,9 +106,9 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#merge(object) -> Hash
    *
-   *  Merges `object` to hash and returns the result of that merge. 
-   *  Prior to v1.6.0: This was destructive (object's values were added to hash).
-   *  Since v1.6.0: This is no longer destructive (hash is cloned before the operation).
+   *  Returns a new hash with `object`'s key/value pairs merged in.
+   *  To modify the original hash in place, use [[Hash#update]].
+   *  
   **/
   function merge(object) {
     return this.clone().update(object);
@@ -116,7 +118,8 @@ var Hash = Class.create(Enumerable, (function() {
    *  Hash#update(object) -> Hash
    *
    *  Updates hash with the key/value pairs of `object`.
-   *  The original hash will be modified.
+   *  The original hash will be modified. To return a new hash instead, use
+   *  [[Hash#merge]].
   **/
   function update(object) {
     return new Hash(object).inject(this, function(result, pair) {
@@ -125,11 +128,7 @@ var Hash = Class.create(Enumerable, (function() {
     });
   }
 
-  /**
-   *  Hash#toQueryPair(key, value) -> String
-   *  
-   *  TODO: Hash#toQueryPair
-  **/
+  // Private. No PDoc necessary.
   function toQueryPair(key, value) {
     if (Object.isUndefined(value)) return key;
     return key + '=' + encodeURIComponent(String.interpret(value));
@@ -173,7 +172,7 @@ var Hash = Class.create(Enumerable, (function() {
   }
 
   /**
-   *  Hash#clone() -> newHash
+   *  Hash#clone() -> Hash
    *
    *  Returns a clone of hash.
   **/

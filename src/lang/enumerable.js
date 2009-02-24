@@ -29,8 +29,10 @@ var Enumerable = (function() {
   /**
    *  Enumerable#eachSlice(number[, iterator = Prototype.K[, context]]) -> Enumerable
    *
-   *  TODO: Enumerable#eachSlice
-   *  http://prototypejs.org/api/enumerable#method-eachslice
+   *  Groups items into chunks of the given size.
+   *  The final "slice" may have fewer than `number` items; it won't "pad" the
+   *  last group with empty values. For that behavior, use
+   *  [[Enumerable#inGroupsOf]].
   **/
   function eachSlice(number, iterator, context) {
     var index = -number, slices = [], array = this.toArray();
@@ -343,7 +345,7 @@ var Enumerable = (function() {
   /** related to: Object.inspect
    *  Enumerable#inspect() -> String
    *
-   *  TODO: Enumerable#inspect
+   *  Returns the debug-oriented string representation of the object.
   **/
   function inspect() {
     return '#<Enumerable:' + this.toArray().inspect() + '>';
