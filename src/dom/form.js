@@ -1,10 +1,32 @@
+/** section: dom
+ *  Form
+**/
+
 var Form = {
+  /**
+   *  Form.reset(form) -> Element
+   *  
+   *  Resets a form to its default values.
+  **/
   reset: function(form) {
     form = $(form);
     form.reset();
     return form;
   },
   
+  /**
+   *  Form.serializeElements(elements[, options]) -> String | Object
+   *  - elements (Array): A collection of elements to include in the
+   *    serialization.
+   *  - options (Object): A list of options that affect the return value
+   *    of the method.
+   *  
+   *  Serialize an array of form elements to a string suitable for Ajax
+   *  requests. 
+   *  
+   *  If `options.hash` is `true`, returns an object of key/value pairs
+   *  instead (where keys are control names).
+  **/
   serializeElements: function(elements, options) {
     if (typeof options != 'object') options = { hash: !!options };
     else if (Object.isUndefined(options.hash)) options.hash = true;
@@ -31,10 +53,25 @@ var Form = {
 };
 
 Form.Methods = {
+  /**
+   *  Form.serialize(@form[, options]) -> String | Object
+   *  - options (Object): A list of options that affect the return value
+   *    of the method.
+   *  
+   *  Serialize form data to a string suitable for Ajax requests.
+   *  
+   *  If `options.hash` is `true`, returns an object of key/value pairs
+   *  instead (where keys are control names).
+  **/
   serialize: function(form, options) {
     return Form.serializeElements(Form.getElements(form), options);
   },
   
+  /**
+   *  Form.getElements(@form) -> [Element...]
+   *  
+   *  Returns a collection of all controls within a form.
+  **/
   getElements: function(form) {
     return $A($(form).getElementsByTagName('*')).inject([], 
       function(elements, child) {
@@ -45,6 +82,18 @@ Form.Methods = {
     );
   },
   
+  /**
+   *  Form.getInputs(@form [, type [, name]]) -> [Element...]
+   *  - type (String): A value for the `type` attribute against which to
+   *    filter.
+   *  - name (String): A value for the `name` attribute against which to
+   *    filter.
+   *  
+   *  Returns a collection of all `INPUT` elements in a form.
+   *  
+   *  Use optional `type` and `name` arguments to restrict the search on
+   *  these attributes.
+  **/
   getInputs: function(form, typeName, name) {
     form = $(form);
     var inputs = form.getElementsByTagName('input');
@@ -61,18 +110,34 @@ Form.Methods = {
     return matchingInputs;
   },
 
+  /**
+   *  Form.disable(@form) -> Element
+   *  
+   *  Disables the form as a whole. Form controls will be visible but
+   *  uneditable.
+  **/
   disable: function(form) {
     form = $(form);
     Form.getElements(form).invoke('disable');
     return form;
   },
 
+  /**
+   *  Form.enable(@form) -> Element
+   *  
+   *  Enables a fully- or partially-disabled form.
+  **/
   enable: function(form) {
     form = $(form);
     Form.getElements(form).invoke('enable');
     return form;
   },
 
+  /**
+   *  Form.findFirstElement(@form) -> Element
+   *  
+   *  Finds the first non-hidden, non-disabled control within the form.
+  **/
   findFirstElement: function(form) {
     var elements = $(form).getElements().findAll(function(element) {
       return 'hidden' != element.type && !element.disabled;
@@ -86,12 +151,29 @@ Form.Methods = {
     });
   },
 
+  /**
+   *  Form.focusFirstElement(@form) -> Element
+   *  
+   *  Gives keyboard focus to the first element of the form. Returns the form.
+  **/
   focusFirstElement: function(form) {
     form = $(form);
     form.findFirstElement().activate();
     return form;
   },
   
+  /**
+   *  Form.request([options]) -> Ajax.Request
+   *  - options (Object): Options to pass along to the `Ajax.Request`
+   *    constructor.
+   *  
+   *  A convenience method for serializing and submitting the form via an
+   *  [[Ajax.Request]] to the URL of the form’s `action` attribute.
+   *  
+   *  The `options` parameter is passed to the `Ajax.Request` instance,
+   *  allowing one to override the HTTP method and/or specify additional
+   *  parameters and callbacks.
+  **/
   request: function(form, options) {
     form = $(form), options = Object.clone(options || { });
 
@@ -113,12 +195,26 @@ Form.Methods = {
 
 /*--------------------------------------------------------------------------*/
 
+/** section: dom
+ *  Form.Element
+**/
+
 Form.Element = {
+  /**
+   *  Form.Element.focus(element) -> Element
+   *  
+   *  Gives keyboard focus to an element. Returns the element.
+  **/
   focus: function(element) {
     $(element).focus();
     return element;
   },
 
+  /**
+   *  Form.Element.select(element) -> Element
+   *  
+   *  Selects the current text in a text input. Returns the element.
+  **/
   select: function(element) {
     $(element).select();
     return element;
@@ -126,6 +222,13 @@ Form.Element = {
 };
 
 Form.Element.Methods = {
+  
+  /**
+   *  Form.Element.serialize(@element) -> String
+   *  
+   *  Returns a URL-encoded string representation of a form control in the
+   *  `name=value` format.
+  **/
   serialize: function(element) {
     element = $(element);
     if (!element.disabled && element.name) {
@@ -139,12 +242,28 @@ Form.Element.Methods = {
     return '';
   },
   
+  /** alias of: $F
+   *  
+   *  Form.Element.getValue(@element) -> String | Array
+   *  
+   *  Returns the current value of a form control.
+   *  
+   *  A string is returned for most controls; only multiple `select` boxes
+   *  return an array of values.
+   *  
+   *  The global shortcut for this method is [[$F]].
+  **/
   getValue: function(element) {
     element = $(element);
     var method = element.tagName.toLowerCase();
     return Form.Element.Serializers[method](element);
   },
 
+  /**
+   *  Form.Element.setValue(@element, value) -> Element
+   *  
+   *  Sets `value` to be the value of the form control. Returns the element.
+  **/
   setValue: function(element, value) {
     element = $(element);
     var method = element.tagName.toLowerCase();
@@ -152,15 +271,31 @@ Form.Element.Methods = {
     return element;
   },
 
+  /**
+   *  Form.Element.clear(@element) -> Element
+   *  
+   *  Clears the contents of a text input. Returns the element.
+  **/
   clear: function(element) {
     $(element).value = '';
     return element;
   },
 
+  /**
+   *  Form.Element.present(@element) -> Element
+   *  
+   *  Returns `true` if a text input has contents, `false` otherwise.
+  **/
   present: function(element) {
     return $(element).value != '';
   },
   
+  /**
+   *  Form.Element.activate(@element) -> Element
+   *  
+   *  Gives focus to a form control and selects its contents if it is a text
+   *  input.
+  **/
   activate: function(element) {
     element = $(element);
     try {
@@ -172,12 +307,23 @@ Form.Element.Methods = {
     return element;
   },
   
+  /**
+   *  Form.Element.disable(@element) -> Element
+   *  
+   *  Disables a form control, effectively preventing its value from changing
+   *  until it is enabled again.
+  **/
   disable: function(element) {
     element = $(element);
     element.disabled = true;
     return element;
   },
   
+  /**
+   *  Form.Element.enable(@element) -> Element
+   *  
+   *  Enables a previously disabled form control.
+  **/
   enable: function(element) {
     element = $(element);
     element.disabled = false;
@@ -188,6 +334,10 @@ Form.Element.Methods = {
 /*--------------------------------------------------------------------------*/
 
 var Field = Form.Element;
+
+/** section: dom, alias of: Form.Element.getValue
+ *  $F(element) -> String | Array
+**/
 var $F = Form.Element.Methods.getValue;
 
 /*--------------------------------------------------------------------------*/
@@ -257,6 +407,13 @@ Form.Element.Serializers = {
 
 /*--------------------------------------------------------------------------*/
 
+/** section: dom
+ *  Abstract
+**/
+
+/** section: dom
+ *  class Abstract.TimedObserver
+**/
 Abstract.TimedObserver = Class.create(PeriodicalExecuter, {
   initialize: function($super, element, frequency, callback) {
     $super(callback, frequency);
@@ -274,13 +431,30 @@ Abstract.TimedObserver = Class.create(PeriodicalExecuter, {
   }
 });
 
+/** section: dom
+ *  class Form.Element.Observer < Abstract.TimedObserver
+**/
 Form.Element.Observer = Class.create(Abstract.TimedObserver, {
+  /**
+   *  new Form.Element.Observer(element, frequency, callback)
+   *  
+   *  Creates a timed observer for a specific form control.
+  **/
   getValue: function() {
     return Form.Element.getValue(this.element);
   }
 });
 
+/** section: dom
+ *  class Form.Observer < Abstract.TimedObserver
+**/
 Form.Observer = Class.create(Abstract.TimedObserver, {
+  /**
+   *  new Form.Observer(element, frequency, callback)
+   *  
+   *  Creates a timed observer that triggers when any value changes within
+   *  the form.
+  **/
   getValue: function() {
     return Form.serialize(this.element);
   }
@@ -288,6 +462,9 @@ Form.Observer = Class.create(Abstract.TimedObserver, {
 
 /*--------------------------------------------------------------------------*/
 
+/** section: dom
+ *  class Abstract.EventObserver
+**/
 Abstract.EventObserver = Class.create({
   initialize: function(element, callback) {
     this.element  = $(element);
@@ -327,12 +504,18 @@ Abstract.EventObserver = Class.create({
   }
 });
 
+/** section: dom
+ *  class Form.Element.EventObserver < Abstract.EventObserver
+**/
 Form.Element.EventObserver = Class.create(Abstract.EventObserver, {
   getValue: function() {
     return Form.Element.getValue(this.element);
   }
 });
 
+/** section: dom
+ *  class Form.Element.EventObserver < Abstract.EventObserver
+**/
 Form.EventObserver = Class.create(Abstract.EventObserver, {
   getValue: function() {
     return Form.serialize(this.element);
