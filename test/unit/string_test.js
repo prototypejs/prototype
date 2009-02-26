@@ -322,16 +322,14 @@ new Test.Unit.Runner({
     subject.first = subject[2];
     subject[']'] = '\\';
     subject.first[']'] = 'first\\';
-    this.assertEqual('zero', new Template('#{[0]}').evaluate(subject));
-    this.assertEqual('one', new Template('#{[1]}').evaluate(subject));
-    this.assertEqual('two-zero', new Template('#{[2][0]}').evaluate(subject));
-    this.assertEqual('two-zero-name', new Template('#{[2].name}').evaluate(subject));
-    this.assertEqual('two-zero', new Template('#{first[0]}').evaluate(subject));
-    this.assertEqual('\\', new Template('#{[\\]]}').evaluate(subject));
-    this.assertEqual('first\\', new Template('#{first[\\]]}').evaluate(subject));
-    this.assertEqual('\\', new Template('#{[\]]}').evaluate(subject));
-    this.assertEqual('first\\', new Template('#{first[\]]}').evaluate(subject));
-    this.assertEqual('empty - empty2', new Template('#{[]} - #{m[]}').evaluate({ '': 'empty', m: {'': 'empty2'}}));
+    this.assertEqual('zero', new Template('#{[0]}').evaluate(subject), "#{[0]}");
+    this.assertEqual('one', new Template('#{[1]}').evaluate(subject), "#{[1]}");
+    this.assertEqual('two-zero', new Template('#{[2][0]}').evaluate(subject), '#{[2][0]}');
+    this.assertEqual('two-zero-name', new Template('#{[2].name}').evaluate(subject), '#{[2].name}');
+    this.assertEqual('two-zero', new Template('#{first[0]}').evaluate(subject), '#{first[0]}');
+    this.assertEqual('\\', new Template('#{[\]]}').evaluate(subject), '#{[\]]}');
+    this.assertEqual('first\\', new Template('#{first[\]]}').evaluate(subject), '#{first[\]]}');
+    this.assertEqual('empty - empty2', new Template('#{[]} - #{m[]}').evaluate({ '': 'empty', m: {'': 'empty2'}}), '#{[]} - #{m[]}');
     this.assertEqual('zero = zero - one = one - two-zero - two-zero-name - two-zero - two-zero - \\ - first\\', new Template(source).evaluate(subject));
   },
 
