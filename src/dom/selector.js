@@ -340,7 +340,7 @@ Object.extend(Selector, {
     { name: 'id',           re: /^#([\w\-\*]+)(\b|$)/ },
     { name: 'className',    re: /^\.([\w\-\*]+)(\b|$)/ },
     { name: 'pseudo',       re: /^:((first|last|nth|nth-last|only)(-child|-of-type)|empty|checked|(en|dis)abled|not)(\((.*?)\))?(\b|$|(?=\s|[:+~>]))/ },
-    { name: 'attrPresence', re: /^\[((?:[\w-]+:)?[\w]+)\]/ },
+    { name: 'attrPresence', re: /^\[((?:[\w-]+:)?[\w-]+)\]/ },
     { name: 'attr',         re: /\[((?:[\w-]*:)?[\w-]+)\s*(?:([!^$*~|]?=)\s*((['"])([^\4]*?)\4|([^'"][^\]]*?)))?\]/ }
   ],
   
