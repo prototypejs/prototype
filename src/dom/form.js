@@ -1,5 +1,5 @@
 /** section: dom
- *  Form
+ * Form
 **/
 
 var Form = {
@@ -196,7 +196,7 @@ Form.Methods = {
 /*--------------------------------------------------------------------------*/
 
 /** section: dom
- *  Form.Element
+ * Form.Element
 **/
 
 Form.Element = {
@@ -243,7 +243,6 @@ Form.Element.Methods = {
   },
   
   /** alias of: $F
-   *  
    *  Form.Element.getValue(@element) -> String | Array
    *  
    *  Returns the current value of a form control.
@@ -408,7 +407,7 @@ Form.Element.Serializers = {
 /*--------------------------------------------------------------------------*/
 
 /** section: dom
- *  Abstract
+ * Abstract
 **/
 
 /** section: dom

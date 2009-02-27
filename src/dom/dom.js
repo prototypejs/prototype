@@ -326,8 +326,7 @@ Element.Methods = {
     return $(element);
   },
   
-  /** alias of: Element.childElements
-   *  
+  /**
    *  Element.childElements(@element) -> [Element...]
    *  
    *  Collects all of `element`’s immediate descendants (i.e., children) and
@@ -628,7 +627,7 @@ Element.Methods = {
   },
   
   /**
-   *  Element.toggleClassName(@element, className)
+   *  Element.toggleClassName(@element, className) -> Element
    *  
    *  Toggles the presence of a CSS class on `element`.
   **/

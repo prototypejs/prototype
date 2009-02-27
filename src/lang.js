@@ -12,6 +12,7 @@ var Abstract = { };
 /**
  *  Try.these(function...) -> ?
  *  - function (Function): A function that may throw an exception.
+ *  
  *  Accepts an arbitrary number of functions and returns the result of the
  *  first one that doesn't throw an error.
  **/
