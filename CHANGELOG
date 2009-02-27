@@ -1,3 +1,5 @@
+* Null out references to elements in cache on page unload. Need this in addition to the Event#stopObserving calls to clean up memory leaks. [#425 state:resolved] (ykphuah, mr_justin, Andrew Dupont)
+
 * Ensure `toString` and `valueOf` properties are copied to a subclass only when necessary in IE6. [@382 state:resolved] (Samuel Lebeau)
 
 * Make sure `getAttribute` is used without flag when accessing the "type" attribute of an iframe (IE throws error otherwise). [#118 state:resolved] (Zekid, kangax)

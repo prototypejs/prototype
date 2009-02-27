@@ -1,7 +1,7 @@
 (function() {
   
   /** section: dom
-   *  Event
+   * Event
   **/  
   var Event = {
     KEY_BACKSPACE: 8,
@@ -299,8 +299,10 @@
   }
   
   function _destroyCache() {    
-    for (var i = 0, length = CACHE.length; i < length; i++)
+    for (var i = 0, length = CACHE.length; i < length; i++) {
       Event.stopObserving(CACHE[i]);
+      CACHE[i] = null;
+    }
   }
   
   var CACHE = [];
@@ -481,7 +483,7 @@
   });
 
   /** section: dom
-   *  document
+   * document
   **/
   Object.extend(document, {
     /** related to: Event.fire
