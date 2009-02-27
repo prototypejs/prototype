@@ -1,3 +1,5 @@
+* Ensure `toString` and `valueOf` properties are copied to a subclass only when necessary in IE6. [@382 state:resolved] (Samuel Lebeau)
+
 * Make sure `getAttribute` is used without flag when accessing the "type" attribute of an iframe (IE throws error otherwise). [#118 state:resolved] (Zekid, kangax)
 
 * String#gsub should escape RegExp metacharacters when the first argument is a string. [#469 state:resolved] (michael, kangax)

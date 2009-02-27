@@ -112,6 +112,10 @@ new Test.Unit.Runner({
       toString: function() { return "toString" },
       valueOf: function() { return "valueOf" }
     });
+    
+    var Bar = Class.create(Foo, {
+      valueOf: function() { return "myValueOf" }
+    });
 
     var Parent = Class.create({
       m1: function(){ return 'm1' },
@@ -126,5 +130,7 @@ new Test.Unit.Runner({
 
     this.assertEqual("toString", new Foo().toString());
     this.assertEqual("valueOf", new Foo().valueOf());
+    this.assertEqual("toString", new Bar().toString());
+    this.assertEqual("myValueOf", new Bar().valueOf());
   }
 });

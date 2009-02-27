@@ -83,7 +83,16 @@ var Class = (function() {
     
     if (!Object.keys({ toString: true }).length)
       properties.push("toString", "valueOf");
-    
+      
+    // IE6 doesn't enumerate toString and valueOf properties,        
+    // Force copy if they're not coming from Object.prototype.      
+    if (!Object.keys({ toString: true }).length) {
+      if (source.toString != Object.prototype.toString)
+        properties.push("toString");
+      if (source.valueOf != Object.prototype.valueOf)
+        properties.push("valueOf");
+    }
+                                                                 
     for (var i = 0, length = properties.length; i < length; i++) {
       var property = properties[i], value = source[property];
       if (ancestor && Object.isFunction(value) &&
