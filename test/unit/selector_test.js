@@ -88,7 +88,7 @@ new Test.Unit.Runner({
   },
   
   testSelectorWithAttributeContainingDash: function() {
-    this.assertEnumEqual([$('attr_with_dash')], $$('[foo-bar]'));
+    this.assertEnumEqual([$('attr_with_dash')], $$('[foo-bar]'), "attribute with hyphen");
   },                                                            
   
   testSelectorWithUniversalAndHyphenTokenizedAttributeValue: function() {
@@ -392,5 +392,13 @@ new Test.Unit.Runner({
     var b = $('dupContainer').down('#dupL4');
     
     this.assertEqual(a, b);
+  },
+  
+  testDescendantSelectorBuggy: function() {
+    var el = document.createElement('div');
+    el.innerHTML = '<ul><li></li></ul><div><ul><li></li></ul></div>';
+    document.body.appendChild(el);
+    this.assertEqual(2, $(el).select('ul li').length);
+    document.body.removeChild(el);
   }
 });

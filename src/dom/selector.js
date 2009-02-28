@@ -18,23 +18,50 @@ var Selector = Class.create({
     
   },
   
-  shouldUseXPath: function() {
-    if (!Prototype.BrowserFeatures.XPath) return false;
+  shouldUseXPath: (function() {
     
-    var e = this.expression;
-
-    // Safari 3 chokes on :*-of-type and :empty
-    if (Prototype.Browser.WebKit && 
-     (e.include("-of-type") || e.include(":empty")))
-      return false;
+    // Some versions of Opera 9.x produce incorrect results when using XPath
+    // with descendant combinators.
+    // see: http://opera.remcol.ath.cx/bugs/index.php?action=bug&id=652
+    var IS_DESCENDANT_SELECTOR_BUGGY = (function(){
+      var isBuggy = false;
+      if (document.evaluate && window.XPathResult) {
+        var el = document.createElement('div');
+        el.innerHTML = '<ul><li></li></ul><div><ul><li></li></ul></div>';
+        
+        var xpath = ".//*[local-name()='ul' or local-name()='UL']" +
+          "//*[local-name()='li' or local-name()='LI']";
+          
+        var result = document.evaluate(xpath, el, null, 
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+          
+        isBuggy = (result.snapshotLength !== 2);
+        el = null;
+      }
+      return isBuggy;
+    })();
     
-    // XPath can't do namespaced attributes, nor can it read
-    // the "checked" property from DOM nodes
-    if ((/(\[[\w-]*?:|:checked)/).test(e))
-      return false;
+    return function() {      
+      if (!Prototype.BrowserFeatures.XPath) return false;
 
-    return true;
-  },
+      var e = this.expression;
+
+      // Safari 3 chokes on :*-of-type and :empty
+      if (Prototype.Browser.WebKit && 
+       (e.include("-of-type") || e.include(":empty")))
+        return false;
+
+      // XPath can't do namespaced attributes, nor can it read
+      // the "checked" property from DOM nodes
+      if ((/(\[[\w-]*?:|:checked)/).test(e))
+        return false;
+
+      if (IS_DESCENDANT_SELECTOR_BUGGY) return false;
+
+      return true;
+    }
+    
+  })(),
   
   shouldUseSelectorsAPI: function() {
     if (!Prototype.BrowserFeatures.SelectorsAPI) return false;
