@@ -1,3 +1,5 @@
+* Reverse the definitions of Event#pointer(X|Y) and Event#pointer to prevent unnecessary computation. [#403 state:resolved] (Nick Stakenburg, Andrew Dupont).
+
 * Add first-class support for `mouseenter` and `mouseleave` events in non-IE browsers (IE supports them natively). [#350 state:resolved] (Nick Stakenburg, Andrew Dupont)
 
 * Make sure `_extendedByPrototype`, `_countedByPrototype`, and `prototypeUID` node expandos are accessed with `typeof` to prevent errors in some environments. [#354 state:resolved] (Hilberty, kangax, Andrew Dupont)

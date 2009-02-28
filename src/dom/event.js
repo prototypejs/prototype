@@ -131,16 +131,7 @@
    *  _viewport_.
   **/
   function pointer(event) {
-    var docElement = document.documentElement,
-     body = document.body || { scrollLeft: 0, scrollTop: 0 };
-    return {
-      x: event.pageX || (event.clientX +
-        (docElement.scrollLeft || body.scrollLeft) -
-        (docElement.clientLeft || 0)),
-      y: event.pageY || (event.clientY +
-        (docElement.scrollTop || body.scrollTop) -
-        (docElement.clientTop || 0))
-    };
+    return { x: pointerX(event), y: pointerY(event) };
   }
   
   /**
@@ -152,7 +143,14 @@
    *  Note that this position is absolute on the _page_, not on the
    *  _viewport_.
   **/
-  function pointerX(event) { return Event.pointer(event).x }
+  function pointerX(event) {
+    var docElement = document.documentElement,
+     body = document.body || { scrollLeft: 0 };
+     
+    return event.pageX || (event.clientX +
+      (docElement.scrollLeft || body.scrollLeft) -
+      (docElement.clientLeft || 0));
+  }
 
   /**
    *  Event.pointerY(event) -> Number
@@ -163,7 +161,14 @@
    *  Note that this position is absolute on the _page_, not on the
    *  _viewport_.
   **/
-  function pointerY(event) { return Event.pointer(event).y }
+  function pointerY(event) {
+    var docElement = document.documentElement,
+     body = document.body || { scrollTop: 0 };
+     
+    return  event.pageY || (event.clientY +
+       (docElement.scrollTop || body.scrollTop) -
+       (docElement.clientTop || 0));    
+  }
 
   
   /**
