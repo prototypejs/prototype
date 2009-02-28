@@ -286,11 +286,33 @@
         handler.call(element, event);
       };
     } else {
-      // Ordinary event.
-      responder = function(event) {
-        Event.extend(event, element);
-        handler.call(element, event);
-      };
+      // Non-custom event.
+      if (!Prototype.Browser.IE &&
+       (eventName === "mouseenter" || eventName === "mouseleave")) {
+        // If we're dealing with mouseenter or mouseleave in a non-IE browser,
+        // we create a custom responder that mimics their behavior within
+        // mouseover and mouseout.
+        if (eventName === "mouseenter" || eventName === "mouseleave") {
+          responder = function(event) {
+            Event.extend(event, element);
+            
+            var parent = event.relatedTarget;
+            while (parent && parent !== element) {
+              try { parent = parent.parentNode; }
+              catch(e) { parent = element; }
+            }
+            
+            if (parent === element) return;
+            
+            handler.call(element, event);
+          };
+        }
+      } else {  
+        responder = function(event) {
+          Event.extend(event, element);
+          handler.call(element, event);
+        };
+      }
     }
 
     responder.handler = handler;
@@ -317,7 +339,16 @@
   // object when page is returned to via the back button using its bfcache.
   if (Prototype.Browser.WebKit)
     window.addEventListener('unload', Prototype.emptyFunction, false);
-
+    
+    
+  var _getDOMEventName = Prototype.K;
+  
+  if (!Prototype.Browser.IE) {
+    _getDOMEventName = function(eventName) {
+      var translations = { mouseenter: "mouseover", mouseleave: "mouseout" };      
+      return eventName in translations ? translations[eventName] : eventName;      
+    };
+  }
 
   /**
    *  Event.observe(element, eventName, handler) -> Element
@@ -342,11 +373,13 @@
         element.attachEvent("onfilterchange", responder);    
       }          
     } else {
+      var actualEventName = _getDOMEventName(eventName);
+      
       // Ordinary event.
       if (element.addEventListener)
-        element.addEventListener(eventName, responder, false);
+        element.addEventListener(actualEventName, responder, false);
       else
-        element.attachEvent("on" + eventName, responder);
+        element.attachEvent("on" + actualEventName, responder);
     }
 
     return element;
@@ -396,6 +429,8 @@
     var responder = responders.find( function(r) { return r.handler === handler; });
     if (!responder) return element;
     
+    var actualEventName = _getDOMEventName(eventName);
+    
     if (eventName.include(':')) {
       // Custom event.
       if (element.removeEventListener)
@@ -407,9 +442,9 @@
     } else {
       // Ordinary event.
       if (element.removeEventListener)
-        element.removeEventListener(eventName, responder, false);
+        element.removeEventListener(actualEventName, responder, false);
       else
-        element.detachEvent('on' + eventName, responder);
+        element.detachEvent('on' + actualEventName, responder);
     }
       
     registry.set(eventName, responders.without(responder));

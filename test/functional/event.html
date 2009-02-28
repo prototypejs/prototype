@@ -225,6 +225,25 @@
     })
   </script>
   
+  <p id="mouseenter"><code>mouseenter</code> test</p>
+  
+  <script type="text/javascript">
+    $('mouseenter').observe('click', function() {
+      $('mouseenter').insert("<br />carefully mouse over the word 'mouseenter', then outside of the box entirely");
+      $('mouseenter').observe('mouseenter', function(event) {
+        this.failed();
+        $('mouseenter').stopObserving();
+      });
+      $('mouseenter').observe('mouseleave', function(event) {
+        if ($(event.relatedTarget).descendantOf($('mouseenter'))) {
+          $('mouseenter').failed();
+        } else $('mouseenter').passed();
+        
+        $('mouseenter').stopObserving();
+      });
+    });
+  </script>
+  
   <p id="addunload">Add unload events</p>
   
   <script type="text/javascript">
