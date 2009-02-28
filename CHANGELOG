@@ -1,4 +1,6 @@
-* Reverse the definitions of Event#pointer(X|Y) and Event#pointer to prevent unnecessary computation. [#403 state:resolved] (Nick Stakenburg, Andrew Dupont).
+* Redefine Element#down in IE 6-7 to avoid extending all descendants when no selector is given. [#452 state:resolved] (eno, Andrew Dupont)
+
+* Reverse the definitions of Event#pointer(X|Y) and Event#pointer to prevent unnecessary computation. [#403 state:resolved] (Nick Stakenburg, Andrew Dupont)
 
 * Add first-class support for `mouseenter` and `mouseleave` events in non-IE browsers (IE supports them natively). [#350 state:resolved] (Nick Stakenburg, Andrew Dupont)
 
