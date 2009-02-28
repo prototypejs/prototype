@@ -81,9 +81,6 @@ var Class = (function() {
     var ancestor   = this.superclass && this.superclass.prototype;
     var properties = Object.keys(source);
     
-    if (!Object.keys({ toString: true }).length)
-      properties.push("toString", "valueOf");
-      
     // IE6 doesn't enumerate toString and valueOf properties,        
     // Force copy if they're not coming from Object.prototype.      
     if (!Object.keys({ toString: true }).length) {
