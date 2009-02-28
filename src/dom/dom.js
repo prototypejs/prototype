@@ -1508,7 +1508,9 @@ Element.extend = (function() {
   var Methods = { }, ByTag = Element.Methods.ByTag;
   
   var extend = Object.extend(function(element) {
-    if (!element || element._extendedByPrototype || 
+    // need to use actual `typeof` operator 
+    // to prevent errors in some environments (when accessing node expandos)
+    if (!element || typeof element._extendedByPrototype != 'undefined' || 
         element.nodeType != 1 || element == window) return element;
 
     var methods = Object.clone(Methods),
@@ -1735,7 +1737,7 @@ Element.addMethods({
     if (element === window) {
       uid = 0;
     } else {
-      if (Object.isUndefined(element._prototypeUID))
+      if (typeof element._prototypeUID === "undefined")
         element._prototypeUID = [Element.Storage.UID++];
       uid = element._prototypeUID[0];
     }

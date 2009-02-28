@@ -439,7 +439,8 @@ Object.extend(Selector, {
       if (nodes.length == 0) return nodes;
       var results = [], n;
       for (var i = 0, l = nodes.length; i < l; i++)
-        if (!(n = nodes[i])._countedByPrototype) {
+        // use `typeof` operator to prevent errors
+        if (typeof (n = nodes[i])._countedByPrototype == 'undefined') {
           n._countedByPrototype = Prototype.emptyFunction;
           results.push(Element.extend(n));
         }
