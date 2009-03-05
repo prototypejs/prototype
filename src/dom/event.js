@@ -1,6 +1,6 @@
 (function() {
   
-  /** section: dom
+  /** section: DOM
    * Event
   **/  
   var Event = {
@@ -46,7 +46,7 @@
   }
 
   /**
-   *  Event.isLeftClick(@event) -> Boolean
+   *  Event#isLeftClick(@event) -> Boolean
    *  
    *  Determines whether a button-related mouse event involved the left
    *  mouse button.
@@ -58,7 +58,7 @@
   function isLeftClick(event)   { return _isButton(event, 0) }
   
   /**
-   *  Event.isMiddleClick(@event) -> Boolean
+   *  Event#isMiddleClick(@event) -> Boolean
    *  
    *  Determines whether a button-related mouse event involved the middle
    *  mouse button.
@@ -66,7 +66,7 @@
   function isMiddleClick(event) { return _isButton(event, 1) }
   
   /**
-   *  Event.isRightClick(@event) -> Boolean
+   *  Event#isRightClick(@event) -> Boolean
    *  
    *  Determines whether a button-related mouse event involved the right
    *  mouse button.
@@ -78,7 +78,7 @@
   function isRightClick(event)  { return _isButton(event, 2) }
   
   /**
-   *  Event.element(@event) -> Element
+   *  Event#element(@event) -> Element
    *  
    *  Returns the DOM element on which the event occurred.
   **/
@@ -107,7 +107,7 @@
   }
 
   /**
-   *  Event.findElement(@event, expression) -> Element
+   *  Event#findElement(@event, expression) -> Element
    *  
    *  Returns the first DOM element that matches a given CSS selector —
    *  starting with the element on which the event occurred, then moving up
@@ -121,7 +121,7 @@
   }
   
   /**
-   *  Event.pointer(@event) -> Object
+   *  Event#pointer(@event) -> Object
    *  
    *  Returns the absolute position of the pointer for a mouse event.
    *  
@@ -135,7 +135,7 @@
   }
   
   /**
-   *  Event.pointerX(event) -> Number
+   *  Event#pointerX(event) -> Number
    *  
    *  Returns the absolute horizontal position of the pointer for a mouse
    *  event.
@@ -153,7 +153,7 @@
   }
 
   /**
-   *  Event.pointerY(event) -> Number
+   *  Event#pointerY(event) -> Number
    *  
    *  Returns the absolute vertical position of the pointer for a mouse
    *  event.
@@ -172,7 +172,7 @@
 
   
   /**
-   *  Event.stop(@event) -> undefined
+   *  Event#stop(@event) -> undefined
    *  
    *  Stops the event’s propagation and prevents its eventual default action
    *  from being triggered.
@@ -430,7 +430,11 @@
       return element;
     }
     
-    var responders = registry.get(eventName);    
+    var responders = registry.get(eventName);
+
+    // Fail gracefully if there are no responders assigned.
+    if (!responders) return;
+    
     var responder = responders.find( function(r) { return r.handler === handler; });
     if (!responder) return element;
     
@@ -507,36 +511,39 @@
 
   Element.addMethods({
     /** alias of: Event.fire
-     *  Element.fire(@element, eventName[, memo[, bubble = true]]) -> Event
+     *  Element#fire(@element, eventName[, memo[, bubble = true]]) -> Event
     **/
     fire:          fire,
 
     /** alias of: Event.observe
-     *  Element.observe(@element, eventName, handler) -> Element
+     *  Element#observe(@element, eventName, handler) -> Element
     **/
     observe:       observe,
     
     /** alias of: Event.observe
-     *  Element.stopObserving(element[, eventName[, handler]]) -> Element
+     *  Element#stopObserving(element[, eventName[, handler]]) -> Element
     **/
     stopObserving: stopObserving
   });
 
-  /** section: dom
+  /** section: DOM
    * document
+   *  
+   *  Prototype extends the built-in `document` object with several convenience
+   *  methods related to events. 
   **/
   Object.extend(document, {
-    /** related to: Event.fire
+    /** 
      *  document.fire(eventName[, memo[, bubble = true]]) -> Event
     **/
     fire:          fire.methodize(),
     
-    /** related to: Event.observe
+    /** 
      *  document.observe(eventName, handler) -> Element
     **/
     observe:       observe.methodize(),
     
-    /** related to: Event.observe
+    /** 
      *  document.stopObserving([eventName[, handler]]) -> Element
     **/
     stopObserving: stopObserving.methodize(),

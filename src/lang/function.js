@@ -1,5 +1,5 @@
-/** section: lang
- * Function
+/** section: Language
+ * class Function
 **/
 Object.extend(Function.prototype, (function() {
   var slice = Array.prototype.slice;

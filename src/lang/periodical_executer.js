@@ -1,4 +1,4 @@
-/** section: lang
+/** section: Language
  * class PeriodicalExecuter
 **/
 var PeriodicalExecuter = Class.create({

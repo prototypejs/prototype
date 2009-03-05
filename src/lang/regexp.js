@@ -1,5 +1,5 @@
-/** section: lang
- * RegExp
+/** section: Language
+ * class RegExp
 **/
 
 /** alias of: RegExp#test

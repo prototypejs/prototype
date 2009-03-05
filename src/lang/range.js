@@ -1,8 +1,8 @@
-/** section: lang
+/** section: Language
  * class ObjectRange
 **/
 
-/** section: lang
+/** section: Language
  *  $R(start, end[, exclusive = false]) -> ObjectRange
  *
  *  Creates a new ObjectRange object. 

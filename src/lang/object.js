@@ -1,5 +1,5 @@
-/** section: lang
- * Object
+/** section: Language
+ * class Object
 **/
 (function() {
   

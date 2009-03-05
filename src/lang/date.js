@@ -1,5 +1,5 @@
-/** section: lang
- * Date
+/** section: Language
+ * class Date
 **/
 
 /**

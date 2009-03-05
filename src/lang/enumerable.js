@@ -1,4 +1,4 @@
-/** section: lang
+/** section: Language
  * mixin Enumerable
 **/
 

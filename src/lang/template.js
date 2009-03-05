@@ -1,4 +1,4 @@
-/** section: lang
+/** section: Language
  * class Template
 **/
 var Template = Class.create({

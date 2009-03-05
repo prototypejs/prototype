@@ -1,11 +1,12 @@
 /**
- * == lang ==
- * Language extensions.
+ * == Language ==
+ * Additions to JavaScript's "standard library" and extensions to
+ * built-in JavaScript objects.
 **/
 
 var Abstract = { };
 
-/** section: lang
+/** section: Language
  * Try
 **/
 

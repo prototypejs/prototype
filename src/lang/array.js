@@ -1,4 +1,4 @@
-/** section: lang, alias of: Array.from
+/** section: Language, alias of: Array.from
  *    $A(iterable) -> Array
  * 
  *  Accepts an array-like collection (anything with numeric indices) and returns 
@@ -29,7 +29,7 @@ if (Prototype.Browser.WebKit) {
   };
 }
 
-/** section: lang
+/** section: Language
  *  $w(string) -> Array
  *  - string (String): A string with zero or more spaces.
  *
@@ -45,8 +45,8 @@ function $w(string) {
 
 Array.from = $A;
 
-/** section: lang
- * Array
+/** section: Language
+ * class Array
 **/
 (function() {
   var arrayProto = Array.prototype,

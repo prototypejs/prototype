@@ -1,8 +1,20 @@
 /* Portions of the Selector class are derived from Jack Slocum's DomQuery,
  * part of YUI-Ext version 0.40, distributed under the terms of an MIT-style
  * license.  Please see http://www.yui-ext.com/ for more information. */
-
+ 
+/** section: DOM
+ *  class Selector
+ *  
+ *  A class that queries the document for elements that match a given CSS
+ *  selector.
+**/
 var Selector = Class.create({
+  /**
+   *  new Selector(expression)
+   *  - expression (String): A CSS selector.
+   *  
+   *  Creates a `Selector` with the given CSS selector.
+  **/
   initialize: function(expression) {
     this.expression = expression.strip();
     
@@ -138,6 +150,14 @@ var Selector = Class.create({
     Selector._cache[this.expression] = this.xpath;
   },
   
+  /**
+   *  Selector#findElements(root) -> [Element...]
+   *  - root (Element || document): A "scope" to search within. All results will
+   *    be descendants of this node.
+   *  
+   *  Searches the document for elements that match the instance's CSS
+   *  selector.
+  **/
   findElements: function(root) {
     root = root || document;
     var e = this.expression, results;
@@ -165,6 +185,11 @@ var Selector = Class.create({
     }
   },
   
+  /**
+   *  Selector#match(element) -> Boolean
+   *  
+   *  Tests whether a `element` matches the instance's CSS selector.
+  **/
   match: function(element) {
     this.tokens = [];
 
@@ -732,6 +757,15 @@ Object.extend(Selector, {
      '-').include('-' + (v || "").toUpperCase() + '-'); }
   },
   
+  /**
+   *  Selector.split(expression) -> [String...]
+   *  
+   *  Takes a string of CSS selectors separated by commas; returns an array
+   *  of individual selectors.
+   *  
+   *  Safer than doing a naive `Array#split`, since selectors can have commas
+   *  in other places.
+  **/
   split: function(expression) {
     var expressions = [];
     expression.scan(/(([\w#:.~>+()\s-]+|\*|\[.*?\])+)\s*(,|$)/, function(m) {
@@ -740,6 +774,13 @@ Object.extend(Selector, {
     return expressions;
   },
 
+  /**
+   *  Selector.matchElements(elements, expression) -> [Element...]
+   *  
+   *  Filters the given collection of elements with `expression`.
+   *  
+   *  The only nodes returned will be those that match the given CSS selector.
+  **/
   matchElements: function(elements, expression) {
     var matches = $$(expression), h = Selector.handlers;
     h.mark(matches);
@@ -749,6 +790,15 @@ Object.extend(Selector, {
     return results;
   },
   
+  /**
+   *  Selector.findElement(elements, expression[, index = 0]) -> Element
+   *  Selector.findElement(elements[, index = 0]) -> Element
+   *  
+   *  Returns the `index`th element in the collection that matches
+   *  `expression`.
+   *  
+   *  Returns the `index`th element overall if `expression` is not given.
+  **/
   findElement: function(elements, expression, index) {
     if (Object.isNumber(expression)) { 
       index = expression; expression = false;
@@ -756,6 +806,12 @@ Object.extend(Selector, {
     return Selector.matchElements(elements, expression || '*')[index || 0];
   },
   
+  /**
+   *  Selector.findChildElements(element, expressions) -> [Element...]
+   *  
+   *  Searches beneath `element` for any elements that match the selector
+   *  (or selectors) specified in `expressions`.
+  **/
   findChildElements: function(element, expressions) {
     expressions = Selector.split(expressions.join(','));
     var results = [], h = Selector.handlers;    
@@ -786,6 +842,11 @@ if (Prototype.Browser.IE) {
   });  
 }
 
+/** related to: Selector
+ *  $$(expression...) -> [Element...]
+ *  
+ *  Returns all elements in the document that match the provided CSS selectors.
+**/
 function $$() {
   return Selector.findChildElements(document, $A(arguments));
 }

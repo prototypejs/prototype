@@ -1,5 +1,5 @@
-/** section: lang
- * String
+/** section: Language
+ * class String
 **/
 Object.extend(String, {
   /**

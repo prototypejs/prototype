@@ -1,6 +1,6 @@
 /* Based on Alex Arnell's inheritance implementation. */
 
-/** section: lang
+/** section: Language
  * Class
 **/
 var Class = (function() {

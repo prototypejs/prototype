@@ -1,5 +1,5 @@
-/** section: lang
- * Number
+/** section: Language
+ * class Number
 **/
 Object.extend(Number.prototype, (function() {
   /**

@@ -1,4 +1,4 @@
-/** section: lang
+/** section: Language
  *  $H([object]) -> Hash
  * 
  *  Creates a Hash (which is synonymous to “map” or “associative array” for our purposes). 
@@ -9,7 +9,7 @@ function $H(object) {
   return new Hash(object);
 };
 
-/** section: lang
+/** section: Language
  * class Hash
 **/
 var Hash = Class.create(Enumerable, (function() {
