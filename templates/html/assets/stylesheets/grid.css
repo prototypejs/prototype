@@ -1,0 +1,13 @@
+body.grid {
+  width: 955px;
+  margin: auto;
+}
+
+body.grid div#page {
+  overflow: hidden;
+  background: url(../images/grid.png);
+}
+
+body.grid div#page * {
+  opacity: .9;
+}
