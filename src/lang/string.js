@@ -1,5 +1,13 @@
 /** section: Language
  * class String
+ *  
+ *  Extensions to the built-in `String` class.
+ *  
+ *  Prototype enhances the `String` object with a series of useful methods for
+ *  ranging from the trivial to the complex. Tired of stripping trailing
+ *  whitespace? Try [[String#strip]]. Want to replace `replace`? Have a look at
+ *  [[String#sub]] and [[String#gsub]]. Need to parse a query string? We have
+ *  [[String#toQueryParams]].
 **/
 Object.extend(String, {
   /**

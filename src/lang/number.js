@@ -1,5 +1,16 @@
 /** section: Language
  * class Number
+ *  
+ *  Extensions to the built-in `Number` object.
+ *  
+ *  Prototype extends native JavaScript numbers in order to provide:
+ *  
+ *  * [[ObjectRange]] compatibility, through [[Number#succ]].
+ *  * Ruby-like numerical loops with [[Number#times]].
+ *  * Simple utility methods such as [[Number#toColorPart]] and
+ *    [[Number#toPaddedString]].
+ *  * Instance-method aliases of many functions in the `Math` namespace.
+ *  
 **/
 Object.extend(Number.prototype, (function() {
   /**

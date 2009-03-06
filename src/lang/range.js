@@ -1,5 +1,21 @@
 /** section: Language
  * class ObjectRange
+ *  
+ *  Ranges represent an interval of values. The value type just needs to be
+ *  "compatible" — that is, to implement a `succ` method letting us step from
+ *  one value to the next (its successor).
+ *  
+ *  Prototype provides such a method for [[Number]] and [[String]], but you
+ *  are (of course) welcome to implement useful semantics in your own objects,
+ *  in order to enable ranges based on them.
+ *  
+ *  `ObjectRange` mixes in [[Enumerable]], which makes ranges very versatile.
+ *  It takes care, however, to override the default code for `include`, to
+ *  achieve better efficiency.
+ *  
+ *  While `ObjectRange` does provide a constructor, the preferred way to obtain
+ *  a range is to use the [[$R]] utility function, which is strictly equivalent
+ *  (only way more concise to use).
 **/
 
 /** section: Language

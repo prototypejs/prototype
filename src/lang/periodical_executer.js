@@ -1,5 +1,15 @@
 /** section: Language
  * class PeriodicalExecuter
+ *  
+ *  A class that oversees the calling of a particular function periodically.
+ *  
+ *  `PeriodicalExecuter` shields you from multiple parallel executions of the
+ *  `callback` function, should it take longer than the given interval to
+ *  execute.
+ *
+ *  This is especially useful if you use one to interact with the user at
+ *  given intervals (e.g. use a prompt or confirm call): this will avoid
+ *  multiple message boxes all waiting to be actioned.
 **/
 var PeriodicalExecuter = Class.create({
   /**
@@ -8,18 +18,7 @@ var PeriodicalExecuter = Class.create({
    *  - frequency (Number): the amount of time, in sections, to wait in between
    *      callbacks.
    *
-   *  Creates an object that oversees the calling of a particular function via
-   *  `window.setInterval`.
-   *
-   *  The only notable advantage provided by `PeriodicalExecuter` is that it
-   *  shields you against multiple parallel executions of the `callback`
-   *  function, should it take longer than the given interval to execute (it
-   *  maintains an internal “running” flag, which is shielded against
-   *  exceptions in the callback function).
-   *
-   *  This is especially useful if you use one to interact with the user at
-   *  given intervals (e.g. use a prompt or confirm call): this will avoid
-   *  multiple message boxes all waiting to be actioned.
+   *  Creates an `PeriodicalExecuter`.
   **/
   initialize: function(callback, frequency) {
     this.callback = callback;

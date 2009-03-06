@@ -1,5 +1,7 @@
 /** section: Language
  * class RegExp
+ *  
+ *  Extensions to the built-in `RegExp` object.
 **/
 
 /** alias of: RegExp#test

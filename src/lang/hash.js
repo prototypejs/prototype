@@ -1,9 +1,11 @@
-/** section: Language
+/** section: Language, related to: Hash
  *  $H([object]) -> Hash
  * 
- *  Creates a Hash (which is synonymous to “map” or “associative array” for our purposes). 
- *  A convenience wrapper around the Hash constructor, with a safeguard that lets you pass 
- *  an existing Hash object and get it back untouched (instead of uselessly cloning it).
+ *  Creates a `Hash`.
+ *  
+ *  `$H` is a convenience wrapper around the Hash constructor, with a safeguard
+ *  that lets you pass an existing Hash object and get it back untouched
+ *  (instead of uselessly cloning it).
  **/
 function $H(object) {
   return new Hash(object);
@@ -11,6 +13,24 @@ function $H(object) {
 
 /** section: Language
  * class Hash
+ *  
+ *  A set of key/value pairs.
+ *  
+ *  `Hash` can be thought of as an associative array, binding unique keys to
+ *  values (which are not necessarily unique), though it can not guarantee
+ *  consistent order its elements when iterating. Because of the nature of
+ *  JavaScript, every object is in fact a hash; but `Hash` adds a number of
+ *  methods that let you enumerate keys and values, iterate over key/value
+ *  pairs, merge two hashes together, and much more.
+ *  
+ *  <h4>Creating a hash</h4>
+ *  
+ *  There are two ways to construct a Hash instance: the first is regular
+ *  JavaScript object instantiation with the `new` keyword, and the second is
+ *  using the [[$H]] function. There is one difference between them: if a `Hash`
+ *  is passed to `$H`, it will be returned as-is, wherease the same hash passed
+ *  to `new Hash` will be _cloned_ instead.
+ *  
 **/
 var Hash = Class.create(Enumerable, (function() {
   /**
@@ -35,7 +55,7 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#set(key, value) -> value
    *
-   *  Sets the hash’s `key` property to value and returns value.
+   *  Sets the hash’s `key` property to `value` and returns `value`.
   **/
   function set(key, value) {
     return this._object[key] = value;

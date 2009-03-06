@@ -1,5 +1,12 @@
 /** section: Language
  * class Object
+ *  
+ *  Extensions to the built-in `Object` object.
+ *  
+ *  Because it is dangerous and invasive to augment `Object.prototype` (i.e.,
+ *  add instance methods to objects), all these methods are static methods that
+ *  take an `Object` as their first parameter.
+ *  
 **/
 (function() {
   

@@ -1,4 +1,4 @@
-/** section: Language, alias of: Array.from
+/** section: Language, alias of: Array.from, related to: Array
  *    $A(iterable) -> Array
  * 
  *  Accepts an array-like collection (anything with numeric indices) and returns 
@@ -29,7 +29,7 @@ if (Prototype.Browser.WebKit) {
   };
 }
 
-/** section: Language
+/** section: Language, related to: Array
  *  $w(string) -> Array
  *  - string (String): A string with zero or more spaces.
  *
@@ -43,11 +43,94 @@ function $w(string) {
   return string ? string.split(/\s+/) : [];
 }
 
+/** alias of: $A
+ *  Array.from(iterable) -> Array
+**/
 Array.from = $A;
 
 /** section: Language
  * class Array
+ *  
+ *  Prototype extends all native JavaScript arrays with quite a few powerful
+ *  methods.
+ *  
+ *  This is done in two ways:
+ *  
+ *  * It mixes in the [[Enumerable]] module, which brings a ton of methods in
+ *    already.
+ *  * It adds quite a few extra methods, which are documented in this section.
+ *  
+ *  With Prototype, arrays become much, much more than the trivial objects we
+ *  used to manipulate, limiting ourselves to using their `length` property and
+ *  their `[]` indexing operator. They become very powerful objects that
+ *  greatly simplify the code for 99% of the common use cases involving them.
+ *  
+ *  <h4>Why you should stop using for…in to iterate</h4>
+ *  
+ *  Many JavaScript authors have been misled into using the `for…in` JavaScript
+ *  construct to loop over array elements. This kind of code just won’t work
+ *  with Prototype.
+ *  
+ *  The ECMA 262 standard, which defines ECMAScript 3rd edition, supposedly
+ *  implemented by all major browsers including MSIE, defines ten methods
+ *  on Array (§15.4.4), including nice methods like `concat`, `join`, `pop`, and
+ *  `push`.
+ *  
+ *  This same standard explicitely defines that the `for…in` construct (§12.6.4)
+ *  exists to enumerate the properties of the object appearing on the right side
+ *  of the `in` keyword. Only properties specifically marked as _non-enumerable_
+ *  are ignored by such a loop. By default, the `prototype` and `length`
+ *  properties are so marked, which prevents you from enumerating over array
+ *  methods when using for…in. This comfort led developers to use `for…in` as a
+ *  shortcut for indexing loops, when it is not its actual purpose.
+ *  
+ *  However, Prototype has no way to mark the methods it adds to
+ *  `Array.prototype` as non-enumerable. Therefore, using `for…in` on arrays
+ *  when using Prototype will enumerate all extended methods as well, such as
+ *  those coming from the [[Enumerable]] module, and those Prototype puts in the
+ *  Array namespace (listed further below).
+ *  
+ *  <h4>What you should use instead</h4>
+ *  
+ *  You can revert to vanilla loops:
+ *  
+ *      for (var index = 0; index < myArray.length; ++index) {
+ *        var item = myArray[index];
+ *        // Your code working on item here...
+ *      }
+ *  
+ *  Or you can use iterators, such as [[Array#each]]:
+ *  
+ *      myArray.each(function(item) {
+ *        // Your code working on item here...
+ *      });
+ *  
+ *  
+ *  The inability to use `for...in` on arrays is not much of a burden: as you’ll
+ *  see, most of what you used to loop over arrays for can be concisely done
+ *  using the new methods provided by Array or the mixed-in [[Enumerable]]
+ *  module. So manual loops should be fairly rare.
+ *  
+ *  
+ *  <h4>A note on performance</h4>
+ *  
+ *  Should you have a very large array, using iterators with lexical closures
+ *  (anonymous functions that you pass to the iterators and that get invoked at
+ *  every loop iteration) in methods like [[Array#each]] — _or_ relying on
+ *  repetitive array construction (such as uniq), may yield unsatisfactory
+ *  performance. In such cases, you’re better off writing manual indexing loops,
+ *  but take care then to cache the length property and use the prefix `++`
+ *  operator:
+ *  
+ *      // Custom loop with cached length property: maximum full-loop
+ *      // performance on very large arrays!
+ *      for (var index = 0, len = myArray.length; index < len; ++index) {
+ *        var item = myArray[index];
+ *        // Your code working on item here...
+ *      }
+ *  
 **/
+
 (function() {
   var arrayProto = Array.prototype,
       slice = arrayProto.slice,
