@@ -1,5 +1,84 @@
 /** section: Language
  * mixin Enumerable
+ *  
+ *  `Enumerable` provides a large set of useful methods for enumerations —
+ *  objects that act as collections of values. It is a cornerstone of
+ *  Prototype.
+ *  
+ *  `Enumerable` is a _mixin_: a set of methods intended not for standaone
+ *  use, but for incorporation into other objects.
+ *  
+ *  Prototype mixes `Enumerable` into several classes. The most visible cases
+ *  are [[Array]] and [[Hash]], but you’ll find it in less obvious spots as
+ *  well, such as in [[ObjectRange]] and various DOM- or AJAX-related objects.
+ *  
+ *  <h4>The <code>context</code> parameter</h4>
+ *  
+ *  Every method of `Enumerable` that takes an iterator also takes the "context
+ *  object" as the next (optional) parameter. The context object is what the
+ *  iterator will be _bound_ to — what the keyword `this` will refer to inside
+ *  the iterator.
+ *  
+ *      var myObject = {};
+ *      
+ *      ['foo', 'bar', 'baz'].each(function(name, index) {
+ *        this[name] = index;
+ *      }, myObject); // we have specified the context
+ *      
+ *      myObject
+ *      //-> { foo: 0, bar: 1, baz: 2}
+ *  
+ *  If there is no `context` argument, the iterator function will execute in
+ *  the scope from which the `Enumerable` method itself was called.
+ *  
+ *  <h4>Mixing <code>Enumerable</code> into your own objects</h4>
+ *
+ *  So, let’s say you’ve created your very own collection-like object (say,
+ *  some sort of Set, or perhaps something that dynamically fetches data
+ *  ranges from the server side, lazy-loading style). You want to be able to
+ *  mix `Enumerable` in (and we commend you for it). How do you go about this?
+ *  
+ *  The Enumerable module basically makes only one requirement on your object:
+ *  it must provide a method named `_each` (note the leading underscore) that
+ *  will accept a function as its unique argument, and will contain the actual
+ *  “raw iteration” algorithm, invoking its argument with each element in turn.
+ *  
+ *  As detailed in the documentation for [[Enumerable#each]], `Enumerable`
+ *  provides all the extra layers (handling iteration short-circuits, passing
+ *  numeric indices, etc.). You just need to implement the actual iteration,
+ *  as fits your internal structure.
+ *  
+ *  If you're still confused, just have a look at the Prototype source code for
+ *  [[Array]], [[Hash]], or [[ObjectRange]]. They all begin with their own
+ *  `_each` method, which should help you grasp the idea.
+ *  
+ *  Once you’re done with this, you just need to mix `Enumerable` in, which
+ *  you’ll usually do before defining your methods, so as to make sure whatever
+ *  overrides you provide for `Enumerable` methods will indeed prevail. In
+ *  short, your code will probably end up looking like this:
+ *  
+ *  
+ *      var YourObject = Class.create(Enumerable, {
+ *        initialize: function() { // with whatever constructor arguments you need
+ *          // Your construction code
+ *        },
+ *        
+ *        _each: function(iterator) {
+ *          // Your iteration code, invoking iterator at every turn
+ *        },
+ *        
+ *        // Your other methods here, including Enumerable overrides
+ *      });
+ *  
+ *  Then, obviously, your object can be used like this:
+ *  
+ *      var obj = new YourObject();
+ *      // Populate the collection somehow
+ *      obj.pluck('somePropName');
+ *      obj.invoke('someMethodName');
+ *      obj.size();
+ *      // etc.
+ *  
 **/
 
 var $break = { };
@@ -74,7 +153,7 @@ var Enumerable = (function() {
     return result;
   }
 
-  /** alias of: Enumerable#map
+  /**
    *  Enumerable#collect([iterator = Prototype.K[, context]]) -> Array
    *
    *  Returns the results of applying the iterator to each element.
@@ -89,7 +168,7 @@ var Enumerable = (function() {
     return results;
   }
   
-  /** alias of: Enumerable#find
+  /**
    *  Enumerable#detect(iterator[, context]) -> firstElement | undefined
    *
    *  Finds the first element for which the iterator returns a “truthy” value.
@@ -106,7 +185,7 @@ var Enumerable = (function() {
     return result;
   }
   
-  /** alias of: select
+  /**
    *  Enumerable#findAll(iterator[, context]) -> Array
    *
    *  Returns all the elements for which the iterator returned “truthy” value.
@@ -141,7 +220,7 @@ var Enumerable = (function() {
     return results;
   }
   
-  /** alias of: Enumerable#member
+  /**
    *  Enumerable#include(object) -> Boolean
    *
    *  Determines whether a given object is in the Enumerable or not,
@@ -304,11 +383,10 @@ var Enumerable = (function() {
     }).pluck('value');
   }
   
-  /** alias of: Enumerable#entries
+  /**
    *  Enumerable#toArray() -> Array
    *
    *  Returns an Array representation of the enumeration.
-   *  Aliased as [[Enumerable#entries]].
   **/
   function toArray() {
     return this.map();
@@ -342,7 +420,7 @@ var Enumerable = (function() {
     return this.toArray().length;
   }
   
-  /** related to: Object.inspect
+  /**
    *  Enumerable#inspect() -> String
    *
    *  Returns the debug-oriented string representation of the object.
@@ -350,6 +428,38 @@ var Enumerable = (function() {
   function inspect() {
     return '#<Enumerable:' + this.toArray().inspect() + '>';
   }
+  
+  /** alias of: Enumerable#collect
+   *  Enumerable#map([iterator = Prototype.K[, context]]) -> Array
+  **/
+  
+  /** alias of: Enumerable#any
+   *  Enumerable#some([iterator = Prototype.K[, context]]) -> Boolean
+  **/
+  
+  /** alias of: Enumerable#all
+   *  Enumerable#every([iterator = Prototype.K[, context]]) -> Boolean
+  **/
+  
+  /** alias of: Enumerable#findAll
+   *  Enumerable#select(iterator[, context]) -> Array 
+  **/
+  
+  /** alias of: Enumerable#findAll
+   *  Enumerable#filter(iterator[, context]) -> Array 
+  **/
+  
+  /** alias of: Enumerable#include
+   *  Enumerable#member(object) -> Boolean
+  **/
+  
+  /** alias of: Enumerable#toArray
+   *  Enumerable#entries() -> Array 
+  **/
+  
+  /** alias of: Enumerable#detect
+   *  Enumerable#find(iterator[, context]) -> firstElement | undefined
+  **/
   
   return {
     each:       each,
