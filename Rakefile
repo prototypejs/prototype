@@ -1,10 +1,13 @@
 require 'rake'
 require 'rake/packagetask'
 
+require 'yaml'
+
 PROTOTYPE_ROOT          = File.expand_path(File.dirname(__FILE__))
 PROTOTYPE_SRC_DIR       = File.join(PROTOTYPE_ROOT, 'src')
 PROTOTYPE_DIST_DIR      = File.join(PROTOTYPE_ROOT, 'dist')
 PROTOTYPE_DOC_DIR       = File.join(PROTOTYPE_ROOT, 'doc')
+PROTOTYPE_TEMPLATES_DIR = File.join(PROTOTYPE_ROOT, 'templates')
 PROTOTYPE_PKG_DIR       = File.join(PROTOTYPE_ROOT, 'pkg')
 PROTOTYPE_TEST_DIR      = File.join(PROTOTYPE_ROOT, 'test')
 PROTOTYPE_TEST_UNIT_DIR = File.join(PROTOTYPE_TEST_DIR, 'unit')
@@ -42,15 +45,36 @@ end
 namespace :doc do
   desc "Builds the documentation."
   task :build => [:require] do
-    require 'protodoc'
+    
+    TEMPLATES_ROOT = File.join(PROTOTYPE_ROOT, "vendor", "pdoc",
+      "new_templates")
+    
+    TEMPLATES_DIRECTORY = File.join(TEMPLATES_ROOT, "html")
+    
     require 'tempfile'
-
-    Tempfile.open("prototype-doc") do |temp|
-      source = File.join(PROTOTYPE_SRC_DIR, 'prototype.js')
-      temp << Protodoc::Preprocessor.new(source, :strip_documentation => false)
-      temp.flush
+    begin
+      require "sprockets"
+    rescue LoadError => e
+      puts "\nYou'll need Sprockets to build Prototype. Just run:\n\n"
+      puts "  $ git submodule init"
+      puts "  $ git submodule update"
+      puts "\nand you should be all set.\n\n"
+    end
+    
+    Tempfile.open("pdoc") do |temp|
+      secretary = Sprockets::Secretary.new(
+        :root           => File.join(PROTOTYPE_ROOT, "src"),
+        :load_path      => [PROTOTYPE_SRC_DIR],
+        :source_files   => ["prototype.js"],
+        :strip_comments => false
+      )
+        
+      secretary.concatenation.save_to(temp.path)
       rm_rf PROTOTYPE_DOC_DIR
-      PDoc::Runner.new(temp.path, :output => PROTOTYPE_DOC_DIR).run
+      PDoc::Runner.new(temp.path, {
+        :output    => PROTOTYPE_DOC_DIR,
+        :templates => File.join(PROTOTYPE_TEMPLATES_DIR, "html")
+      }).run
     end
   end  
   
