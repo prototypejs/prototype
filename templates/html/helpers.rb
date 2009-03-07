@@ -60,11 +60,23 @@ module PDoc
           end
 
           def path_to(obj)
-            path = path_prefix << [obj.section.name].concat(obj.namespace_string.downcase.split('.')).join("/")
+            return path_to_section(obj) if obj.is_a?(Documentation::Section)
+            path = path_prefix << [obj.section.name.downcase].concat(obj.namespace_string.downcase.split('.')).join("/")
             has_own_page?(obj) ? "#{path}/#{obj.id.downcase}.html" : "#{path}.html##{dom_id(obj)}"
           end
+          
+          def path_to_section(obj)
+            "#{path_prefix}#{obj.id.gsub(/\s/, '_')}.html"
+          end
+          
+          def section_from_name(name)
+            root.sections.find { |section| section.name == name }
+          end          
 
           def auto_link(obj, short = true, attributes = {})
+            if obj.is_a?(String) && obj =~ /\ssection$/
+              obj = section_from_name(obj.gsub(/\ssection$/, ''))
+            end
             obj = root.find_by_name(obj) || obj if obj.is_a?(String)
             return nil if obj.nil?
             return obj if obj.is_a?(String)
@@ -77,6 +89,12 @@ module PDoc
           end
 
           def auto_link_content(content)
+            content.gsub!(/\[\[([a-zA-Z]+)\s+section\]\]/) do |m|
+              puts; puts m; puts
+              result = auto_link(section_from_name($1), false)
+              puts; puts result; puts
+              result
+            end
             content.gsub(/\[\[([a-zA-Z$\.#]+)(?:\s+([^\]]+))?\]\]/) do |m|
               if doc_instance = root.find_by_name($1)
                 $2 ? link_to($2, path_to(doc_instance)) :

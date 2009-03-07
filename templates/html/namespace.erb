@@ -10,7 +10,7 @@
 
 <% # Does it have a description? %>
 
-<% if d.description %>
+<% if d.description && !d.description.empty? %>
 <div class="section section-description">
   
   <div class="section-title">

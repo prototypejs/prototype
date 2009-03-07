@@ -49,9 +49,18 @@
     </div> <!-- .section-title -->
     
     <div class="section-content">
-      <ul class="method-list">
+      <ul class="method-details-list">
       <% namespaces.each do |namespace| %>
-        <li><%= auto_link_code(namespace) %></li>
+        <li class="method-description">
+          <h4>
+            <a href="<%= path_to(namespace) %>"><%= namespace.full_name %></a>
+          </h4>
+          
+          <% unless namespace.short_description.nil? %>
+            <p><%= htmlize(namespace.short_description) %></p>
+          <% end %>
+          
+        </li>
       <% end %>
       </ul>
     </div> <!-- .section-content -->

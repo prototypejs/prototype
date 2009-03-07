@@ -61,6 +61,24 @@ div#footer {
       text-decoration: underline;
       border: 0;
     }
+    
+  div.copyright,
+  div.credits {
+    width: 360px;
+    float: left;
+  }
+  
+    div.copyright .cc {
+      width: 115px;
+      margin-right: 5px;
+      text-align: center;
+      float: left;
+    }
+  
+    div.copyright .copyright-about {
+      width: 235px;
+      float: left;
+    }
 
 
 .page-title span.type {

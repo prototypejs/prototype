@@ -16,8 +16,10 @@
     <ul class="section-list">
       <% @root.sections.each do |section| %>
       <li>
-        <h4><%= auto_link(section.name) %></h4>
-        <p><%= section.short_description %></p>
+        <h4>
+          <a href="<%= path_to_section(section) %>"><%= section.name %></a>
+        </h4>
+        <p><%= htmlize(section.short_description) %></p>
       </li>      
       <% end %>
     </ul>
