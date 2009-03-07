@@ -334,7 +334,7 @@ Form.Element.Methods = {
 
 var Field = Form.Element;
 
-/** section: DOM, alias of: Form.Element.getValue
+/** section: DOM, related to: Form
  *  $F(element) -> String | Array
 **/
 var $F = Form.Element.Methods.getValue;
