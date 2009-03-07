@@ -1,3 +1,31 @@
+/** section: Ajax
+ *  class Ajax.Updater < Ajax.Request
+ *  
+ *  A class that performs an Ajax request and updates a container’s contents
+ *  with the contents of the response.
+ *  
+ *  `Ajax.Updater` is a subclass of [[Ajax.Request]] built for a common
+ *  use-case.
+ *  
+ *  <h4>Example</h4>
+ *  
+ *    new Ajax.Updater('items', '/items', {
+ *      parameters: { text: $F('text') }
+ *    });
+ *  
+ *  This example will make a request to the URL `/items` (with the given
+ *  parameters); it will then replace the contents of the element with the ID
+ *  of `items` with whatever response it receives.
+ *  
+ *  
+ *  
+**/
+
+
+
+
+
+
 Ajax.Updater = Class.create(Ajax.Request, {
   initialize: function($super, container, url, options) {
     this.container = {

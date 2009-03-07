@@ -1,3 +1,4 @@
+// Abstract class; does not need documentation.
 Ajax.Base = Class.create({
   initialize: function(options) {
     this.options = {

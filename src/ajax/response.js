@@ -1,4 +1,64 @@
+/** section: Ajax
+ *  class Ajax.Response
+ *  
+ *  A wrapper class around `XmlHttpRequest` for dealing with HTTP responses
+ *  of Ajax requests.
+ *  
+ *  An instance of `Ajax.Response` is passed as the first argument of all Ajax
+ *  requests' callbacks. You _will not_ need to create instances of
+ *  `Ajax.Response` yourself.
+**/
+
+/**
+ *  Ajax.Response#readyState -> Number
+ *  
+ *  The request’s current state.
+ *  
+ *  `0` corresponds to `"Uninitialized"`, `1` to `"Loading"`, `2` to
+ *  `"Loaded"`, `3` to `"Interactive"`, and `4` to `"Complete"`.
+**/
+
+/**
+ *  Ajax.Response#responseText -> String
+ *  
+ *  The text body of the response.
+**/
+
+/**
+ *  Ajax.Response#responseXML -> document | null
+ *  
+ *  The XML body of the response if the `Content-type` of the request is set
+ *  to `application/xml`; `null` otherwise.
+**/
+
+/**
+ *  Ajax.Response#responseJSON -> Object | Array | null
+ *  
+ *  The JSON body of the response if the `Content-type` of the request is set
+ *  to `application/json`; `null` otherwise.
+**/
+
+/**
+ *  Ajax.Response#headerJSON -> Object | Array | null
+ *  
+ *  Auto-evaluated content of the `X-JSON` header if present; `null` otherwise.
+**/
+
+/**
+ *  Ajax.Response#request -> Ajax.Request | Ajax.Updater
+ *  
+ *  The request object itself (an instance of [[Ajax.Request]] or
+ *  [[Ajax.Updater]]).
+**/
+
+/**
+ *  Ajax.Response#transport -> XmlHttpRequest
+ *  
+ *  The native `XmlHttpRequest` object itself.
+**/
+
 Ajax.Response = Class.create({
+  // Don't document the constructor; should never be manually instantiated.
   initialize: function(request){
     this.request = request;
     var transport  = this.transport  = request.transport,
@@ -18,7 +78,18 @@ Ajax.Response = Class.create({
     }
   },
   
+  /**
+   *  Ajax.Response#status -> Number
+   *  
+   *  The HTTP status code sent by the server.
+  **/
   status:      0,
+  
+  /**
+   *  Ajax.Response#statusText -> String
+   *  
+   *  The HTTP status text sent by the server.
+  **/
   statusText: '',
   
   getStatus: Ajax.Request.prototype.getStatus,
@@ -29,18 +100,44 @@ Ajax.Response = Class.create({
     } catch (e) { return '' }
   },
   
+  /**
+   *  Ajax.Response#getHeader(name) -> String | null
+   *  
+   *  See [[Ajax.Request#getHeader]].
+  **/
   getHeader: Ajax.Request.prototype.getHeader,
   
+  /**
+   *  Ajax.Response#getAllHeaders() -> String | null
+   *  
+   *  Returns a string containing all headers separated by line breaks. _Does
+   *  not__ throw errors if no headers are present the way its native
+   *  counterpart does.
+  **/
   getAllHeaders: function() {
     try {
       return this.getAllResponseHeaders();
     } catch (e) { return null } 
   },
   
+  /**
+   *  Ajax.Response.getResponseHeader(name) -> String
+   *  
+   *  Returns the value of the requested header if present; throws an error
+   *  otherwise. This is just a wrapper around the `XmlHttpRequest` method of
+   *  the same name.
+  **/
   getResponseHeader: function(name) {
     return this.transport.getResponseHeader(name);
   },
   
+  /**
+   *  Ajax.Response.getAllResponseHeaders() -> String
+   *  
+   *  Returns a string containing all headers separated by line breaks; throws
+   *  an error if no headers exist. This is just a wrapper around the
+   *  `XmlHttpRequest` method of the same name.
+  **/
   getAllResponseHeaders: function() {
     return this.transport.getAllResponseHeaders();
   },
