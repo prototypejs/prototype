@@ -1,3 +1,5 @@
+* Remove sniffing when branching `escapeHTML` and `unescapeHTML`. [#570 state:resolved] (kangax)
+
 * Redefine Element#down in IE 6-7 to avoid extending all descendants when no selector is given. [#452 state:resolved] (eno, Andrew Dupont)
 
 * Reverse the definitions of Event#pointer(X|Y) and Event#pointer to prevent unnecessary computation. [#403 state:resolved] (Nick Stakenburg, Andrew Dupont)

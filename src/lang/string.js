@@ -176,7 +176,7 @@ Object.extend(String.prototype, (function() {
    *  Strips tags and converts the entity forms of special HTML characters to their normal form.
   **/
   function unescapeHTML() {
-    var div = new Element('div');
+    var div = document.createElement('div');
     div.innerHTML = this.stripTags();
     return div.childNodes[0] ? (div.childNodes.length > 1 ? 
       $A(div.childNodes).inject('', function(memo, node) { return memo+node.nodeValue }) : 
@@ -437,15 +437,6 @@ Object.extend(String.prototype, (function() {
   };
 })());
 
-if (Prototype.Browser.WebKit || Prototype.Browser.IE) Object.extend(String.prototype, {
-  escapeHTML: function() {
-    return this.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  },
-  unescapeHTML: function() {
-    return this.stripTags().replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
-  }
-});
-
 Object.extend(String.prototype.escapeHTML, {
   div:  document.createElement('div'),
   text: document.createTextNode('')
@@ -453,3 +444,14 @@ Object.extend(String.prototype.escapeHTML, {
 
 String.prototype.escapeHTML.div.appendChild(String.prototype.escapeHTML.text);
 
+if ('<\n'.escapeHTML() !== '&lt;\n') {
+  String.prototype.escapeHTML = function() {
+    return this.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+}
+
+if ('&lt;\n'.unescapeHTML() !== '<\n') {
+  String.prototype.unescapeHTML = function() {
+    return this.stripTags().replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
+  }
+}
