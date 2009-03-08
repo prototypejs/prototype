@@ -1,3 +1,5 @@
+* Remove sniffing from `Element.update` branching in favor of feature detection. [#574 state:resolved] (kangax)
+
 * Remove sniffing when branching `escapeHTML` and `unescapeHTML`. [#570 state:resolved] (kangax)
 
 * Redefine Element#down in IE 6-7 to avoid extending all descendants when no selector is given. [#452 state:resolved] (eno, Andrew Dupont)

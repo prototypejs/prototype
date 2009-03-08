@@ -156,15 +156,71 @@ Element.Methods = {
    *  If `newContent` is omitted, the element's content is blanked out (i.e., 
    *  replaced with an empty string).
   **/
-  update: function(element, content) {
-    element = $(element);
-    if (content && content.toElement) content = content.toElement();
-    if (Object.isElement(content)) return element.update().insert(content);
-    content = Object.toHTML(content);
-    element.innerHTML = content.stripScripts();
-    content.evalScripts.bind(content).defer();
-    return element;
-  },
+  update: (function(){
+    
+    // see: http://support.microsoft.com/kb/276228
+    var SELECT_ELEMENT_INNERHTML_BUGGY = (function(){
+      var el = document.createElement("select"), 
+          isBuggy = true;
+      el.innerHTML = "<option value=\"test\">test</option>";
+      if (el.options && el.options[0]) {
+        isBuggy = el.options[0].nodeName.toUpperCase() !== "OPTION";
+      }
+      el = null;
+      return isBuggy;
+    })();
+    
+    // see: http://msdn.microsoft.com/en-us/library/ms533897(VS.85).aspx
+    var TABLE_ELEMENT_INNERHTML_BUGGY = (function(){
+      try {
+        var el = document.createElement("table");
+        if (el && el.tBodies) {
+          el.innerHTML = "<tbody><tr><td>test</td></tr></tbody>";
+          var isBuggy = typeof el.tBodies[0] == "undefined";
+          el = null;
+          return isBuggy;
+        }
+      } catch (e) {
+        return true;
+      }
+    })();
+    
+    function update(element, content) {
+      element = $(element);
+  
+      if (content && content.toElement) 
+        content = content.toElement();
+        
+      if (Object.isElement(content)) 
+        return element.update().insert(content);
+  
+      content = Object.toHTML(content);
+  
+      if (SELECT_ELEMENT_INNERHTML_BUGGY || TABLE_ELEMENT_INNERHTML_BUGGY) {
+        var tagName = element.tagName.toUpperCase();
+        if (tagName in Element._insertionTranslations.tags) {
+          $A(element.childNodes).each(function(node) {
+            element.removeChild(node);
+          });
+          Element._getContentFromAnonymousElement(tagName, content.stripScripts())
+            .each(function(node) {
+              element.appendChild(node) 
+            });
+        }
+        else {
+          element.innerHTML = content.stripScripts();
+        }
+      }
+      else {
+        element.innerHTML = content.stripScripts();
+      }
+  
+      content.evalScripts.bind(content).defer();
+      return element;
+    }
+    
+    return update;
+  })(),
   
   /**
    *  Element#replace(@element[, newContent]) -> Element
@@ -1389,29 +1445,6 @@ else if (Prototype.Browser.WebKit) {
     } while (element);
     
     return Element._returnOffset(valueL, valueT);
-  };
-}
-
-if (Prototype.Browser.IE || Prototype.Browser.Opera) {
-  // IE and Opera are missing .innerHTML support for TABLE-related and SELECT elements
-  Element.Methods.update = function(element, content) {
-    element = $(element);
-    
-    if (content && content.toElement) content = content.toElement();
-    if (Object.isElement(content)) return element.update().insert(content);
-    
-    content = Object.toHTML(content);
-    var tagName = element.tagName.toUpperCase();
-    
-    if (tagName in Element._insertionTranslations.tags) {
-      $A(element.childNodes).each(function(node) { element.removeChild(node) });
-      Element._getContentFromAnonymousElement(tagName, content.stripScripts())
-        .each(function(node) { element.appendChild(node) });
-    }
-    else element.innerHTML = content.stripScripts();
-    
-    content.evalScripts.bind(content).defer();
-    return element;
   };
 }
 
