@@ -71,12 +71,30 @@ if (!Node.ELEMENT_NODE) {
  *  Creates an HTML element with `tagName` as the tag name.
 **/
 (function(global) {
+  
+  // setAttribute is broken in IE (particularly when setting name attribute)
+  // see: http://msdn.microsoft.com/en-us/library/ms536389.aspx
+  var SETATTRIBUTE_IGNORES_NAME = (function(){
+    var elForm = document.createElement("form");
+    var elInput = document.createElement("input");
+    var root = document.documentElement;
+    elInput.setAttribute("name", "test");
+    elForm.appendChild(elInput);
+    root.appendChild(elForm);
+    var isBuggy = elForm.elements 
+      ? (typeof elForm.elements.test == "undefined") 
+      : null;
+    root.removeChild(elForm);
+    elForm = elInput = null;
+    return isBuggy;
+  })();
+  
   var element = global.Element;
   global.Element = function(tagName, attributes) {
     attributes = attributes || { };
     tagName = tagName.toLowerCase();
     var cache = Element.cache;
-    if (Prototype.Browser.IE && attributes.name) {
+    if (SETATTRIBUTE_IGNORES_NAME && attributes.name) {
       tagName = '<' + tagName + ' name="' + attributes.name + '">';
       delete attributes.name;
       return Element.writeAttribute(document.createElement(tagName), attributes);
