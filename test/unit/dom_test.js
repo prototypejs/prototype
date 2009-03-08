@@ -933,11 +933,6 @@ new Test.Unit.Runner({
     var table = $('write_attribute_table');
     this.assertEqual('4', table.readAttribute('cellspacing'));
     this.assertEqual('6', table.readAttribute('cellpadding'));
-    
-    var el = document.createElement('iframe');
-    document.body.appendChild(el);
-    alert(Element.readAttribute(el, 'type'));
-    document.body.removeChild(el);
   },
   
   testElementWriteAttribute: function() {
