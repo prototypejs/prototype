@@ -1,3 +1,5 @@
+* Add tests to ensure IE8 properly assigns a class name in the `Element` constructor. [#529 state:resolved] (Riki Fridrich, Andrew Dupont)
+
 * Remove sniffing from `Element` when detecting broken `setAttribute` in IE. [#571 state:resolved] (kangax)
 
 * Remove sniffing from `Element.update` branching in favor of feature detection. [#574 state:resolved] (kangax)

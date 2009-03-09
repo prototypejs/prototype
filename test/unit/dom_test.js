@@ -1071,6 +1071,12 @@ new Test.Unit.Runner({
       Element.prototype.fooBar = Prototype.emptyFunction
       this.assertRespondsTo('fooBar', new Element('div'));
     }
+    
+    elWithClassName = new Element('div', { 'className': 'firstClassName' });
+    this.assert(elWithClassName.hasClassName('firstClassName'));
+    
+    elWithClassName = new Element('div', { 'class': 'firstClassName' });
+    this.assert(elWithClassName.hasClassName('firstClassName'));
   },
 
   testElementGetHeight: function() {
