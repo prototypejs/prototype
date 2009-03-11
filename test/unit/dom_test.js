@@ -907,7 +907,7 @@ new Test.Unit.Runner({
     this.assertEqual('a link' , $('attributes_with_issues_1').readAttribute('title'));
     
     $('cloned_element_attributes_issue').readAttribute('foo')
-    var clone = $('cloned_element_attributes_issue').cloneNode(true);
+    var clone = $('cloned_element_attributes_issue').clone(true);
     clone.writeAttribute('foo', 'cloned');
     this.assertEqual('cloned', clone.readAttribute('foo'));
     this.assertEqual('original', $('cloned_element_attributes_issue').readAttribute('foo'));
@@ -1395,8 +1395,45 @@ new Test.Unit.Runner({
     this.assertEqual("default", element.retrieve('bar', 'default'), "Return default value if undefined key");
     this.assertEqual("default", element.retrieve('bar'), "Makes sure default value has been set properly");
     
-    var clonedElement = $('test-empty').cloneNode(false);    
-    this.assert(!('_prototypeUID' in clonedElement), "Cloning a node should not confuse the storage engine");
+    var clonedElement = $('test-empty').clone(false);
+    this.assert(Object.isUndefined(clonedElement._prototypeUID), "Cloning a node should not confuse the storage engine");
+  },
+  
+  testElementClone: function() {
+    var element = new Element('div', {
+      title: 'bar'
+    });
+    element.className = 'foo';
+    
+    // add child
+    element.update('<span id="child">child node</span>');
+    
+    // add observer
+    element.observe('click', Prototype.emptyFunction);
+    
+    // add observer on a child
+    element.down('span').observe('dblclick', Prototype.emptyFunction);
+    
+    var shallowClone = element.clone();
+    var deepClone = element.clone(true);
+    
+    var assertCloneTraits = (function(clone) {
+      this.assert(clone); // exists
+      this.assert(clone.show); // is extended
+      this.assertEqual('DIV', clone.nodeName.toUpperCase()); // proper nodeName
+      this.assertEqual('foo', clone.className); // proper attributes
+      this.assertEqual('bar', clone.title);
+      this.assert(!clone._prototypeUID); // _prototypeUID does not exist
+    }).bind(this);
+    
+    // test generic traits of both deep and shallow clones first
+    assertCloneTraits(shallowClone);
+    assertCloneTraits(deepClone);
+    
+    // test deep clone traits
+    this.assert(deepClone.firstChild);
+    this.assertEqual('SPAN', deepClone.firstChild.nodeName.toUpperCase());
+    this.assert(!deepClone.down('span')._prototypeUID);
   }
 });
 
