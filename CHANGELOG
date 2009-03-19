@@ -1,4 +1,6 @@
-* . Use `in` operator when accessing property of a nodelist to prevent Safari <=2.0.4 from crashing (kangax)
+* Make sure try/catch/finally is used instead of try/finally for clients without support for the latter one (e.g. Blackberry, IE) (Ville Koskinen, kangax)
+
+* Use `in` operator when accessing property of a nodelist to prevent Safari <=2.0.4 from crashing (kangax)
 
 * Add Element#clone as a safe wrapper of native `cloneNode`. (Andrew Dupont, kangax)
 
