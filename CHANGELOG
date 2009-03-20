@@ -1,3 +1,5 @@
+* Remove Array#reduce which currently overrides native `reduce` in clients implementing JS1.8, e.g. Firefox 3+ (Tobie Langel, Andrew Dupont, kangax)
+
 * Make sure try/catch/finally is used instead of try/finally for clients without support for the latter one (e.g. Blackberry, IE) (Ville Koskinen, kangax)
 
 * Use `in` operator when accessing property of a nodelist to prevent Safari <=2.0.4 from crashing (kangax)

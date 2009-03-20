@@ -207,15 +207,6 @@ Array.from = $A;
   }
 
   /**
-   * Array#reduce() -> Array
-   *  Reduces arrays: one-element arrays are turned into their unique item,
-   *  while multiple-element arrays are returned untouched.
-  **/
-  function reduce() {
-    return this.length > 1 ? this : this[0];
-  }
-
-  /**
    *  Array#uniq([sorted = false]) -> Array
    *  - sorted (Boolean): Whether the array has already been sorted. If `true`,
    *      a less-costly algorithm will be used.
@@ -349,7 +340,6 @@ Array.from = $A;
     flatten:   flatten,
     without:   without,
     reverse:   reverse,
-    reduce:    reduce,
     uniq:      uniq,
     intersect: intersect,
     clone:     clone,

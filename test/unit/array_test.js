@@ -137,14 +137,6 @@ new Test.Unit.Runner({
     this.assertEqual('[\"a\", 1]', ['a', 1].toJSON());
     this.assertEqual('[\"a\", {\"b\": null}]', ['a', {'b': null}].toJSON());
   },
-      
-  testReduce: function(){
-    this.assertUndefined([].reduce());
-    this.assertNull([null].reduce());
-    this.assertEqual(1, [1].reduce());
-    this.assertEnumEqual([1,2,3], [1,2,3].reduce());
-    this.assertEnumEqual([1,null,3], [1,null,3].reduce());
-  },
   
   testReverse: function(){
     this.assertEnumEqual([], [].reverse());
