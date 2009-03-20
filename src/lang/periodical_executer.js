@@ -52,7 +52,10 @@ var PeriodicalExecuter = Class.create({
       try {
         this.currentlyExecuting = true;
         this.execute();
-      } finally {
+      } catch(e) {
+        /* empty catch for clients that don't support try/finally */
+      }
+      finally {
         this.currentlyExecuting = false;
       }
     }
