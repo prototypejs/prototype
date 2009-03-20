@@ -1,4 +1,4 @@
-* Remove sniffing from one of the DOM tests, which produced failures in IE8 (kangax)
+* Remove sniffing from one of the DOM tests, which produced failures in IE8. (kangax)
 
 * Fix `Form.reset` test where `respondsTo` wouldn't detect a method due to typeof returning "object" (rather than "function") in IE (kangax)
 
