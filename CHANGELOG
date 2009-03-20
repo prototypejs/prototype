@@ -1,3 +1,5 @@
+* Remove sniffing from one of the DOM tests, which produced failures in IE8 (kangax)
+
 * Fix `Form.reset` test where `respondsTo` wouldn't detect a method due to typeof returning "object" (rather than "function") in IE (kangax)
 
 * Remove Array#reduce which currently overrides native `reduce` in clients implementing JS1.8, e.g. Firefox 3+ (Tobie Langel, Andrew Dupont, kangax)

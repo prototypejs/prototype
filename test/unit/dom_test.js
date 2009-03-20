@@ -73,7 +73,15 @@ new Test.Unit.Runner({
     
     this.assertElementsMatch(document.getElementsByClassName('A'), 'p.A', 'ul#class_names_ul.A', 'li.A.C');
     
-    if (Prototype.Browser.IE)
+    
+    var isElementPrototypeSupported = (function(){
+      var el = document.createElement('div');
+      var result = typeof el.show != 'undefined';
+      el = null;
+      return result;
+    })();
+    
+    if (!isElementPrototypeSupported)
       this.assertUndefined(document.getElementById('unextended').show);
     
     this.assertElementsMatch(div.getElementsByClassName('B'), 'ul#class_names_ul.A.B', 'div.B.C.D');
@@ -95,7 +103,8 @@ new Test.Unit.Runner({
     this.assertElementsMatch(list.getElementsByClassName({}));
     
     // those lookups shouldn't have extended all nodes in document
-    if (Prototype.Browser.IE) this.assertUndefined(document.getElementById('unextended')['show']);
+    if (!isElementPrototypeSupported) 
+      this.assertUndefined(document.getElementById('unextended')['show']);
   },
 
   testElementInsertWithHTML: function() {
