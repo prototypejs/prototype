@@ -27,7 +27,7 @@ new Test.Unit.Runner({
   },
   
   testFormReset: function() {
-    this.assertRespondsTo('reset', Form.reset('form'));
+    this.assert(!Object.isUndefined(Form.reset('form').reset));
   },  
   
   testFormElementEventObserver: function(){
