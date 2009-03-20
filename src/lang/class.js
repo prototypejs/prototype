@@ -2,6 +2,11 @@
 
 /** section: Language
  * Class
+ *  
+ *  Manages Prototype's class-based OOP system.
+ *  
+ *  Refer to Prototype's web site for a [tutorial on classes and
+ *  inheritance](http://prototypejs.org/learn/class-inheritance).
 **/
 var Class = (function() {
   /**

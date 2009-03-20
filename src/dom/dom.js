@@ -1863,5 +1863,28 @@ Element.addMethods({
     }
     
     return value;
+  },
+  
+  /**
+   *  Element#clone(@element, deep) -> Element
+   *  - deep (Boolean): Whether to clone `element`'s descendants as well.
+   *  
+   *  Returns a duplicate of `element`.
+   *  
+   *  A wrapper around DOM Level 2 `Node#cloneNode`, `Element#clone` cleans up
+   *  any expando properties defined by Prototype.
+  **/
+  clone: function(element, deep) {
+    if (!(element = $(element))) return;
+    var clone = element.cloneNode(deep);
+    clone._prototypeUID = void 0;
+    if (deep) {
+      var descendants = Element.select(clone, '*'),
+          i = descendants.length;
+      while (i--) {
+        descendants[i]._prototypeUID = void 0;
+      }
+    }
+    return Element.extend(clone);
   }
 });

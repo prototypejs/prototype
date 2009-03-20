@@ -9,9 +9,9 @@
  *  
  *  <h4>Example</h4>
  *  
- *    new Ajax.Updater('items', '/items', {
- *      parameters: { text: $F('text') }
- *    });
+ *      new Ajax.Updater('items', '/items', {
+ *        parameters: { text: $F('text') }
+ *      });
  *  
  *  This example will make a request to the URL `/items` (with the given
  *  parameters); it will then replace the contents of the element with the ID

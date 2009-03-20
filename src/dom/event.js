@@ -2,6 +2,34 @@
   
   /** section: DOM
    * Event
+   *  
+   *  The namespace for Prototype's event system.
+   *  
+   *  <h4>Events: a fine mess</h4>
+   *  
+   *  Event management is one of the really sore spots of cross-browser
+   *  scripting.
+   *  
+   *  True, the prevalent issue is: everybody does it the W3C way, and MSIE
+   *  does it another way altogether. But there are quite a few subtler,
+   *  sneakier issues here and there waiting to bite your ankle — such as the
+   *  `keypress`/`keydown` issue with KHTML-based browsers (Konqueror and
+   *  Safari). Also, MSIE has a tendency to leak memory when it comes to
+   *  discarding event handlers.
+   *  
+   *  <h4>Prototype to the rescue</h4>
+   *  
+   *  Of course, Prototype smooths it over so well you’ll forget these
+   *  troubles even exist. Enter the `Event` namespace. It is replete with
+   *  methods that help to normalize the information reported by events across
+   *  browsers.
+   *  
+   *  `Event` also provides a standardized list of key codes you can use with
+   *  keyboard-related events.
+   *  
+   *  The functions you’re most likely to use a lot are [[Event.observe]],
+   *  [[Event#element]] and [[Event#stop]]. If your web app uses custom events,
+   *  you'll also get a lot of mileage out of [[Event.fire]].
   **/  
   var Event = {
     KEY_BACKSPACE: 8,
@@ -510,18 +538,21 @@
   });
 
   Element.addMethods({
-    /** alias of: Event.fire
+    /**
      *  Element#fire(@element, eventName[, memo[, bubble = true]]) -> Event
+     *  See [[Event.fire]].
     **/
     fire:          fire,
 
-    /** alias of: Event.observe
+    /**
      *  Element#observe(@element, eventName, handler) -> Element
+     *  See [[Event.observe]].
     **/
     observe:       observe,
     
-    /** alias of: Event.observe
+    /** 
      *  Element#stopObserving(element[, eventName[, handler]]) -> Element
+     *  See [[Event.stopObserving]].
     **/
     stopObserving: stopObserving
   });
@@ -535,16 +566,19 @@
   Object.extend(document, {
     /** 
      *  document.fire(eventName[, memo[, bubble = true]]) -> Event
+     *  See [[Event.fire]].
     **/
     fire:          fire.methodize(),
     
     /** 
      *  document.observe(eventName, handler) -> Element
+     *  See [[Event.observe]].
     **/
     observe:       observe.methodize(),
     
     /** 
      *  document.stopObserving([eventName[, handler]]) -> Element
+     *  See [[Event.stopObserving]].
     **/
     stopObserving: stopObserving.methodize(),
     

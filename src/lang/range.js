@@ -1,9 +1,10 @@
 /** section: Language
  * class ObjectRange
  *  
- *  Ranges represent an interval of values. The value type just needs to be
- *  "compatible" — that is, to implement a `succ` method letting us step from
- *  one value to the next (its successor).
+ *  A succession of values.
+ *  
+ *  An `ObjectRange` can model a range of any value that implements a `succ`
+ *  method (which links that value to its "successor").
  *  
  *  Prototype provides such a method for [[Number]] and [[String]], but you
  *  are (of course) welcome to implement useful semantics in your own objects,

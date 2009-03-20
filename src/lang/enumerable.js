@@ -10,7 +10,7 @@
  *  
  *  Prototype mixes `Enumerable` into several classes. The most visible cases
  *  are [[Array]] and [[Hash]], but you’ll find it in less obvious spots as
- *  well, such as in [[ObjectRange]] and various DOM- or AJAX-related objects.
+ *  well, such as in [[ObjectRange]] and various DOM- or Ajax-related objects.
  *  
  *  <h4>The <code>context</code> parameter</h4>
  *  

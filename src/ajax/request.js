@@ -12,7 +12,7 @@
  *  property will automatically be passed to `eval`.
  *  
  *  In other words: you don't even need to provide a callback to leverage
- *  pure-JavaScript AJAX responses. This is the convention that drives Rails's
+ *  pure-JavaScript Ajax responses. This is the convention that drives Rails's
  *  RJS.
  *  
  *  The list of JavaScript-related MIME-types handled by Prototype is:
@@ -182,7 +182,7 @@ Ajax.Request = Class.create(Ajax.Base, {
   },
   
   /**
-   *  Ajax.Request.success() -> Boolean
+   *  Ajax.Request#success() -> Boolean
    *  
    *  Tests whether the request was successful.
   **/
@@ -240,7 +240,7 @@ Ajax.Request = Class.create(Ajax.Base, {
   },
   
   /**
-   *  Ajax.Request.getHeader(name) -> String | null
+   *  Ajax.Request#getHeader(name) -> String | null
    *  - name (String): The name of an HTTP header that may have been part of
    *    the response.
    *  

@@ -34,7 +34,7 @@
  *    is the same; when the result is different once again, `frequency` will
  *    revert to its original value.
  *  
- *  <h4>Disabling and re-enabling a `PeriodicalUpdater`</h4>
+ *  <h4>Disabling and re-enabling a <code>PeriodicalUpdater</code></h4>
  *  
  *  You can hit the brakes on a running `PeriodicalUpdater` by calling
  *  [[Ajax.PeriodicalUpdater#stop]]. If you wish to re-enable it later, call
@@ -71,11 +71,24 @@ Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
     this.start();
   },
 
+  /**
+   *  Ajax.PeriodicalUpdater#start() -> undefined
+   *  
+   *  Starts the periodical updater (if it had previously been stopped with
+   *  [[Ajax.PeriodicalUpdater#stop]]).
+  **/
   start: function() {
     this.options.onComplete = this.updateComplete.bind(this);
     this.onTimerEvent();
   },
 
+  /**
+   *  Ajax.PeriodicalUpdater#stop() -> undefined
+   *  
+   *  Stops the periodical updater.
+   *  
+   *  Also calls the `onComplete` callback, if one has been defined.
+  **/
   stop: function() {
     this.updater.options.onComplete = undefined;
     clearTimeout(this.timer);

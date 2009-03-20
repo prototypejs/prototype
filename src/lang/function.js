@@ -1,5 +1,7 @@
 /** section: Language
  * class Function
+ *  
+ *  Extensions to the built-in `Function` object.
 **/
 Object.extend(Function.prototype, (function() {
   var slice = Array.prototype.slice;

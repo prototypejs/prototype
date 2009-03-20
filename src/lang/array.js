@@ -1,4 +1,4 @@
-/** section: Language, alias of: Array.from, related to: Array
+/** section: Language, related to: Array
  *    $A(iterable) -> Array
  * 
  *  Accepts an array-like collection (anything with numeric indices) and returns 
@@ -168,7 +168,7 @@ Array.from = $A;
    *  Array#flatten() -> Array
    *  Returns a “flat” (one-dimensional) version of the array.
    *
-   *  Nested arrays are recursively injected “inline”. This can prove very
+   *  Nested arrays are recursively injected "inline." This can prove very
    *  useful when handling the results of a recursive collection algorithm,
    *  for instance.
   **/
@@ -243,8 +243,12 @@ Array.from = $A;
       return array.detect(function(value) { return item === value });
     }); 
   }
+  
+  /** alias of: Array#clone
+   *  Array#toArray() -> Array
+  **/
 
-  /** alias of: Array#toArray
+  /**
    *  Array#clone() -> Array
    *
    *  Returns a duplicate of the array, leaving the original array intact.
