@@ -1,6 +1,6 @@
 <% d = @doc_instance %>
 
-<% @title = "#{d.full_name} (#{d.type})" %>
+<% @title = "#{d.full_name} #{d.type}" %>
 
 <%= include "partials/breadcrumbs", :object => d %>
 
@@ -118,6 +118,20 @@
 
   <div class="section-content">
     <pre id="<%= dom_id(d.constructor) %>" class="syntax"><code><%= d.constructor.ebnf_expressions.join("\n").strip %></code></pre>
+    <% unless d.constructor.arguments.empty? %>
+      <ul class="argument-list">
+        <% d.constructor.arguments.each do |arg| %>
+          <li>
+            <code><%= arg.name %></code>
+            <% unless arg.types.empty? %>
+              (<%= arg.types.map { |t| auto_link_code(t, false) }.join(' | ') %>)
+            <% end %>
+            <%= ' &ndash; ' + inline_htmlize(arg.description) unless arg.description.empty? %>
+          </li>
+        <% end %>
+      </ul> <!-- .argument-list -->
+    <% end %>
+    
 
     <p><%= htmlize(d.constructor.description) %></p>
     

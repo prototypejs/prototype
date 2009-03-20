@@ -1,8 +1,12 @@
 <li class="method-description">
-  <h4 id="<%= dom_id(object) %>"><%= object.name %></h4>
+  <h4 id="<%= dom_id(object) %>"><%= object.name %>
+    <span class="method-permalink"><a href="<%= path_to(object) %>">#</a></span></h4>
+
+  <% if object.signature %>
+    <%= method_synopsis(object) %>
+  <% end %>
   
   <% if object.is_a?(Documentation::Method) %>
-    <%= method_synopsis(object) %>
     <% unless object.arguments.empty? %>
       <ul class="argument-list">
         <% object.arguments.each do |arg| %>
@@ -11,7 +15,7 @@
             <% unless arg.types.empty? %>
               (<%= arg.types.map { |t| auto_link_code(t, false) }.join(' | ') %>)
             <% end %>
-            <%= ' &ndash; ' + arg.description unless arg.description.empty? %>
+            <%= ' &ndash; ' + inline_htmlize(arg.description) unless arg.description.empty? %>
           </li>
         <% end %>
       </ul> <!-- .argument-list -->

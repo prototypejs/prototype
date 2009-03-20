@@ -4,21 +4,14 @@
 
 
 /* tag styles */
-h1, h2, h3, h4, h5, h6 {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
 pre {
   padding: 0;
 }
 
 code {
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", monospace;
-  font-size: 13px;
+  font-size: 12px;
 }
-
 
 /* masthead */
 div#masthead {
@@ -79,6 +72,10 @@ div#footer {
       width: 235px;
       float: left;
     }
+    
+  div.credits {
+    margin-left: 115px;
+  }
 
 
 .page-title span.type {
@@ -152,6 +149,13 @@ ul.method-details-list {
     ul.method-details-list li code {
       font-size: 12px;
     }
+    
+.method-description h4 .method-permalink a {
+  color: #aaa;
+  text-decoration: none;
+  border: 0;
+  font-size: 14px;
+}
 
 ul.argument-list {
   margin-top: -5px;
@@ -162,6 +166,7 @@ ul.argument-list {
   ul.argument-list li {
     list-style-type: disc;
     font-size: 90%;
+    margin-bottom: 0;
   }
   
     ul.argument-list li code {
@@ -207,10 +212,24 @@ ul.section-list {
   background-image: url(../images/constructor.png);
 }
 
-.section-method-list .section-title h3,
-.section-klass_methods .section-title h3,
-.section-instance_methods .section-title h3 {
+.section-method-list .section-title h3 {
   background-image: url(../images/method.png);
+}
+
+.section-klass_methods .section-title h3 {
+  background-image: url(../images/class_method.png);  
+}
+
+.section-klass_properties .section-title h3 {
+  background-image: url(../images/class_property.png);  
+}
+
+.section-instance_methods .section-title h3 {
+  background-image: url(../images/instance_method.png);
+}
+
+.section-instance_properties .section-title h3 {
+  background-image: url(../images/instance_property.png);  
 }
 
 .section-mixins .section-title h3 {
@@ -237,6 +256,14 @@ ul.section-list {
   background-image: url(../images/description.png);
 }
 
+.section-subclasses .section-title h3 {
+  background-image: url(../images/subclass.png);
+}
+
+.section-superclass .section-title h3 {
+  background-image: url(../images/superclass.png);
+}
+
 /* search box */
 
 .search-results {
@@ -246,9 +273,16 @@ ul.section-list {
   width: 233px;
   overflow: auto;
   overflow-y: scroll;
+  overflow-x: hidden;
   margin: 7px -11px 0;
   border: 1px solid #999;
+  top: 28px;
 }
+
+  * html .search-results {
+    left: 486px;
+    top: 30px;
+  }
   
     
 /* search result types */
@@ -262,13 +296,15 @@ ul.section-list {
   text-align: left;
   text-decoration: none;
   color: #333;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  white-space: nowrap;
   
 }
 
   .menu-item a:hover,
-  .menu-item.highlighted a {
+  .menu-item a.highlighted,
+  #menu .highlighted a {
     border-top: 1px solid #69f;
     border-bottom: 1px solid #69f;
     background-color: #f0f0ff;      
@@ -293,9 +329,12 @@ ul.section-list {
   background-image: url(../images/constructor.png);  
 }
 
-.menu-item a.class_property,
+.menu-item a.class_property {
+  background-image: url(../images/class_property.png);  
+}
+
 .menu-item a.instance_property {
-  background-image: url(../images/property.png);  
+  background-image: url(../images/instance_property.png);  
 }
 
 .menu-item a.namespace {
@@ -333,6 +372,12 @@ div#menu {
     float: right;
   }
   
+    * html #menu .api-box h2 a,
+    * html #menu .search-box {
+      height: 30px;
+      line-height: 30px;
+    }
+  
   #menu .api-box {
   }
   
@@ -355,10 +400,16 @@ div#menu {
       width: 233px;
       overflow: auto;
       overflow-y: scroll;
+      overflow-x: hidden;
       top: 35px;
       border: 1px solid #999;
       right: 5px;
     }
+    
+      * html #menu .api-box .menu-items {
+        right: 10px;
+        top: 37px;
+      }
     
       #menu .api-box ul,
       #menu .api-box li {
@@ -377,13 +428,18 @@ div#menu {
   
     #menu .search-box input {
       width: 150px;
-      padding: 3px 6px;
+      padding: 3px 10px;
       margin-top: 2px;
       border: 1px solid #999;
       border-radius: 10px;
       -webkit-border-radius: 10px;
       -moz-border-radius: 10px;
     }
+    
+#menu #search.ghosted {
+  color: #aaa;
+  text-align: left;
+}
     
 
 /* notes */

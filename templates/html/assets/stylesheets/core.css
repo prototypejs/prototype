@@ -47,21 +47,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h4 {
-  font-size: 15px;
-  color: #444;
-  margin: 0 0 0.4em;
+  font-size: 17px;
+  color: #555;
+  margin: 1.0em 0 0.6em;
 }
 
 h5 {
-  font-size: 14px;
-  color: #222;
-  margin: 0 0 0.4em;
+  font-size: 15px;
+  color: #2a2a2a;
+  margin: 1.0em 0 0.6em;
 }
 
 h6 {
-  font-size: 13px;
+  font-size: 14px;
   color: #000;
-  margin: 0 0 0.4em;
+  margin: 1.0em 0 0.6em;
 }
 
 a img {
@@ -311,6 +311,7 @@ pre code {
     padding-right: 0;
     float: left;
     text-align: right;
+    overflow: hidden;
   }
 
     .page-content .section .section-title h3 {
@@ -412,5 +413,9 @@ div#masthead h1#logo {
   height: 76px;
   position: relative;
   left: 60px;
+}
+
+div#masthead a {
+  text-decoration: none;
 }
 

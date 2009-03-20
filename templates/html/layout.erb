@@ -9,9 +9,8 @@
 	  <%= javascript_include_tag "application", "code_highlighter" %>
 
 	  <%= javascript_include_tag "item_index" %>
-	  
-	  
-	  <%= stylesheet_link_tag "grid", "highlighter", "core", "api" %>
+	  	  
+	  <%= stylesheet_link_tag "core", "api" %>
 	  
 	  <script type="text/javascript">PDoc.pathPrefix = '<%= path_prefix %>';</script>
   </head>
@@ -20,7 +19,9 @@
       
       <div id="masthead">
         <div id="masthead_content">
-          <h1 onclick="with (document.body) className = className ? '' : 'grid'" id="logo"><span class="replaced">Prototype JavaScript framework</span></h1>
+          <a href="http://prototypejs.org">
+            <h1 id="logo"><span class="replaced">Prototype JavaScript framework</span></h1>
+          </a>
         </div> <!-- #masthead_content -->
       </div> <!-- #masthead -->
       

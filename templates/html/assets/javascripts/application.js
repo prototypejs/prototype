@@ -4,7 +4,7 @@ if (typeof PDoc === "undefined") window.PDoc = {};
 (function() {  
   var PREVIOUS_HASH = null;
   
-  document.observe("dom:loaded", function() {    
+  Event.observe(window, "load", function() {    
     var hash = window.location.hash;
     if (hash && hash !== PREVIOUS_HASH) {
       document.fire("hash:changed",
@@ -258,25 +258,124 @@ Event.observe(window, 'load', function() {
   function menuButtonMouseOut(event) {
     var menuButton = $('api_menu_button');
     var menu = $('api_menu');
-    var target = event.element(), related = event.relatedTarget;
+    var target = event.element(), related = event.relatedTarget || event.toElement;
     
-    if (related === menu || related.descendantOf(menu)) return;
+    if (related && (related === menu || related.descendantOf(menu))) return;
     menu.hide();
   }
   
   function menuMouseOut(event) {
-    var menu = $('api_menu'), related = event.relatedTarget;
+    var menu = $('api_menu'), related = event.relatedTarget || event.toElement;
     if (related && !related.descendantOf(menu)) {
       arguments.callee.timer = Element.hide.delay(0.5, menu);
     } else {
-      window.clearTimeout(arguments.callee.timer)
+      window.clearTimeout(arguments.callee.timer);
     }
   }
   
+  function menuItemMouseOver(event) {
+    var element = event.element();    
+    if (element.tagName.toLowerCase() === 'a') {
+      element.addClassName('highlighted');
+    }
+  }
+  
+  function menuItemMouseOut(event) {
+    var element = event.element();    
+    if (element.tagName.toLowerCase() === 'a') {
+      element.removeClassName('highlighted');
+    }
+  }
+  
+  var MENU_ITEMS;
+  
   document.observe('dom:loaded', function() {
-    $('api_menu_button').observe('mouseover', menuButtonMouseOver);
-    $('api_menu_button').observe('mouseout',  menuButtonMouseOut);
+    MENU_ITEMS = $$('.api-box .menu-item a');
     
-    $('api_menu').observe('mouseout', menuMouseOut);
+    $('api_menu_button').observe('mouseenter', menuButtonMouseOver);
+    $('api_menu_button').observe('mouseleave', menuButtonMouseOut );
+    
+    $('api_menu').observe('mouseleave', menuMouseOut);
+    
+    if (Prototype.Browser.IE) {
+      $('api_menu').observe('mouseover', menuItemMouseOver);
+      $('api_menu').observe('mouseout',  menuItemMouseOut);
+    }
   });
 })();
+
+Form.GhostedField = Class.create({
+  initialize: function(element, title, options) {
+    this.element = $(element);
+    this.title = title;
+    
+    this.isGhosted = true;
+    
+    if (options.cloak) {
+      // Wrap the native getValue function so that it never returns the
+      // ghosted value. This is optional because it presumes the ghosted
+      // value isn't valid input for the field.
+      this.element.getValue = this.element.getValue.wrap(this.wrappedGetValue.bind(this));      
+    }    
+    
+    this.addObservers();
+    this.onBlur();
+  },
+  
+  wrappedGetValue: function($proceed) {
+    var value = $proceed();
+    return value === this.title ? "" : value;
+  },
+  
+  addObservers: function() {
+    this.element.observe('focus', this.onFocus.bind(this));
+    this.element.observe('blur',  this.onBlur.bind(this));
+    
+    var form = this.element.up('form');
+    if (form) {
+      form.observe('submit', this.onSubmit.bind(this));
+    }
+    
+    // Firefox's bfcache means that form fields need to be re-initialized
+    // when you hit the "back" button to return to the page.
+    if (Prototype.Browser.Gecko) {
+      window.addEventListener('pageshow', this.onBlur.bind(this), false);
+    }
+  },
+  
+  onFocus: function() {
+    if (this.isGhosted) {
+      this.element.setValue('');
+      this.setGhosted(false);
+    }
+  },
+  
+  onBlur: function() {
+    var value = this.element.getValue();
+    if (value.blank() || value == this.title) {
+      this.setGhosted(true);
+    } else {
+      this.setGhosted(false);
+    }
+  },
+  
+  setGhosted: function(isGhosted) {
+    this.isGhosted = isGhosted;
+    this.element[isGhosted ? 'addClassName' : 'removeClassName']('ghosted');
+    if (isGhosted) {
+      this.element.setValue(this.title);
+    }    
+  },
+
+  // Hook into the enclosing form's `onsubmit` event so that we clear any
+  // ghosted text before the form is sent.
+  onSubmit: function() {
+    if (this.isGhosted) {
+      this.element.setValue('');
+    }
+  }
+});
+
+document.observe("dom:loaded", function() {
+  new Form.GhostedField($('search'), "Search");
+});

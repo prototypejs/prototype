@@ -24,6 +24,11 @@ module PDoc
             BlueCloth.new(markdown).to_html
           end
           
+          # Gah, what an ugly hack.
+          def inline_htmlize(markdown)
+            htmlize(markdown).gsub(/^<p>/, '').gsub(/<\/p>$/, '')
+          end
+          
           def javascript_include_tag(*names)
             names.map do |name|
               attributes = {
@@ -115,7 +120,13 @@ module PDoc
         
         module CodeHelper
           def method_synopsis(object)
-            if (object.methodized?)
+            if (object.is_a?(Documentation::Property))
+              return <<-EOS
+                <pre class="syntax"><code class="ebnf">#{ object.signature }</code></pre>
+                EOS
+            end
+            
+            if (object.is_a?(Documentation::InstanceMethod) && object.methodized?)
               return <<-EOS
                 <pre class="syntax"><code class="ebnf">#{ object.signature } -&gt; #{ auto_link(object.returns, false) }
 #{ object.generic_signature } -&gt; #{ auto_link(object.returns, false) }</code></pre>
