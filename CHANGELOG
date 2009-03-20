@@ -1,3 +1,5 @@
+* Fix another failure in IE8, `for`/`htmlFor` {get/set}Attribute translation. (kangax)
+
 * Fix `Element#writeAttribute` and `Element#readAttribute` failures in IE8 due to lack of proper feature testing. (kangax)
 
 * Remove sniffing from one of the DOM tests, which produced failures in IE8. (kangax)

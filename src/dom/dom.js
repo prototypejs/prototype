@@ -1169,7 +1169,7 @@ Element._attributeTranslations = {
   write: {
     names: {
       className: 'class',
-      htmlFor:   'for'      
+      htmlFor:   'for'
     }, 
     values: { }
   }
@@ -1309,17 +1309,28 @@ else if (Prototype.Browser.IE) {
   Element._attributeTranslations = (function(){
     
     var classProp = 'className';
+    var forProp = 'for';
+    
     var el = document.createElement('div');
     
     // try "className" first (IE <8)
     el.setAttribute(classProp, 'x');
     
     if (el.className !== 'x') {
-      
       // try "class" (IE 8)
       el.setAttribute('class', 'x');
       if (el.className === 'x') {
         classProp = 'class';
+      }
+    }
+    el = null;
+    
+    el = document.createElement('label');
+    el.setAttribute(forProp, 'x');
+    if (el.htmlFor !== 'x') {
+      el.setAttribute('htmlFor', 'x');
+      if (el.htmlFor === 'x') {
+        forProp = 'htmlFor';
       }
     }
     el = null;
@@ -1329,7 +1340,8 @@ else if (Prototype.Browser.IE) {
         names: {
           'class':      classProp,
           'className':  classProp,
-          'for':        'htmlFor'
+          'for':        forProp,
+          'htmlFor':    forProp
         },
         values: {
           _getAttr: function(element, attribute) {
