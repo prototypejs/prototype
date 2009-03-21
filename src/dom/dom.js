@@ -1169,7 +1169,7 @@ Element._attributeTranslations = {
   write: {
     names: {
       className: 'class',
-      htmlFor:   'for'      
+      htmlFor:   'for'
     }, 
     values: { }
   }
@@ -1306,42 +1306,95 @@ else if (Prototype.Browser.IE) {
     return element;   
   };
 
-  Element._attributeTranslations = {
-    read: {
-      names: {
-        'class': 'className',
-        'for':   'htmlFor'
-      },
-      values: {
-        _getAttr: function(element, attribute) {
-          return element.getAttribute(attribute, 2);
+  Element._attributeTranslations = (function(){
+    
+    var classProp = 'className';
+    var forProp = 'for';
+    
+    var el = document.createElement('div');
+    
+    // try "className" first (IE <8)
+    el.setAttribute(classProp, 'x');
+    
+    if (el.className !== 'x') {
+      // try "class" (IE 8)
+      el.setAttribute('class', 'x');
+      if (el.className === 'x') {
+        classProp = 'class';
+      }
+    }
+    el = null;
+    
+    el = document.createElement('label');
+    el.setAttribute(forProp, 'x');
+    if (el.htmlFor !== 'x') {
+      el.setAttribute('htmlFor', 'x');
+      if (el.htmlFor === 'x') {
+        forProp = 'htmlFor';
+      }
+    }
+    el = null;
+    
+    return {
+      read: {
+        names: {
+          'class':      classProp,
+          'className':  classProp,
+          'for':        forProp,
+          'htmlFor':    forProp
         },
-        _getAttrNode: function(element, attribute) {
-          var node = element.getAttributeNode(attribute);
-          return node ? node.value : "";
-        },
-        _getEv: function(element, attribute) {
-          attribute = element.getAttribute(attribute);
-          
-          // TODO: Need something less ugly here.
-          if (!attribute) return null;
-          attribute = attribute.toString();
-          attribute = attribute.split('{')[1];
-          attribute = attribute.split('}')[0];
-          return attribute.strip();
-        },
-        _flag: function(element, attribute) {
-          return $(element).hasAttribute(attribute) ? attribute : null;
-        },
-        style: function(element) {
-          return element.style.cssText.toLowerCase();
-        },
-        title: function(element) {
-          return element.title;
+        values: {
+          _getAttr: function(element, attribute) {
+            return element.getAttribute(attribute, 2);
+          },
+          _getAttrNode: function(element, attribute) {
+            var node = element.getAttributeNode(attribute);
+            return node ? node.value : "";
+          },
+          _getEv: (function(){
+            
+            var el = document.createElement('div');
+            el.onclick = Prototype.emptyFunction;
+            var value = el.getAttribute('onclick');
+            var f;
+            
+            // IE<8
+            if (String(value).indexOf('{') > -1) {
+              // intrinsic event attributes are serialized as `function { ... }`
+              f = function(element, attribute) {
+                attribute = element.getAttribute(attribute);
+                if (!attribute) return null;
+                attribute = attribute.toString();
+                attribute = attribute.split('{')[1];
+                attribute = attribute.split('}')[0];
+                return attribute.strip();
+              }
+            }
+            // IE8
+            else if (value === '') {
+              // only function body is serialized
+              f = function(element, attribute) {
+                attribute = element.getAttribute(attribute);
+                if (!attribute) return null;
+                return attribute.strip();
+              }
+            }
+            el = null;
+            return f;
+          })(),
+          _flag: function(element, attribute) {
+            return $(element).hasAttribute(attribute) ? attribute : null;
+          },
+          style: function(element) {
+            return element.style.cssText.toLowerCase();
+          },
+          title: function(element) {
+            return element.title;
+          }
         }
       }
     }
-  };
+  })();
   
   Element._attributeTranslations.write = {
     names: Object.extend({
