@@ -1,3 +1,5 @@
+* Remove unused local variables from `Element.extend`. Fix one of the form tests to remove `_extendedByPrototype` by setting it to `undefined` rather than `false` (`_extendedByPrototype` being `false` does not force `Element.extend` to re-extend element). (T.J. Crowder, kangax)
+
 * Make test for `escapeHTML`/`unescapeHTML` more strict. (Chrome 1.x escapes "<" and "&" with `innerHTML`, but not ">") (kangax)
 
 * Remove another sniffing from one of DOM tests. Fixes last IE8 failure. (kangax)

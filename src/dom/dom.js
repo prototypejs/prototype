@@ -1690,7 +1690,7 @@ Element.extend = (function() {
         element.nodeType != 1 || element == window) return element;
 
     var methods = Object.clone(Methods),
-      tagName = element.tagName.toUpperCase(), property, value;
+        tagName = element.tagName.toUpperCase();
     
     // extend methods for specific tags
     if (ByTag[tagName]) Object.extend(methods, ByTag[tagName]);

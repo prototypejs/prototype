@@ -291,8 +291,8 @@ new Test.Unit.Runner({
 
     form = $('bigform');
     var input = form['tf_text'], select = form['tf_selectOne'];
-    input._extendedByPrototype = select._extendedByPrototype = false;
-
+    input._extendedByPrototype = select._extendedByPrototype = void 0;
+    
     this.assert($(input).anInputMethod);
     this.assert(!input.aSelectMethod);
     this.assertEqual('input', input.anInputMethod());
