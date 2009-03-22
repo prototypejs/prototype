@@ -444,13 +444,13 @@ Object.extend(String.prototype.escapeHTML, {
 
 String.prototype.escapeHTML.div.appendChild(String.prototype.escapeHTML.text);
 
-if ('<\n'.escapeHTML() !== '&lt;\n') {
+if ('<\n>'.escapeHTML() !== '&lt;\n&gt;') {
   String.prototype.escapeHTML = function() {
     return this.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 }
 
-if ('&lt;\n'.unescapeHTML() !== '<\n') {
+if ('&lt;\n&gt;'.unescapeHTML() !== '<\n>') {
   String.prototype.unescapeHTML = function() {
     return this.stripTags().replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
   }
