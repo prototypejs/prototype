@@ -814,7 +814,29 @@ new Test.Unit.Runner({
     this.assert(
       $('style_test_3').setOpacity(0.9999999).getStyle('opacity') > 0.999
     );
-    if (Prototype.Browser.IE) {
+    
+    /*
+    
+    IE <= 7 needs a `hasLayout` for opacity ("filter") to function properly
+    `hasLayout` is triggered by setting `zoom` style to `1`, 
+    
+    In IE8 setting `zoom` does not affect `hasLayout`
+    and IE8 does not even need `hasLayout` for opacity to work
+    
+    We do a proper feature test here
+    
+    */
+    
+    var ZOOM_AFFECT_HAS_LAYOUT = (function(){
+      // IE7
+      var el = document.createElement('div');
+      el.style.zoom = 1;
+      var result = el.hasLayout;
+      el = null;
+      return result;
+    })();
+    
+    if (ZOOM_AFFECT_HAS_LAYOUT) {
       this.assert($('style_test_4').setOpacity(0.5).currentStyle.hasLayout);
       this.assert(2, $('style_test_5').setOpacity(0.5).getStyle('zoom'));
       this.assert(0.5, new Element('div').setOpacity(0.5).getOpacity());
