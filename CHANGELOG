@@ -1,3 +1,5 @@
+* Remove another sniffing from one of DOM tests. Fixes last IE8 failure. (kangax)
+
 * `Element.extend` now takes care of IE8 bug when HTMLAppletElement and HTMLObjectElement objects do not inherit from `Element.prototype`. (kangax)
 
 * Fix DOM tests to use proper feature test when testing `setOpacity` (kangax)

@@ -1095,8 +1095,9 @@ new Test.Unit.Runner({
       {id: 'my_input_field_id', name: 'my_input_field'}));
     this.assertEqual(input, document.body.lastChild);
     this.assertEqual('my_input_field', $(document.body.lastChild).name);
-    if (Prototype.Browser.IE)
-      this.assertMatch(/name=["']?my_input_field["']?/, $('my_input_field').outerHTML);
+    if ('outerHTML' in document.documentElement) {
+      this.assertMatch(/name=["']?my_input_field["']?/, $('my_input_field_id').outerHTML);
+    }
     
     if (originalElement && Prototype.BrowserFeatures.ElementExtensions) {
       Element.prototype.fooBar = Prototype.emptyFunction
