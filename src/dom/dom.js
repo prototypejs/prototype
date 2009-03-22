@@ -1628,8 +1628,58 @@ Object.extend(Element, Element.Methods);
  *  tag, it will also be extended with the methods from `Form.Methods`.
 **/
 Element.extend = (function() {
-  if (Prototype.BrowserFeatures.SpecificElementExtensions)
+  
+  function checkDeficiency(tagName) {
+    if (typeof window.Element != 'undefined') {
+      var proto = window.Element.prototype;
+      if (proto) {
+        var id = '_' + (Math.random()+'').slice(2);
+        var el = document.createElement(tagName);
+        proto[id] = 'x';
+        var isBuggy = (el[id] !== 'x');
+        delete proto[id];
+        el = null;
+        return isBuggy;
+      }
+    }
+    return false;
+  }
+  
+  function extendElementWith(element, methods) {
+    for (var property in methods) {
+      var value = methods[property];
+      if (Object.isFunction(value) && !(property in element))
+        element[property] = value.methodize();
+    }
+  }
+  
+  var HTMLOBJECTELEMENT_PROTOTYPE_BUGGY = checkDeficiency('object');
+  var HTMLAPPLETELEMENT_PROTOTYPE_BUGGY = checkDeficiency('applet');
+  
+  if (Prototype.BrowserFeatures.SpecificElementExtensions) {
+    // IE8 has a bug with `HTMLObjectElement` and `HTMLAppletElement` objects 
+    // not being able to "inherit" from `Element.prototype` 
+    // or a specific prototype - `HTMLObjectElement.prototype`, `HTMLAppletElement.prototype`
+    if (HTMLOBJECTELEMENT_PROTOTYPE_BUGGY && 
+        HTMLAPPLETELEMENT_PROTOTYPE_BUGGY) {
+      return function(element) {
+        if (element && element.tagName) {
+          var tagName = element.tagName.toUpperCase();
+          if (tagName === 'OBJECT' || tagName === 'APPLET') {
+            extendElementWith(element, Element.Methods);
+            if (tagName === 'OBJECT') {
+              extendElementWith(element, Element.Methods.ByTag.OBJECT)
+            }
+            else if (tagName === 'APPLET') {
+              extendElementWith(element, Element.Methods.ByTag.APPLET)
+            }
+          }
+        }
+        return element;
+      }
+    }
     return Prototype.K;
+  }
 
   var Methods = { }, ByTag = Element.Methods.ByTag;
   
@@ -1645,11 +1695,7 @@ Element.extend = (function() {
     // extend methods for specific tags
     if (ByTag[tagName]) Object.extend(methods, ByTag[tagName]);
     
-    for (property in methods) {
-      value = methods[property];
-      if (Object.isFunction(value) && !(property in element))
-        element[property] = value.methodize();
-    }
+    extendElementWith(element, methods);
     
     element._extendedByPrototype = Prototype.emptyFunction;
     return element;

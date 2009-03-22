@@ -1,3 +1,5 @@
+* `Element.extend` now takes care of IE8 bug when HTMLAppletElement and HTMLObjectElement objects do not inherit from `Element.prototype`. (kangax)
+
 * Fix DOM tests to use proper feature test when testing `setOpacity` (kangax)
 
 * Fix another failure in IE8, `for`/`htmlFor` {get/set}Attribute translation. (kangax)
