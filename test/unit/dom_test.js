@@ -378,6 +378,15 @@ new Test.Unit.Runner({
     this.assertEqual('hello world', getInnerHTML('testdiv'));
   },
   
+  testElementUpdateScriptElement: function() {
+    var el = new Element('script', {
+      type: 'text/javascript'
+    });
+    this.assertNothingRaised(function(){
+      el.update('(function(){})');
+    })
+  },
+  
   testElementReplace: function() {
     $('testdiv-replace-1').replace('hello from div!');
     this.assertEqual('hello from div!', $('testdiv-replace-container-1').innerHTML);

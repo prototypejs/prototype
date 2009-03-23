@@ -203,6 +203,20 @@ Element.Methods = {
       }
     })();
     
+    var SCRIPT_ELEMENT_REJECTS_TEXTNODE_APPENDING = (function () {
+      var s = document.createElement("script"), 
+          isBuggy = false;
+      try {
+        s.appendChild(document.createTextNode(""));
+        isBuggy = !s.firstChild ||
+          s.firstChild && s.firstChild.nodeType !== 3;
+      } catch (e) {
+        isBuggy = true;
+      }
+      s = null;
+      return isBuggy;
+    })();
+    
     function update(element, content) {
       element = $(element);
   
@@ -213,9 +227,16 @@ Element.Methods = {
         return element.update().insert(content);
   
       content = Object.toHTML(content);
+      
+      var tagName = element.tagName.toUpperCase();
+      
+      if (tagName === 'SCRIPT' && SCRIPT_ELEMENT_REJECTS_TEXTNODE_APPENDING) {
+        // scripts are not evaluated when updating SCRIPT element
+        element.text = content;
+        return element;
+      }
   
       if (SELECT_ELEMENT_INNERHTML_BUGGY || TABLE_ELEMENT_INNERHTML_BUGGY) {
-        var tagName = element.tagName.toUpperCase();
         if (tagName in Element._insertionTranslations.tags) {
           $A(element.childNodes).each(function(node) {
             element.removeChild(node);
