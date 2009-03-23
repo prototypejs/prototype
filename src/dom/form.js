@@ -82,13 +82,20 @@ Form.Methods = {
    *  Returns a collection of all controls within a form.
   **/
   getElements: function(form) {
-    return $A($(form).getElementsByTagName('*')).inject([], 
-      function(elements, child) {
-        if (Form.Element.Serializers[child.tagName.toLowerCase()])
-          elements.push(Element.extend(child));
-        return elements;
-      }
-    );
+    var elements = $(form).getElementsByTagName('*'),
+        element,
+        arr = [ ],
+        serializers = Form.Element.Serializers;
+    // `length` is not used to prevent interference with 
+    // length-named elements shadowing `length` of a nodelist
+    for (var i = 0; element = elements[i]; i++) {
+      arr.push(element);
+    }
+    return arr.inject([], function(elements, child) {
+      if (serializers[child.tagName.toLowerCase()])
+        elements.push(Element.extend(child));
+      return elements;
+    })
   },
   
   /**

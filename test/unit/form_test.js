@@ -359,5 +359,24 @@ new Test.Unit.Runner({
       'multiple select options improperly set');
     input.setValue(['1', '3']);
     this.assertEnumEqual(['1', '3'], input.getValue());
+  },
+  
+  testSerializeFormTroublesomeNames: function() {
+    var el = new Element('form', { 
+      action: '/' 
+    });
+    var input = new Element('input', { 
+      type: 'text', 
+      name: 'length', 
+      value: 'foo' 
+    });
+    var input2 = new Element('input', { 
+      type: 'text', 
+      name: 'bar', 
+      value: 'baz' 
+    });
+    el.appendChild(input);
+    el.appendChild(input2);
+    this.assertHashEqual({ length: 'foo', bar: 'baz' }, el.serialize(true));
   }
 });
