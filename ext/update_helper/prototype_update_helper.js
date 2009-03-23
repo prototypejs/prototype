@@ -257,7 +257,8 @@ var prototypeUpdateHelper = new UpdateHelper([
     methodName: 'reduce',
     namespace: Array.prototype,
     message: 'Array#reduce is no longer supported.\n' + 
-      'This is due to an infortunate naming collision with Mozilla\'s soon to be standardized (as of EcmaScript 3.1) Array#reduce implementation (whhich is similar to Prototype\'s Array#inject).',
+      'This is due to an infortunate naming collision with Mozilla\'s own implementation of Array#reduce which differs completely from Prototype\'s implementation (it\'s in fact similar to Prototype\'s Array#inject).\n' + 
+       'Mozilla\'s Array#reduce is already implemented in Firefox 3 (as part of JavaScript 1.8) and is about to be standardized in EcmaScript 3.1.',
     type: 'error'
   },
   
