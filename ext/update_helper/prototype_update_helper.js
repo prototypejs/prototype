@@ -254,6 +254,14 @@ var prototypeUpdateHelper = new UpdateHelper([
   },
   
   {
+    methodName: 'reduce',
+    namespace: Array.prototype,
+    message: 'Array#reduce is no longer supported.\n' + 
+      'This is due to an infortunate naming collision with Mozilla\'s soon to be standardized (as of EcmaScript 3.1) Array#reduce implementation (whhich is similar to Prototype\'s Array#inject).',
+    type: 'error'
+  },
+  
+  {
     methodName: 'unloadCache',
     namespace: Event,
     message: 'Event.unloadCache has been deprecated.',
@@ -290,6 +298,7 @@ var prototypeUpdateHelper = new UpdateHelper([
   }
   
   function defineSetters(obj, prop) {
+    storeProperties(obj);
     if (obj.__properties.include(prop)) return;
     obj.__properties.push(prop);
     obj.__defineGetter__(prop, function() {
@@ -303,6 +312,7 @@ var prototypeUpdateHelper = new UpdateHelper([
   }
   
   function checkProperties(hash) {
+    storeProperties(hash);
     var current = Object.keys(hash);
     if (current.length == hash.__properties.length)
       return;
@@ -311,6 +321,12 @@ var prototypeUpdateHelper = new UpdateHelper([
       notify(prop, hash[prop]);
       defineSetters(hash, prop);
     });
+  }
+  
+  function storeProperties(h) {
+    if (typeof h.__properties === 'undefined')
+      h.__properties = __properties.clone();
+    return h;
   }
   
   Hash.prototype.set = Hash.prototype.set.wrap(function(proceed, property, value) {
@@ -335,7 +351,7 @@ var prototypeUpdateHelper = new UpdateHelper([
   });
 
   Hash.prototype.initialize = Hash.prototype.initialize.wrap(function(proceed, object) {
-    this.__properties = __properties.clone();
+    storeProperties(this);
     for (var prop in object) defineSetters(this, prop);
     proceed(object);
   });

@@ -1,3 +1,5 @@
+* deprecation extension: mark Array#reduce() as removed. [#569 state:resolved] (Tobie Langel)
+
 * `Form.serialize` now works safely with forms that have "length"-named elements. [#77 state:resolved] (Peter Adrianov, John-David Dalton, kangax)
 
 * `Element#update` now takes care of SCRIPT elements in IE. [#573 state:resolved] (Martin, Tobie Langel, kangax)

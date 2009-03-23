@@ -6,8 +6,8 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <script src="../../dist/prototype.js" type="text/javascript"></script>
     <script src="../../dist/prototype_update_helper.js" type="text/javascript"></script>
-    <script src="../../test/lib/unittest.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="../../test/test.css" type="text/css" />
+		<script src="../../vendor/unittest_js/assets/unittest.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="../../vendor/unittest_js/assets/unittest.css" type="text/css" charset="utf-8" />
   </head>
   <body>
   <h1>Prototype Unit test file</h1>
@@ -257,6 +257,14 @@
       
       h.set('toJSON', 'arg'); // make sure hash methods are not overwritten
       this.assertRespondsTo('toJSON', h)
+    },
+
+    testArray: function() {
+      var a = [0, 1, 2, 3];
+      
+      a.reduce(function(){});
+      this.assertErrorNotified('Array#reduce is no longer supported.\n' + 
+        'This is due to an infortunate naming collision with Mozilla\'s soon to be standardized (as of EcmaScript 3.1) Array#reduce implementation (whhich is similar to Prototype\'s Array#inject).')
     },
 
     testClass: function() {
