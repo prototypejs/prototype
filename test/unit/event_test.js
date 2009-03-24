@@ -138,7 +138,7 @@ new Test.Unit.Runner({
   },
   
   testStopObservingRemovesHandlerFromCache: function() {
-    var span = $("span"), observer = function() { }, eventID;
+    var span = $("span"), observer = Prototype.emptyFunction, eventID;
     
     span.observe("test:somethingHappened", observer);
     
@@ -158,7 +158,7 @@ new Test.Unit.Runner({
   },
   
   testObserveAndStopObservingAreChainable: function() {
-    var span = $("span"), observer = function() { };
+    var span = $("span"), observer = Prototype.emptyFunction;
 
     this.assertEqual(span, span.observe("test:somethingHappened", observer));
     this.assertEqual(span, span.stopObserving("test:somethingHappened", observer));
@@ -192,7 +192,7 @@ new Test.Unit.Runner({
   testEventStopped: function() {
     var span = $("span"), event;
 
-    span.observe("test:somethingHappened", function() { });
+    span.observe("test:somethingHappened", Prototype.emptyFunction);
     event = span.fire("test:somethingHappened");
     this.assert(!event.stopped, "event.stopped should be false with an empty observer");
     span.stopObserving("test:somethingHappened");

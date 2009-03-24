@@ -1,3 +1,5 @@
+* Use `Prototype.emptyFunction` consistently throughout unit tests. [#253 state:resolved] (Michael M Slusarz, John David Dalton, kangax)
+
 * deprecation extension: mark Array#reduce() as removed. [#569 state:resolved] (Tobie Langel)
 
 * `Form.serialize` now works safely with forms that have "length"-named elements. [#77 state:resolved] (Peter Adrianov, John-David Dalton, kangax)

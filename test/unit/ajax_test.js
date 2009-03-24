@@ -96,7 +96,7 @@ new Test.Unit.Runner({
       onComplete: Prototype.emptyFunction
     }
     var request = new Ajax.Updater("content", "../fixtures/hello.js", options);
-    request.options.onComplete = function() {};
+    request.options.onComplete = Prototype.emptyFunction;
     this.assertIdentical(Prototype.emptyFunction, options.onComplete);
   },
   
@@ -105,7 +105,7 @@ new Test.Unit.Runner({
     this.assertEqual(1, Ajax.Responders.responders.length);
     
     var dummyResponder = {
-      onComplete: function(req) { /* dummy */ }
+      onComplete: Prototype.emptyFunction
     };
     
     Ajax.Responders.register(dummyResponder);
