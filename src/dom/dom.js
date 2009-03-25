@@ -610,9 +610,10 @@ Element.Methods = {
     })();
     
     // Opera 9.25 returns `null` instead of "" for getAttribute('title') 
-    // when `title` attribute is not present
+    // when `title` attribute is empty
     var GET_ATTRIBUTE_TITLE_RETURNS_NULL = (function(){
       var el = document.createElement('div');
+      el.title = '';
       var isBuggy = (el.getAttribute('title') === null);
       el = null;
       return isBuggy;
