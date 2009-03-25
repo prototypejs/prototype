@@ -1545,7 +1545,7 @@ else if (Prototype.Browser.WebKit) {
   };
 }
 
-if ('outerHTML' in document.createElement('div')) {
+if ('outerHTML' in document.documentElement) {
   Element.Methods.replace = function(element, content) {
     element = $(element);
     
