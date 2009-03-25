@@ -609,6 +609,15 @@ Element.Methods = {
       return isBuggy;
     })();
     
+    // Opera 9.25 returns `null` instead of "" for getAttribute('title') 
+    // when `title` attribute is not present
+    var GET_ATTRIBUTE_TITLE_RETURNS_NULL = (function(){
+      var el = document.createElement('div');
+      var isBuggy = (el.getAttribute('title') === null);
+      el = null;
+      return isBuggy;
+    })();
+    
     return function(element, name) {
       element = $(element);
       // check boolean first, to get out of expression faster
@@ -616,6 +625,9 @@ Element.Methods = {
           name === 'type' && 
           element.tagName.toUpperCase() == 'IFRAME') {
         return element.getAttribute('type');
+      }
+      if (GET_ATTRIBUTE_TITLE_RETURNS_NULL && name === 'title') {
+        return element.title;
       }
       if (Prototype.Browser.IE) {
         var t = Element._attributeTranslations.read;
@@ -1230,13 +1242,6 @@ if (Prototype.Browser.Opera) {
       }
     }
   );
-  
-  Element.Methods.readAttribute = Element.Methods.readAttribute.wrap(
-    function(proceed, element, attribute) {
-      if (attribute === 'title') return element.title;
-      return proceed(element, attribute);
-    }
-  );  
 }
 
 else if (Prototype.Browser.IE) {

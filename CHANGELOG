@@ -1,3 +1,5 @@
+* Use feature testing in `Element#readAttribute` when taking care of Opera's `getAttribute('title')` quirk. (kangax)
+
 * Use `Prototype.emptyFunction` consistently throughout unit tests. [#253 state:resolved] (Michael M Slusarz, John David Dalton, kangax)
 
 * deprecation extension: mark Array#reduce() as removed. [#569 state:resolved] (Tobie Langel)
