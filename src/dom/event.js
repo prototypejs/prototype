@@ -49,6 +49,10 @@
 
     cache: {}
   };
+  
+  var docEl = document.documentElement;
+  var MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED = 'onmouseenter' in docEl
+    && 'onmouseleave' in docEl;
 
   var _isButton;
   if (Prototype.Browser.IE) {
@@ -320,7 +324,7 @@
       };
     } else {
       // Non-custom event.
-      if (!Prototype.Browser.IE &&
+      if (!MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED &&
        (eventName === "mouseenter" || eventName === "mouseleave")) {
         // If we're dealing with mouseenter or mouseleave in a non-IE browser,
         // we create a custom responder that mimics their behavior within
@@ -376,7 +380,7 @@
     
   var _getDOMEventName = Prototype.K;
   
-  if (!Prototype.Browser.IE) {
+  if (!MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED) {
     _getDOMEventName = function(eventName) {
       var translations = { mouseenter: "mouseover", mouseleave: "mouseout" };      
       return eventName in translations ? translations[eventName] : eventName;      
