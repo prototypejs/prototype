@@ -62,7 +62,7 @@
  *  
  *  There's always the chance that one day you'll need to have a literal in your
  *  template that looks like a symbol, but is not supposed to be replaced. For
- *  these situations there's an escape character: the backslash (`\`).
+ *  these situations there's an escape character: the backslash (<code>\</code>).
  *  
  *      // NOTE: you're seeing two backslashes here because the backslash
  *      // is also an escape character in JavaScript strings, so a literal
