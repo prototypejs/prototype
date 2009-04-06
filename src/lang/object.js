@@ -10,10 +10,7 @@
 **/
 (function() {
 
-  function getClass(object) {
-    return Object.prototype.toString.call(object)
-     .match(/^\[object\s(.*)\]$/)[1];
-  }
+  var _toString = Object.prototype.toString;
 
   /**
    *  Object.extend(destination, source) -> Object
@@ -198,7 +195,7 @@
    *  Returns `true` if `object` is an array; false otherwise.
   **/
   function isArray(object) {
-    return getClass(object) === "Array";
+    return _toString.call(object) == "[object Array]";
   }
 
 
@@ -230,7 +227,7 @@
    *  Returns `true` if `object` is of type `string`; `false` otherwise.
   **/
   function isString(object) {
-    return getClass(object) === "String";
+    return _toString.call(object) == "[object String]";
   }
 
   /**
@@ -240,7 +237,7 @@
    *  Returns `true` if `object` is of type `number`; `false` otherwise.
   **/
   function isNumber(object) {
-    return getClass(object) === "Number";
+    return _toString.call(object) == "[object Number]";
   }
 
   /**
