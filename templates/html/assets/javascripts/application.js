@@ -309,6 +309,8 @@ Form.GhostedField = Class.create({
     this.element = $(element);
     this.title = title;
     
+    options = options || {};
+    
     this.isGhosted = true;
     
     if (options.cloak) {
