@@ -394,7 +394,7 @@ Element.Methods = {
    *  elements.
   **/
   ancestors: function(element) {
-    return $(element).recursivelyCollect('parentNode');
+    return Element.recursivelyCollect(element, 'parentNode');
   },
   
   /**
@@ -441,7 +441,7 @@ Element.Methods = {
    *  array of elements.
   **/
   previousSiblings: function(element) {
-    return $(element).recursivelyCollect('previousSibling');
+    return Element.recursivelyCollect(element, 'previousSibling');
   },
   
   /**
@@ -451,7 +451,7 @@ Element.Methods = {
    *  of elements.
   **/
   nextSiblings: function(element) {
-    return $(element).recursivelyCollect('nextSibling');
+    return Element.recursivelyCollect(element, 'nextSibling');
   },
   
   /**
@@ -461,7 +461,8 @@ Element.Methods = {
   **/
   siblings: function(element) {
     element = $(element);
-    return element.previousSiblings().reverse().concat(element.nextSiblings());
+    return Element.previousSiblings(element).reverse()
+      .concat(Element.nextSiblings(element));
   },
   
   /**
@@ -489,7 +490,7 @@ Element.Methods = {
   up: function(element, expression, index) {
     element = $(element);
     if (arguments.length == 1) return $(element.parentNode);
-    var ancestors = element.ancestors();
+    var ancestors = Element.ancestors(element);
     return Object.isNumber(expression) ? ancestors[expression] :
       Selector.findElement(ancestors, expression, index);
   },
@@ -506,8 +507,8 @@ Element.Methods = {
   **/
   down: function(element, expression, index) {
     element = $(element);
-    if (arguments.length == 1) return element.firstDescendant();
-    return Object.isNumber(expression) ? element.descendants()[expression] :
+    if (arguments.length == 1) return Element.firstDescendant(element);
+    return Object.isNumber(expression) ? Element.descendants(element)[expression] :
       Element.select(element, expression)[index || 0];
   },
 
@@ -524,7 +525,7 @@ Element.Methods = {
   previous: function(element, expression, index) {
     element = $(element);
     if (arguments.length == 1) return $(Selector.handlers.previousElementSibling(element));
-    var previousSiblings = element.previousSiblings();
+    var previousSiblings = Element.previousSiblings(element);
     return Object.isNumber(expression) ? previousSiblings[expression] :
       Selector.findElement(previousSiblings, expression, index);   
   },
@@ -542,7 +543,7 @@ Element.Methods = {
   next: function(element, expression, index) {
     element = $(element);
     if (arguments.length == 1) return $(Selector.handlers.nextElementSibling(element));
-    var nextSiblings = element.nextSiblings();
+    var nextSiblings = Element.nextSiblings(element);
     return Object.isNumber(expression) ? nextSiblings[expression] :
       Selector.findElement(nextSiblings, expression, index);
   },
@@ -555,8 +556,8 @@ Element.Methods = {
    *  Takes an arbitrary number of CSS selectors and returns an array of
    *  descendants of `element` that match any of them.
   **/
-  select: function() {
-    var args = $A(arguments), element = $(args.shift());
+  select: function(element) {
+    var args = Array.prototype.slice.call(arguments, 1);
     return Selector.findChildElements(element, args);
   },
   
@@ -567,8 +568,8 @@ Element.Methods = {
    *  Finds all siblings of the current element that match the given
    *  selector(s).
   **/
-  adjacent: function() {
-    var args = $A(arguments), element = $(args.shift());
+  adjacent: function(element) {
+    var args = Array.prototype.slice.call(arguments, 1);
     return Selector.findChildElements(element.parentNode, args).without(element);
   },
   
@@ -580,10 +581,10 @@ Element.Methods = {
   **/
   identify: function(element) {
     element = $(element);
-    var id = element.readAttribute('id');
+    var id = Element.readAttribute(element, 'id');
     if (id) return id;
     do { id = 'anonymous_element_' + Element.idCounter++ } while ($(id));
-    element.writeAttribute('id', id);
+    Element.writeAttribute(element, 'id', id);
     return id;
   },
   
@@ -663,7 +664,7 @@ Element.Methods = {
    *  Returns the height of `element`.
   **/
   getHeight: function(element) {
-    return $(element).getDimensions().height; 
+    return Element.getDimensions(element).height;
   },
   
   /**
@@ -672,7 +673,7 @@ Element.Methods = {
    *  Returns the width of `element`.
   **/
   getWidth: function(element) {
-    return $(element).getDimensions().width; 
+    return Element.getDimensions(element).width;
   },
   
   /**
@@ -704,7 +705,7 @@ Element.Methods = {
   **/
   addClassName: function(element, className) {
     if (!(element = $(element))) return;
-    if (!element.hasClassName(className))
+    if (!Element.hasClassName(element, className))
       element.className += (element.className ? ' ' : '') + className;
     return element;
   },
@@ -728,8 +729,8 @@ Element.Methods = {
   **/
   toggleClassName: function(element, className) {
     if (!(element = $(element))) return;
-    return element[element.hasClassName(className) ?
-      'removeClassName' : 'addClassName'](className);
+    return Element[Element.hasClassName(element, className) ?
+      'removeClassName' : 'addClassName'](element, className);
   },
   
   /**
@@ -785,7 +786,7 @@ Element.Methods = {
   **/
   scrollTo: function(element) {
     element = $(element);
-    var pos = element.cumulativeOffset();
+    var pos = Element.cumulativeOffset(element);
     window.scrollTo(pos[0], pos[1]);
     return element;
   },
@@ -865,7 +866,7 @@ Element.Methods = {
   **/
   getDimensions: function(element) {
     element = $(element);
-    var display = element.getStyle('display');
+    var display = Element.getStyle(element, 'display');
     if (display != 'none' && display != null) // Safari bug
       return {width: element.offsetWidth, height: element.offsetHeight};
     
@@ -1009,9 +1010,9 @@ Element.Methods = {
   **/
   absolutize: function(element) {
     element = $(element);
-    if (element.getStyle('position') == 'absolute') return element;
+    if (Element.getStyle(element, 'position') == 'absolute') return element;
 
-    var offsets = element.positionedOffset();
+    var offsets = Element.positionedOffset(element);
     var top     = offsets[1];
     var left    = offsets[0];
     var width   = element.clientWidth;
@@ -1040,7 +1041,7 @@ Element.Methods = {
   **/
   relativize: function(element) {
     element = $(element);
-    if (element.getStyle('position') == 'relative') return element;
+    if (Element.getStyle(element, 'position') == 'relative') return element;
 
     element.style.position = 'relative';
     var top  = parseFloat(element.style.top  || 0) - (element._originalTop || 0);
@@ -1146,7 +1147,7 @@ Element.Methods = {
 
     // find page position of source
     source = $(source);
-    var p = source.viewportOffset();
+    var p = Element.viewportOffset(source);
 
     // find coordinate system to use
     element = $(element);
@@ -1155,8 +1156,8 @@ Element.Methods = {
     // delta [0,0] will do fine with position: fixed elements, 
     // position:absolute needs offsetParent deltas
     if (Element.getStyle(element, 'position') == 'absolute') {
-      parent = element.getOffsetParent();
-      delta = parent.viewportOffset();
+      parent = Element.getOffsetParent(element);
+      delta = Element.viewportOffset(parent);
     }
 
     // correct by body offsets (fixes Safari)
@@ -1957,9 +1958,9 @@ Element.addMethods({
     
     if (arguments.length === 2) {
       // Assume we've been passed an object full of key/value pairs.
-      element.getStorage().update(key);
+      Element.getStorage(element).update(key);
     } else {
-      element.getStorage().set(key, value);
+      Element.getStorage(element).set(key, value);
     }
     
     return element;

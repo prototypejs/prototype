@@ -1,3 +1,5 @@
+* Do not use short-hand element methods notation (@element.getStyle() -> Element.getStyle(@element)) for performance reasons. Do not use `$A` and `Array.prototype.shift` when `Array.prototype.slice` can be used instead. (kangax)
+
 * `Prototype.Browser.Opera` now uses stronger inference and is determined by [[Class]] of `window.opera` being - "Opera". (kangax)
 
 * Fix error in event.js which prevented attaching more than one responder for an event name/element combination. [#651 state:resolved] (Rob Lineweaver)
