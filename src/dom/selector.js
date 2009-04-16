@@ -437,11 +437,33 @@ Object.extend(Selector, {
       return nodes;
     },
     
-    unmark: function(nodes) {
-      for (var i = 0, node; node = nodes[i]; i++)
-        node._countedByPrototype = undefined;    
-      return nodes;  
-    },
+    unmark: (function(){
+      
+      // IE improperly serializes _countedByPrototype in (inner|outer)HTML
+      // due to node properties being mapped directly to attributes
+      var PROPERTIES_ATTRIBUTES_MAP = (function(){
+        var el = document.createElement('div'), 
+            isBuggy = false,
+            propName = '_countedByPrototype',
+            value = 'x'
+        el[propName] = value;
+        isBuggy = (el.getAttribute(propName) === value);
+        el = null;
+        return isBuggy;
+      });
+      
+      return PROPERTIES_ATTRIBUTES_MAP ?
+        function(nodes) {
+          for (var i = 0, node; node = nodes[i]; i++)
+            node.removeAttribute('_countedByPrototype');
+          return nodes;
+        } :
+        function(nodes) {
+          for (var i = 0, node; node = nodes[i]; i++)
+            node._countedByPrototype = void 0;
+          return nodes;
+        } 
+    })(),
 
     // mark each child node with its position (for nth calls)
     // "ofType" flag indicates whether we're indexing for nth-of-type
@@ -831,13 +853,6 @@ if (Prototype.Browser.IE) {
       for (var i = 0, node; node = b[i]; i++)
         if (node.tagName !== "!") a.push(node);
       return a;
-    },
-    
-    // IE improperly serializes _countedByPrototype in (inner|outer)HTML.
-    unmark: function(nodes) {
-      for (var i = 0, node; node = nodes[i]; i++)
-        node.removeAttribute('_countedByPrototype');
-      return nodes;  
     }
   });  
 }
