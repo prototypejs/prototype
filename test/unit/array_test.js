@@ -33,6 +33,16 @@ new Test.Unit.Runner({
     this.assertEqual(3, $A(element.childNodes).length);
   },
   
+  testToArrayOnPrimitive: function() {
+    this.assertEnumEqual(['a', 'b', 'c'], $A('abc'));
+    this.assertEnumEqual([], $A(''));
+    this.assertEnumEqual([], $A(null));
+    this.assertEnumEqual([], $A(undefined));
+    this.assertEnumEqual([], $A());
+    this.assertEnumEqual([], $A(5));
+    this.assertEnumEqual([], $A(true));
+  },
+  
   testClear: function(){
     this.assertEnumEqual([], [].clear());
     this.assertEnumEqual([], [1].clear());
