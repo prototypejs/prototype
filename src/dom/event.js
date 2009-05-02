@@ -298,7 +298,7 @@
     }
 
     var respondersForEvent = registry.get(eventName);
-    if (Object.isUndefined()) {
+    if (Object.isUndefined(respondersForEvent)) {
       respondersForEvent = [];
       registry.set(eventName, respondersForEvent);
     }
