@@ -109,6 +109,24 @@ new Test.Unit.Runner({
     span.fire("test:somethingElseHappened");
     this.assertEqual(2, count);
   },
+
+  testMultipleEventHandlersCanBeAddedAndRemovedFromAnElement: function() {
+    var span = $("span"), count1 = 0, count2 = 0;
+    var observer1 = function() { count1++ };
+    var observer2 = function() { count2++ };
+
+    span.observe("test:somethingHappened", observer1);
+    span.observe("test:somethingHappened", observer2);
+    span.fire("test:somethingHappened");
+    this.assertEqual(1, count1);
+    this.assertEqual(1, count2);
+
+    span.stopObserving("test:somethingHappened", observer1);
+    span.stopObserving("test:somethingHappened", observer2);
+    span.fire("test:somethingHappened");
+    this.assertEqual(1, count1); 
+    this.assertEqual(1, count2);
+  },
   
   testStopObservingWithoutArguments: function() {
     var span = $("span"), count = 0, observer = function() { count++ };

@@ -1,3 +1,5 @@
+* Fix error in event.js which prevented attaching more than one responder for an event name/element combination. [#651 state:resolved] (Rob Lineweaver)
+
 * Do not sniff when testing for IE's proprietary mouseenter/mouseleave events support. Use more robust inference instead. (kangax)
 
 * Use `Prototype.emptyFunction` consistently throughout unit tests. [#253 state:resolved] (Michael M Slusarz, John David Dalton, kangax)
