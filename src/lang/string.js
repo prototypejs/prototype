@@ -122,9 +122,11 @@ Object.extend(String.prototype, (function() {
    *  String#stripTags() -> String
    *
    *  Strips a string of any HTML tag.
+   *  Note that `stripTags` will only strip HTML4.01 tags (such as - div, span and abbr)
+   *  It will not strip namespace-prefixed tags such as "h:table" or "xsl:template"
   **/
   function stripTags() {
-    return this.replace(/<\/?[^>]+>/gi, '');
+    return this.replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?>|<\/\w+>/gi, '');
   }
 
   /**

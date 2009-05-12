@@ -208,6 +208,7 @@ new Test.Unit.Runner({
     this.assertEqual('hello world', '<a href="#" onclick="moo!">hello</a> world'.stripTags());
     this.assertEqual('hello world', 'h<b><em>e</em></b>l<i>l</i>o w<span class="moo" id="x"><b>o</b></span>rld'.stripTags());
     this.assertEqual('1\n2', '1\n2'.stripTags());
+    this.assertEqual('one < two blah baz', 'one < two <a href="#" title="foo > bar">blah</a> <input disabled>baz'.stripTags());
   },
   
   testStripScripts: function() {
