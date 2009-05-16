@@ -1,3 +1,5 @@
+* `Prototype.Browser.Opera` now uses stronger inference and is determined by [[Class]] of `window.opera` being - "Opera". (kangax)
+
 * Fix error in event.js which prevented attaching more than one responder for an event name/element combination. [#651 state:resolved] (Rob Lineweaver)
 
 * Do not sniff when testing for IE's proprietary mouseenter/mouseleave events support. Use more robust inference instead. (kangax)

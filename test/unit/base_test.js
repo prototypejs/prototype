@@ -25,7 +25,7 @@ new Test.Unit.Runner({
       this.assert(Prototype.Browser.WebKit);
     }
     
-    if(!!window.opera) {
+    if(Object.prototype.toString.call(window.opera) === '[object Opera]') {
       this.info('Running on Opera');
       this.assert(Prototype.Browser.Opera);
     }
