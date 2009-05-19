@@ -1609,12 +1609,13 @@ Element._insertionTranslations = {
 };
 
 (function() {
-  Object.extend(this.tags, {
-    THEAD: this.tags.TBODY,
-    TFOOT: this.tags.TBODY,
-    TH:    this.tags.TD
+  var tags = Element._insertionTranslations.tags;
+  Object.extend(tags, {
+    THEAD: tags.TBODY,
+    TFOOT: tags.TBODY,
+    TH:    tags.TD
   });
-}).call(Element._insertionTranslations);
+})();
 
 Element.Methods.Simulated = {
   hasAttribute: function(element, attribute) {
