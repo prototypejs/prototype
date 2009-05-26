@@ -342,6 +342,12 @@ new Test.Unit.Runner({
       toTemplateReplacements: function() { return { name: this.name, job: this.getJob() } }
     };
     this.assertEqual('My name is Stephan, my job is Web developer', new Template(source).evaluate(subject));
+    
+    var strActual = new Template('foo #{bar} baz').evaluate({
+      toTemplateReplacements: function(){ return null; }
+    });
+    this.assertIdentical('foo  baz', strActual);
+    this.assertIdentical('foo', new Template('foo#{bar}').evaluate(null));
   },
 
   testTemplateEvaluationCombined: function() {

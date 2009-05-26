@@ -124,11 +124,11 @@ var Template = Class.create({
    *  with symbols replaced by `object`’s corresponding properties.
   **/
   evaluate: function(object) {
-    if (Object.isFunction(object.toTemplateReplacements))
+    if (object && Object.isFunction(object.toTemplateReplacements))
       object = object.toTemplateReplacements();
 
     return this.template.gsub(this.pattern, function(match) {
-      if (object == null) return '';
+      if (object == null) return (match[1] + '');
       
       var before = match[1] || '';
       if (before == '\\') return match[2];
