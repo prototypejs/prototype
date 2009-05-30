@@ -1,3 +1,5 @@
+* Make sure (deficient) APPLET, OBJECT and EMBED elements are extended with simulated methods in IE8. Return early if `_extendedByPrototype` is present on an element. (Tobie Langel, kangax)
+
 * Replace array creation and `Array#include` with a more efficient `RegExp#test`. (kangax)
 
 * Reorganize the way `ElementExtensions` are defined. Make sure elements used in SpecificElementExtensions are cleaned up. (kangax)

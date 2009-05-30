@@ -641,6 +641,20 @@ new Test.Unit.Runner({
   },
   
   testElementExtend: function() {
+    
+    Element.Methods.Simulated.simulatedMethod = function() { 
+      return 'simulated';
+    };
+    Element.addMethods();
+    
+    function testTag(tagName) {
+      var element = document.createElement(tagName);
+      this.assertEqual(element, Element.extend(element));
+      // test method from Methods
+      this.assertRespondsTo('show', element);
+      // test method from Simulated
+      this.assertRespondsTo('simulatedMethod', element);
+    }
     var element = $('element_extend_test');
     this.assertRespondsTo('show', element);
     
@@ -665,6 +679,9 @@ new Test.Unit.Runner({
       this.assertEqual(textnode, Element.extend(textnode));
       this.assert(typeof textnode['show'] == 'undefined');
     }, this);
+    
+    // clean up
+    delete Element.Methods.Simulated.simulatedMethod;
   },
   
   testElementExtendReextendsDiscardedNodes: function() {

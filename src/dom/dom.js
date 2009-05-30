@@ -1685,16 +1685,12 @@ Element.extend = (function() {
     if (HTMLOBJECTELEMENT_PROTOTYPE_BUGGY && 
         HTMLAPPLETELEMENT_PROTOTYPE_BUGGY) {
       return function(element) {
-        if (element && element.tagName) {
-          var tagName = element.tagName.toUpperCase();
-          if (tagName === 'OBJECT' || tagName === 'APPLET') {
+        if (element && typeof element._extendedByPrototype == 'undefined') {
+          var t = element.tagName;
+          if (t && (/^(?:object|applet|embed)$/i.test(t))) {
             extendElementWith(element, Element.Methods);
-            if (tagName === 'OBJECT') {
-              extendElementWith(element, Element.Methods.ByTag.OBJECT)
-            }
-            else if (tagName === 'APPLET') {
-              extendElementWith(element, Element.Methods.ByTag.APPLET)
-            }
+            extendElementWith(element, Element.Methods.Simulated);
+            extendElementWith(element, Element.Methods.ByTag[t.toUpperCase()]);
           }
         }
         return element;
