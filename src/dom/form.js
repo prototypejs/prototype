@@ -163,7 +163,7 @@ Form.Methods = {
     }).sortBy(function(element) { return element.tabIndex }).first();
     
     return firstByIndex ? firstByIndex : elements.find(function(element) {
-      return ['input', 'select', 'textarea'].include(element.tagName.toLowerCase());
+      return /^(?:input|select|textarea)$/i.test(element.tagName);
     });
   },
 
@@ -332,7 +332,7 @@ Form.Element.Methods = {
     try {
       element.focus();
       if (element.select && (element.tagName.toLowerCase() != 'input' ||
-          !['button', 'reset', 'submit'].include(element.type)))
+          !(/^(?:button|reset|submit)$/i.test(element.type))))
         element.select();
     } catch (e) { }
     return element;
