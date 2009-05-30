@@ -27,23 +27,25 @@ var Prototype = {
     XPath: !!document.evaluate,
     SelectorsAPI: !!document.querySelector,
     ElementExtensions: (function() {
-      if (window.HTMLElement && window.HTMLElement.prototype)
-        return true;      
-      if (window.Element && window.Element.prototype)
-        return true;
+      var constructor = window.Element || window.HTMLElement;
+      return !!(constructor && constructor.prototype);
     })(),
-    SpecificElementExtensions: (function() {      
+    SpecificElementExtensions: (function() {
       // First, try the named class
       if (typeof window.HTMLDivElement !== 'undefined')
         return true;
         
       var div = document.createElement('div');
-      if (div['__proto__'] && div['__proto__'] !== 
-       document.createElement('form')['__proto__']) {
-        return true;
+      var form = document.createElement('form');
+      var isSupported = false;
+      
+      if (div['__proto__'] && (div['__proto__'] !== form['__proto__'])) {
+        isSupported = true;
       }
       
-      return false;      
+      div = form = null;
+      
+      return isSupported;
     })()
   },
 

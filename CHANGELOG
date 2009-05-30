@@ -1,3 +1,5 @@
+* Reorganize the way `ElementExtensions` are defined. Make sure elements used in SpecificElementExtensions are cleaned up. (kangax)
+
 * Make sure $A works with primitive values. (mr_justin, kangax)
 
 * Do not browser sniff when forking `unmark` function in selector suite. Instead use a proper test - PROPERTIES_ATTRIBUTES_MAP. (kangax)
