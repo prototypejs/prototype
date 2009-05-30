@@ -238,9 +238,9 @@ Element.Methods = {
   
       if (SELECT_ELEMENT_INNERHTML_BUGGY || TABLE_ELEMENT_INNERHTML_BUGGY) {
         if (tagName in Element._insertionTranslations.tags) {
-          $A(element.childNodes).each(function(node) {
-            element.removeChild(node);
-          });
+          while (element.firstChild) {
+            element.removeChild(element.firstChild);
+          }
           Element._getContentFromAnonymousElement(tagName, content.stripScripts())
             .each(function(node) {
               element.appendChild(node) 
