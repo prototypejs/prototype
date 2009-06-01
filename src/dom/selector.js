@@ -450,7 +450,7 @@ Object.extend(Selector, {
         isBuggy = (el.getAttribute(propName) === value);
         el = null;
         return isBuggy;
-      });
+      })();
       
       return PROPERTIES_ATTRIBUTES_MAP ?
         function(nodes) {
