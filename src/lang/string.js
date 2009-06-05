@@ -121,9 +121,11 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#stripTags() -> String
    *
-   *  Strips a string of any HTML tag.
-   *  Note that `stripTags` will only strip HTML4.01 tags (such as - div, span and abbr)
-   *  It will not strip namespace-prefixed tags such as "h:table" or "xsl:template"
+   *  Strips a string of any HTML tags.
+   *
+   *  Note that `stripTags` will only strip HTML 4.01 tags — like `div`,
+   *  `span`, and `abbr`. It _will not_ strip namespace-prefixed tags such
+   *  as `h:table` or `xsl:template`.
   **/
   function stripTags() {
     return this.replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?>|<\/\w+>/gi, '');
@@ -141,8 +143,8 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#extractScripts() -> Array
    *
-   *  Exctracts the content of any script block present in the string and returns
-   *  them as an array of strings.
+   *  Extracts the content of any script blocks present in the string and
+   *  returns them as an array of strings.
   **/
   function extractScripts() {
     var matchAll = new RegExp(Prototype.ScriptFragment, 'img');
@@ -175,7 +177,8 @@ Object.extend(String.prototype, (function() {
   /** related to: String#escapeHTML
    *  String#unescapeHTML() -> String
    *
-   *  Strips tags and converts the entity forms of special HTML characters to their normal form.
+   *  Strips tags and converts the entity forms of special HTML characters
+   *  to their normal form.
   **/
   function unescapeHTML() {
     var div = document.createElement('div');
@@ -184,11 +187,16 @@ Object.extend(String.prototype, (function() {
       $A(div.childNodes).inject('', function(memo, node) { return memo+node.nodeValue }) : 
       div.childNodes[0].nodeValue) : '';
   }
+  
+  /**
+   *  String#parseQuery([separator = '&']) -> Object
+  **/
 
   /** alias of: String#parseQuery, related to: Hash#toQueryString
    *  String#toQueryParams([separator = '&']) -> Object
    *
-   *  Parses a URI-like query string and returns an object composed of parameter/value pairs.
+   *  Parses a URI-like query string and returns an object composed of
+   *  parameter/value pairs.
   **/
   function toQueryParams(separator) {
     var match = this.strip().match(/([^?#]*)(#.*)?$/);
@@ -213,7 +221,8 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#toArray() -> Array
    *
-   *  Splits the string character-by-character and returns an array with the result.
+   *  Splits the string character-by-character and returns an array with
+   *  the result.
   **/
   function toArray() {
     return this.split('');
@@ -223,8 +232,8 @@ Object.extend(String.prototype, (function() {
    *  String#succ() -> String
    *
    *  Used internally by ObjectRange.
-   *  Converts the last character of the string to the following character in the 
-   *  Unicode alphabet.
+   *  Converts the last character of the string to the following character in
+   *  the Unicode alphabet.
   **/
   function succ() {
     return this.slice(0, this.length - 1) +
@@ -272,7 +281,8 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#underscore() -> String
    *
-   *  Converts a camelized string into a series of words separated by an underscore ("_").
+   *  Converts a camelized string into a series of words separated by an
+   *  underscore (`_`).
   **/
   function underscore() {
     return this.gsub(/::/, '/').gsub(/([A-Z]+)([A-Z][a-z])/,'#{1}_#{2}').gsub(/([a-z\d])([A-Z])/,'#{1}_#{2}').gsub(/-/,'_').toLowerCase();
@@ -337,9 +347,11 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#evalJSON([sanitize = false]) -> object
    *
-   *  Evaluates the JSON in the string and returns the resulting object. 
-   *  If the optional sanitize parameter is set to true, the string is checked for 
-   *  possible malicious attempts and eval is not called if one is detected.
+   *  Evaluates the JSON in the string and returns the resulting object.
+   *  
+   *  If the optional `sanitize` parameter is set to `true`, the string is
+   *  checked for possible malicious attempts; if one is detected, `eval`
+   *  is _not called_.
   **/
   function evalJSON(sanitize) {
     var json = this.unfilterJSON();
@@ -352,7 +364,7 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#include(substring) -> Boolean
    *
-   *  Check if the string contains a substring.
+   *  Checks if the string contains `substring`.
   **/
   function include(pattern) {
     return this.indexOf(pattern) > -1;
@@ -361,7 +373,7 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#startsWith(substring) -> Boolean
    *
-   *  Checks if the string starts with substring.
+   *  Checks if the string starts with `substring`.
   **/
   function startsWith(pattern) {
     return this.indexOf(pattern) === 0;
@@ -370,7 +382,7 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#endsWith(substring) -> Boolean
    *
-   *  Checks if the string ends with substring.
+   *  Checks if the string ends with `substring`.
   **/
   function endsWith(pattern) {
     var d = this.length - pattern.length;
@@ -389,7 +401,8 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#blank() -> Boolean
    *
-   *  Check if the string is 'blank', meaning either empty or containing only whitespace.
+   *  Check if the string is "blank" — either empty (length of `0`) or containing
+   *  only whitespace.
   **/
   function blank() {
     return /^\s*$/.test(this);
@@ -398,7 +411,8 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#interpolate(object[, pattern]) -> String
    *
-   *  Treats the string as a Template and fills it with object’s properties.
+   *  Treats the string as a [[Template]] and fills it with `object`’s
+   *  properties.
   **/
   function interpolate(object, pattern) {
     return new Template(this, pattern).evaluate(object);
@@ -451,11 +465,11 @@ String.prototype.escapeHTML.div.appendChild(String.prototype.escapeHTML.text);
 if ('<\n>'.escapeHTML() !== '&lt;\n&gt;') {
   String.prototype.escapeHTML = function() {
     return this.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
+  };
 }
 
 if ('&lt;\n&gt;'.unescapeHTML() !== '<\n>') {
   String.prototype.unescapeHTML = function() {
     return this.stripTags().replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
-  }
+  };
 }

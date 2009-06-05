@@ -5,18 +5,21 @@
  *  
  *  Any time you have a group of similar objects and you need to produce
  *  formatted output for these objects, maybe inside a loop, you typically
- *  resort to concatenating string literals with the object's fields. There's
- *  nothing wrong with this approach, except that it is hard to visualize the
- *  output immediately just by glancing at the concatenation expression. The
- *  `Template` class provides a much nicer and clearer way of achieving this
- *  formatting.
+ *  resort to concatenating string literals with the object's fields:
+ *  
+ *      "The TV show " + title + " was created by " + author + ".";
+ *  
+ *  There's nothing wrong with this approach, except that it is hard to
+ *  visualize the output immediately just by glancing at the concatenation
+ *  expression. The `Template` class provides a much nicer and clearer way of
+ *  achieving this formatting.
  *  
  *  <h4>Straightforward templates</h4>
  *  
- *  The Template class uses a basic formatting syntax, similar to what is used
- *  in Ruby. The templates are created from strings that have embedded symbols
- *  in the form (e.g., `#{fieldName}`) that will be replaced by actual values
- *  when the template is applied (evaluated) to an object.
+ *  The `Template` class uses a basic formatting syntax, similar to what is
+ *  used in Ruby. The templates are created from strings that have embedded
+ *  symbols in the form (e.g., `#{fieldName}`) that will be replaced by 
+ *  actual values when the template is applied (evaluated) to an object.
  *  
  *      // the template (our formatting expression)
  *      var myTemplate = new Template(
@@ -40,7 +43,6 @@
  *  template, without affecting the template itself. The next example shows the
  *  same template being used with a handful of distinct objects.
  *  
- *  
  *      // creating a few similar objects
  *      var conversion1 = { from: 'meters', to: 'feet', factor: 3.28 };
  *      var conversion2 = { from: 'kilojoules', to: 'BTUs', factor: 0.9478 };
@@ -62,7 +64,7 @@
  *  
  *  There's always the chance that one day you'll need to have a literal in your
  *  template that looks like a symbol, but is not supposed to be replaced. For
- *  these situations there's an escape character: the backslash (<code>\</code>).
+ *  these situations there's an escape character: the backslash (<code>\\</code>).
  *  
  *      // NOTE: you're seeing two backslashes here because the backslash
  *      // is also an escape character in JavaScript strings, so a literal
@@ -118,8 +120,8 @@ var Template = Class.create({
   /**
    *  Template#evaluate(object) -> String
    *
-   *  Applies the template to given `object`’s data, producing a formatted string
-   *  with symbols replaced by corresponding object’s properties.
+   *  Applies the template to `object`’s data, producing a formatted string
+   *  with symbols replaced by `object`’s corresponding properties.
   **/
   evaluate: function(object) {
     if (Object.isFunction(object.toTemplateReplacements))

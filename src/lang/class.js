@@ -11,10 +11,10 @@
 var Class = (function() {
   /**
    *  Class.create([superclass][, methods...]) -> Class
-   *  - superclass (Class): The optional superclass to inherit methods from.
-   *  - methods (Object): An object whose properties will be "mixed-in" to the
-   *      new class. Any number of mixins can be added; later mixins take
-   *      precedence.
+   *    - superclass (Class): The optional superclass to inherit methods from.
+   *    - methods (Object): An object whose properties will be "mixed-in" to the
+   *        new class. Any number of mixins can be added; later mixins take
+   *        precedence.
    *
    *  Creates a class.
    *
@@ -67,7 +67,7 @@ var Class = (function() {
   
   /**
    *  Class#addMethods(methods) -> Class
-   *  - methods (Object): The methods to add to the class.
+   *    - methods (Object): The methods to add to the class.
    *
    *  Adds methods to an existing class.
    *
