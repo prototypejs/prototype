@@ -61,21 +61,23 @@ namespace :doc do
       puts "\nand you should be all set.\n\n"
     end
     
-    Tempfile.open("pdoc") do |temp|
-      secretary = Sprockets::Secretary.new(
-        :root           => File.join(PROTOTYPE_ROOT, "src"),
-        :load_path      => [PROTOTYPE_SRC_DIR],
-        :source_files   => ["prototype.js"],
-        :strip_comments => false
-      )
-        
-      secretary.concatenation.save_to(temp.path)
-      rm_rf PROTOTYPE_DOC_DIR
-      PDoc::Runner.new(temp.path, {
-        :output    => PROTOTYPE_DOC_DIR,
-        :templates => File.join(PROTOTYPE_TEMPLATES_DIR, "html")
-      }).run
-    end
+    secretary = Sprockets::Secretary.new(
+      :root           => File.join(PROTOTYPE_ROOT, "src"),
+      :load_path      => [PROTOTYPE_SRC_DIR],
+      :source_files   => ["prototype.js"],
+      :strip_comments => false
+    )
+    
+    # Might as well re-use the unit tests' temp directory.
+    temp_path = File.join(PROTOTYPE_TMP_DIR, "prototype.temp.js")    
+    secretary.concatenation.save_to(temp_path)
+    rm_rf PROTOTYPE_DOC_DIR
+    PDoc::Runner.new(temp_path, {
+      :output    => PROTOTYPE_DOC_DIR,
+      :templates => File.join(PROTOTYPE_TEMPLATES_DIR, "html")
+    }).run
+    
+    rm_rf temp_path
   end  
   
   task :require do
