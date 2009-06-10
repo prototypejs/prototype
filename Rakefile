@@ -69,6 +69,7 @@ namespace :doc do
     )
     
     # Might as well re-use the unit tests' temp directory.
+    mkdir_p PROTOTYPE_TMP_DIR
     temp_path = File.join(PROTOTYPE_TMP_DIR, "prototype.temp.js")    
     secretary.concatenation.save_to(temp_path)
     rm_rf PROTOTYPE_DOC_DIR
