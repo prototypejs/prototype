@@ -1,3 +1,5 @@
+* Add Chrome 1+ to the list of supported browsers. (kangax)
+
 * Fix `Template#evaluate` "eating" previous character if `null` was returned from `toTemplateReplacements` function. (Nir, Jürgen Hörmann, kangax)
 
 * Make sure (deficient) APPLET, OBJECT and EMBED elements are extended with simulated methods in IE8. Return early if `_extendedByPrototype` is present on an element. (Tobie Langel, kangax)

@@ -13,6 +13,7 @@ Prototype currently targets the following platforms:
 * Mozilla Firefox 1.5 and higher
 * Apple Safari 2.0 and higher
 * Opera 9.25 and higher
+* Chrome 1.0 and higher
 
 == Using Prototype
 
