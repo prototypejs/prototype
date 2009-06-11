@@ -1,20 +1,20 @@
 /** section: Language
  * class Object
- *  
+ *
  *  Extensions to the built-in `Object` object.
- *  
+ *
  *  Because it is dangerous and invasive to augment `Object.prototype` (i.e.,
  *  add instance methods to objects), all these methods are static methods that
  *  take an `Object` as their first parameter.
- *  
+ *
 **/
 (function() {
-  
+
   function getClass(object) {
     return Object.prototype.toString.call(object)
-     .match(/^\[object\s(.*)\]$/)[1]; 
+     .match(/^\[object\s(.*)\]$/)[1];
   }
-  
+
   /**
    *  Object.extend(destination, source) -> Object
    *  - destination (Object): The object to receive the new properties.
@@ -41,9 +41,9 @@
    *  used; otherwise, it reverts to the `toString` method.
    *
    *  Prototype provides `inspect` methods for many types, both built-in and
-   *  library-defined — among them `String`, `Array`, `Enumerable` and `Hash`.
+   *  library-defined &mdash; among them `String`, `Array`, `Enumerable` and `Hash`.
    *  These attempt to provide useful string representations (from a
-   *  developer’s standpoint) for their respective types.
+   *  developer's standpoint) for their respective types.
   **/
   function inspect(object) {
     try {
@@ -104,11 +104,11 @@
    *
    *  Undefined-value pairs will be serialized as if empty-valued. Array-valued
    *  pairs will get serialized with one name/value pair per array element. All
-   *  values get URI-encoded using JavaScript’s native `encodeURIComponent`
+   *  values get URI-encoded using JavaScript's native `encodeURIComponent`
    *  function.
    *
    *  The order of pairs in the serialized form is not guaranteed (and mostly
-   *  irrelevant anyway) — except for array-based parts, which are serialized
+   *  irrelevant anyway) &mdash; except for array-based parts, which are serialized
    *  in array order.
   **/
   function toQueryString(object) {
@@ -121,7 +121,7 @@
    *
    *  Converts the object to its HTML representation.
    *
-   *  Returns the return value of `object`’s `toHTML` method if it exists; else
+   *  Returns the return value of `object`'s `toHTML` method if it exists; else
    *  runs `object` through [[String.interpret]].
   **/
   function toHTML(object) {
@@ -134,7 +134,7 @@
    *
    *  Returns an array of the object's property names.
    *
-   *  Note that the order of the resulting array is browser-dependent — it
+   *  Note that the order of the resulting array is browser-dependent &mdash; it
    *  relies on the `for&#8230;in` loop, for which the ECMAScript spec does not
    *  prescribe an enumeration order. Sort the resulting array if you wish to
    *  normalize the order of the object keys.
@@ -152,7 +152,7 @@
    *
    *  Returns an array of the object's values.
    *
-   *  Note that the order of the resulting array is browser-dependent — it
+   *  Note that the order of the resulting array is browser-dependent &mdash; it
    *  relies on the `for&#8230;in` loop, for which the ECMAScript spec does not
    *  prescribe an enumeration order.
    *

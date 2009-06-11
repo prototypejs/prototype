@@ -1,8 +1,8 @@
 /** section: Language
  * class String
- *  
+ *
  *  Extensions to the built-in `String` class.
- *  
+ *
  *  Prototype enhances the `String` object with a series of useful methods for
  *  ranging from the trivial to the complex. Tired of stripping trailing
  *  whitespace? Try [[String#strip]]. Want to replace `replace`? Have a look at
@@ -29,13 +29,13 @@ Object.extend(String, {
 });
 
 Object.extend(String.prototype, (function() {
-  
+
   function prepareReplacement(replacement) {
     if (Object.isFunction(replacement)) return replacement;
     var template = new Template(replacement);
     return function(match) { return template.evaluate(match) };
   }
-  
+
   /**
    *  String#gsub(pattern, replacement) -> String
    *
@@ -46,7 +46,7 @@ Object.extend(String.prototype, (function() {
   function gsub(pattern, replacement) {
     var result = '', source = this, match;
     replacement = prepareReplacement(replacement);
-    
+
     if (Object.isString(pattern))
       pattern = RegExp.escape(pattern);
 
@@ -87,7 +87,7 @@ Object.extend(String.prototype, (function() {
   /** related to: String#gsub
    *  String#scan(pattern, iterator) -> String
    *
-   *  Allows iterating over every occurrence of the given pattern (which can be a 
+   *  Allows iterating over every occurrence of the given pattern (which can be a
    *  string or a regular expression).
    *  Returns the original string.
   **/
@@ -105,7 +105,7 @@ Object.extend(String.prototype, (function() {
   function truncate(length, truncation) {
     length = length || 30;
     truncation = Object.isUndefined(truncation) ? '...' : truncation;
-    return this.length > length ? 
+    return this.length > length ?
       this.slice(0, length - truncation.length) + truncation : String(this);
   }
 
@@ -123,7 +123,7 @@ Object.extend(String.prototype, (function() {
    *
    *  Strips a string of any HTML tags.
    *
-   *  Note that `stripTags` will only strip HTML 4.01 tags — like `div`,
+   *  Note that `stripTags` will only strip HTML 4.01 tags &mdash; like `div`,
    *  `span`, and `abbr`. It _will not_ strip namespace-prefixed tags such
    *  as `h:table` or `xsl:template`.
   **/
@@ -183,11 +183,11 @@ Object.extend(String.prototype, (function() {
   function unescapeHTML() {
     var div = document.createElement('div');
     div.innerHTML = this.stripTags();
-    return div.childNodes[0] ? (div.childNodes.length > 1 ? 
-      $A(div.childNodes).inject('', function(memo, node) { return memo+node.nodeValue }) : 
+    return div.childNodes[0] ? (div.childNodes.length > 1 ?
+      $A(div.childNodes).inject('', function(memo, node) { return memo+node.nodeValue }) :
       div.childNodes[0].nodeValue) : '';
   }
-  
+
   /**
    *  String#parseQuery([separator = '&']) -> Object
   **/
@@ -252,14 +252,14 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#camelize() -> String
    *
-   *  Converts a string separated by dashes into a camelCase equivalent. 
+   *  Converts a string separated by dashes into a camelCase equivalent.
    *  For instance, 'foo-bar' would be converted to 'fooBar'.
   **/
   function camelize() {
     var parts = this.split('-'), len = parts.length;
     if (len == 1) return parts[0];
 
-    var camelized = this.charAt(0) == '-' 
+    var camelized = this.charAt(0) == '-'
       ? parts[0].charAt(0).toUpperCase() + parts[0].substring(1)
       : parts[0];
 
@@ -300,7 +300,7 @@ Object.extend(String.prototype, (function() {
   /** related to: Object.inspect
    *  String#inspect([useDoubleQuotes = false]) -> String
    *
-   *  Returns a debug-oriented version of the string (i.e. wrapped in single or 
+   *  Returns a debug-oriented version of the string (i.e. wrapped in single or
    *  double quotes, with backslashes and quotes escaped).
   **/
   function inspect(useDoubleQuotes) {
@@ -334,7 +334,7 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#isJSON() -> Boolean
    *
-   *  Check if the string is valid JSON by the use of regular expressions. 
+   *  Check if the string is valid JSON by the use of regular expressions.
    *  This security method is called internally.
   **/
   function isJSON() {
@@ -348,7 +348,7 @@ Object.extend(String.prototype, (function() {
    *  String#evalJSON([sanitize = false]) -> object
    *
    *  Evaluates the JSON in the string and returns the resulting object.
-   *  
+   *
    *  If the optional `sanitize` parameter is set to `true`, the string is
    *  checked for possible malicious attempts; if one is detected, `eval`
    *  is _not called_.
@@ -401,7 +401,7 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#blank() -> Boolean
    *
-   *  Check if the string is "blank" — either empty (length of `0`) or containing
+   *  Check if the string is "blank" &mdash; either empty (length of `0`) or containing
    *  only whitespace.
   **/
   function blank() {
@@ -411,13 +411,13 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#interpolate(object[, pattern]) -> String
    *
-   *  Treats the string as a [[Template]] and fills it with `object`’s
+   *  Treats the string as a [[Template]] and fills it with `object`'s
    *  properties.
   **/
   function interpolate(object, pattern) {
     return new Template(this, pattern).evaluate(object);
   }
-  
+
   return {
     gsub:           gsub,
     sub:            sub,

@@ -1,84 +1,84 @@
 /** section: Language
  * mixin Enumerable
- *  
- *  `Enumerable` provides a large set of useful methods for enumerations —
+ *
+ *  `Enumerable` provides a large set of useful methods for enumerations &mdash;
  *  objects that act as collections of values. It is a cornerstone of
  *  Prototype.
- *  
+ *
  *  `Enumerable` is a _mixin_: a set of methods intended not for standaone
  *  use, but for incorporation into other objects.
- *  
+ *
  *  Prototype mixes `Enumerable` into several classes. The most visible cases
- *  are [[Array]] and [[Hash]], but you’ll find it in less obvious spots as
+ *  are [[Array]] and [[Hash]], but you'll find it in less obvious spots as
  *  well, such as in [[ObjectRange]] and various DOM- or Ajax-related objects.
- *  
+ *
  *  <h4>The <code>context</code> parameter</h4>
- *  
+ *
  *  Every method of `Enumerable` that takes an iterator also takes the "context
  *  object" as the next (optional) parameter. The context object is what the
- *  iterator will be _bound_ to — what the keyword `this` will refer to inside
+ *  iterator will be _bound_ to &mdash; what the keyword `this` will refer to inside
  *  the iterator.
- *  
+ *
  *      var myObject = {};
- *      
+ *
  *      ['foo', 'bar', 'baz'].each(function(name, index) {
  *        this[name] = index;
  *      }, myObject); // we have specified the context
- *      
+ *
  *      myObject
  *      //-> { foo: 0, bar: 1, baz: 2}
- *  
+ *
  *  If there is no `context` argument, the iterator function will execute in
  *  the scope from which the `Enumerable` method itself was called.
- *  
+ *
  *  <h4>Mixing <code>Enumerable</code> into your own objects</h4>
  *
- *  So, let’s say you’ve created your very own collection-like object (say,
+ *  So, let's say you've created your very own collection-like object (say,
  *  some sort of Set, or perhaps something that dynamically fetches data
  *  ranges from the server side, lazy-loading style). You want to be able to
  *  mix `Enumerable` in (and we commend you for it). How do you go about this?
- *  
+ *
  *  The Enumerable module basically makes only one requirement on your object:
  *  it must provide a method named `_each` (note the leading underscore) that
  *  will accept a function as its unique argument, and will contain the actual
- *  “raw iteration” algorithm, invoking its argument with each element in turn.
- *  
+ *  "raw iteration" algorithm, invoking its argument with each element in turn.
+ *
  *  As detailed in the documentation for [[Enumerable#each]], `Enumerable`
  *  provides all the extra layers (handling iteration short-circuits, passing
  *  numeric indices, etc.). You just need to implement the actual iteration,
  *  as fits your internal structure.
- *  
+ *
  *  If you're still confused, just have a look at the Prototype source code for
  *  [[Array]], [[Hash]], or [[ObjectRange]]. They all begin with their own
  *  `_each` method, which should help you grasp the idea.
- *  
- *  Once you’re done with this, you just need to mix `Enumerable` in, which
- *  you’ll usually do before defining your methods, so as to make sure whatever
+ *
+ *  Once you're done with this, you just need to mix `Enumerable` in, which
+ *  you'll usually do before defining your methods, so as to make sure whatever
  *  overrides you provide for `Enumerable` methods will indeed prevail. In
  *  short, your code will probably end up looking like this:
- *  
- *  
+ *
+ *
  *      var YourObject = Class.create(Enumerable, {
  *        initialize: function() { // with whatever constructor arguments you need
  *          // Your construction code
  *        },
- *        
+ *
  *        _each: function(iterator) {
  *          // Your iteration code, invoking iterator at every turn
  *        },
- *        
+ *
  *        // Your other methods here, including Enumerable overrides
  *      });
- *  
+ *
  *  Then, obviously, your object can be used like this:
- *  
+ *
  *      var obj = new YourObject();
  *      // Populate the collection somehow
  *      obj.pluck('somePropName');
  *      obj.invoke('someMethodName');
  *      obj.size();
  *      // etc.
- *  
+ *
 **/
 
 var $break = { };
@@ -104,7 +104,7 @@ var Enumerable = (function() {
     }
     return this;
   }
-  
+
   /**
    *  Enumerable#eachSlice(number[, iterator = Prototype.K[, context]]) -> Enumerable
    *
@@ -167,11 +167,11 @@ var Enumerable = (function() {
     });
     return results;
   }
-  
+
   /**
    *  Enumerable#detect(iterator[, context]) -> firstElement | undefined
    *
-   *  Finds the first element for which the iterator returns a “truthy” value.
+   *  Finds the first element for which the iterator returns a "truthy" value.
    *  Aliased by the [[Enumerable#find]] method.
   **/
   function detect(iterator, context) {
@@ -184,11 +184,11 @@ var Enumerable = (function() {
     });
     return result;
   }
-  
+
   /**
    *  Enumerable#findAll(iterator[, context]) -> Array
    *
-   *  Returns all the elements for which the iterator returned “truthy” value.
+   *  Returns all the elements for which the iterator returned "truthy" value.
    *  Aliased as [[Enumerable#select]].
   **/
   function findAll(iterator, context) {
@@ -199,7 +199,7 @@ var Enumerable = (function() {
     });
     return results;
   }
-  
+
   /**
    *  Enumerable#grep(regex[, iterator = Prototype.K[, context]]) -> Array
    *
@@ -212,14 +212,14 @@ var Enumerable = (function() {
 
     if (Object.isString(filter))
       filter = new RegExp(RegExp.escape(filter));
-      
+
     this.each(function(value, index) {
       if (filter.match(value))
         results.push(iterator.call(context, value, index));
     });
     return results;
   }
-  
+
   /**
    *  Enumerable#include(object) -> Boolean
    *
@@ -239,7 +239,7 @@ var Enumerable = (function() {
     });
     return found;
   }
-  
+
   /**
    *  Enumerable#inGroupsOf(size[, filler = null]) -> [group...]
    *
@@ -253,7 +253,7 @@ var Enumerable = (function() {
       return slice;
     });
   }
-  
+
   /**
    *  Enumerable#inject(accumulator, iterator[, context]) -> accumulatedValue
    *
@@ -267,7 +267,7 @@ var Enumerable = (function() {
     });
     return memo;
   }
-  
+
   /**
    *  Enumerable#invoke(methodName[, arg...]) -> Array
    *
@@ -280,7 +280,7 @@ var Enumerable = (function() {
       return value[method].apply(value, args);
     });
   }
-  
+
   /**
    *  Enumerable#max([iterator = Prototype.K[, context]]) -> maxValue
    *
@@ -299,7 +299,7 @@ var Enumerable = (function() {
     });
     return result;
   }
-  
+
   /**
    *  Enumerable#min([iterator = Prototype.K[, context]]) -> minValue
    *
@@ -318,7 +318,7 @@ var Enumerable = (function() {
     });
     return result;
   }
-  
+
   /**
    *  Enumerable#partition([iterator = Prototype.K[, context]]) -> [TrueArray, FalseArray]
    *
@@ -336,7 +336,7 @@ var Enumerable = (function() {
     });
     return [trues, falses];
   }
-  
+
   /**
    *  Enumerable#pluck(propertyName) -> Array
    *
@@ -350,11 +350,11 @@ var Enumerable = (function() {
     });
     return results;
   }
-  
+
   /**
    *  Enumerable#reject(iterator[, context]) -> Array
    *
-   *  Returns all the elements for which the iterator returned a “falsy” value.
+   *  Returns all the elements for which the iterator returned a "falsy" value.
   **/
   function reject(iterator, context) {
     var results = [];
@@ -364,7 +364,7 @@ var Enumerable = (function() {
     });
     return results;
   }
-  
+
   /**
    *  Enumerable#sortBy(iterator[, context]) -> Array
    *
@@ -382,7 +382,7 @@ var Enumerable = (function() {
       return a < b ? -1 : a > b ? 1 : 0;
     }).pluck('value');
   }
-  
+
   /**
    *  Enumerable#toArray() -> Array
    *
@@ -391,7 +391,7 @@ var Enumerable = (function() {
   function toArray() {
     return this.map();
   }
-  
+
   /**
    *  Enumerable#zip(sequence...[, iterator = Prototype.K]) -> Array
    *
@@ -410,7 +410,7 @@ var Enumerable = (function() {
       return iterator(collections.pluck(index));
     });
   }
-  
+
   /**
    *  Enumerable#size() -> Number
    *
@@ -419,7 +419,7 @@ var Enumerable = (function() {
   function size() {
     return this.toArray().length;
   }
-  
+
   /**
    *  Enumerable#inspect() -> String
    *
@@ -428,39 +428,39 @@ var Enumerable = (function() {
   function inspect() {
     return '#<Enumerable:' + this.toArray().inspect() + '>';
   }
-  
+
   /** alias of: Enumerable#collect
    *  Enumerable#map([iterator = Prototype.K[, context]]) -> Array
   **/
-  
+
   /** alias of: Enumerable#any
    *  Enumerable#some([iterator = Prototype.K[, context]]) -> Boolean
   **/
-  
+
   /** alias of: Enumerable#all
    *  Enumerable#every([iterator = Prototype.K[, context]]) -> Boolean
   **/
-  
+
   /** alias of: Enumerable#findAll
-   *  Enumerable#select(iterator[, context]) -> Array 
+   *  Enumerable#select(iterator[, context]) -> Array
   **/
-  
+
   /** alias of: Enumerable#findAll
-   *  Enumerable#filter(iterator[, context]) -> Array 
+   *  Enumerable#filter(iterator[, context]) -> Array
   **/
-  
+
   /** alias of: Enumerable#include
    *  Enumerable#member(object) -> Boolean
   **/
-  
+
   /** alias of: Enumerable#toArray
-   *  Enumerable#entries() -> Array 
+   *  Enumerable#entries() -> Array
   **/
-  
+
   /** alias of: Enumerable#detect
    *  Enumerable#find(iterator[, context]) -> firstElement | undefined
   **/
-  
+
   return {
     each:       each,
     eachSlice:  eachSlice,

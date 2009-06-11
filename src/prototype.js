@@ -5,10 +5,10 @@
  *  For details, see the Prototype web site: http://www.prototypejs.org/
  *
  *--------------------------------------------------------------------------*/
- 
+
 var Prototype = {
   Version: '<%= PROTOTYPE_VERSION %>',
-  
+
   Browser: (function(){
     var ua = navigator.userAgent;
     // Opera (at least) 8.x+ has "Opera" as a [[Class]] of `window.opera`
@@ -34,31 +34,31 @@ var Prototype = {
       // First, try the named class
       if (typeof window.HTMLDivElement !== 'undefined')
         return true;
-        
+
       var div = document.createElement('div');
       var form = document.createElement('form');
       var isSupported = false;
-      
+
       if (div['__proto__'] && (div['__proto__'] !== form['__proto__'])) {
         isSupported = true;
       }
-      
+
       div = form = null;
-      
+
       return isSupported;
     })()
   },
 
   ScriptFragment: '<script[^>]*>([\\S\\s]*?)<\/script>',
-  JSONFilter: /^\/\*-secure-([\s\S]*)\*\/\s*$/,  
-  
+  JSONFilter: /^\/\*-secure-([\s\S]*)\*\/\s*$/,
+
   emptyFunction: function() { },
   K: function(x) { return x }
 };
 
 if (Prototype.Browser.MobileSafari)
   Prototype.BrowserFeatures.SpecificElementExtensions = false;
-  
+
 //= require "lang"
 //= require "ajax"
 //= require "dom"

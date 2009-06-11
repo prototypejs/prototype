@@ -1,8 +1,8 @@
 /** section: Language, related to: Hash
  *  $H([object]) -> Hash
- * 
+ *
  *  Creates a `Hash`.
- *  
+ *
  *  `$H` is a convenience wrapper around the Hash constructor, with a safeguard
  *  that lets you pass an existing Hash object and get it back untouched
  *  (instead of uselessly cloning it).
@@ -13,24 +13,24 @@ function $H(object) {
 
 /** section: Language
  * class Hash
- *  
+ *
  *  A set of key/value pairs.
- *  
+ *
  *  `Hash` can be thought of as an associative array, binding unique keys to
  *  values (which are not necessarily unique), though it can not guarantee
  *  consistent order its elements when iterating. Because of the nature of
  *  JavaScript, every object is in fact a hash; but `Hash` adds a number of
  *  methods that let you enumerate keys and values, iterate over key/value
  *  pairs, merge two hashes together, and much more.
- *  
+ *
  *  <h4>Creating a hash</h4>
- *  
+ *
  *  There are two ways to construct a Hash instance: the first is regular
  *  JavaScript object instantiation with the `new` keyword, and the second is
  *  using the [[$H]] function. There is one difference between them: if a `Hash`
  *  is passed to `$H`, it will be returned as-is, wherease the same hash passed
  *  to `new Hash` will be _cloned_ instead.
- *  
+ *
 **/
 var Hash = Class.create(Enumerable, (function() {
   /**
@@ -55,7 +55,7 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#set(key, value) -> value
    *
-   *  Sets the hash’s `key` property to `value` and returns `value`.
+   *  Sets the hash's `key` property to `value` and returns `value`.
   **/
   function set(key, value) {
     return this._object[key] = value;
@@ -64,7 +64,7 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#get(key) -> value
    *
-   *  Returns the value of the hash’s `key` property.
+   *  Returns the value of the hash's `key` property.
   **/
   function get(key) {
     // simulating poorly supported hasOwnProperty
@@ -75,7 +75,7 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#unset(key) -> value
    *
-   *  Deletes the hash’s `key` property and returns its value.
+   *  Deletes the hash's `key` property and returns its value.
   **/
   function unset(key) {
     var value = this._object[key];
@@ -94,7 +94,7 @@ var Hash = Class.create(Enumerable, (function() {
 
   /**
    *  Hash#keys() -> [String...]
-   *  
+   *
    *  Provides an Array of keys (that is, property names) for the hash.
   **/
   function keys() {
@@ -112,13 +112,13 @@ var Hash = Class.create(Enumerable, (function() {
 
   /**
    *  Hash#index(value) -> String
-   *  
+   *
    *  Returns the first key in the hash whose value matches `value`.
    *  Returns `false` if there is no such key.
   **/
   function index(value) {
-    var match = this.detect(function(pair) { 
-      return pair.value === value; 
+    var match = this.detect(function(pair) {
+      return pair.value === value;
     });
     return match && match.key;
   }
@@ -128,7 +128,7 @@ var Hash = Class.create(Enumerable, (function() {
    *
    *  Returns a new hash with `object`'s key/value pairs merged in.
    *  To modify the original hash in place, use [[Hash#update]].
-   *  
+   *
   **/
   function merge(object) {
     return this.clone().update(object);
@@ -156,13 +156,13 @@ var Hash = Class.create(Enumerable, (function() {
 
   /** related to: String#toQueryParams
    *  Hash#toQueryString() -> String
-   *  
+   *
    *  Turns a hash into its URL-encoded query string representation.
   **/
   function toQueryString() {
     return this.inject([], function(results, pair) {
       var key = encodeURIComponent(pair.key), values = pair.value;
-      
+
       if (values && typeof values == 'object') {
         if (Object.isArray(values))
           return results.concat(values.map(toQueryPair.curry(key)));
@@ -173,7 +173,7 @@ var Hash = Class.create(Enumerable, (function() {
 
   /** related to: Object.inspect
    *  Hash#inspect() -> String
-   *  
+   *
    *  Returns the debug-oriented string representation of the hash.
   **/
   function inspect() {
@@ -184,7 +184,7 @@ var Hash = Class.create(Enumerable, (function() {
 
   /** related to: Object.toJSON
    *  Hash#toJSON() -> String
-   * 
+   *
    *  Returns a JSON string.
   **/
   function toJSON() {
@@ -199,7 +199,7 @@ var Hash = Class.create(Enumerable, (function() {
   function clone() {
     return new Hash(this);
   }
-  
+
   return {
     initialize:             initialize,
     _each:                  _each,

@@ -1,3 +1,5 @@
+* Fixed a variety of non-ASCII chars and similar [#610 state:resolved] (T.J. Crowder)
+
 * Add Chrome 1+ to the list of supported browsers. (kangax)
 
 * Fix `Template#evaluate` "eating" previous character if `null` was returned from `toTemplateReplacements` function. (Nir, Jürgen Hörmann, kangax)

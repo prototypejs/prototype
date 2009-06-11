@@ -13,14 +13,14 @@ var Abstract = { };
 /**
  *  Try.these(function...) -> ?
  *  - function (Function): A function that may throw an exception.
- *  
+ *
  *  Accepts an arbitrary number of functions and returns the result of the
  *  first one that doesn't throw an error.
  **/
 var Try = {
   these: function() {
     var returnValue;
-    
+
     for (var i = 0, length = arguments.length; i < length; i++) {
       var lambda = arguments[i];
       try {
@@ -28,7 +28,7 @@ var Try = {
         break;
       } catch (e) { }
     }
-    
+
     return returnValue;
   }
 };

@@ -1,16 +1,16 @@
 /** section: Language
  * class Number
- *  
+ *
  *  Extensions to the built-in `Number` object.
- *  
+ *
  *  Prototype extends native JavaScript numbers in order to provide:
- *  
+ *
  *  * [[ObjectRange]] compatibility, through [[Number#succ]].
  *  * Ruby-like numerical loops with [[Number#times]].
  *  * Simple utility methods such as [[Number#toColorPart]] and
  *    [[Number#toPaddedString]].
  *  * Instance-method aliases of many functions in the `Math` namespace.
- *  
+ *
 **/
 Object.extend(Number.prototype, (function() {
   /**
@@ -33,7 +33,7 @@ Object.extend(Number.prototype, (function() {
   function succ() {
     return this + 1;
   }
-  
+
   /**
    *  Number#times(iterator) -> Number
    *
@@ -45,11 +45,11 @@ Object.extend(Number.prototype, (function() {
     $R(0, this, true).each(iterator, context);
     return this;
   }
-  
+
   /**
    *  Number#toPaddedString(length[, radix]) -> String
    *
-   *  Converts the number into a string padded with 0s so that the string’s length
+   *  Converts the number into a string padded with 0s so that the string's length
    *  is at least equal to `length`.
    *  Takes an optional `radix` argument which specifies the base to use for conversion.
   **/
@@ -57,7 +57,7 @@ Object.extend(Number.prototype, (function() {
     var string = this.toString(radix || 10);
     return '0'.times(length - string.length) + string;
   }
-  
+
   /** related to: Object.toJSON
    *  Number#toJSON() -> String
    *
@@ -66,7 +66,7 @@ Object.extend(Number.prototype, (function() {
   function toJSON() {
     return isFinite(this) ? this.toString() : 'null';
   }
-  
+
   /**
    *  Number#abs() -> Number
    *
@@ -75,7 +75,7 @@ Object.extend(Number.prototype, (function() {
   function abs() {
     return Math.abs(this);
   }
-  
+
   /**
    *  Number#round() -> Number
    *
@@ -84,7 +84,7 @@ Object.extend(Number.prototype, (function() {
   function round() {
     return Math.round(this);
   }
-  
+
   /**
    *  Number#ceil() -> Number
    *
@@ -93,7 +93,7 @@ Object.extend(Number.prototype, (function() {
   function ceil() {
     return Math.ceil(this);
   }
-  
+
   /**
    *  Number#floor() -> Number
    *
@@ -102,7 +102,7 @@ Object.extend(Number.prototype, (function() {
   function floor() {
     return Math.floor(this);
   }
-  
+
   return {
     toColorPart:    toColorPart,
     succ:           succ,

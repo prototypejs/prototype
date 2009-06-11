@@ -3,13 +3,13 @@
  *  $(id...) -> [Element]...
  *    - id (String | Element): A DOM node or a string that references a node's
  *      ID.
- *  
+ *
  *  If provided with a string, returns the element in the document with
  *  matching ID; otherwise returns the passed element.
- *  
+ *
  *  Takes in an arbitrary number of arguments. Returns one `Element` if given
  *  one argument; otherwise returns an array of `Element`s.
- *  
+ *
  *  All elements returned by the function are "extended" with `Element`
  *  instance methods.
 **/
@@ -62,16 +62,16 @@ if (!Node.ELEMENT_NODE) {
  *  class Element
 **/
 
-/** 
+/**
  *  new Element(tagName[, attributes])
  *    - tagName (String): The name of the HTML element to create.
  *    - attributes (Object): A list of attribute/value pairs to set on the
  *      element.
- *  
+ *
  *  Creates an HTML element with `tagName` as the tag name.
 **/
 (function(global) {
-  
+
   // setAttribute is broken in IE (particularly when setting name attribute)
   // see: http://msdn.microsoft.com/en-us/library/ms536389.aspx
   var SETATTRIBUTE_IGNORES_NAME = (function(){
@@ -81,14 +81,14 @@ if (!Node.ELEMENT_NODE) {
     elInput.setAttribute("name", "test");
     elForm.appendChild(elInput);
     root.appendChild(elForm);
-    var isBuggy = elForm.elements 
-      ? (typeof elForm.elements.test == "undefined") 
+    var isBuggy = elForm.elements
+      ? (typeof elForm.elements.test == "undefined")
       : null;
     root.removeChild(elForm);
     elForm = elInput = null;
     return isBuggy;
   })();
-  
+
   var element = global.Element;
   global.Element = function(tagName, attributes) {
     attributes = attributes || { };
@@ -110,19 +110,19 @@ Element.cache = { };
 Element.idCounter = 1;
 
 Element.Methods = {
-  /** 
+  /**
    *  Element#visible(@element) -> boolean
-   *  
+   *
    *  Tells whether `element` is visible (i.e., whether its inline `display`
    *  CSS property is set to `none`.
   **/
   visible: function(element) {
     return $(element).style.display != 'none';
   },
-  
-  /** 
+
+  /**
    *  Element#toggle(@element) -> Element
-   *  
+   *
    *  Toggles the visibility of `element`. Returns `element`.
   **/
   toggle: function(element) {
@@ -130,11 +130,11 @@ Element.Methods = {
     Element[Element.visible(element) ? 'hide' : 'show'](element);
     return element;
   },
-  
-  
+
+
   /**
    *  Element#hide(@element) -> Element
-   *  
+   *
    *  Sets `display: none` on `element`. Returns `element`.
   **/
   hide: function(element) {
@@ -142,10 +142,10 @@ Element.Methods = {
     element.style.display = 'none';
     return element;
   },
-  
+
   /**
    *  Element#show(@element) -> Element
-   *  
+   *
    *  Removes `display: none` on `element`. Returns `element`.
   **/
   show: function(element) {
@@ -156,7 +156,7 @@ Element.Methods = {
 
   /**
    *  Element#remove(@element) -> Element
-   *  
+   *
    *  Completely removes `element` from the document and returns it.
   **/
   remove: function(element) {
@@ -165,20 +165,20 @@ Element.Methods = {
     return element;
   },
 
-  /** 
+  /**
    *  Element#update(@element[, newContent]) -> Element
-   *  
+   *
    *  Replaces _the content_ of `element` with the `newContent` argument and
    *  returns `element`.
-   *  
-   *  If `newContent` is omitted, the element's content is blanked out (i.e., 
+   *
+   *  If `newContent` is omitted, the element's content is blanked out (i.e.,
    *  replaced with an empty string).
   **/
   update: (function(){
-    
+
     // see: http://support.microsoft.com/kb/276228
     var SELECT_ELEMENT_INNERHTML_BUGGY = (function(){
-      var el = document.createElement("select"), 
+      var el = document.createElement("select"),
           isBuggy = true;
       el.innerHTML = "<option value=\"test\">test</option>";
       if (el.options && el.options[0]) {
@@ -187,7 +187,7 @@ Element.Methods = {
       el = null;
       return isBuggy;
     })();
-    
+
     // see: http://msdn.microsoft.com/en-us/library/ms533897(VS.85).aspx
     var TABLE_ELEMENT_INNERHTML_BUGGY = (function(){
       try {
@@ -202,9 +202,9 @@ Element.Methods = {
         return true;
       }
     })();
-    
+
     var SCRIPT_ELEMENT_REJECTS_TEXTNODE_APPENDING = (function () {
-      var s = document.createElement("script"), 
+      var s = document.createElement("script"),
           isBuggy = false;
       try {
         s.appendChild(document.createTextNode(""));
@@ -216,26 +216,26 @@ Element.Methods = {
       s = null;
       return isBuggy;
     })();
-    
+
     function update(element, content) {
       element = $(element);
-  
-      if (content && content.toElement) 
+
+      if (content && content.toElement)
         content = content.toElement();
-        
-      if (Object.isElement(content)) 
+
+      if (Object.isElement(content))
         return element.update().insert(content);
-  
+
       content = Object.toHTML(content);
-      
+
       var tagName = element.tagName.toUpperCase();
-      
+
       if (tagName === 'SCRIPT' && SCRIPT_ELEMENT_REJECTS_TEXTNODE_APPENDING) {
         // scripts are not evaluated when updating SCRIPT element
         element.text = content;
         return element;
       }
-  
+
       if (SELECT_ELEMENT_INNERHTML_BUGGY || TABLE_ELEMENT_INNERHTML_BUGGY) {
         if (tagName in Element._insertionTranslations.tags) {
           while (element.firstChild) {
@@ -243,7 +243,7 @@ Element.Methods = {
           }
           Element._getContentFromAnonymousElement(tagName, content.stripScripts())
             .each(function(node) {
-              element.appendChild(node) 
+              element.appendChild(node)
             });
         }
         else {
@@ -253,21 +253,21 @@ Element.Methods = {
       else {
         element.innerHTML = content.stripScripts();
       }
-  
+
       content.evalScripts.bind(content).defer();
       return element;
     }
-    
+
     return update;
   })(),
-  
+
   /**
    *  Element#replace(@element[, newContent]) -> Element
-   *  
+   *
    *  Replaces `element` _itself_ with `newContent` and returns `element`.
-   *  
+   *
    *  Keep in mind that this method returns the element that has just been
-   *  removed — not the element that took its place.
+   *  removed &mdash; not the element that took its place.
   **/
   replace: function(element, content) {
     element = $(element);
@@ -282,30 +282,30 @@ Element.Methods = {
     element.parentNode.replaceChild(content, element);
     return element;
   },
-  
+
   /**
    *  Element#insert(@element, content) -> Element
    *  - content (String | Object): The content to insert.
-   *  
+   *
    *  Inserts content at a specific point relative to `element`.
-   *  
+   *
    *  The `content` argument can be a string, in which case the implied
    *  insertion point is `bottom`. Or it can be an object that specifies
    *  one or more insertion points (e.g., `{ bottom: "foo", top: "bar" }`).
-   *  
+   *
    *  Accepted insertion points are `before` (as `element`'s previous sibling);
    *  `after` (as `element's` next sibling); `top` (as `element`'s first
    *  child); and `bottom` (as `element`'s last child).
   **/
   insert: function(element, insertions) {
     element = $(element);
-    
+
     if (Object.isString(insertions) || Object.isNumber(insertions) ||
         Object.isElement(insertions) || (insertions && (insertions.toElement || insertions.toHTML)))
           insertions = {bottom:insertions};
-    
+
     var content, insert, tagName, childNodes;
-    
+
     for (var position in insertions) {
       content  = insertions[position];
       position = position.toLowerCase();
@@ -316,30 +316,30 @@ Element.Methods = {
         insert(element, content);
         continue;
       }
-    
+
       content = Object.toHTML(content);
-      
+
       tagName = ((position == 'before' || position == 'after')
         ? element.parentNode : element).tagName.toUpperCase();
-      
+
       childNodes = Element._getContentFromAnonymousElement(tagName, content.stripScripts());
-      
+
       if (position == 'top' || position == 'after') childNodes.reverse();
       childNodes.each(insert.curry(element));
-      
+
       content.evalScripts.bind(content).defer();
     }
-    
+
     return element;
   },
-  
+
   /**
    *  Element#wrap(@element, wrapper[, attributes]) -> Element
    *  - wrapper (Element | String): An element to wrap `element` inside, or
    *    else a string representing the tag name of an element to be created.
    *  - attributes (Object): A set of attributes to apply to the wrapper
    *    element. Refer to the [[Element]] constructor for usage.
-   *  
+   *
    *  Wraps an element inside another, then returns the wrapper.
   **/
   wrap: function(element, wrapper, attributes) {
@@ -353,10 +353,10 @@ Element.Methods = {
     wrapper.appendChild(element);
     return wrapper;
   },
-  
+
   /**
    *  Element#inspect(@element) -> String
-   *  
+   *
    *  Returns the debug-oriented string representation of `element`.
   **/
   inspect: function(element) {
@@ -369,14 +369,14 @@ Element.Methods = {
     });
     return result + '>';
   },
-  
+
   /**
    *  Element#recursivelyCollect(element, property) -> [Element...]
-   *  
+   *
    *  Recursively collects elements whose relationship to `element` is
    *  specified by `property`. `property` has to be a _property_ (a method
-   *  won’t do!) of `element` that points to a single DOM node (e.g., 
-   *  `nextSibling` or `parentNode`). 
+   *  won't do!) of `element` that points to a single DOM node (e.g.,
+   *  `nextSibling` or `parentNode`).
   **/
   recursivelyCollect: function(element, property) {
     element = $(element);
@@ -386,32 +386,32 @@ Element.Methods = {
         elements.push(Element.extend(element));
     return elements;
   },
-  
+
   /**
    *  Element#ancestors(@element) -> [Element...]
-   *  
-   *  Collects all of `element`’s ancestors and returns them as an array of
+   *
+   *  Collects all of `element`'s ancestors and returns them as an array of
    *  elements.
   **/
   ancestors: function(element) {
     return Element.recursivelyCollect(element, 'parentNode');
   },
-  
+
   /**
    *  Element#descendants(@element) -> [Element...]
-   *  
-   *  Collects all of element’s descendants and returns them as an array of
+   *
+   *  Collects all of element's descendants and returns them as an array of
    *  elements.
   **/
   descendants: function(element) {
     return Element.select(element, "*");
   },
-  
+
   /**
    *  Element#firstDescendant(@element) -> Element
-   *  
+   *
    *  Returns the first child that is an element.
-   *  
+   *
    *  This is opposed to the `firstChild` DOM property, which will return
    *  any node, including text nodes.
   **/
@@ -420,11 +420,11 @@ Element.Methods = {
     while (element && element.nodeType != 1) element = element.nextSibling;
     return $(element);
   },
-  
+
   /**
    *  Element#childElements(@element) -> [Element...]
-   *  
-   *  Collects all of `element`’s immediate descendants (i.e., children) and
+   *
+   *  Collects all of `element`'s immediate descendants (i.e., children) and
    *  returns them as an array of elements.
   **/
   immediateDescendants: function(element) {
@@ -436,27 +436,27 @@ Element.Methods = {
 
   /**
    *  Element#previousSiblings(@element) -> [Element...]
-   *  
-   *  Collects all of `element`’s previous siblings and returns them as an
+   *
+   *  Collects all of `element`'s previous siblings and returns them as an
    *  array of elements.
   **/
   previousSiblings: function(element) {
     return Element.recursivelyCollect(element, 'previousSibling');
   },
-  
+
   /**
    *  Element#nextSiblings(@element) -> [Element...]
-   *  
-   *  Collects all of `element`’s next siblings and returns them as an array
+   *
+   *  Collects all of `element`'s next siblings and returns them as an array
    *  of elements.
   **/
   nextSiblings: function(element) {
     return Element.recursivelyCollect(element, 'nextSibling');
   },
-  
+
   /**
    *  Element#siblings(@element) -> [Element...]
-   *  Collects all of element’s siblings and returns them as an array of
+   *  Collects all of element's siblings and returns them as an array of
    *  elements.
   **/
   siblings: function(element) {
@@ -464,11 +464,11 @@ Element.Methods = {
     return Element.previousSiblings(element).reverse()
       .concat(Element.nextSiblings(element));
   },
-  
+
   /**
    *  Element#match(@element, selector) -> boolean
    *  - selector (String): A CSS selector.
-   *  
+   *
    *  Checks if `element` matches the given CSS selector.
   **/
   match: function(element, selector) {
@@ -476,13 +476,13 @@ Element.Methods = {
       selector = new Selector(selector);
     return selector.match($(element));
   },
-  
+
   /**
    *  Element#up(@element[, expression[, index = 0]]) -> Element
    *  Element#up(@element[, index = 0]) -> Element
    *  - expression (String): A CSS selector.
-   *  
-   *  Returns `element`’s first ancestor (or the Nth ancestor, if `index`
+   *
+   *  Returns `element`'s first ancestor (or the Nth ancestor, if `index`
    *  is specified) that matches `expression`. If no `expression` is
    *  provided, all ancestors are considered. If no ancestor matches these
    *  criteria, `undefined` is returned.
@@ -494,13 +494,13 @@ Element.Methods = {
     return Object.isNumber(expression) ? ancestors[expression] :
       Selector.findElement(ancestors, expression, index);
   },
-  
+
   /**
    *  Element#down(@element[, expression[, index = 0]]) -> Element
    *  Element#down(@element[, index = 0]) -> Element
    *  - expression (String): A CSS selector.
-   *  
-   *  Returns `element`’s first descendant (or the Nth descendant, if `index`
+   *
+   *  Returns `element`'s first descendant (or the Nth descendant, if `index`
    *  is specified) that matches `expression`. If no `expression` is
    *  provided, all descendants are considered. If no descendant matches these
    *  criteria, `undefined` is returned.
@@ -516,8 +516,8 @@ Element.Methods = {
    *  Element#previous(@element[, expression[, index = 0]]) -> Element
    *  Element#previous(@element[, index = 0]) -> Element
    *  - expression (String): A CSS selector.
-   *  
-   *  Returns `element`’s first previous sibling (or the Nth, if `index`
+   *
+   *  Returns `element`'s first previous sibling (or the Nth, if `index`
    *  is specified) that matches `expression`. If no `expression` is
    *  provided, all previous siblings are considered. If none matches these
    *  criteria, `undefined` is returned.
@@ -527,15 +527,15 @@ Element.Methods = {
     if (arguments.length == 1) return $(Selector.handlers.previousElementSibling(element));
     var previousSiblings = Element.previousSiblings(element);
     return Object.isNumber(expression) ? previousSiblings[expression] :
-      Selector.findElement(previousSiblings, expression, index);   
+      Selector.findElement(previousSiblings, expression, index);
   },
-  
+
   /**
    *  Element#next(@element[, expression[, index = 0]]) -> Element
    *  Element#next(@element[, index = 0]) -> Element
    *  - expression (String): A CSS selector.
-   *  
-   *  Returns `element`’s first following sibling (or the Nth, if `index`
+   *
+   *  Returns `element`'s first following sibling (or the Nth, if `index`
    *  is specified) that matches `expression`. If no `expression` is
    *  provided, all following siblings are considered. If none matches these
    *  criteria, `undefined` is returned.
@@ -547,12 +547,12 @@ Element.Methods = {
     return Object.isNumber(expression) ? nextSiblings[expression] :
       Selector.findElement(nextSiblings, expression, index);
   },
-  
-  
+
+
   /**
    *  Element#select(@element, selector...) -> [Element...]
    *  - selector (String): A CSS selector.
-   *  
+   *
    *  Takes an arbitrary number of CSS selectors and returns an array of
    *  descendants of `element` that match any of them.
   **/
@@ -560,11 +560,11 @@ Element.Methods = {
     var args = Array.prototype.slice.call(arguments, 1);
     return Selector.findChildElements(element, args);
   },
-  
+
   /**
    *  Element.adjacent(@element, selector...) -> [Element...]
    *  - selector (String): A CSS selector.
-   *  
+   *
    *  Finds all siblings of the current element that match the given
    *  selector(s).
   **/
@@ -572,10 +572,10 @@ Element.Methods = {
     var args = Array.prototype.slice.call(arguments, 1);
     return Selector.findChildElements(element.parentNode, args).without(element);
   },
-  
+
   /**
    *  Element#identify(@element) -> String
-   *  
+   *
    *  Returns `element`'s ID. If `element` does not have an ID, one is
    *  generated, assigned to `element`, and returned.
   **/
@@ -587,18 +587,18 @@ Element.Methods = {
     Element.writeAttribute(element, 'id', id);
     return id;
   },
-  
+
   /**
    *  Element#readAttribute(@element, attributeName) -> String | null
-   *  
+   *
    *  Returns the value of `element`'s attribute with the given name.
   **/
   readAttribute: (function(){
-    
+
     var iframeGetAttributeThrowsError = (function(){
       var el = document.createElement('iframe'),
           isBuggy = false;
-          
+
       document.documentElement.appendChild(el);
       try {
         el.getAttribute('type', 2);
@@ -609,12 +609,12 @@ Element.Methods = {
       el = null;
       return isBuggy;
     })();
-    
+
     return function(element, name) {
       element = $(element);
       // check boolean first, to get out of expression faster
       if (iframeGetAttributeThrowsError &&
-          name === 'type' && 
+          name === 'type' &&
           element.tagName.toUpperCase() == 'IFRAME') {
         return element.getAttribute('type');
       }
@@ -623,28 +623,28 @@ Element.Methods = {
         if (t.values[name]) return t.values[name](element, name);
         if (t.names[name]) name = t.names[name];
         if (name.include(':')) {
-          return (!element.attributes || !element.attributes[name]) ? null : 
+          return (!element.attributes || !element.attributes[name]) ? null :
            element.attributes[name].value;
         }
-      }      
+      }
       return element.getAttribute(name);
     }
   })(),
-  
+
   /**
    *  Element#writeAttribute(@element, attribute[, value = true]) -> Element
    *  Element#writeAttribute(@element, attributes) -> Element
-   *  
+   *
    *  Adds, changes, or removes attributes passed as either a hash or a
    *  name/value pair.
   **/
   writeAttribute: function(element, name, value) {
     element = $(element);
     var attributes = { }, t = Element._attributeTranslations.write;
-    
+
     if (typeof name == 'object') attributes = name;
     else attributes[name] = Object.isUndefined(value) ? true : value;
-    
+
     for (var attr in attributes) {
       name = t.names[attr] || attr;
       value = attributes[attr];
@@ -657,28 +657,28 @@ Element.Methods = {
     }
     return element;
   },
-  
+
   /**
    *  Element#getHeight(@element) -> Number
-   *  
+   *
    *  Returns the height of `element`.
   **/
   getHeight: function(element) {
     return Element.getDimensions(element).height;
   },
-  
+
   /**
    *  Element#getWidth(@element) -> Number
-   *  
+   *
    *  Returns the width of `element`.
   **/
   getWidth: function(element) {
     return Element.getDimensions(element).width;
   },
-  
+
   /**
    *  Element#classNames(@element) -> [String...]
-   *  
+   *
    *  Returns a new instance of [[Element.ClassNames]], an [[Enumerable]]
    *  object used to read and write CSS class names of `element`.
   **/
@@ -688,19 +688,19 @@ Element.Methods = {
 
   /**
    *  Element#hasClassName(@element, className) -> Boolean
-   *  
+   *
    *  Checks whether `element` has the given CSS class name.
   **/
   hasClassName: function(element, className) {
     if (!(element = $(element))) return;
     var elementClassName = element.className;
-    return (elementClassName.length > 0 && (elementClassName == className || 
+    return (elementClassName.length > 0 && (elementClassName == className ||
       new RegExp("(^|\\s)" + className + "(\\s|$)").test(elementClassName)));
   },
 
   /**
    *  Element#addClassName(@element, className) -> Element
-   *  
+   *
    *  Adds a CSS class to `element`.
   **/
   addClassName: function(element, className) {
@@ -712,7 +712,7 @@ Element.Methods = {
 
   /**
    *  Element#removeClassName(@element, className) -> Element
-   *  
+   *
    *  Removes a CSS class from `element`.
   **/
   removeClassName: function(element, className) {
@@ -721,10 +721,10 @@ Element.Methods = {
       new RegExp("(^|\\s+)" + className + "(\\s+|$)"), ' ').strip();
     return element;
   },
-  
+
   /**
    *  Element#toggleClassName(@element, className) -> Element
-   *  
+   *
    *  Toggles the presence of a CSS class on `element`.
   **/
   toggleClassName: function(element, className) {
@@ -732,10 +732,10 @@ Element.Methods = {
     return Element[Element.hasClassName(element, className) ?
       'removeClassName' : 'addClassName'](element, className);
   },
-  
+
   /**
    *  Element#cleanWhitespace(@element) -> Element
-   *  
+   *
    *  Removes whitespace-only text node children from `element`.
   **/
   cleanWhitespace: function(element) {
@@ -749,19 +749,19 @@ Element.Methods = {
     }
     return element;
   },
-  
+
   /**
    *  Element#empty(@element) -> Element
-   *  
+   *
    *  Tests whether `element` is empty (i.e., contains only whitespace).
   **/
   empty: function(element) {
     return $(element).innerHTML.blank();
   },
-  
+
   /**
    *  Element#descendantOf(@element, ancestor) -> Boolean
-   *  
+   *
    *  Checks if `element` is a descendant of `ancestor`.
   **/
   descendantOf: function(element, ancestor) {
@@ -769,19 +769,19 @@ Element.Methods = {
 
     if (element.compareDocumentPosition)
       return (element.compareDocumentPosition(ancestor) & 8) === 8;
-      
+
     if (ancestor.contains)
       return ancestor.contains(element) && ancestor !== element;
-    
+
     while (element = element.parentNode)
       if (element == ancestor) return true;
-      
+
     return false;
   },
-  
+
   /**
    *  Element#scrollTo(@element) -> Element
-   *  
+   *
    *  Scrolls the window so that `element` appears at the top of the viewport.
   **/
   scrollTo: function(element) {
@@ -790,11 +790,11 @@ Element.Methods = {
     window.scrollTo(pos[0], pos[1]);
     return element;
   },
-  
+
   /**
    *  Element#getStyle(@element, style) -> String | null
    *  - style (String): The property name to be retrieved.
-   *  
+   *
    *  Returns the given CSS property value of `element`. The property can be
    *  specified in either its CSS form (`font-size`) or its camelized form
    *  (`fontSize`).
@@ -810,21 +810,21 @@ Element.Methods = {
     if (style == 'opacity') return value ? parseFloat(value) : 1.0;
     return value == 'auto' ? null : value;
   },
-  
+
   /**
    *  Element#getOpacity(@element) -> String | null
-   *  
+   *
    *  Returns the opacity of the element.
   **/
   getOpacity: function(element) {
     return $(element).getStyle('opacity');
   },
-  
+
   /**
    *  Element#setStyle(@element, styles) -> Element
-   *  
-   *  Modifies `element`’s CSS style properties.
-   *  
+   *
+   *  Modifies `element`'s CSS style properties.
+   *
    *  Styles are passed as an object of property-value pairs in which the
    *  properties are specified in their camelized form (e.g., `fontSize`).
   **/
@@ -838,29 +838,29 @@ Element.Methods = {
     }
     for (var property in styles)
       if (property == 'opacity') element.setOpacity(styles[property]);
-      else 
+      else
         elementStyle[(property == 'float' || property == 'cssFloat') ?
-          (Object.isUndefined(elementStyle.styleFloat) ? 'cssFloat' : 'styleFloat') : 
+          (Object.isUndefined(elementStyle.styleFloat) ? 'cssFloat' : 'styleFloat') :
             property] = styles[property];
 
     return element;
   },
-  
+
   /**
    *  Element#setOpacity(@element, value) -> Element
-   *  
+   *
    *  Sets the opacity of `element`.
   **/
   setOpacity: function(element, value) {
     element = $(element);
-    element.style.opacity = (value == 1 || value === '') ? '' : 
+    element.style.opacity = (value == 1 || value === '') ? '' :
       (value < 0.00001) ? 0 : value;
     return element;
   },
-  
+
   /**
    *  Element#getDimensions(@element) -> Object
-   *  
+   *
    *  Finds the computed width and height of `element` and returns them as
    *  key/value pairs of an object.
   **/
@@ -869,7 +869,7 @@ Element.Methods = {
     var display = Element.getStyle(element, 'display');
     if (display != 'none' && display != null) // Safari bug
       return {width: element.offsetWidth, height: element.offsetHeight};
-    
+
     // All *Width and *Height properties give 0 on elements with display none,
     // so enable the element temporarily
     var els = element.style;
@@ -885,13 +885,13 @@ Element.Methods = {
     els.display = originalDisplay;
     els.position = originalPosition;
     els.visibility = originalVisibility;
-    return {width: originalWidth, height: originalHeight};    
+    return {width: originalWidth, height: originalHeight};
   },
-  
+
   /**
    *  Element#makePositioned(@element) -> Element
    *
-   *  Allows for the easy creation of a CSS containing block by setting 
+   *  Allows for the easy creation of a CSS containing block by setting
    *  `element`'s CSS `position` to `relative` if its initial position is
    *  either `static` or `undefined`.
   **/
@@ -906,14 +906,14 @@ Element.Methods = {
       if (Prototype.Browser.Opera) {
         element.style.top = 0;
         element.style.left = 0;
-      }  
+      }
     }
     return element;
   },
-  
+
   /**
    *  Element#undoPositioned(@element) -> Element
-   *  
+   *
    *  Sets `element` back to the state it was in _before_
    *  [[Element.makePositioned]] was applied to it.
   **/
@@ -925,14 +925,14 @@ Element.Methods = {
         element.style.top =
         element.style.left =
         element.style.bottom =
-        element.style.right = '';   
+        element.style.right = '';
     }
     return element;
   },
 
   /**
    *  Element#makeClipping(@element) -> Element
-   *  
+   *
    *  Simulates the poorly-supported CSS `clip` property by setting `element`'s
    *  `overflow` value to `hidden`.
   **/
@@ -947,8 +947,8 @@ Element.Methods = {
 
   /**
    *  Element#undoClipping(@element) -> Element
-   *  
-   *  Sets `element`’s CSS `overflow` property back to the value it had
+   *
+   *  Sets `element`'s CSS `overflow` property back to the value it had
    *  _before_ [[Element.makeClipping]] was applied.
   **/
   undoClipping: function(element) {
@@ -961,10 +961,10 @@ Element.Methods = {
 
   /**
    *  Element#cumulativeOffset(@element) -> Array
-   *  
+   *
    *  Returns the offsets of `element` from the top left corner of the
    *  document.
-   *  
+   *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
   **/
@@ -980,10 +980,10 @@ Element.Methods = {
 
   /**
    *  Element#positionedOffset(@element) -> Array
-   *  
-   *  Returns `element`’s offset relative to its closest positioned ancestor
+   *
+   *  Returns `element`'s offset relative to its closest positioned ancestor
    *  (the element that would be returned by [[Element.getOffsetParent]]).
-   *  
+   *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
   **/
@@ -1004,7 +1004,7 @@ Element.Methods = {
 
   /**
    *  Element#absolutize(@element) -> Element
-   *  
+   *
    *  Turns `element` into an absolutely-positioned element _without_ changing
    *  its position in the page layout.
   **/
@@ -1033,10 +1033,10 @@ Element.Methods = {
 
   /**
    *  Element#relativize(@element) -> Element
-   *  
+   *
    *  Turns `element` into a relatively-positioned element without changing
    *  its position in the page layout.
-   *  
+   *
    *  Used to undo a call to [[Element.absolutize]].
   **/
   relativize: function(element) {
@@ -1056,10 +1056,10 @@ Element.Methods = {
 
   /**
    *  Element.cumulativeScrollOffset(@element) -> Array
-   *  
+   *
    *  Calculates the cumulative scroll offset of an element in nested
    *  scrolling containers.
-   *  
+   *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
   **/
@@ -1067,22 +1067,22 @@ Element.Methods = {
     var valueT = 0, valueL = 0;
     do {
       valueT += element.scrollTop  || 0;
-      valueL += element.scrollLeft || 0; 
+      valueL += element.scrollLeft || 0;
       element = element.parentNode;
     } while (element);
     return Element._returnOffset(valueL, valueT);
   },
-  
+
   /**
    *  Element#getOffsetParent(@element) -> Element
-   *  
-   *  Returns `element`’s closest _positioned_ ancestor. If none is found, the
+   *
+   *  Returns `element`'s closest _positioned_ ancestor. If none is found, the
    *  `body` element is returned.
   **/
   getOffsetParent: function(element) {
     if (element.offsetParent) return $(element.offsetParent);
     if (element == document.body) return $(element);
-    
+
     while ((element = element.parentNode) && element != document.body)
       if (Element.getStyle(element, 'position') != 'static')
         return $(element);
@@ -1092,9 +1092,9 @@ Element.Methods = {
 
   /**
    *  Element#viewportOffset(@element) -> Array
-   *  
+   *
    *  Returns the X/Y coordinates of element relative to the viewport.
-   *  
+   *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
   **/
@@ -1122,13 +1122,13 @@ Element.Methods = {
 
     return Element._returnOffset(valueL, valueT);
   },
-  
+
   /**
    *  Element#clonePosition(@element, source[, options]) -> Element
-   *  
+   *
    *  Clones the position and/or dimensions of `source` onto `element` as
    *  defined by `options`.
-   *  
+   *
    *  Valid keys for `options` are: `setLeft`, `setTop`, `setWidth`, and
    *  `setHeight` (all booleans which default to `true`); and `offsetTop`
    *  and `offsetLeft` (numbers which default to `0`). Use these to control
@@ -1153,7 +1153,7 @@ Element.Methods = {
     element = $(element);
     var delta = [0, 0];
     var parent = null;
-    // delta [0,0] will do fine with position: fixed elements, 
+    // delta [0,0] will do fine with position: fixed elements,
     // position:absolute needs offsetParent deltas
     if (Element.getStyle(element, 'position') == 'absolute') {
       parent = Element.getOffsetParent(element);
@@ -1163,7 +1163,7 @@ Element.Methods = {
     // correct by body offsets (fixes Safari)
     if (parent == document.body) {
       delta[0] -= document.body.offsetLeft;
-      delta[1] -= document.body.offsetTop; 
+      delta[1] -= document.body.offsetTop;
     }
 
     // set position
@@ -1180,7 +1180,7 @@ Object.extend(Element.Methods, {
    *  Element#getElementsBySelector(@element, selector) -> [Element...]
   **/
   getElementsBySelector: Element.Methods.select,
-  
+
   /** alias of: Element.immediateDescendants
    *  Element#childElements(@element) -> [Element...]
   **/
@@ -1192,13 +1192,13 @@ Element._attributeTranslations = {
     names: {
       className: 'class',
       htmlFor:   'for'
-    }, 
+    },
     values: { }
   }
 };
 
-if (Prototype.Browser.Opera) { 
-  Element.Methods.getStyle = Element.Methods.getStyle.wrap( 
+if (Prototype.Browser.Opera) {
+  Element.Methods.getStyle = Element.Methods.getStyle.wrap(
     function(proceed, element, style) {
       switch (style) {
         case 'left': case 'top': case 'right': case 'bottom':
@@ -1206,14 +1206,14 @@ if (Prototype.Browser.Opera) {
         case 'height': case 'width':
           // returns '0px' for hidden elements; we want it to return null
           if (!Element.visible(element)) return null;
-          
+
           // returns the border-box dimensions rather than the content-box
           // dimensions, so we subtract padding and borders from the value
           var dim = parseInt(proceed(element, style), 10);
-          
+
           if (dim !== element['offset' + style.capitalize()])
             return dim + 'px';
-            
+
           var properties;
           if (style === 'height') {
             properties = ['border-top-width', 'padding-top',
@@ -1221,28 +1221,28 @@ if (Prototype.Browser.Opera) {
           }
           else {
             properties = ['border-left-width', 'padding-left',
-             'padding-right', 'border-right-width'];            
-          }             
+             'padding-right', 'border-right-width'];
+          }
           return properties.inject(dim, function(memo, property) {
             var val = proceed(element, property);
-            return val === null ? memo : memo - parseInt(val, 10);              
-          }) + 'px';          
+            return val === null ? memo : memo - parseInt(val, 10);
+          }) + 'px';
         default: return proceed(element, style);
       }
     }
   );
-  
+
   Element.Methods.readAttribute = Element.Methods.readAttribute.wrap(
     function(proceed, element, attribute) {
       if (attribute === 'title') return element.title;
       return proceed(element, attribute);
     }
-  );  
+  );
 }
 
 else if (Prototype.Browser.IE) {
   // IE doesn't report offsets correctly for static elements, so we change them
-  // to "relative" to get the values, then change them back.  
+  // to "relative" to get the values, then change them back.
   Element.Methods.getOffsetParent = Element.Methods.getOffsetParent.wrap(
     function(proceed, element) {
       element = $(element);
@@ -1257,7 +1257,7 @@ else if (Prototype.Browser.IE) {
       return value;
     }
   );
-  
+
   $w('positionedOffset viewportOffset').each(function(method) {
     Element.Methods[method] = Element.Methods[method].wrap(
       function(proceed, element) {
@@ -1278,7 +1278,7 @@ else if (Prototype.Browser.IE) {
       }
     );
   });
-  
+
   Element.Methods.cumulativeOffset = Element.Methods.cumulativeOffset.wrap(
     function(proceed, element) {
       try { element.offsetParent }
@@ -1286,7 +1286,7 @@ else if (Prototype.Browser.IE) {
       return proceed(element);
     }
   );
-    
+
   Element.Methods.getStyle = function(element, style) {
     element = $(element);
     style = (style == 'float' || style == 'cssFloat') ? 'styleFloat' : style.camelize();
@@ -1306,7 +1306,7 @@ else if (Prototype.Browser.IE) {
     }
     return value;
   };
-  
+
   Element.Methods.setOpacity = function(element, value) {
     function stripAlpha(filter){
       return filter.replace(/alpha\([^\)]*\)/gi,'');
@@ -1316,7 +1316,7 @@ else if (Prototype.Browser.IE) {
     if ((currentStyle && !currentStyle.hasLayout) ||
       (!currentStyle && element.style.zoom == 'normal'))
         element.style.zoom = 1;
-    
+
     var filter = element.getStyle('filter'), style = element.style;
     if (value == 1 || value === '') {
       (filter = stripAlpha(filter)) ?
@@ -1325,19 +1325,19 @@ else if (Prototype.Browser.IE) {
     } else if (value < 0.00001) value = 0;
     style.filter = stripAlpha(filter) +
       'alpha(opacity=' + (value * 100) + ')';
-    return element;   
+    return element;
   };
 
   Element._attributeTranslations = (function(){
-    
+
     var classProp = 'className';
     var forProp = 'for';
-    
+
     var el = document.createElement('div');
-    
+
     // try "className" first (IE <8)
     el.setAttribute(classProp, 'x');
-    
+
     if (el.className !== 'x') {
       // try "class" (IE 8)
       el.setAttribute('class', 'x');
@@ -1346,7 +1346,7 @@ else if (Prototype.Browser.IE) {
       }
     }
     el = null;
-    
+
     el = document.createElement('label');
     el.setAttribute(forProp, 'x');
     if (el.htmlFor !== 'x') {
@@ -1356,7 +1356,7 @@ else if (Prototype.Browser.IE) {
       }
     }
     el = null;
-    
+
     return {
       read: {
         names: {
@@ -1374,12 +1374,12 @@ else if (Prototype.Browser.IE) {
             return node ? node.value : "";
           },
           _getEv: (function(){
-            
+
             var el = document.createElement('div');
             el.onclick = Prototype.emptyFunction;
             var value = el.getAttribute('onclick');
             var f;
-            
+
             // IE<8
             if (String(value).indexOf('{') > -1) {
               // intrinsic event attributes are serialized as `function { ... }`
@@ -1417,7 +1417,7 @@ else if (Prototype.Browser.IE) {
       }
     }
   })();
-  
+
   Element._attributeTranslations.write = {
     names: Object.extend({
       cellpadding: 'cellPadding',
@@ -1427,21 +1427,21 @@ else if (Prototype.Browser.IE) {
       checked: function(element, value) {
         element.checked = !!value;
       },
-      
+
       style: function(element, value) {
         element.style.cssText = value ? value : '';
       }
     }
   };
-  
+
   Element._attributeTranslations.has = {};
-    
+
   $w('colSpan rowSpan vAlign dateTime accessKey tabIndex ' +
       'encType maxLength readOnly longDesc frameBorder').each(function(attr) {
     Element._attributeTranslations.write.names[attr.toLowerCase()] = attr;
     Element._attributeTranslations.has[attr.toLowerCase()] = attr;
   });
-  
+
   (function(v) {
     Object.extend(v, {
       href:        v._getAttr,
@@ -1472,9 +1472,9 @@ else if (Prototype.Browser.IE) {
       onchange:    v._getEv
     });
   })(Element._attributeTranslations.read.values);
-  
+
   // We optimize Element#down for IE so that it does not call
-  // Element#descendants (and therefore extend all nodes).  
+  // Element#descendants (and therefore extend all nodes).
   if (Prototype.BrowserFeatures.ElementExtensions) {
     (function() {
       function _descendants(element) {
@@ -1490,16 +1490,16 @@ else if (Prototype.Browser.IE) {
         if (arguments.length == 1) return element.firstDescendant();
         return Object.isNumber(expression) ? _descendants(element)[expression] :
           Element.select(element, expression)[index || 0];
-      }    
+      }
     })();
   }
-  
+
 }
 
 else if (Prototype.Browser.Gecko && /rv:1\.8\.0/.test(navigator.userAgent)) {
   Element.Methods.setOpacity = function(element, value) {
     element = $(element);
-    element.style.opacity = (value == 1) ? 0.999999 : 
+    element.style.opacity = (value == 1) ? 0.999999 :
       (value === '') ? '' : (value < 0.00001) ? 0 : value;
     return element;
   };
@@ -1510,19 +1510,19 @@ else if (Prototype.Browser.WebKit) {
     element = $(element);
     element.style.opacity = (value == 1 || value === '') ? '' :
       (value < 0.00001) ? 0 : value;
-    
+
     if (value == 1)
-      if(element.tagName.toUpperCase() == 'IMG' && element.width) { 
+      if(element.tagName.toUpperCase() == 'IMG' && element.width) {
         element.width++; element.width--;
       } else try {
         var n = document.createTextNode(' ');
         element.appendChild(n);
         element.removeChild(n);
       } catch (e) { }
-    
+
     return element;
   };
-  
+
   // Safari returns margins on body which is incorrect if the child is absolutely
   // positioned.  For performance reasons, redefine Element#cumulativeOffset for
   // KHTML/WebKit only.
@@ -1533,10 +1533,10 @@ else if (Prototype.Browser.WebKit) {
       valueL += element.offsetLeft || 0;
       if (element.offsetParent == document.body)
         if (Element.getStyle(element, 'position') == 'absolute') break;
-        
+
       element = element.offsetParent;
     } while (element);
-    
+
     return Element._returnOffset(valueL, valueT);
   };
 }
@@ -1544,7 +1544,7 @@ else if (Prototype.Browser.WebKit) {
 if ('outerHTML' in document.documentElement) {
   Element.Methods.replace = function(element, content) {
     element = $(element);
-    
+
     if (content && content.toElement) content = content.toElement();
     if (Object.isElement(content)) {
       element.parentNode.replaceChild(content, element);
@@ -1553,18 +1553,18 @@ if ('outerHTML' in document.documentElement) {
 
     content = Object.toHTML(content);
     var parent = element.parentNode, tagName = parent.tagName.toUpperCase();
-    
+
     if (Element._insertionTranslations.tags[tagName]) {
       var nextSibling = element.next();
       var fragments = Element._getContentFromAnonymousElement(tagName, content.stripScripts());
       parent.removeChild(element);
       if (nextSibling)
         fragments.each(function(node) { parent.insertBefore(node, nextSibling) });
-      else 
+      else
         fragments.each(function(node) { parent.appendChild(node) });
     }
     else element.outerHTML = content.stripScripts();
-    
+
     content.evalScripts.bind(content).defer();
     return element;
   };
@@ -1630,20 +1630,20 @@ Element.Methods.ByTag = { };
 Object.extend(Element, Element.Methods);
 
 (function(div) {
-  
+
   if (!Prototype.BrowserFeatures.ElementExtensions && div['__proto__']) {
     window.HTMLElement = { };
     window.HTMLElement.prototype = div['__proto__'];
     Prototype.BrowserFeatures.ElementExtensions = true;
   }
-  
+
   div = null;
-  
+
 })(document.createElement('div'))
 
 /**
  *  Element.extend(element) -> Element
- *  
+ *
  *  Extends `element` with all of the methods contained in `Element.Methods`
  *  and `Element.Methods.Simulated`.
  *  If `element` is an `input`, `textarea`, or `select` tag, it will also be
@@ -1651,7 +1651,7 @@ Object.extend(Element, Element.Methods);
  *  tag, it will also be extended with the methods from `Form.Methods`.
 **/
 Element.extend = (function() {
-  
+
   function checkDeficiency(tagName) {
     if (typeof window.Element != 'undefined') {
       var proto = window.Element.prototype;
@@ -1667,7 +1667,7 @@ Element.extend = (function() {
     }
     return false;
   }
-  
+
   function extendElementWith(element, methods) {
     for (var property in methods) {
       var value = methods[property];
@@ -1675,15 +1675,15 @@ Element.extend = (function() {
         element[property] = value.methodize();
     }
   }
-  
+
   var HTMLOBJECTELEMENT_PROTOTYPE_BUGGY = checkDeficiency('object');
   var HTMLAPPLETELEMENT_PROTOTYPE_BUGGY = checkDeficiency('applet');
-  
+
   if (Prototype.BrowserFeatures.SpecificElementExtensions) {
-    // IE8 has a bug with `HTMLObjectElement` and `HTMLAppletElement` objects 
-    // not being able to "inherit" from `Element.prototype` 
+    // IE8 has a bug with `HTMLObjectElement` and `HTMLAppletElement` objects
+    // not being able to "inherit" from `Element.prototype`
     // or a specific prototype - `HTMLObjectElement.prototype`, `HTMLAppletElement.prototype`
-    if (HTMLOBJECTELEMENT_PROTOTYPE_BUGGY && 
+    if (HTMLOBJECTELEMENT_PROTOTYPE_BUGGY &&
         HTMLAPPLETELEMENT_PROTOTYPE_BUGGY) {
       return function(element) {
         if (element && typeof element._extendedByPrototype == 'undefined') {
@@ -1701,25 +1701,25 @@ Element.extend = (function() {
   }
 
   var Methods = { }, ByTag = Element.Methods.ByTag;
-  
+
   var extend = Object.extend(function(element) {
-    // need to use actual `typeof` operator 
+    // need to use actual `typeof` operator
     // to prevent errors in some environments (when accessing node expandos)
-    if (!element || typeof element._extendedByPrototype != 'undefined' || 
+    if (!element || typeof element._extendedByPrototype != 'undefined' ||
         element.nodeType != 1 || element == window) return element;
 
     var methods = Object.clone(Methods),
         tagName = element.tagName.toUpperCase();
-    
+
     // extend methods for specific tags
     if (ByTag[tagName]) Object.extend(methods, ByTag[tagName]);
-    
+
     extendElementWith(element, methods);
-    
+
     element._extendedByPrototype = Prototype.emptyFunction;
     return element;
-    
-  }, { 
+
+  }, {
     refresh: function() {
       // extend methods for all tags (Safari doesn't need this)
       if (!Prototype.BrowserFeatures.ElementExtensions) {
@@ -1728,7 +1728,7 @@ Element.extend = (function() {
       }
     }
   });
-  
+
   extend.refresh();
   return extend;
 })();
@@ -1741,16 +1741,16 @@ Element.hasAttribute = function(element, attribute) {
 /**
  *  Element.addMethods(methods) -> undefined
  *  Element.addMethods(tagName, methods) -> undefined
- *  
+ *
  *  Takes a hash of methods and makes them available as methods of extended
  *  elements and of the `Element` object.
- *  
+ *
  *  The second usage form is for adding methods only to specific tag names.
- *  
+ *
 **/
 Element.addMethods = function(methods) {
   var F = Prototype.BrowserFeatures, T = Element.Methods.ByTag;
-  
+
   if (!methods) {
     Object.extend(Form, Form.Methods);
     Object.extend(Form.Element, Form.Element.Methods);
@@ -1761,18 +1761,18 @@ Element.addMethods = function(methods) {
       "TEXTAREA": Object.clone(Form.Element.Methods)
     });
   }
-  
+
   if (arguments.length == 2) {
     var tagName = methods;
     methods = arguments[1];
   }
-  
-  if (!tagName) Object.extend(Element.Methods, methods || { });  
+
+  if (!tagName) Object.extend(Element.Methods, methods || { });
   else {
     if (Object.isArray(tagName)) tagName.each(extend);
     else extend(tagName);
   }
-  
+
   function extend(tagName) {
     tagName = tagName.toUpperCase();
     if (!Element.Methods.ByTag[tagName])
@@ -1789,18 +1789,18 @@ Element.addMethods = function(methods) {
         destination[property] = value.methodize();
     }
   }
-  
+
   function findDOMClass(tagName) {
     var klass;
-    var trans = {       
-      "OPTGROUP": "OptGroup", "TEXTAREA": "TextArea", "P": "Paragraph", 
+    var trans = {
+      "OPTGROUP": "OptGroup", "TEXTAREA": "TextArea", "P": "Paragraph",
       "FIELDSET": "FieldSet", "UL": "UList", "OL": "OList", "DL": "DList",
       "DIR": "Directory", "H1": "Heading", "H2": "Heading", "H3": "Heading",
-      "H4": "Heading", "H5": "Heading", "H6": "Heading", "Q": "Quote", 
-      "INS": "Mod", "DEL": "Mod", "A": "Anchor", "IMG": "Image", "CAPTION": 
-      "TableCaption", "COL": "TableCol", "COLGROUP": "TableCol", "THEAD": 
+      "H4": "Heading", "H5": "Heading", "H6": "Heading", "Q": "Quote",
+      "INS": "Mod", "DEL": "Mod", "A": "Anchor", "IMG": "Image", "CAPTION":
+      "TableCaption", "COL": "TableCol", "COLGROUP": "TableCol", "THEAD":
       "TableSection", "TFOOT": "TableSection", "TBODY": "TableSection", "TR":
-      "TableRow", "TH": "TableCell", "TD": "TableCell", "FRAMESET": 
+      "TableRow", "TH": "TableCell", "TD": "TableCell", "FRAMESET":
       "FrameSet", "IFRAME": "IFrame"
     };
     if (trans[tagName]) klass = 'HTML' + trans[tagName] + 'Element';
@@ -1809,51 +1809,51 @@ Element.addMethods = function(methods) {
     if (window[klass]) return window[klass];
     klass = 'HTML' + tagName.capitalize() + 'Element';
     if (window[klass]) return window[klass];
-    
-    var element = document.createElement(tagName);    
-    var proto = element['__proto__'] || element.constructor.prototype;    
+
+    var element = document.createElement(tagName);
+    var proto = element['__proto__'] || element.constructor.prototype;
     element = null;
     return proto;
   }
-  
+
   var elementPrototype = window.HTMLElement ? HTMLElement.prototype :
    Element.prototype;
-  
+
   if (F.ElementExtensions) {
     copy(Element.Methods, elementPrototype);
     copy(Element.Methods.Simulated, elementPrototype, true);
   }
-  
+
   if (F.SpecificElementExtensions) {
     for (var tag in Element.Methods.ByTag) {
       var klass = findDOMClass(tag);
       if (Object.isUndefined(klass)) continue;
       copy(T[tag], klass.prototype);
     }
-  }  
+  }
 
   Object.extend(Element, Element.Methods);
   delete Element.ByTag;
-  
+
   if (Element.extend.refresh) Element.extend.refresh();
   Element.cache = { };
 };
 
 /** section: DOM
  * document.viewport
- *  
+ *
  *  The `document.viewport` namespace contains methods that return information
- *  about the viewport — the rectangle that represents the portion of a web
+ *  about the viewport &mdash; the rectangle that represents the portion of a web
  *  page within view. In other words, it's the browser window minus all chrome.
 **/
 
 document.viewport = {
-  
+
   /**
    *  document.viewport.getDimensions() -> Object
-   *  
+   *
    *  Returns the size of the viewport.
-   *  
+   *
    *  Returns an object of the form `{ width: Number, height: Number }`.
   **/
   getDimensions: function() {
@@ -1862,9 +1862,9 @@ document.viewport = {
 
   /**
    *  document.viewport.getScrollOffsets() -> Array
-   *  
-   *  Returns the viewport’s horizontal and vertical scroll offsets.
-   *  
+   *
+   *  Returns the viewport's horizontal and vertical scroll offsets.
+   *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
   **/
@@ -1877,38 +1877,38 @@ document.viewport = {
 
 (function(viewport) {
   var B = Prototype.Browser, doc = document, element, property = {};
-   
+
   function getRootElement() {
     // Older versions of Safari.
     if (B.WebKit && !doc.evaluate)
       return document;
-    
+
     // Older versions of Opera.
     if (B.Opera && window.parseFloat(window.opera.version()) < 9.5)
       return document.body;
-    
+
     return document.documentElement;
   }
 
   function define(D) {
     if (!element) element = getRootElement();
-    
+
     property[D] = 'client' + D;
 
     viewport['get' + D] = function() { return element[property[D]] };
     return viewport['get' + D]();
   }
-  
+
   /**
    *  document.viewport.getWidth() -> Number
-   *  
+   *
    *  Returns the width of the viewport.
   **/
   viewport.getWidth  = define.curry('Width');
-  
+
   /**
    *  document.viewport.getHeight() -> Number
-   *  
+   *
    *  Returns the height of the viewport.
   **/
   viewport.getHeight = define.curry('Height');
@@ -1922,12 +1922,12 @@ Element.Storage = {
 Element.addMethods({
   /**
    *  Element#getStorage(@element) -> Hash
-   *  
+   *
    *  Returns the [[Hash]] object that stores custom metadata for this element.
   **/
   getStorage: function(element) {
     if (!(element = $(element))) return;
-    
+
     var uid;
     if (element === window) {
       uid = 0;
@@ -1936,59 +1936,59 @@ Element.addMethods({
         element._prototypeUID = [Element.Storage.UID++];
       uid = element._prototypeUID[0];
     }
-        
+
     if (!Element.Storage[uid])
       Element.Storage[uid] = $H();
-    
+
     return Element.Storage[uid];
   },
-  
+
   /**
    *  Element#store(@element, key, value) -> Element
-   *  
+   *
    *  Stores a key/value pair of custom metadata on the element.
-   *  
+   *
    *  The metadata can later be retrieved with [[Element.retrieve]].
   **/
   store: function(element, key, value) {
     if (!(element = $(element))) return;
-    
+
     if (arguments.length === 2) {
       // Assume we've been passed an object full of key/value pairs.
       Element.getStorage(element).update(key);
     } else {
       Element.getStorage(element).set(key, value);
     }
-    
+
     return element;
   },
-  
+
   /**
    *  Element#retrieve(@element, key[, defaultValue]) -> ?
-   *  
+   *
    *  Retrieves custom metadata set on `element` with [[Element.store]].
-   *  
+   *
    *  If the value is `undefined` and `defaultValue` is given, it will be
    *  stored on the element as its new value for that key, then returned.
   **/
   retrieve: function(element, key, defaultValue) {
     if (!(element = $(element))) return;
     var hash = Element.getStorage(element), value = hash.get(key);
-    
+
     if (Object.isUndefined(value)) {
       hash.set(key, defaultValue);
       value = defaultValue;
     }
-    
+
     return value;
   },
-  
+
   /**
    *  Element#clone(@element, deep) -> Element
    *  - deep (Boolean): Whether to clone `element`'s descendants as well.
-   *  
+   *
    *  Returns a duplicate of `element`.
-   *  
+   *
    *  A wrapper around DOM Level 2 `Node#cloneNode`, `Element#clone` cleans up
    *  any expando properties defined by Prototype.
   **/

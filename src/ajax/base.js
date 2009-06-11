@@ -11,10 +11,10 @@ Ajax.Base = Class.create({
       evalJS:       true
     };
     Object.extend(this.options, options || { });
-    
+
     this.options.method = this.options.method.toLowerCase();
-    
-    if (Object.isString(this.options.parameters)) 
+
+    if (Object.isString(this.options.parameters))
       this.options.parameters = this.options.parameters.toQueryParams();
     else if (Object.isHash(this.options.parameters))
       this.options.parameters = this.options.parameters.toObject();

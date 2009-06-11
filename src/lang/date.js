@@ -1,12 +1,12 @@
 /** section: Language
  * class Date
- *  
+ *
  *  Extensions to the built-in `Date` object.
 **/
 
 /**
  *  Date#toJSON() -> String
- *  
+ *
  *  Produces a string representation of the date in ISO 8601 format.
 **/
 Date.prototype.toJSON = function() {

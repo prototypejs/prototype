@@ -1,8 +1,8 @@
 /** section: Language
  * class PeriodicalExecuter
- *  
+ *
  *  A class that oversees the calling of a particular function periodically.
- *  
+ *
  *  `PeriodicalExecuter` shields you from multiple parallel executions of the
  *  `callback` function, should it take longer than the given interval to
  *  execute.
@@ -35,7 +35,7 @@ var PeriodicalExecuter = Class.create({
   execute: function() {
     this.callback(this);
   },
-  
+
   /**
    *  PeriodicalExecuter#stop() -> undefined
    *

@@ -1,12 +1,12 @@
 /** section: Language
  * class RegExp
- *  
+ *
  *  Extensions to the built-in `RegExp` object.
 **/
 
 /** alias of: RegExp#test
  *  RegExp#match(str) -> Boolean
- *  
+ *
  *  Return true if string matches the regular expression, false otherwise.
  **/
 RegExp.prototype.match = RegExp.prototype.test;

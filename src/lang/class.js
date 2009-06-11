@@ -2,9 +2,9 @@
 
 /** section: Language
  * Class
- *  
+ *
  *  Manages Prototype's class-based OOP system.
- *  
+ *
  *  Refer to Prototype's web site for a [tutorial on classes and
  *  inheritance](http://prototypejs.org/learn/class-inheritance).
 **/
@@ -40,31 +40,31 @@ var Class = (function() {
     var parent = null, properties = $A(arguments);
     if (Object.isFunction(properties[0]))
       parent = properties.shift();
-      
+
     function klass() {
       this.initialize.apply(this, arguments);
     }
-    
+
     Object.extend(klass, Class.Methods);
     klass.superclass = parent;
     klass.subclasses = [];
-    
+
     if (parent) {
       subclass.prototype = parent.prototype;
       klass.prototype = new subclass;
       parent.subclasses.push(klass);
     }
-    
+
     for (var i = 0; i < properties.length; i++)
       klass.addMethods(properties[i]);
-      
+
     if (!klass.prototype.initialize)
       klass.prototype.initialize = Prototype.emptyFunction;
-      
+
     klass.prototype.constructor = klass;
-    return klass;      
+    return klass;
   }
-  
+
   /**
    *  Class#addMethods(methods) -> Class
    *    - methods (Object): The methods to add to the class.
@@ -77,7 +77,7 @@ var Class = (function() {
    *  defined.
    *
    *  New methods propagate down the inheritance chain. If the class has
-   *  subclasses, those subclasses will receive the new methods — even in the
+   *  subclasses, those subclasses will receive the new methods &mdash; even in the
    *  context of `$super` calls. The new methods also propagate to instances of
    *  the class and of all its subclasses, even those that have already been
    *  instantiated.
@@ -85,16 +85,16 @@ var Class = (function() {
   function addMethods(source) {
     var ancestor   = this.superclass && this.superclass.prototype;
     var properties = Object.keys(source);
-    
-    // IE6 doesn't enumerate toString and valueOf properties,        
-    // Force copy if they're not coming from Object.prototype.      
+
+    // IE6 doesn't enumerate toString and valueOf properties,
+    // Force copy if they're not coming from Object.prototype.
     if (!Object.keys({ toString: true }).length) {
       if (source.toString != Object.prototype.toString)
         properties.push("toString");
       if (source.valueOf != Object.prototype.valueOf)
         properties.push("valueOf");
     }
-                                                                 
+
     for (var i = 0, length = properties.length; i < length; i++) {
       var property = properties[i], value = source[property];
       if (ancestor && Object.isFunction(value) &&
@@ -109,10 +109,10 @@ var Class = (function() {
       }
       this.prototype[property] = value;
     }
-    
-    return this;    
+
+    return this;
   }
-  
+
   return {
     create: create,
     Methods: {

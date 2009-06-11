@@ -1,22 +1,22 @@
 /** section: Language
  * class Function
- *  
+ *
  *  Extensions to the built-in `Function` object.
 **/
 Object.extend(Function.prototype, (function() {
   var slice = Array.prototype.slice;
-  
+
   function update(array, args) {
     var arrayLength = array.length, length = args.length;
     while (length--) array[arrayLength + length] = args[length];
     return array;
   }
-  
+
   function merge(array, args) {
     array = slice.call(array, 0);
     return update(array, args);
   }
-  
+
   /**
    *  Function#argumentNames() -> Array
    *
@@ -66,7 +66,7 @@ Object.extend(Function.prototype, (function() {
   /**
    *  Function#curry(args...) -> Function
    *  Partially applies the function, returning a function with one or more
-   *  arguments already “filled in.”
+   *  arguments already "filled in."
    *
    *  Function#curry works just like [[Function#bind]] without the initial
    *  scope argument. Use the latter if you need to partially apply a function
@@ -94,7 +94,7 @@ Object.extend(Function.prototype, (function() {
    *  To schedule a function to run as soon as the interpreter is idle, use
    *  [[Function#defer]].
   **/
-  function delay(timeout) { 
+  function delay(timeout) {
     var __method = this, args = slice.call(arguments, 1);
     timeout = timeout * 1000
     return window.setTimeout(function() {
@@ -106,8 +106,8 @@ Object.extend(Function.prototype, (function() {
    *  Function#defer(args...) -> Number
    *  Schedules the function to run as soon as the interpreter is idle.
    *
-   *  A “deferred” function will not run immediately; rather, it will run as soon
-   *  as the interpreter’s call stack is empty.
+   *  A "deferred" function will not run immediately; rather, it will run as soon
+   *  as the interpreter's call stack is empty.
    *
    *  Behaves much like `window.setTimeout` with a delay set to `0`. Returns an
    *  ID that can be used to clear the timeout with `window.clearTimeout` before
@@ -122,7 +122,7 @@ Object.extend(Function.prototype, (function() {
    *  Function#wrap(wrapperFunction) -> Function
    *  - wrapperFunction (Function): The function to act as a wrapper.
    *
-   *  Returns a function “wrapped” around the original function.
+   *  Returns a function "wrapped" around the original function.
    *
    *  `Function#wrap` distills the essence of aspect-oriented programming into
    *  a single method, letting you easily build on existing functions by
@@ -152,7 +152,7 @@ Object.extend(Function.prototype, (function() {
       return __method.apply(null, a);
     };
   }
-  
+
   return {
     argumentNames:       argumentNames,
     bind:                bind,

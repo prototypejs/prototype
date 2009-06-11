@@ -1,20 +1,20 @@
 /** section: DOM
  * Form
- *  
+ *
  *  Utilities for dealing with forms in the DOM.
- *  
+ *
  *  `Form` is a namespace for all things form-related, packed with form
  *  manipulation and serialization goodness. While it holds methods dealing
  *  with forms as a whole, its submodule [[Form.Element]] deals with specific
  *  form controls.
- *  
+ *
  *  Many of these methods are also available directly on `form` elements.
 **/
 
 var Form = {
   /**
    *  Form.reset(form) -> Element
-   *  
+   *
    *  Resets a form to its default values.
   **/
   reset: function(form) {
@@ -22,17 +22,17 @@ var Form = {
     form.reset();
     return form;
   },
-  
+
   /**
    *  Form.serializeElements(elements[, options]) -> String | Object
    *  - elements (Array): A collection of elements to include in the
    *    serialization.
    *  - options (Object): A list of options that affect the return value
    *    of the method.
-   *  
+   *
    *  Serialize an array of form elements to a string suitable for Ajax
-   *  requests. 
-   *  
+   *  requests.
+   *
    *  If `options.hash` is `true`, returns an object of key/value pairs
    *  instead (where keys are control names).
   **/
@@ -40,12 +40,12 @@ var Form = {
     if (typeof options != 'object') options = { hash: !!options };
     else if (Object.isUndefined(options.hash)) options.hash = true;
     var key, value, submitted = false, submit = options.submit;
-    
+
     var data = elements.inject({ }, function(result, element) {
       if (!element.disabled && element.name) {
         key = element.name; value = $(element).getValue();
         if (value != null && element.type != 'file' && (element.type != 'submit' || (!submitted &&
-            submit !== false && (!submit || key == submit) && (submitted = true)))) { 
+            submit !== false && (!submit || key == submit) && (submitted = true)))) {
           if (key in result) {
             // a key is already present; construct an array of values
             if (!Object.isArray(result[key])) result[key] = [result[key]];
@@ -56,7 +56,7 @@ var Form = {
       }
       return result;
     });
-    
+
     return options.hash ? data : Object.toQueryString(data);
   }
 };
@@ -66,19 +66,19 @@ Form.Methods = {
    *  Form#serialize(@form[, options]) -> String | Object
    *  - options (Object): A list of options that affect the return value
    *    of the method.
-   *  
+   *
    *  Serialize form data to a string suitable for Ajax requests.
-   *  
+   *
    *  If `options.hash` is `true`, returns an object of key/value pairs
    *  instead (where keys are control names).
   **/
   serialize: function(form, options) {
     return Form.serializeElements(Form.getElements(form), options);
   },
-  
+
   /**
    *  Form#getElements(@form) -> [Element...]
-   *  
+   *
    *  Returns a collection of all controls within a form.
   **/
   getElements: function(form) {
@@ -86,7 +86,7 @@ Form.Methods = {
         element,
         arr = [ ],
         serializers = Form.Element.Serializers;
-    // `length` is not used to prevent interference with 
+    // `length` is not used to prevent interference with
     // length-named elements shadowing `length` of a nodelist
     for (var i = 0; element = elements[i]; i++) {
       arr.push(element);
@@ -97,25 +97,25 @@ Form.Methods = {
       return elements;
     })
   },
-  
+
   /**
    *  Form#getInputs(@form [, type [, name]]) -> [Element...]
    *  - type (String): A value for the `type` attribute against which to
    *    filter.
    *  - name (String): A value for the `name` attribute against which to
    *    filter.
-   *  
+   *
    *  Returns a collection of all `INPUT` elements in a form.
-   *  
+   *
    *  Use optional `type` and `name` arguments to restrict the search on
    *  these attributes.
   **/
   getInputs: function(form, typeName, name) {
     form = $(form);
     var inputs = form.getElementsByTagName('input');
-    
+
     if (!typeName && !name) return $A(inputs).map(Element.extend);
-      
+
     for (var i = 0, matchingInputs = [], length = inputs.length; i < length; i++) {
       var input = inputs[i];
       if ((typeName && input.type != typeName) || (name && input.name != name))
@@ -128,7 +128,7 @@ Form.Methods = {
 
   /**
    *  Form#disable(@form) -> Element
-   *  
+   *
    *  Disables the form as a whole. Form controls will be visible but
    *  uneditable.
   **/
@@ -140,7 +140,7 @@ Form.Methods = {
 
   /**
    *  Form#enable(@form) -> Element
-   *  
+   *
    *  Enables a fully- or partially-disabled form.
   **/
   enable: function(form) {
@@ -151,7 +151,7 @@ Form.Methods = {
 
   /**
    *  Form#findFirstElement(@form) -> Element
-   *  
+   *
    *  Finds the first non-hidden, non-disabled control within the form.
   **/
   findFirstElement: function(form) {
@@ -161,7 +161,7 @@ Form.Methods = {
     var firstByIndex = elements.findAll(function(element) {
       return element.hasAttribute('tabIndex') && element.tabIndex >= 0;
     }).sortBy(function(element) { return element.tabIndex }).first();
-    
+
     return firstByIndex ? firstByIndex : elements.find(function(element) {
       return /^(?:input|select|textarea)$/i.test(element.tagName);
     });
@@ -169,7 +169,7 @@ Form.Methods = {
 
   /**
    *  Form#focusFirstElement(@form) -> Element
-   *  
+   *
    *  Gives keyboard focus to the first element of the form. Returns the form.
   **/
   focusFirstElement: function(form) {
@@ -177,15 +177,15 @@ Form.Methods = {
     form.findFirstElement().activate();
     return form;
   },
-  
+
   /**
    *  Form#request([options]) -> Ajax.Request
    *  - options (Object): Options to pass along to the `Ajax.Request`
    *    constructor.
-   *  
+   *
    *  A convenience method for serializing and submitting the form via an
-   *  [[Ajax.Request]] to the URL of the form’s `action` attribute.
-   *  
+   *  [[Ajax.Request]] to the URL of the form's `action` attribute.
+   *
    *  The `options` parameter is passed to the `Ajax.Request` instance,
    *  allowing one to override the HTTP method and/or specify additional
    *  parameters and callbacks.
@@ -196,15 +196,15 @@ Form.Methods = {
     var params = options.parameters, action = form.readAttribute('action') || '';
     if (action.blank()) action = window.location.href;
     options.parameters = form.serialize(true);
-    
+
     if (params) {
       if (Object.isString(params)) params = params.toQueryParams();
       Object.extend(options.parameters, params);
     }
-    
+
     if (form.hasAttribute('method') && !options.method)
       options.method = form.method;
-    
+
     return new Ajax.Request(action, options);
   }
 };
@@ -213,19 +213,19 @@ Form.Methods = {
 
 /** section: DOM
  * Form.Element
- *  
+ *
  *  Utilities for dealing with form controls in the DOM.
- *  
+ *
  *  This is a collection of methods that assist in dealing with form controls.
  *  They provide ways to focus, serialize, disable/enable or extract current
  *  value from a specific control.
- *  
+ *
  *  Note that nearly all these methods are available directly on `input`,
  *  `select`, and `textarea` elements. Therefore, these are equivalent:
- *  
+ *
  *      Form.Element.activate('myfield');
  *      $('myfield').activate();
- *  
+ *
  *  Naturally, you should always prefer the shortest form suitable in a
  *  situation. Most of these methods also return the element itself (as
  *  indicated by the return type) for chainability.
@@ -234,7 +234,7 @@ Form.Methods = {
 Form.Element = {
   /**
    *  Form.Element.focus(element) -> Element
-   *  
+   *
    *  Gives keyboard focus to an element. Returns the element.
   **/
   focus: function(element) {
@@ -244,7 +244,7 @@ Form.Element = {
 
   /**
    *  Form.Element.select(element) -> Element
-   *  
+   *
    *  Selects the current text in a text input. Returns the element.
   **/
   select: function(element) {
@@ -254,10 +254,10 @@ Form.Element = {
 };
 
 Form.Element.Methods = {
-  
+
   /**
    *  Form.Element#serialize(@element) -> String
-   *  
+   *
    *  Returns a URL-encoded string representation of a form control in the
    *  `name=value` format.
   **/
@@ -273,15 +273,15 @@ Form.Element.Methods = {
     }
     return '';
   },
-  
+
   /** alias of: $F
    *  Form.Element#getValue(@element) -> String | Array
-   *  
+   *
    *  Returns the current value of a form control.
-   *  
+   *
    *  A string is returned for most controls; only multiple `select` boxes
    *  return an array of values.
-   *  
+   *
    *  The global shortcut for this method is [[$F]].
   **/
   getValue: function(element) {
@@ -292,7 +292,7 @@ Form.Element.Methods = {
 
   /**
    *  Form.Element#setValue(@element, value) -> Element
-   *  
+   *
    *  Sets `value` to be the value of the form control. Returns the element.
   **/
   setValue: function(element, value) {
@@ -304,7 +304,7 @@ Form.Element.Methods = {
 
   /**
    *  Form.Element#clear(@element) -> Element
-   *  
+   *
    *  Clears the contents of a text input. Returns the element.
   **/
   clear: function(element) {
@@ -314,16 +314,16 @@ Form.Element.Methods = {
 
   /**
    *  Form.Element#present(@element) -> Element
-   *  
+   *
    *  Returns `true` if a text input has contents, `false` otherwise.
   **/
   present: function(element) {
     return $(element).value != '';
   },
-  
+
   /**
    *  Form.Element#activate(element) -> Element
-   *  
+   *
    *  Gives focus to a form control and selects its contents if it is a text
    *  input.
   **/
@@ -337,10 +337,10 @@ Form.Element.Methods = {
     } catch (e) { }
     return element;
   },
-  
+
   /**
    *  Form.Element#disable(@element) -> Element
-   *  
+   *
    *  Disables a form control, effectively preventing its value from changing
    *  until it is enabled again.
   **/
@@ -349,10 +349,10 @@ Form.Element.Methods = {
     element.disabled = true;
     return element;
   },
-  
+
   /**
    *  Form.Element#enable(@element) -> Element
-   *  
+   *
    *  Enables a previously disabled form control.
   **/
   enable: function(element) {
@@ -376,7 +376,7 @@ var $F = Form.Element.Methods.getValue;
 Form.Element.Serializers = {
   input: function(element, value) {
     switch (element.type.toLowerCase()) {
-      case 'checkbox':  
+      case 'checkbox':
       case 'radio':
         return Form.Element.Serializers.inputSelector(element, value);
       default:
@@ -393,10 +393,10 @@ Form.Element.Serializers = {
     if (Object.isUndefined(value)) return element.value;
     else element.value = value;
   },
-  
+
   select: function(element, value) {
     if (Object.isUndefined(value))
-      return this[element.type == 'select-one' ? 
+      return this[element.type == 'select-one' ?
         'selectOne' : 'selectMany'](element);
     else {
       var opt, currentValue, single = !Object.isArray(value);
@@ -413,23 +413,23 @@ Form.Element.Serializers = {
       }
     }
   },
-  
+
   selectOne: function(element) {
     var index = element.selectedIndex;
     return index >= 0 ? this.optionValue(element.options[index]) : null;
   },
-  
+
   selectMany: function(element) {
     var values, length = element.length;
     if (!length) return null;
-    
+
     for (var i = 0, values = []; i < length; i++) {
       var opt = element.options[i];
       if (opt.selected) values.push(this.optionValue(opt));
     }
     return values;
   },
-  
+
   optionValue: function(opt) {
     // extend element because hasAttribute may not be native
     return Element.extend(opt).hasAttribute('value') ? opt.value : opt.text;
@@ -451,7 +451,7 @@ Abstract.TimedObserver = Class.create(PeriodicalExecuter, {
     this.element   = $(element);
     this.lastValue = this.getValue();
   },
-  
+
   execute: function() {
     var value = this.getValue();
     if (Object.isString(this.lastValue) && Object.isString(value) ?
@@ -468,7 +468,7 @@ Abstract.TimedObserver = Class.create(PeriodicalExecuter, {
 Form.Element.Observer = Class.create(Abstract.TimedObserver, {
   /**
    *  new Form.Element.Observer(element, frequency, callback)
-   *  
+   *
    *  Creates a timed observer for a specific form control.
   **/
   getValue: function() {
@@ -482,7 +482,7 @@ Form.Element.Observer = Class.create(Abstract.TimedObserver, {
 Form.Observer = Class.create(Abstract.TimedObserver, {
   /**
    *  new Form.Observer(element, frequency, callback)
-   *  
+   *
    *  Creates a timed observer that triggers when any value changes within
    *  the form.
   **/
@@ -500,14 +500,14 @@ Abstract.EventObserver = Class.create({
   initialize: function(element, callback) {
     this.element  = $(element);
     this.callback = callback;
-    
+
     this.lastValue = this.getValue();
     if (this.element.tagName.toLowerCase() == 'form')
       this.registerFormCallbacks();
     else
       this.registerCallback(this.element);
   },
-  
+
   onElementEvent: function() {
     var value = this.getValue();
     if (this.lastValue != value) {
@@ -515,15 +515,15 @@ Abstract.EventObserver = Class.create({
       this.lastValue = value;
     }
   },
-  
+
   registerFormCallbacks: function() {
     Form.getElements(this.element).each(this.registerCallback, this);
   },
-  
+
   registerCallback: function(element) {
     if (element.type) {
       switch (element.type.toLowerCase()) {
-        case 'checkbox':  
+        case 'checkbox':
         case 'radio':
           Event.observe(element, 'click', this.onElementEvent.bind(this));
           break;
@@ -531,7 +531,7 @@ Abstract.EventObserver = Class.create({
           Event.observe(element, 'change', this.onElementEvent.bind(this));
           break;
       }
-    }    
+    }
   }
 });
 

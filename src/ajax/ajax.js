@@ -10,10 +10,10 @@ var Ajax = {
       function() {return new ActiveXObject('Microsoft.XMLHTTP')}
     ) || false;
   },
-  
+
   /**
    *  Ajax.activeRequestCount -> Number
-   *  
+   *
    *  Represents the number of active XHR requests triggered through
    *  [[Ajax.Request]], [[Ajax.Updater]], or [[Ajax.PeriodicalUpdater]].
   **/

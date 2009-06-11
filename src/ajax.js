@@ -1,18 +1,18 @@
 /**
  *  == Ajax ==
- *  
+ *
  *  Prototype's APIs around the `XmlHttpRequest` object.
- *  
+ *
  *  The Prototype framework enables you to deal with Ajax calls in a manner that is
  *  both easy and compatible with all modern browsers.
- *  
+ *
  *  Actual requests are made by creating instances of [[Ajax.Request]].
- *  
+ *
  *  <h4>Request headers</h4>
- *  
+ *
  *  The following headers are sent with all Ajax requests (and can be
  *  overridden with the `requestHeaders` option described below):
- *  
+ *
  *  * `X-Requested-With` is set to `XMLHttpRequest`.
  *  * `X-Prototype-Version` is set to Prototype's current version (e.g.,
  *    `1.6.0.3`).
@@ -20,18 +20,18 @@
  *     text/xml, * / *`
  *  * `Content-type` is automatically determined based on the `contentType`
  *    and `encoding` options.
- *  
+ *
  *  <h4>Ajax options</h4>
- *  
+ *
  *  All Ajax classes share a common set of _options_ and _callbacks_.
  *  Callbacks are called at various points in the life-cycle of a request, and
  *  always feature the same list of arguments.
- *  
+ *
  *  <h5>Common options</h5>
- *  
+ *
  *  * `asynchronous` ([[Boolean]]; default `true`): Determines whether
  *    `XMLHttpRequest` is used asynchronously or not. Synchronous usage is
- *    seriously discouraged — it halts all script execution for the duration of
+ *    seriously discouraged &mdash; it halts all script execution for the duration of
  *    the request _and_ blocks the browser UI.
  *  * `contentType` ([[String]]; default `application/x-www-form-urlencoded`):
  *    The `Content-type` header for your request. Change this header if you
@@ -63,16 +63,16 @@
  *  * `sanitizeJSON` ([[Boolean]]; default is `false` for same-origin requests,
  *    `true` otherwise): Sanitizes the contents of
  *    [[Ajax.Response#responseText]] before evaluating it.
- *  
+ *
  *  <h4>Common callbacks</h4>
- *  
+ *
  *  When used on individual instances, all callbacks (except `onException`) are
  *  invoked with two parameters: the `XMLHttpRequest` object and the result of
  *  evaluating the `X-JSON` response header, if any (can be `null`).
- *  
+ *
  *  For another way of describing their chronological order and which callbacks
  *  are mutually exclusive, see [[Ajax.Request]].
- *  
+ *
  *  * `onCreate`: Triggered when the [[Ajax.Request]] object is initialized.
  *    This is _after_ the parameters and the URL have been processed, but
  *    _before_ opening the connection via the XHR object.
@@ -102,9 +102,9 @@
  *    instance), and the second is the exception object.
  *  * `onComplete`: Triggered at the _very end_ of a request's life-cycle, after
  *    the request completes, status-specific callbacks are called, and possible
- *    automatic behaviors are processed. Guaranteed to run regardless of what 
+ *    automatic behaviors are processed. Guaranteed to run regardless of what
  *    happened during the request.
- *  
+ *
 **/
 
 //= require "ajax/ajax"
