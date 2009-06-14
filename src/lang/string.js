@@ -254,6 +254,14 @@ Object.extend(String.prototype, (function() {
    *
    *  Converts a string separated by dashes into a camelCase equivalent.
    *  For instance, 'foo-bar' would be converted to 'fooBar'.
+   *  
+   *  <h4>Examples</h4>
+   *  
+   *      'background-color'.camelize();
+   *      // -> 'backgroundColor'
+   *      
+   *      '-moz-binding'.camelize();
+   *      // -> 'MozBinding'
   **/
   function camelize() {
     var parts = this.split('-'), len = parts.length;

@@ -31,8 +31,8 @@
  *
  *  * `asynchronous` ([[Boolean]]; default `true`): Determines whether
  *    `XMLHttpRequest` is used asynchronously or not. Synchronous usage is
- *    seriously discouraged &mdash; it halts all script execution for the duration of
- *    the request _and_ blocks the browser UI.
+ *    **strongly discouraged** &mdash; it halts all script execution for the 
+ *    duration of the request _and_ blocks the browser UI.
  *  * `contentType` ([[String]]; default `application/x-www-form-urlencoded`):
  *    The `Content-type` header for your request. Change this header if you
  *    want to send data in another format (like XML).
