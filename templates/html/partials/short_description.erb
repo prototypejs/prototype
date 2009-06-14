@@ -22,9 +22,6 @@
     <% end %>
   <% end %>
   
-  <!-- <pre><code><%= object.class.to_s %></code></pre> -->
-  <!-- <pre><code><%= object.methods.join("\n") %></code></pre> -->
-  
 	<%= htmlize(object.description) %>
   
   <% # Does it have an alias? %>
@@ -42,13 +39,10 @@
     <p class="related-to">Related to: 
       <%= auto_link_code(object.related_to, false) %></p>      
   <% end %>
-  
-  
+    
   <% # Is it methodized? %>
   <% if object.is_a?(Documentation::Method) && object.methodized? %>
     <p class="note">This method can be called <em>either</em> as an instance method <em>or</em> as a generic method. If calling as a generic, pass the instance in as the first argument.</p>
   <% end %>
   
-  
-
 </li>
