@@ -1,3 +1,5 @@
+* Fix issue related to escaping of selectors for querySelectorAll. [#559 state:resolved] (Jorn Holm)
+
 *1.6.1_rc3* (June 16, 2009)
 
 * Fixed a variety of non-ASCII chars and similar [#610 state:resolved] (T.J. Crowder)
