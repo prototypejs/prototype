@@ -593,43 +593,24 @@ Element.Methods = {
    *
    *  Returns the value of `element`'s attribute with the given name.
   **/
-  readAttribute: (function(){
-
-    var iframeGetAttributeThrowsError = (function(){
-      var el = document.createElement('iframe'),
-          isBuggy = false;
-
-      document.documentElement.appendChild(el);
-      try {
-        el.getAttribute('type', 2);
-      } catch(e) {
-        isBuggy = true;
-      }
-      document.documentElement.removeChild(el);
-      el = null;
-      return isBuggy;
-    })();
-
-    return function(element, name) {
-      element = $(element);
-      // check boolean first, to get out of expression faster
-      if (iframeGetAttributeThrowsError &&
-          name === 'type' &&
-          element.tagName.toUpperCase() == 'IFRAME') {
+  readAttribute: function(element, name) {
+    element = $(element);
+    if (Prototype.Browser.IE) {
+      // Circumvent issue in IE that causes crash.
+      if (name === 'type' &&
+        element.tagName.toUpperCase() == 'IFRAME') {
         return element.getAttribute('type');
       }
-      if (Prototype.Browser.IE) {
-        var t = Element._attributeTranslations.read;
-        if (t.values[name]) return t.values[name](element, name);
-        if (t.names[name]) name = t.names[name];
-        if (name.include(':')) {
-          return (!element.attributes || !element.attributes[name]) ? null :
-           element.attributes[name].value;
-        }
+      var t = Element._attributeTranslations.read;
+      if (t.values[name]) return t.values[name](element, name);
+      if (t.names[name]) name = t.names[name];
+      if (name.include(':')) {
+        return (!element.attributes || !element.attributes[name]) ? null :
+         element.attributes[name].value;
       }
-      return element.getAttribute(name);
     }
-  })(),
+    return element.getAttribute(name);
+  },
 
   /**
    *  Element#writeAttribute(@element, attribute[, value = true]) -> Element
@@ -1367,6 +1348,9 @@ else if (Prototype.Browser.IE) {
         },
         values: {
           _getAttr: function(element, attribute) {
+            return element.getAttribute(attribute);
+          },
+          _getAttr2: function(element, attribute) {
             return element.getAttribute(attribute, 2);
           },
           _getAttrNode: function(element, attribute) {
@@ -1444,8 +1428,8 @@ else if (Prototype.Browser.IE) {
 
   (function(v) {
     Object.extend(v, {
-      href:        v._getAttr,
-      src:         v._getAttr,
+      href:        v._getAttr2,
+      src:         v._getAttr2,
       type:        v._getAttr,
       action:      v._getAttrNode,
       disabled:    v._flag,
