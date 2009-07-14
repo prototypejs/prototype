@@ -293,7 +293,11 @@ Object.extend(String.prototype, (function() {
    *  underscore (`_`).
   **/
   function underscore() {
-    return this.gsub(/::/, '/').gsub(/([A-Z]+)([A-Z][a-z])/,'#{1}_#{2}').gsub(/([a-z\d])([A-Z])/,'#{1}_#{2}').gsub(/-/,'_').toLowerCase();
+    return this.replace(/::/g, '/')
+               .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
+               .replace(/([a-z\d])([A-Z])/g, '$1_$2')
+               .replace(/-/g, '_')
+               .toLowerCase();
   }
 
   /**
@@ -302,7 +306,7 @@ Object.extend(String.prototype, (function() {
    *  Replaces every instance of the underscore character ("_") by a dash ("-").
   **/
   function dasherize() {
-    return this.gsub(/_/,'-');
+    return this.replace(/_/g, '-');
   }
 
   /** related to: Object.inspect
@@ -312,9 +316,11 @@ Object.extend(String.prototype, (function() {
    *  double quotes, with backslashes and quotes escaped).
   **/
   function inspect(useDoubleQuotes) {
-    var escapedString = this.gsub(/[\x00-\x1f\\]/, function(match) {
-      var character = String.specialChar[match[0]];
-      return character ? character : '\\u00' + match[0].charCodeAt().toPaddedString(2, 16);
+    var escapedString = this.replace(/[\x00-\x1f\\]/g, function(character) {
+      if (character in String.specialChar) {
+        return String.specialChar[character];
+      }
+      return '\\u00' + character.charCodeAt().toPaddedString(2, 16);
     });
     if (useDoubleQuotes) return '"' + escapedString.replace(/"/g, '\\"') + '"';
     return "'" + escapedString.replace(/'/g, '\\\'') + "'";
@@ -336,7 +342,7 @@ Object.extend(String.prototype, (function() {
    *  This security method is called internally.
   **/
   function unfilterJSON(filter) {
-    return this.sub(filter || Prototype.JSONFilter, '#{1}');
+    return this.replace(filter || Prototype.JSONFilter, '$1');
   }
 
   /**
