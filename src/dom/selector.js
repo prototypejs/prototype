@@ -170,7 +170,7 @@ var Selector = Class.create({
         if (root !== document) {
           var oldId = root.id, id = $(root).identify();
           // Escape special characters in the ID.
-          id = id.replace(/[\.:]/g, "\\$1");
+          id = id.replace(/([\.:])/g, "\\$1");
           e = "#" + id + " " + e;
         }
 

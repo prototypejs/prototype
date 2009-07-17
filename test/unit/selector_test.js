@@ -397,6 +397,14 @@ new Test.Unit.Runner({
     
     this.assertEqual(a, b);
   },
+  testElementDownWithDotAndColon: function() {
+    var a = $('dupL4_dotcolon'); 
+    var b = $('dupContainer.withdot:active').down('#dupL4_dotcolon');    
+    var c = $('dupContainer.withdot:active').select('#dupL4_dotcolon');
+    
+    this.assertEqual(a, b);
+    this.assertEnumEqual([a], c);
+  },
   
   testDescendantSelectorBuggy: function() {
     var el = document.createElement('div');
