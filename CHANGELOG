@@ -1,3 +1,5 @@
+* Re-throw error in otherwise-empty `catch` clause so that `PeriodicalExecuter` does not suppress exceptions. (Samuel Lebeau)
+
 * Fix issue related to escaping of selectors for querySelectorAll. [#559 state:resolved] (Jorn Holm)
 
 *1.6.1_rc3* (June 16, 2009)
