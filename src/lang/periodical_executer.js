@@ -49,20 +49,18 @@ var PeriodicalExecuter = Class.create({
 
   onTimerEvent: function() {
     if (!this.currentlyExecuting) {
-      if (!this.currentlyExecuting) {
-        // IE doesn't support `finally` statements unless all errors are caught.
-        // We mimic the behaviour of `finally` statements by duplicating code
-        // that would belong in it. First at the bottom of the `try` statement
-        // (for errorless cases). Secondly, inside a `catch` statement which
-        // rethrows any caught errors.
-        try {
-          this.currentlyExecuting = true;
-          this.execute();
-          this.currentlyExecuting = false;
-        } catch(e) {
-          this.currentlyExecuting = false;
-          throw e;
-        }
+      // IE doesn't support `finally` statements unless all errors are caught.
+      // We mimic the behaviour of `finally` statements by duplicating code
+      // that would belong in it. First at the bottom of the `try` statement
+      // (for errorless cases). Secondly, inside a `catch` statement which
+      // rethrows any caught errors.
+      try {
+        this.currentlyExecuting = true;
+        this.execute();
+        this.currentlyExecuting = false;
+      } catch(e) {
+        this.currentlyExecuting = false;
+        throw e;
       }
     }
   }
