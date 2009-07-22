@@ -8,7 +8,9 @@
     var eventResults = {};
     var originalElement = window.Element;
   </script>
-  <%= lib_files %>
+  <%= script_tag('assets/prototype.js') %>
+  <%= script_tag('lib_assets/unittest.js') %>
+  <%= link_tag('lib_assets/unittest.css') %>
   <%= css_fixtures %>
   <%= js_fixtures %>
   <%= test_file %>
