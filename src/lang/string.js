@@ -170,8 +170,7 @@ Object.extend(String.prototype, (function() {
    *  Converts HTML special characters to their entity equivalents.
   **/
   function escapeHTML() {
-    escapeHTML.text.data = this;
-    return escapeHTML.div.innerHTML;
+    return this.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
   /** related to: String#escapeHTML
@@ -181,11 +180,8 @@ Object.extend(String.prototype, (function() {
    *  to their normal form.
   **/
   function unescapeHTML() {
-    var div = document.createElement('div');
-    div.innerHTML = this.stripTags();
-    return div.childNodes[0] ? (div.childNodes.length > 1 ?
-      $A(div.childNodes).inject('', function(memo, node) { return memo+node.nodeValue }) :
-      div.childNodes[0].nodeValue) : '';
+    // Warning: In 1.7 String#unescapeHTML will no longer call String#stripTags.
+    return this.stripTags().replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
   }
 
   /**
@@ -469,21 +465,3 @@ Object.extend(String.prototype, (function() {
   };
 })());
 
-Object.extend(String.prototype.escapeHTML, {
-  div:  document.createElement('div'),
-  text: document.createTextNode('')
-});
-
-String.prototype.escapeHTML.div.appendChild(String.prototype.escapeHTML.text);
-
-if ('<\n>'.escapeHTML() !== '&lt;\n&gt;') {
-  String.prototype.escapeHTML = function() {
-    return this.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  };
-}
-
-if ('&lt;\n&gt;'.unescapeHTML() !== '<\n>') {
-  String.prototype.unescapeHTML = function() {
-    return this.stripTags().replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
-  };
-}
