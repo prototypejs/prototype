@@ -1,3 +1,5 @@
+* Add missing semicolons. [#751 state:resolved] (Diego Perini)
+
 * Remove expensive (for such low-level method) internal `getClass` in favor of plain string comparison (kangax)
 
 * Fix `PeriodicalExecuter` so that it no longer suppresses exceptions. [#696 state:resolved] (Samuel Lebeau, Yaffle)

@@ -1374,7 +1374,7 @@ else if (Prototype.Browser.IE) {
                 attribute = attribute.split('{')[1];
                 attribute = attribute.split('}')[0];
                 return attribute.strip();
-              }
+              };
             }
             // IE8
             else if (value === '') {
@@ -1383,7 +1383,7 @@ else if (Prototype.Browser.IE) {
                 attribute = element.getAttribute(attribute);
                 if (!attribute) return null;
                 return attribute.strip();
-              }
+              };
             }
             el = null;
             return f;
