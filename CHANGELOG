@@ -1,3 +1,9 @@
+* Simplify String#(un)escapeHTML and remove their DOM dependencies. (Tobie Langel)
+
+* Update UnittestJS. Modifiy test template accordingly. (Tobie Langel)
+
+* Remove redundant if statement in Element#readAttribute. (Tobie Langel)
+
 * Add missing semicolons. [#751 state:resolved] (Diego Perini)
 
 * Remove expensive (for such low-level method) internal `getClass` in favor of plain string comparison (kangax)
