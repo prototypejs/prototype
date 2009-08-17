@@ -82,6 +82,10 @@ module PDoc
             if obj.is_a?(String) && obj =~ /\ssection$/
               obj = section_from_name(obj.gsub(/\ssection$/, ''))
             end
+            obj.sub!('...', '…') if obj.is_a?(String)
+            if obj.is_a?(String) && obj.strip =~ /^\[.+\]$|\|/
+              return obj.gsub(/[^\],.…\s\|\[]+/) { |item| auto_link(item, short, attributes) }
+            end
             obj = root.find_by_name(obj) || obj if obj.is_a?(String)
             return nil if obj.nil?
             return obj if obj.is_a?(String)
@@ -120,22 +124,24 @@ module PDoc
         
         module CodeHelper
           def method_synopsis(object)
-            if (object.is_a?(Documentation::Property))
-              return <<-EOS
-                <pre class="syntax"><code class="ebnf">#{ object.signature }</code></pre>
-                EOS
+            result = []
+            result << '<pre class="syntax"><code class="ebnf">'
+            if object.is_a?(Documentation::Property)
+              result << "#{object.signature}"
+            else
+              ebnfs = object.ebnf_expressions.dup
+              if object.is_a?(Documentation::KlassMethod) && object.methodized?
+                result << "#{object.static_signature} &rArr; #{auto_link(object.returns, false)}<br />"
+                result << "#{object.signature} &rArr; #{auto_link(object.returns, false)}"
+                ebnfs.shift
+                result.last << '<br />' unless ebnfs.empty?
+              end
+              ebnfs.each do |ebnf|
+                result << "#{ebnf.signature} &rArr; #{auto_link(ebnf.returns, false)}"
+              end
             end
-            
-            if (object.is_a?(Documentation::InstanceMethod) && object.methodized?)
-              return <<-EOS
-                <pre class="syntax"><code class="ebnf">#{ object.signature } -&gt; #{ auto_link(object.returns, false) }
-#{ object.generic_signature } -&gt; #{ auto_link(object.returns, false) }</code></pre>
-                EOS
-            end
-            
-            <<-EOS
-              <pre class="syntax"><code class="ebnf">#{ object.signature } -&gt; #{ auto_link(object.returns, false) }</code></pre>
-            EOS
+            result << '</code></pre>'
+            result.join('')
           end
         end
         
