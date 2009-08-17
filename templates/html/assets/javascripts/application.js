@@ -43,10 +43,10 @@ PDoc.highlight = function(element) {
       
   frame.setStyle({
     position: 'absolute',
-    top: (offset.top - 5) + 'px',
-    left: (offset.left - 5) + 'px',
-    width:  (w + 5) + 'px',
-    height: (h + 10) + 'px'
+    top: (offset.top - 15) + 'px',
+    left: (offset.left - 12) + 'px',
+    width:  (w + 20) + 'px',
+    height: (h + 30) + 'px'
   });
   
   // Defer this call because Safari hasn't yet scrolled the viewport.
@@ -186,18 +186,24 @@ var Filterer = Class.create({
     this._timer = window.setTimeout(this.scrollList.bind(this, direction), 100);
   },
   
+  // Given a path with any number of `../`s in front of it, remove them all.
+  // TODO: Fix this a better way.
+  _fixPath: function(path) {
+    return path.replace('../', '');
+  },
+  
   buildResults: function(urls) {
     this.resultsElement.update();
     var ul = this.resultsElement;
     urls.each( function(url) {
       var a  = new Element('a', {
         'class': url.type.gsub(/\s/, '_'),
-        href:    PDoc.pathPrefix + url.path
+        href:    PDoc.pathPrefix + this._fixPath(url.path)
       }).update(url.name);
       var li = new Element('li', { 'class': 'menu-item' });
       li.appendChild(a);
       ul.appendChild(li);
-    });    
+    }, this);    
     this.showResults();
   },
     
