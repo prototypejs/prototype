@@ -13,6 +13,7 @@ function $H(object) {
 
 /** section: Language
  * class Hash
+ *  includes Enumerable
  *
  *  A set of key/value pairs.
  *

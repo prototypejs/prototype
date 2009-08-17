@@ -63,7 +63,7 @@ var Form = {
 
 Form.Methods = {
   /**
-   *  Form#serialize(@form[, options]) -> String | Object
+   *  Form.serialize(@form[, options]) -> String | Object
    *  - options (Object): A list of options that affect the return value
    *    of the method.
    *
@@ -77,7 +77,7 @@ Form.Methods = {
   },
 
   /**
-   *  Form#getElements(@form) -> [Element...]
+   *  Form.getElements(@form) -> [Element...]
    *
    *  Returns a collection of all controls within a form.
   **/
@@ -99,7 +99,7 @@ Form.Methods = {
   },
 
   /**
-   *  Form#getInputs(@form [, type [, name]]) -> [Element...]
+   *  Form.getInputs(@form [, type [, name]]) -> [Element...]
    *  - type (String): A value for the `type` attribute against which to
    *    filter.
    *  - name (String): A value for the `name` attribute against which to
@@ -127,7 +127,7 @@ Form.Methods = {
   },
 
   /**
-   *  Form#disable(@form) -> Element
+   *  Form.disable(@form) -> Element
    *
    *  Disables the form as a whole. Form controls will be visible but
    *  uneditable.
@@ -139,7 +139,7 @@ Form.Methods = {
   },
 
   /**
-   *  Form#enable(@form) -> Element
+   *  Form.enable(@form) -> Element
    *
    *  Enables a fully- or partially-disabled form.
   **/
@@ -150,7 +150,7 @@ Form.Methods = {
   },
 
   /**
-   *  Form#findFirstElement(@form) -> Element
+   *  Form.findFirstElement(@form) -> Element
    *
    *  Finds the first non-hidden, non-disabled control within the form.
   **/
@@ -168,7 +168,7 @@ Form.Methods = {
   },
 
   /**
-   *  Form#focusFirstElement(@form) -> Element
+   *  Form.focusFirstElement(@form) -> Element
    *
    *  Gives keyboard focus to the first element of the form. Returns the form.
   **/
@@ -179,7 +179,7 @@ Form.Methods = {
   },
 
   /**
-   *  Form#request([options]) -> Ajax.Request
+   *  Form.request(@form[, options]) -> Ajax.Request
    *  - options (Object): Options to pass along to the `Ajax.Request`
    *    constructor.
    *
@@ -256,7 +256,7 @@ Form.Element = {
 Form.Element.Methods = {
 
   /**
-   *  Form.Element#serialize(@element) -> String
+   *  Form.Element.serialize(@element) -> String
    *
    *  Returns a URL-encoded string representation of a form control in the
    *  `name=value` format.
@@ -275,7 +275,7 @@ Form.Element.Methods = {
   },
 
   /** alias of: $F
-   *  Form.Element#getValue(@element) -> String | Array
+   *  Form.Element.getValue(@element) -> String | Array
    *
    *  Returns the current value of a form control.
    *
@@ -291,7 +291,7 @@ Form.Element.Methods = {
   },
 
   /**
-   *  Form.Element#setValue(@element, value) -> Element
+   *  Form.Element.setValue(@element, value) -> Element
    *
    *  Sets `value` to be the value of the form control. Returns the element.
   **/
@@ -303,7 +303,7 @@ Form.Element.Methods = {
   },
 
   /**
-   *  Form.Element#clear(@element) -> Element
+   *  Form.Element.clear(@element) -> Element
    *
    *  Clears the contents of a text input. Returns the element.
   **/
@@ -313,7 +313,7 @@ Form.Element.Methods = {
   },
 
   /**
-   *  Form.Element#present(@element) -> Element
+   *  Form.Element.present(@element) -> Element
    *
    *  Returns `true` if a text input has contents, `false` otherwise.
   **/
@@ -339,7 +339,7 @@ Form.Element.Methods = {
   },
 
   /**
-   *  Form.Element#disable(@element) -> Element
+   *  Form.Element.disable(@element) -> Element
    *
    *  Disables a form control, effectively preventing its value from changing
    *  until it is enabled again.
@@ -351,7 +351,7 @@ Form.Element.Methods = {
   },
 
   /**
-   *  Form.Element#enable(@element) -> Element
+   *  Form.Element.enable(@element) -> Element
    *
    *  Enables a previously disabled form control.
   **/

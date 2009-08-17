@@ -37,6 +37,7 @@ Array.from = $A;
 
 /** section: Language
  * class Array
+ *  includes Enumerable
  *
  *  Prototype extends all native JavaScript arrays with quite a few powerful
  *  methods.
