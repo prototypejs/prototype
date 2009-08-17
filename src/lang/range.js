@@ -1,5 +1,6 @@
 /** section: Language
  * class ObjectRange
+ *  includes Enumerable
  *
  *  A succession of values.
  *
