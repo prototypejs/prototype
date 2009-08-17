@@ -351,6 +351,9 @@ ul.section-list {
 .highlighter {
   border: 3px solid #69f;
   z-index: -1;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
 }
 
 /* MENU */
