@@ -149,6 +149,14 @@ ul.method-details-list {
     ul.method-details-list li code {
       font-size: 12px;
     }
+
+    h4.inherited {
+      padding-top: 5px;
+      clear: left;
+      font-style: italic;
+      font-weight: bold;
+      font-size: 14px;
+    }
     
 .method-description h4 .method-permalink a {
   color: #aaa;
