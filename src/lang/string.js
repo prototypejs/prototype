@@ -157,8 +157,39 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#evalScripts() -> Array
    *
-   *  Evaluates the content of any script block present in the string.
+   *  Evaluates the content of any inline `<script>` block present in the string.
    *  Returns an array containing the value returned by each script.
+   *  `<script>`  blocks referencing external files will be treated as though
+   *  they were empty (the result for that position in the array will be `undefined`);
+   *  external files are _not_ loaded and processed by `evalScripts`.
+   *
+   *  <h4>About `evalScripts`, `var`s, and defining functions</h4>
+   *
+   *  `evalScripts` evaluates script blocks, but this **does not** mean they are
+   *  evaluated in the global scope. They aren't, they're evaluated in the scope of
+   *  the `evalScripts` method. This has important ramifications for your scripts:
+   *
+   *  * Anything in your script declared with the `var` keyword will be
+   *    discarded momentarily after evaluation, and will be invisible to any
+   *    other scope.
+   *  * If any `<script>` blocks _define functions_, they will need to be assigned to
+   *    properties of the `window` object.
+   *
+   *  For example, this won't work:
+   *
+   *      // This kind of script won't work if processed by evalScripts:
+   *      function coolFunc() {
+   *        // Amazing stuff!
+   *      }
+   *
+   *  Instead, use the following syntax:
+   *
+   *      // This kind of script WILL work if processed by evalScripts:
+   *      window.coolFunc = function() {
+   *        // Amazing stuff!
+   *      }
+   *
+   *  (You can leave off the `window.` part of that, but it's bad form.)
   **/
   function evalScripts() {
     return this.extractScripts().map(function(script) { return eval(script) });
@@ -250,12 +281,12 @@ Object.extend(String.prototype, (function() {
    *
    *  Converts a string separated by dashes into a camelCase equivalent.
    *  For instance, 'foo-bar' would be converted to 'fooBar'.
-   *  
+   *
    *  <h4>Examples</h4>
-   *  
+   *
    *      'background-color'.camelize();
    *      // -> 'backgroundColor'
-   *      
+   *
    *      '-moz-binding'.camelize();
    *      // -> 'MozBinding'
   **/

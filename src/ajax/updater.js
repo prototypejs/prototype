@@ -37,33 +37,13 @@
  *    `top`, `bottom`, `before`, or `after` &mdash; and _inserts_ the contents of the
  *    response in the manner described by [[Element#insert]].
  *
- *  <h4>About `evalScripts` and defining functions</h4>
+ *  <h4>More About `evalScripts`</h4>
  *
- *  If you use `evalScripts: true`, any `<script>` block will be evaluated.
- *  This **does not** mean it will be evaluated in the global scope. In other
- *  words:
- *
- *  * The evaluation scope will be that of Prototype's internal processing
- *    function. Anything in your script declared with the `var` keyword will be
- *    discarded momentarily after evaluation, and will be invisible to any
- *    other scope.
- *  * If any `<script>` blocks inside Ajax responses _define functions_, they
- *    will need to be assigned to properties of the `window` object &mdash; _not_
- *    declared with the `function` keyword.
- *
- *  For example, this won't work:
- *
- *      // This kind of script won't work if processed by Ajax.Updater:
- *      function coolFunc() {
- *        // Amazing stuff!
- *      }
- *
- *  Instead, use the following syntax:
- *
- *      // This kind of script WILL work if processed by Ajax.Updater:
- *      coolFunc = function() {
- *        // Amazing stuff!
- *      }
+ *  If you use `evalScripts: true`, any _inline_ `<script>` block will be evaluated.
+ *  This **does not** mean it will be evaluated in the global scope; it won't, and that
+ *  has important ramifications for your `var` and `function` statements.  Also note
+ *  that only inline `<script>` blocks are supported; external scripts are ignored.
+ *  See [[String#evalScripts]] for the details.
  *
  *  <h4>Single container, or success/failure split?</h4>
  *
