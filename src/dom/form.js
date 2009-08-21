@@ -27,16 +27,48 @@ var Form = {
    *  Form.serializeElements(elements[, options]) -> String | Object
    *  - elements (Array): A collection of elements to include in the
    *    serialization.
-   *  - options (Object): A list of options that affect the return value
-   *    of the method.
+   *  - options (Object): _(Optional)_ A set of options that affect the return
+   *    value of the method.
    *
-   *  Serialize an array of form elements to a string suitable for Ajax
-   *  requests.
+   *  Serialize an array of form elements to an object or string suitable
+   *  for [[Ajax]] requests.
    *
-   *  If `options.hash` is `true`, returns an object of key/value pairs
-   *  instead (where keys are control names).
+   *  <h4>The Options</h4>
+   *
+   *  The options allow you to control two things: What kind of return
+   *  value you get (an object or a string), and whether and which `submit`
+   *  fields are included in that object or string.
+   *
+   *  If you do not supply an `options` object _at all_, the options
+   *  `{hash: false}` are used.
+   *
+   *  If you supply an `options` object, it may have the following options:
+   *  - `hash` ([[Boolean]]): `true` to return a plain object with keys and values
+   *    (not a [[Hash]]; see below), `false` to return a String in query string
+   *    format. If you supply an `options` object with no `hash` member, `hash`
+   *    defaults to `true`. Note that this is __not__ the same as leaving off the
+   *    `options` object entirely (see above).
+   *  - `submit` ([[Boolean]] | [[String]]): In essence: If you omit this option the
+   *    first submit button in the form is included; if you supply `false`,
+   *    no submit buttons are included; if you supply the name of a submit
+   *    button, the first button with that name is included. Note that the `false`
+   *    value __must__ really be `false`, not _falsey_; falsey-but-not-false is
+   *    like omitting the option.
+   *
+   *  _(Deprecated)_ If you pass in a [[Boolean]] instead of an object for `options`, it
+   *  is used as the `hash` option and all other options are defaulted.
+   *
+   *  <h4>A <em>hash</em>, not a Hash</h4>
+   *
+   *  If you opt to receive an object, it is a plain JavaScript object with keys
+   *  and values, __not__ a [[Hash]]. All JavaScript objects are hashes in the lower-case
+   *  sense of the word, which is why the option has that somewhat-confusing name.
   **/
   serializeElements: function(elements, options) {
+    // An earlier version accepted a boolean second parameter (hash) where
+    // the default if omitted was false; respect that, but if they pass in an
+    // options object (e.g., the new signature) but don't specify the hash option,
+    // default true, as that's the new preferred approach.
     if (typeof options != 'object') options = { hash: !!options };
     else if (Object.isUndefined(options.hash)) options.hash = true;
     var key, value, submitted = false, submit = options.submit;
@@ -67,10 +99,9 @@ Form.Methods = {
    *  - options (Object): A list of options that affect the return value
    *    of the method.
    *
-   *  Serialize form data to a string suitable for Ajax requests.
+   *  Serialize form data to an object or string suitable for Ajax requests.
    *
-   *  If `options.hash` is `true`, returns an object of key/value pairs
-   *  instead (where keys are control names).
+   *  See [[Form.serializeElements]] for details on the options.
   **/
   serialize: function(form, options) {
     return Form.serializeElements(Form.getElements(form), options);
