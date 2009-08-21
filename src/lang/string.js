@@ -126,6 +126,15 @@ Object.extend(String.prototype, (function() {
    *  Note that `stripTags` will only strip HTML 4.01 tags &mdash; like `div`,
    *  `span`, and `abbr`. It _will not_ strip namespace-prefixed tags such
    *  as `h:table` or `xsl:template`.
+   *
+   *  <h4>Caveat User</h4>
+   *
+   *  Note that the processing `stripTags` does is good enough for most purposes, but
+   *  you cannot rely on it for security purposes. If you're processing end-user-supplied
+   *  content, `stripTags` is probably _not_ sufficiently robust to ensure that the content
+   *  is completely devoid of HTML tags in the case of a user intentionally trying to circumvent
+   *  tag restrictions. But then, you'll be running them through [[String#escapeHTML]] anyway,
+   *  won't you?
   **/
   function stripTags() {
     return this.replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?>|<\/\w+>/gi, '');
@@ -134,7 +143,18 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#stripScripts() -> String
    *
-   *  Strips a string of anything that looks like an HTML script block.
+   *  Strips a string of things that look like an HTML script blocks.
+   *
+   *  <h4>Example</h4>
+   *
+   *      "<p>This is a test.<script>alert("Look, a test!");</script>End of test</p>".stripScripts();
+   *      // => "<p>This is a test.End of test</p>"
+   *
+   *  <h4>Caveat User</h4>
+   *
+   *  Note that the processing `stripScripts` does is good enough for most purposes,
+   *  but you cannot rely on it for security purposes. If you're processing end-user-supplied
+   *  content, `stripScripts` is probably not sufficiently robust to prevent hack attacks.
   **/
   function stripScripts() {
     return this.replace(new RegExp(Prototype.ScriptFragment, 'img'), '');
