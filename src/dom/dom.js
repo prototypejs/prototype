@@ -171,8 +171,21 @@ Element.Methods = {
    *  Replaces _the content_ of `element` with the `newContent` argument and
    *  returns `element`.
    *
+   *  `newContent` may be in any of these forms:
+   *  - [[String]]: A string of HTML to be parsed and rendered
+   *  - [[Element]]: An Element instance to insert
+   *  - ...any object with a `toElement` method: The method is called and the resulting element used
+   *  - ...any object with a `toHTML` method: The method is called and the resulting HTML string
+   *    is parsed and rendered
+   *
    *  If `newContent` is omitted, the element's content is blanked out (i.e.,
    *  replaced with an empty string).
+   *
+   *  If `newContent` is a string and contains one or more inline `<script>` tags, the scripts
+   *  are scheduled to be evaluated after a very brief pause (using [[Function#defer]]) to allow
+   *  the browser to finish updating the DOM. Note that the scripts are evaluated
+   *  in the scope of [[String#evalScripts]], not in the global scope, which has important
+   *  ramifications for your `var`s and `function`s. See [[String#evalScripts]] for details.
   **/
   update: (function(){
 
@@ -284,18 +297,45 @@ Element.Methods = {
   },
 
   /**
-   *  Element.insert(@element, content) -> Element
-   *  - content (String | Object): The content to insert.
+   *  Element#insert(@element, content) -> Element
+   *  - content (String | Element | Object): The content to insert.
    *
-   *  Inserts content at a specific point relative to `element`.
+   *  Inserts content `above`, `below`, at the `top`, and/or at the `bottom` of the
+   *  given element, depending on the option(s) given.
    *
-   *  The `content` argument can be a string, in which case the implied
-   *  insertion point is `bottom`. Or it can be an object that specifies
-   *  one or more insertion points (e.g., `{ bottom: "foo", top: "bar" }`).
+   *  `insert` accepts content in any of these forms:
+   *  - [[String]]: A string of HTML to be parsed and rendered
+   *  - [[Element]]: An Element instance to insert
+   *  - ...any object with a `toElement` method: The method is called and the resulting element used
+   *  - ...any object with a `toHTML` method: The method is called and the resulting HTML string
+   *    is parsed and rendered
    *
-   *  Accepted insertion points are `before` (as `element`'s previous sibling);
-   *  `after` (as `element's` next sibling); `top` (as `element`'s first
-   *  child); and `bottom` (as `element`'s last child).
+   *  The `content` argument can be the content to insert, in which case the implied
+   *  insertion point is `bottom`, or an object that specifies one or more insertion
+   *  points (e.g., `{ bottom: "foo", top: "bar" }`).
+   *
+   *  Accepted insertion points are:
+   *  - `before` (as `element`'s previous sibling)
+   *  - `after` (as `element's` next sibling)
+   *  - `top` (as `element`'s first child)
+   *  - `bottom` (as `element`'s last child)
+   *
+   *  <h4>Examples</h4>
+   *
+   *  Insert the given HTML at the bottom of the element (using the default):
+   *
+   *      $('myelement').insert("<p>HTML to append</p>");
+   *
+   *      $('myelement').insert({
+   *        top: new Element('img', {src: 'logo.png'})
+   *      });
+   *
+   *  Put `hr`s `before` and `after` the element:
+   *
+   *      $('myelement').insert({
+   *        before: "<hr>",
+   *        after: "<hr>"
+   *      });
   **/
   insert: function(element, insertions) {
     element = $(element);
