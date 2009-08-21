@@ -444,8 +444,37 @@ Form.Element.Serializers = {
 
 /** section: DOM
  *  class Abstract.TimedObserver
+ *
+ *  An abstract DOM element observer class, subclasses of which can be used to periodically
+ *  check a value and trigger a callback when the value has changed.
+ *
+ *  A `TimedObserver` object will try to check a value using the `getValue()`
+ *  instance method which must be defined by the subclass. There are two out-of-the-box subclasses:
+ *  [[Form.Observer]], which serializes a form and triggers when the result has changed; and
+ *  [[Form.Element.Observer]], which triggers when the value of a given form field changes.
+ *
+ *  <h4>Creating Your Own TimedObserver Implementations</h4>
+ *
+ *  It's easy to create your own `TimedObserver` implementations: Simply subclass `TimedObserver`
+ *  and provide the `getValue()` method. For example, this is the complete source code for
+ *  [[Form.Element.Observer]]:
+ *
+ *      Form.Element.Observer = Class.create(Abstract.TimedObserver, {
+ *        getValue: function() {
+ *          return Form.Element.getValue(this.element);
+ *        }
+ *      });
 **/
 Abstract.TimedObserver = Class.create(PeriodicalExecuter, {
+  /**
+   *  new Abstract.TimedObserver(element, frequency, callback)
+   *  - element (String | Element): The DOM element to watch. Can be an element instance or an ID.
+   *  - frequency (Number): The frequency, in seconds&nbsp;&mdash; e.g., 0.33 to check for changes every
+   *    third of a second.
+   *  - callback (Function): The callback to trigger when the value changes.
+   *
+   *  Initializes an `Abstract.TimedObserver`; used by subclasses.
+  **/
   initialize: function($super, element, frequency, callback) {
     $super(callback, frequency);
     this.element   = $(element);
@@ -464,12 +493,21 @@ Abstract.TimedObserver = Class.create(PeriodicalExecuter, {
 
 /** section: DOM
  *  class Form.Element.Observer < Abstract.TimedObserver
+ *
+ *  An [[Abstract.TimedObserver]] subclass that watches for changes to a form field's value.
+ *  This triggers the callback when the form field's value (according to
+ *  [[Form.Element#getValue]]) changes. (Note that when the value actually changes can vary from
+ *  browser to browser, particularly with `select` boxes.)
 **/
 Form.Element.Observer = Class.create(Abstract.TimedObserver, {
   /**
    *  new Form.Element.Observer(element, frequency, callback)
+   *  - element (String | Element): The form element to watch. Can be an element instance or an ID.
+   *  - frequency (Number): The frequency, in seconds&nbsp;&mdash; e.g., 0.33 to check for changes every
+   *    third of a second.
+   *  - callback (Function): The callback to trigger when the value changes.
    *
-   *  Creates a timed observer for a specific form control.
+   *  Creates a Form.Element.Observer.
   **/
   getValue: function() {
     return Form.Element.getValue(this.element);
@@ -478,13 +516,22 @@ Form.Element.Observer = Class.create(Abstract.TimedObserver, {
 
 /** section: DOM
  *  class Form.Observer < Abstract.TimedObserver
+ *
+ *  An [[Abstract.TimedObserver]] subclass that watches for changes to a form.
+ *  The callback is triggered when the form changes&nbsp;&mdash; e.g., when any of its fields' values
+ *  changes, when fields are added/removed, etc.; anything that affects the serialized
+ *  form of the form (see [[Form#serialize]]).
 **/
 Form.Observer = Class.create(Abstract.TimedObserver, {
   /**
    *  new Form.Observer(element, frequency, callback)
+   *  - element (String | Element): The element of the form to watch. Can be an element
+   *    instance or an ID.
+   *  - frequency (Number): The frequency, in seconds -- e.g., 0.33 to check for changes every
+   *    third of a second.
+   *  - callback (Function): The callback to trigger when the form changes.
    *
-   *  Creates a timed observer that triggers when any value changes within
-   *  the form.
+   *  Creates a Form.Observer.
   **/
   getValue: function() {
     return Form.serialize(this.element);
