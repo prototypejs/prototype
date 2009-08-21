@@ -81,6 +81,54 @@ var Class = (function() {
    *  context of `$super` calls. The new methods also propagate to instances of
    *  the class and of all its subclasses, even those that have already been
    *  instantiated.
+   *
+   *  <h4>Examples</h4>
+   *
+   *      var Animal = Class.create({
+   *        initialize: function(name, sound) {
+   *          this.name  = name;
+   *          this.sound = sound;
+   *        },
+   *
+   *        speak: function() {
+   *          alert(this.name + " says: " + this.sound + "!");
+   *        }
+   *      });
+   *
+   *      // subclassing Animal
+   *      var Snake = Class.create(Animal, {
+   *        initialize: function($super, name) {
+   *          $super(name, 'hissssssssss');
+   *        }
+   *      });
+   *
+   *      var ringneck = new Snake("Ringneck");
+   *      ringneck.speak();
+   *
+   *      //-> alerts "Ringneck says: hissssssss!"
+   *
+   *      // adding Snake#speak (with a supercall)
+   *      Snake.addMethods({
+   *        speak: function($super) {
+   *          $super();
+   *          alert("You should probably run. He looks really mad.");
+   *        }
+   *      });
+   *
+   *      ringneck.speak();
+   *      //-> alerts "Ringneck says: hissssssss!"
+   *      //-> alerts "You should probably run. He looks really mad."
+   *
+   *      // redefining Animal#speak
+   *      Animal.addMethods({
+   *        speak: function() {
+   *          alert(this.name + 'snarls: ' + this.sound + '!');
+   *        }
+   *      });
+   *
+   *      ringneck.speak();
+   *      //-> alerts "Ringneck snarls: hissssssss!"
+   *      //-> alerts "You should probably run. He looks really mad."
   **/
   function addMethods(source) {
     var ancestor   = this.superclass && this.superclass.prototype;
