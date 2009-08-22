@@ -25,36 +25,36 @@
 <% end %>
 
 <% # Is it a CLASS?  %>
-<% if @doc_instance.is_a?(Documentation::Klass) %>
+<% if d.is_a?(Documentation::Klass) %>
 
-	<% if @doc_instance.superklass %>
-	<div class="section section-superclass">
-	  <div class="section-title">
-  	  <h3>Superclass</h3>
-	  </div> <!-- .section-title -->
-	  
-	  <div class="section-content">
-  	  <p><%= auto_link_code(d.superklass, false) %></p>	   
-	  </div> <!-- .section-content -->
-	</div> <!-- .section -->		
-	<% end %>
+  <% if d.superklass %>
+  <div class="section section-superclass">
+    <div class="section-title">
+      <h3>Superclass</h3>
+    </div> <!-- .section-title -->
+    
+    <div class="section-content">
+      <p><%= auto_link_code(d.superklass, false) %></p>     
+    </div> <!-- .section-content -->
+  </div> <!-- .section -->    
+  <% end %>
 
-	<% unless @doc_instance.subklasses.empty? %>
-	<div class="section section-subclasses">
-	  <div class="section-title">
-  	  <h3>Subclasses</h3>	   
-	  </div> <!-- .section-title -->
-	  
-	  <div class="section-content">
-  	  <p><%= d.subklasses.map { |s| auto_link_code(s, false) }.join(', ') %></p>	   
-	  </div> <!-- .section-content -->
-	</div> <!-- .section -->		
-	<% end %>
+  <% unless d.subklasses.empty? %>
+  <div class="section section-subclasses">
+    <div class="section-title">
+      <h3>Subclasses</h3>     
+    </div> <!-- .section-title -->
+    
+    <div class="section-content">
+      <p><%= d.subklasses.map { |s| auto_link_code(s, false) }.join(', ') %></p>     
+    </div> <!-- .section-content -->
+  </div> <!-- .section -->    
+  <% end %>
 
 <% end %>
 
 <% # Does it have MIXINS? %>
-<% unless @doc_instance.mixins.empty? %>
+<% unless d.mixins.compact.empty? %>
   <div class="section section-mixins">
     <div class="section-title">
       <h3>Includes</h3>      
@@ -67,7 +67,7 @@
 <% end %>
 
 <% # Are there related utilities? %>
-<% unless @doc_instance.related_utilities.empty? %>
+<% unless d.related_utilities.empty? %>
   <div class="section section-utilities">
     <div class="section-title">
       <h3>Related utilities</h3>      
@@ -93,13 +93,13 @@
       <% end %>
     </ul>
     
-    <% unless @doc_instance.mixins.compact.empty? %>
+    <% unless d.mixins.compact.empty? %>
       <% d.mixins.each do |mixin| %>
       <h4 class="inherited">Inherited from <%= auto_link(mixin) %></h4>
       <ul class="method-list">
-  			<% mixin.all_methods.each do |method| %>
-  				<li><%= auto_link_code(method, true, :class => class_names_for(method)) %></li>
-  			<% end %>
+        <% mixin.all_methods.each do |method| %>
+          <li><%= auto_link_code(method, true, :class => class_names_for(method)) %></li>
+        <% end %>
       </ul>
       <% end %>
     <% end %>
@@ -143,11 +143,11 @@
 
 <%
 types = {
-	:constants           => "Constants",
-	:klass_methods       => "Class methods",
-	:klass_properties    => "Class properties",
-	:instance_methods    => "Instance methods",
-	:instance_properties => "Instance properties"  
+  :constants           => "Constants",
+  :klass_methods       => "Class methods",
+  :klass_properties    => "Class properties",
+  :instance_methods    => "Instance methods",
+  :instance_properties => "Instance properties"  
 }
 %>
 
