@@ -93,7 +93,7 @@
       <% end %>
     </ul>
     
-    <% unless @doc_instance.mixins.empty? %>
+    <% unless @doc_instance.mixins.compact.empty? %>
       <% d.mixins.each do |mixin| %>
       <h4 class="inherited">Inherited from <%= auto_link(mixin) %></h4>
       <ul class="method-list">

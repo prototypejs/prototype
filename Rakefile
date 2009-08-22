@@ -85,7 +85,7 @@ end
 namespace :doc do
   desc "Builds the documentation."
   task :build => [:require] do
-    PrototypeHelper.build_doc_for('prototype.js')
+    PrototypeHelper.build_doc_for(ENV['SECTION'] ? "#{ENV['SECTION']}.js" : 'prototype.js')
   end  
   
   task :require do
