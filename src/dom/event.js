@@ -1,7 +1,7 @@
 (function() {
 
   /** section: DOM
-   * Event
+   * class Event
    *
    *  The namespace for Prototype's event system.
    *
@@ -109,10 +109,11 @@
   **/
   function isRightClick(event)  { return _isButton(event, 2) }
 
-  /**
+  /** deprecated
    *  Event.element(@event) -> Element
    *
-   *  Returns the DOM element on which the event occurred.
+   *  Returns the DOM element on which the event occurred. This method
+   *  is deprecated, use [[Event.findElement findElement]] instead.
   **/
   function element(event) {
     event = Event.extend(event);
