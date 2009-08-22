@@ -33,6 +33,12 @@ var Form = {
    *  Serialize an array of form elements to an object or string suitable
    *  for [[Ajax]] requests.
    *
+   *  As per the HTML spec, disabled fields are not included.
+   *
+   *  If multiple elements have the same name and we're returning an object,
+   *  the value for that key in the object will be an array of the field values
+   *  in the order they appeared on the array of elements.
+   *
    *  <h4>The Options</h4>
    *
    *  The options allow you to control two things: What kind of return
