@@ -297,7 +297,7 @@ Element.Methods = {
   },
 
   /**
-   *  Element#insert(@element, content) -> Element
+   *  Element.insert(@element, content) -> Element
    *  - content (String | Element | Object): The content to insert.
    *
    *  Inserts content `above`, `below`, at the `top`, and/or at the `bottom` of the
