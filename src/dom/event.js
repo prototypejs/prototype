@@ -403,7 +403,7 @@
    *  * Prototype figures out whether to use `addEventListener` (W3C standard) or
    *    `attachEvent` (MSIE); you don't have to worry about it.
    *  * The handler is passed an _extended_ [[Event]] object (even on MSIE).
-   *  * The handler's context (`this` value) is set to the instance of the element being observed
+   *  * The handler's context (`this` value) is set to the extended element being observed
    *    (even if the event actually occurred on a descendent element and bubbled up).
    *  * Prototype handles cleaning up the handler when leaving the page (important for MSIE memory
    *    leak prevention).
@@ -473,7 +473,7 @@
    *        var clickedRow;
    *        clickedRow = event.findElement('tr');
    *        if (clickedRow) {
-   *          this.down('th').update("You clicked record #" + clickedRow.getAttribute("data-recnum"));
+   *          this.down('th').update("You clicked record #" + clickedRow.readAttribute("data-recnum"));
    *        }
    *      });
    *
