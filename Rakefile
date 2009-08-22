@@ -1,95 +1,95 @@
 require 'rake'
 require 'rake/packagetask'
-
 require 'yaml'
 
-PROTOTYPE_ROOT          = File.expand_path(File.dirname(__FILE__))
-PROTOTYPE_SRC_DIR       = File.join(PROTOTYPE_ROOT, 'src')
-PROTOTYPE_DIST_DIR      = File.join(PROTOTYPE_ROOT, 'dist')
-PROTOTYPE_DOC_DIR       = File.join(PROTOTYPE_ROOT, 'doc')
-PROTOTYPE_TEMPLATES_DIR = File.join(PROTOTYPE_ROOT, 'templates')
-PROTOTYPE_PKG_DIR       = File.join(PROTOTYPE_ROOT, 'pkg')
-PROTOTYPE_TEST_DIR      = File.join(PROTOTYPE_ROOT, 'test')
-PROTOTYPE_TEST_UNIT_DIR = File.join(PROTOTYPE_TEST_DIR, 'unit')
-PROTOTYPE_TMP_DIR       = File.join(PROTOTYPE_TEST_UNIT_DIR, 'tmp')
-PROTOTYPE_VERSION       = YAML.load(IO.read(File.join(PROTOTYPE_SRC_DIR, 'constants.yml')))['PROTOTYPE_VERSION']
+module PrototypeHelper
+  ROOT_DIR      = File.expand_path(File.dirname(__FILE__))
+  SRC_DIR       = File.join(ROOT_DIR, 'src')
+  DIST_DIR      = File.join(ROOT_DIR, 'dist')
+  DOC_DIR       = File.join(ROOT_DIR, 'doc')
+  TEMPLATES_DIR = File.join(ROOT_DIR, 'templates')
+  PKG_DIR       = File.join(ROOT_DIR, 'pkg')
+  TEST_DIR      = File.join(ROOT_DIR, 'test')
+  TEST_UNIT_DIR = File.join(TEST_DIR, 'unit')
+  TMP_DIR       = File.join(TEST_UNIT_DIR, 'tmp')
+  VERSION       = YAML.load(IO.read(File.join(SRC_DIR, 'constants.yml')))['PROTOTYPE_VERSION']
+  
+  def self.sprocketize(path, source, destination = nil, strip_comments = true)
+    require_sprockets
+    secretary = Sprockets::Secretary.new(
+      :root           => File.join(ROOT_DIR, path),
+      :load_path      => [SRC_DIR],
+      :source_files   => [source],
+      :strip_comments => strip_comments
+    )
+    
+    destination = File.join(DIST_DIR, source) unless destination
+    secretary.concatenation.save_to(destination)
+  end
+  
+  def self.build_doc_for(file)
+    mkdir_p TMP_DIR
+    temp_path = File.join(TMP_DIR, "prototype.temp.js")
+    sprocketize('src', file, temp_path, false)
+    rm_rf DOC_DIR
+    
+    PDoc::Runner.new(temp_path, {
+      :output    => DOC_DIR,
+      :templates => File.join(TEMPLATES_DIR, "html")
+    }).run
+    
+    rm_rf temp_path
+  end
+  
+  def self.require_sprockets
+    require_submodule('sprockets', "You'll need Sprockets to build Prototype")
+  end
+  
+  def self.require_pdoc
+    require_submodule('pdoc', "You'll need PDoc to generate the documentation")
+  end
+  
+  def self.require_unittest_js
+    require_submodule('unittest_js', "You'll need UnittestJS to run the tests")
+  end
+  
+  def self.require_caja_builder
+    require_submodule('caja_builder', "You'll need CajaBuilder to run cajoled tests")
+  end
+  
+  def self.require_submodule(submodule, message)
+    message = message.strip.sub(/\.$/, '')
+    begin
+      require submodule
+    rescue LoadError => e
+      puts "\n#{message}. Just run:\n\n"
+      puts "  $ git submodule init"
+      puts "  $ git submodule update vendor/#{submodule}"
+      puts "\nand you should be all set.\n\n"
+      exit
+    end
+  end
+end
 
-$:.unshift File.join(PROTOTYPE_ROOT, 'vendor', 'sprockets', 'lib')
+%w[sprockets pdoc unittest_js caja_builder].each do |name|
+  $:.unshift File.join(PrototypeHelper::ROOT_DIR, 'vendor', name, 'lib')
+end
 
 task :default => [:dist, :dist_helper, :package, :clean_package_source]
 
-def sprocketize(path, source, destination = source)
-  begin
-    require "sprockets"
-  rescue LoadError => e
-    puts "\nYou'll need Sprockets to build Prototype. Just run:\n\n"
-    puts "  $ git submodule init"
-    puts "  $ git submodule update"
-    puts "\nand you should be all set.\n\n"
-  end
-  
-  secretary = Sprockets::Secretary.new(
-    :root         => File.join(PROTOTYPE_ROOT, path),
-    :load_path    => [PROTOTYPE_SRC_DIR],
-    :source_files => [source]
-  )
-  
-  secretary.concatenation.save_to(File.join(PROTOTYPE_DIST_DIR, destination))
-end
-
 desc "Builds the distribution."
 task :dist do
-  sprocketize("src", "prototype.js")
+  PrototypeHelper.sprocketize("src", "prototype.js")
 end
 
 namespace :doc do
   desc "Builds the documentation."
   task :build => [:require] do
-    
-    TEMPLATES_ROOT = File.join(PROTOTYPE_ROOT, "vendor", "pdoc",
-      "new_templates")
-    
-    TEMPLATES_DIRECTORY = File.join(TEMPLATES_ROOT, "html")
-    
-    require 'tempfile'
-    begin
-      require "sprockets"
-    rescue LoadError => e
-      puts "\nYou'll need Sprockets to build Prototype. Just run:\n\n"
-      puts "  $ git submodule init"
-      puts "  $ git submodule update"
-      puts "\nand you should be all set.\n\n"
-    end
-    
-    secretary = Sprockets::Secretary.new(
-      :root           => File.join(PROTOTYPE_ROOT, "src"),
-      :load_path      => [PROTOTYPE_SRC_DIR],
-      :source_files   => ["prototype.js"],
-      :strip_comments => false
-    )
-    
-    # Might as well re-use the unit tests' temp directory.
-    mkdir_p PROTOTYPE_TMP_DIR
-    temp_path = File.join(PROTOTYPE_TMP_DIR, "prototype.temp.js")    
-    secretary.concatenation.save_to(temp_path)
-    rm_rf PROTOTYPE_DOC_DIR
-    PDoc::Runner.new(temp_path, {
-      :output    => PROTOTYPE_DOC_DIR,
-      :templates => File.join(PROTOTYPE_TEMPLATES_DIR, "html")
-    }).run
-    
-    rm_rf temp_path
+    PrototypeHelper.build_doc_for('prototype.js')
   end  
   
   task :require do
-    lib = 'vendor/pdoc/lib/pdoc'
-    unless File.exists?(lib)
-      puts "\nYou'll need PDoc to generate the documentation. Just run:\n\n"
-      puts "  $ git submodule init"
-      puts "  $ git submodule update"
-      puts "\nand you should be all set.\n\n"
-    end
-    require lib
+    PrototypeHelper.require_pdoc
   end
 end
 
@@ -97,12 +97,12 @@ task :doc => ['doc:build']
 
 desc "Builds the updating helper."
 task :dist_helper do
-  sprocketize("ext/update_helper", "prototype_update_helper.js")
+  PrototypeHelper.sprocketize("ext/update_helper", "prototype_update_helper.js")
 end
 
-Rake::PackageTask.new('prototype', PROTOTYPE_VERSION) do |package|
+Rake::PackageTask.new('prototype', PrototypeHelper::VERSION) do |package|
   package.need_tar_gz = true
-  package.package_dir = PROTOTYPE_PKG_DIR
+  package.package_dir = PrototypeHelper::PKG_DIR
   package.package_files.include(
     '[A-Z]*',
     'dist/prototype.js',
@@ -113,7 +113,7 @@ Rake::PackageTask.new('prototype', PROTOTYPE_VERSION) do |package|
 end
 
 task :clean_package_source do
-  rm_rf File.join(PROTOTYPE_PKG_DIR, "prototype-#{PROTOTYPE_VERSION}")
+  rm_rf File.join(PrototypeHelper::PKG_DIR, "prototype-#{PrototypeHelper::VERSION}")
 end
 
 task :test => ['test:build', 'test:run']
@@ -123,9 +123,9 @@ namespace :test do
     testcases        = ENV['TESTCASES']
     browsers_to_test = ENV['BROWSERS'] && ENV['BROWSERS'].split(',')
     tests_to_run     = ENV['TESTS'] && ENV['TESTS'].split(',')
-    runner           = UnittestJS::WEBrickRunner::Runner.new(:test_dir => PROTOTYPE_TMP_DIR)
+    runner           = UnittestJS::WEBrickRunner::Runner.new(:test_dir => PrototypeHelper::TMP_DIR)
 
-    Dir[File.join(PROTOTYPE_TMP_DIR, '*_test.html')].each do |file|
+    Dir[File.join(PrototypeHelper::TMP_DIR, '*_test.html')].each do |file|
       file = File.basename(file)
       test = file.sub('_test.html', '')
       unless tests_to_run && !tests_to_run.include?(test)
@@ -145,8 +145,8 @@ namespace :test do
   
   task :build => [:clean, :dist] do
     builder = UnittestJS::Builder::SuiteBuilder.new({
-      :input_dir  => PROTOTYPE_TEST_UNIT_DIR,
-      :assets_dir => PROTOTYPE_DIST_DIR
+      :input_dir  => PrototypeHelper::TEST_UNIT_DIR,
+      :assets_dir => PrototypeHelper::DIST_DIR
     })
     selected_tests = (ENV['TESTS'] || '').split(',')
     builder.collect(*selected_tests)
@@ -154,18 +154,11 @@ namespace :test do
   end
   
   task :clean => [:require] do
-    UnittestJS::Builder.empty_dir!(PROTOTYPE_TMP_DIR)
+    UnittestJS::Builder.empty_dir!(PrototypeHelper::TMP_DIR)
   end
   
   task :require do
-    lib = 'vendor/unittest_js/lib/unittest_js'
-    unless File.exists?(lib)
-      puts "\nYou'll need UnittestJS to run the tests. Just run:\n\n"
-      puts "  $ git submodule init"
-      puts "  $ git submodule update"
-      puts "\nand you should be all set.\n\n"
-    end
-    require lib
+    PrototypeHelper.require_unittest_js
   end
 end
 
@@ -189,9 +182,9 @@ namespace :caja do
 
     task :build => [:require, 'rake:test:clean', :dist] do 
       builder = UnittestJS::CajaBuilder::SuiteBuilder.new({
-        :input_dir          => PROTOTYPE_TEST_UNIT_DIR,
-        :assets_dir         => PROTOTYPE_DIST_DIR,
-        :whitelist_dir      => File.join(PROTOTYPE_TEST_DIR, 'unit', 'caja_whitelists'),
+        :input_dir          => PrototypeHelper::TEST_UNIT_DIR,
+        :assets_dir         => PrototypeHelper::DIST_DIR,
+        :whitelist_dir      => File.join(PrototypeHelper::TEST_DIR, 'unit', 'caja_whitelists'),
         :html_attrib_schema => 'html_attrib.json'
       })
       selected_tests = (ENV['TESTS'] || '').split(',')
@@ -200,13 +193,6 @@ namespace :caja do
     end
   end
   task :require => ['rake:test:require'] do
-    lib = 'vendor/caja_builder/lib/caja_builder'
-    unless File.exists?(lib)
-      puts "\nYou'll need UnittestJS to run the tests. Just run:\n\n"
-      puts "  $ git submodule init"
-      puts "  $ git submodule update"
-      puts "\nand you should be all set.\n\n"
-    end
-    require lib
+    PrototypeHelper.require_caja_builder
   end
 end
