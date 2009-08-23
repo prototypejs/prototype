@@ -1,4 +1,6 @@
-* Avoid triggering warning when Java is disabled in IE8. [#668 state:resolved] (orv, kangax, Andrew Dupont, Tobie Langel)
+*1.6.1* (August 24, 2009)
+
+* Avoid triggering a warning when Java is disabled in IE8. [#668 state:resolved] (orv, kangax, Andrew Dupont, Tobie Langel)
 
 * Simplify String#(un)escapeHTML and remove their DOM dependencies. (Tobie Langel)
 
