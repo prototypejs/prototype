@@ -35,7 +35,8 @@ module PrototypeHelper
     
     PDoc::Runner.new(temp_path, {
       :output    => DOC_DIR,
-      :templates => File.join(TEMPLATES_DIR, "html")
+      :templates => File.join(TEMPLATES_DIR, "html"),
+      :index_page => 'README.markdown'
     }).run
     
     rm_rf temp_path
