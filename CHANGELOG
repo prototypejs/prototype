@@ -1,3 +1,5 @@
+* Avoid triggering warning when Java is disabled in IE8. [#668 state:resolved] (orv, kangax, Andrew Dupont, Tobie Langel)
+
 * Simplify String#(un)escapeHTML and remove their DOM dependencies. (Tobie Langel)
 
 * Update UnittestJS. Modifiy test template accordingly. (Tobie Langel)

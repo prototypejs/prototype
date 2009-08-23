@@ -1696,14 +1696,12 @@ Element.extend = (function() {
   }
 
   var HTMLOBJECTELEMENT_PROTOTYPE_BUGGY = checkDeficiency('object');
-  var HTMLAPPLETELEMENT_PROTOTYPE_BUGGY = checkDeficiency('applet');
 
   if (Prototype.BrowserFeatures.SpecificElementExtensions) {
     // IE8 has a bug with `HTMLObjectElement` and `HTMLAppletElement` objects
     // not being able to "inherit" from `Element.prototype`
     // or a specific prototype - `HTMLObjectElement.prototype`, `HTMLAppletElement.prototype`
-    if (HTMLOBJECTELEMENT_PROTOTYPE_BUGGY &&
-        HTMLAPPLETELEMENT_PROTOTYPE_BUGGY) {
+    if (HTMLOBJECTELEMENT_PROTOTYPE_BUGGY) {
       return function(element) {
         if (element && typeof element._extendedByPrototype == 'undefined') {
           var t = element.tagName;
