@@ -35,7 +35,7 @@ the `src/` directory. To build Prototype, you'll need:
 * a copy of the Prototype source tree, either from a distribution tarball or
   from the Git repository (see below)
 * Ruby 1.8.2 or higher (<http://www.ruby-lang.org/>)
-* Rake -- Ruby Make (<http://rake.rubyforge.org/>)
+* Rake--Ruby Make (<http://rake.rubyforge.org/>)
 * RDoc, if your Ruby distribution does not include it
 
 From the root Prototype directory,
