@@ -43,30 +43,36 @@ module PrototypeHelper
   end
   
   def self.require_sprockets
-    require_submodule('sprockets', "You'll need Sprockets to build Prototype")
+    require_submodule('Sprockets', 'sprockets')
   end
   
   def self.require_pdoc
-    require_submodule('pdoc', "You'll need PDoc to generate the documentation")
+    require_submodule('PDoc', 'pdoc')
   end
   
   def self.require_unittest_js
-    require_submodule('unittest_js', "You'll need UnittestJS to run the tests")
+    require_submodule('UnittestJS', 'unittest_js')
   end
   
   def self.require_caja_builder
-    require_submodule('caja_builder', "You'll need CajaBuilder to run cajoled tests")
+    require_submodule('CajaBuilder', 'caja_builder')
   end
   
-  def self.require_submodule(submodule, message)
-    message = message.strip.sub(/\.$/, '')
+  def self.require_submodule(name, path)
     begin
-      require submodule
+      require path
     rescue LoadError => e
-      puts "\n#{message}. Just run:\n\n"
-      puts "  $ git submodule init"
-      puts "  $ git submodule update vendor/#{submodule}"
-      puts "\nand you should be all set.\n\n"
+      missing_file = e.message.sub('no such file to load -- ', '')
+      if missing_file == path
+        puts "\nIt looks like you're missing #{name}. Just run:\n\n"
+        puts "  $ git submodule init"
+        puts "  $ git submodule update vendor/#{path}"
+        puts "\nand you should be all set.\n\n"
+      else
+        puts "\nIt looks like #{name} is missing the '#{missing_file}' gem. Just run:\n\n"
+        puts "  $ gem install #{missing_file}"
+        puts "\nand you should be all set.\n\n"
+      end
       exit
     end
   end
