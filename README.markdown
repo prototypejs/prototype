@@ -60,4 +60,4 @@ Find out how to contribute: <http://prototypejs.org/contribute>.
 Documentation
 -------------
 
-Please see the online Prototype API: <http://prototypejs.org/api>.
+Please see the online Prototype API: <http://api.prototypejs.org>.
