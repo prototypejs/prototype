@@ -210,11 +210,19 @@ Array.from = $A;
   }
 
   /**
-   *  Array#without(value...) -> Array
+   *  Array#without(value[, value...]) -> Array
    *  - value (?): A value to exclude.
    *
    *  Produces a new version of the array that does not contain any of the
-   *  specified values.
+   *  specified values, leaving the original array unchanged.
+   *
+   *  ### Examples
+   *
+   *      [3, 5, 6].without(3)
+   *      // -> [5, 6]
+   *
+   *      [3, 5, 6, 20].without(20, 6)
+   *      // -> [3, 5]
   **/
   function without() {
     var values = slice.call(arguments, 0);
