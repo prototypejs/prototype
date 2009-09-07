@@ -284,9 +284,17 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#findAll(iterator[, context]) -> Array
+   *  - iterator (Function): An iterator function to use to test the elements.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
-   *  Returns all the elements for which the iterator returned "truthy" value.
-   *  Aliased as [[Enumerable#select]].
+   *  Returns all the elements for which the iterator returned a truthy value.
+   *  For the opposite operation, see [[Enumerable#reject]].
+   *
+   *  ### Example
+   *
+   *      [1, "two", 3, "four", 5].findAll(Object.isString);
+   *      // -> ["two", "four"]
   **/
   function findAll(iterator, context) {
     var results = [];
