@@ -352,9 +352,22 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#include(object) -> Boolean
+   *  - object (Object): The object to look for.
    *
    *  Determines whether a given object is in the Enumerable or not,
-   *  based on the `==` comparison operator. Aliased as [[Enumerable#member]].
+   *  based on the `==` comparison operator (equality with implicit type
+   *  conversion).
+   *
+   *  ### Examples
+   *
+   *      $R(1,15).include(10);
+   *      // -> true
+   *
+   *      ['hello', 'world'].include('HELLO');
+   *      // -> false ('hello' != 'HELLO')
+   *
+   *      [1, 2, '3', '4', '5'].include(3);
+   *      // -> true ('3' == 3)
   **/
   function include(object) {
     if (Object.isFunction(this.indexOf))
