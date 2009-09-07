@@ -291,6 +291,11 @@ Array.from = $A;
    *  Array#inspect() -> String
    *
    *  Returns the debug-oriented string representation of an array.
+   *
+   *  ### Example
+   *
+   *      ['Apples', {good: 'yes', bad: 'no'}, 3, 34].inspect()
+   *      // -> "['Apples', [object Object], 3, 34]"
   **/
   function inspect() {
     return '[' + this.map(Object.inspect).join(', ') + ']';
