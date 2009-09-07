@@ -360,7 +360,8 @@ Array.from = $A;
    *      the search.
    *
    *  Returns the index of the first occurrence of `item` within the array,
-   *  or `-1` if `item` doesn't exist in the array.
+   *  or `-1` if `item` doesn't exist in the array. `Array#indexOf` compares
+   *  items using *strict equality* (`===`).
    *
    *  ### Examples
    *
