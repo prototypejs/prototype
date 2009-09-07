@@ -458,8 +458,17 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#reject(iterator[, context]) -> Array
+   *  - iterator (Function): An iterator function to use to test the elements.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
-   *  Returns all the elements for which the iterator returned a "falsy" value.
+   *  Returns all the elements for which the iterator returns a falsy value.
+   *  For the opposite operation, see [[Enumerable#findAll]].
+   *
+   *  ### Example
+   *
+   *      [1, "two", 3, "four", 5].reject(Object.isString);
+   *      // -> [1, 3, 5]
   **/
   function reject(iterator, context) {
     var results = [];
