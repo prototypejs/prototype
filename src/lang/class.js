@@ -16,16 +16,16 @@ var Class = (function() {
    *        new class. Any number of mixins can be added; later mixins take
    *        precedence.
    *
-   *  Creates a class.
-   *
-   *  Class.create returns a function that, when called, will fire its own
-   *  `initialize` method.
+   *  `Class.create` creates a class and returns a constructor function for
+   *  instances of the class. Calling the constructor function (typically as
+   *  part of a `new` statement) will invoke the class's `initialize` method.
    *
    *  `Class.create` accepts two kinds of arguments. If the first argument is
-   *  a `Class`, it's treated as the new class's superclass, and all its
-   *  methods are inherited. Otherwise, any arguments passed are treated as
-   *  objects, and their methods are copied over as instance methods of the new
-   *  class. Later arguments take precedence over earlier arguments.
+   *  a `Class`, it's used as the new class's superclass, and all its methods
+   *  are inherited. Otherwise, any arguments passed are treated as objects,
+   *  and their methods are copied over ("mixed in") as instance methods of the
+   *  new class. In cases of method name overlap, later arguments take
+   *  precedence over earlier arguments.
    *
    *  If a subclass overrides an instance method declared in a superclass, the
    *  subclass's method can still access the original method. To do so, declare
@@ -34,6 +34,10 @@ var Class = (function() {
    *  function.
    *
    *  To extend a class after it has been defined, use [[Class#addMethods]].
+   *
+   *  For details, see the
+   *  [inheritance tutorial](http://prototypejs.org/learn/class-inheritance)
+   *  on the Prototype website.
   **/
   function subclass() {};
   function create() {
@@ -77,9 +81,9 @@ var Class = (function() {
    *  defined.
    *
    *  New methods propagate down the inheritance chain. If the class has
-   *  subclasses, those subclasses will receive the new methods &mdash; even in the
-   *  context of `$super` calls. The new methods also propagate to instances of
-   *  the class and of all its subclasses, even those that have already been
+   *  subclasses, those subclasses will receive the new methods &mdash; even in
+   *  the context of `$super` calls. The new methods also propagate to instances
+   *  of the class and of all its subclasses, even those that have already been
    *  instantiated.
    *
    *  <h4>Examples</h4>
