@@ -306,10 +306,35 @@ var Enumerable = (function() {
   }
 
   /**
-   *  Enumerable#grep(regex[, iterator = Prototype.K[, context]]) -> Array
+   *  Enumerable#grep(filter[, iterator = Prototype.K[, context]]) -> Array
+   *  - filter (RegExp | String | Object): The filter to apply to elements. This
+   *    can be a `RegExp` instance, a regular expression [[String]], or any
+   *    object with a `match` function.
+   *  - iterator (Function): An optional function to apply to selected elements
+   *    before including them in the result.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
-   *  Returns all the elements that match the filter. If an iterator is provided,
-   *  it is used to produce the returned value for each selected element.
+   *  Returns an array containing all of the elements for which the given
+   *  filter returns `true` (or a truthy value). If an iterator is provided,
+   *  it is used to produce the returned value for each selected element; this
+   *  is done *after* the element has been selected by the filter.
+   *
+   *  If the given filter is a [[String]], it is converted into a `RegExp`
+   *  object. To select elements, each element is passed into the filter's
+   *  `match` function, which should return a truthy value to select the element
+   *  or a falsy value not to. Note that the `RegExp` `match` function will
+   *  convert elements to Strings to perform matching.
+   *
+   *  ### Examples
+   *
+   *      // Get all strings containing a repeated letter
+   *      ['hello', 'world', 'this', 'is', 'cool'].grep(/(.)\1/)
+   *      // -> ['hello', 'cool']
+   *
+   *      // Get all numbers ending with 0 or 5 and subtract 1 from them
+   *      $R(1,30).grep(/[05]$/, function(n) { return n - 1; })
+   *      // -> [4, 9, 14, 19, 24, 29]
   **/
   function grep(filter, iterator, context) {
     iterator = iterator || Prototype.K;
