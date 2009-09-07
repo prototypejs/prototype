@@ -123,9 +123,31 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#all([iterator = Prototype.K[, context]]) -> Boolean
+   *  - iterator (Function): An optional function to use to evaluate
+   *    each element in the array; the function should return the value to
+   *    test. If this is not provided, the element itself is tested.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
-   *  Determines whether all the elements are boolean-equivalent to `true`,
-   *  either directly or through computation by the provided iterator.
+   *  Determines whether all the elements are "truthy" (boolean-equivalent to
+   *  `true`), either directly or through computation by the provided iterator.
+   *  Stops on the first falsey element found (e.g., the first element that
+   *  is boolean-equivalent to `false`, such as `undefined`, `0`, or indeed
+   *  `false`);
+   *
+   *  ### Examples
+   *
+   *      [].all()
+   *      // -> true (empty arrays have no elements that could be falsey)
+   *
+   *      $R(1, 5).all()
+   *      // -> true (all values in [1..5] are truthy)
+   *
+   *      [0, 1, 2].all()
+   *      // -> false (with only one loop cycle: 0 is falsey)
+   *
+   *      [9, 10, 15].all(function(n) { return n >= 10; })
+   *      // -> false (the iterator returns false on 9)
   **/
   function all(iterator, context) {
     iterator = iterator || Prototype.K;
