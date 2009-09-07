@@ -185,11 +185,20 @@ Array.from = $A;
 
   /**
    *  Array#flatten() -> Array
-   *  Returns a "flat" (one-dimensional) version of the array.
    *
-   *  Nested arrays are recursively injected "inline." This can prove very
+   *  Returns a flattened (one-dimensional) copy of the array, leaving
+   *  the original array unchanged.
+   *
+   *  Nested arrays are recursively injected inline. This can prove very
    *  useful when handling the results of a recursive collection algorithm,
    *  for instance.
+   *
+   *  ### Example
+   *
+   *      var a = ['frank', ['bob', 'lisa'], ['jill', ['tom', 'sally']]];
+   *      var b = a.flatten();
+   *      // a -> ['frank', ['bob', 'lisa'], ['jill', ['tom', 'sally']]]
+   *      // b -> ['frank', 'bob', 'lisa', 'jill', 'tom', 'sally']
   **/
   function flatten() {
     return this.inject([], function(array, value) {
