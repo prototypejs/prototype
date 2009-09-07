@@ -319,6 +319,11 @@ Array.from = $A;
    *  Array#toJSON() -> String
    *
    *  Returns a JSON string representation of the array.
+   *
+   *  ### Example
+   *
+   *      ['a', {b: null}].toJSON();
+   *      //-> '["a", {"b": null}]'
   **/
   function toJSON() {
     var results = [];
