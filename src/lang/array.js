@@ -226,9 +226,9 @@ Array.from = $A;
   /**
    *  Array#reverse([inline = true]) -> Array
    *  - inline (Boolean): Whether to modify the array in place. Defaults to `true`.
-   *      Clones the original array first when `false`.
+   *      Clones the original array when `false`.
    *
-   *  Reverses the array's contents, optionally making a copy first.
+   *  Reverses the array's contents, optionally cloning it first.
    *
    *  ### Examples
    *
@@ -244,7 +244,7 @@ Array.from = $A;
    *      // nums -> [20, 1, 6, 5, 3]
   **/
   function reverse(inline) {
-    return (inline !== false ? this : this.toArray())._reverse();
+    return (inline === false ? this.toArray() : this)._reverse();
   }
 
   /**
