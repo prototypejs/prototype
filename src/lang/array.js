@@ -224,11 +224,24 @@ Array.from = $A;
   }
 
   /**
-   *  Array#reverse([inline = false]) -> Array
-   *  - inline (Boolean): Whether to modify the array in place. If `false`,
-   *      clones the original array first.
+   *  Array#reverse([inline = true]) -> Array
+   *  - inline (Boolean): Whether to modify the array in place. Defaults to `true`.
+   *      Clones the original array first when `false`.
    *
-   *  Returns the reversed version of the array.
+   *  Reverses the array's contents, optionally making a copy first.
+   *
+   *  ### Examples
+   *
+   *      // Making a copy
+   *      var nums = [3, 5, 6, 1, 20];
+   *      var rev = nums.reverse(false);
+   *      // nums -> [3, 5, 6, 1, 20]
+   *      // rev -> [20, 1, 6, 5, 3]
+   *
+   *      // Working inline
+   *      var nums = [3, 5, 6, 1, 20];
+   *      nums.reverse();
+   *      // nums -> [20, 1, 6, 5, 3]
   **/
   function reverse(inline) {
     return (inline !== false ? this : this.toArray())._reverse();
