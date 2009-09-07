@@ -384,10 +384,30 @@ var Enumerable = (function() {
   }
 
   /**
-   *  Enumerable#inGroupsOf(size[, filler = null]) -> [group...]
+   *  Enumerable#inGroupsOf(number[, fillWith = null]) -> [group...]
+   *  - number (Number): The number of items to include in each group.
+   *  - fillWith (Object): An optional filler to use if the last group needs
+   *    any; defaults to `null`.
    *
-   *  Groups items in fixed-size chunks, using a specific value to fill up
-   *  the last chunk if necessary.
+   *  Like [[Enumerable#eachSlice]], but pads out the last chunk with the
+   *  specified value if necessary and doesn't support the `iterator` function.
+   *
+   *  ### Examples
+   *
+   *      var students = [
+   *        { name: 'Sunny',  age: 20 },
+   *        { name: 'Audrey', age: 21 },
+   *        { name: 'Matt',   age: 20 },
+   *        { name: 'Amelie', age: 26 },
+   *        { name: 'Will',   age: 21 }
+   *      ];
+   *
+   *      students.inGroupsOf(2, { name: '', age: 0 });
+   *      // -> [
+   *      //      [{ name: 'Sunny', age: 20 }, { name: 'Audrey', age: 21 }],
+   *      //      [{ name: 'Matt', age: 20 },  { name: 'Amelie', age: 26 }],
+   *      //      [{ name: 'Will', age: 21 },  { name: '', age: 0 }]
+   *      //    ]
   **/
   function inGroupsOf(number, fillWith) {
     fillWith = Object.isUndefined(fillWith) ? null : fillWith;
