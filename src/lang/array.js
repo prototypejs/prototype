@@ -254,6 +254,17 @@ Array.from = $A;
    *
    *  Produces a duplicate-free version of an array. If no duplicates are
    *  found, the original array is returned.
+   *
+   *  On large arrays when `sorted` is `false`, this method has a potentially
+   *  large performance cost.
+   *
+   *  ### Examples
+   *
+   *      [1, 3, 2, 1].uniq();
+   *      // -> [1, 2, 3]
+   *
+   *      ['A', 'a'].uniq();
+   *      // -> ['A', 'a'] (because String comparison is case-sensitive)
   **/
   function uniq(sorted) {
     return this.inject([], function(array, value, index) {
