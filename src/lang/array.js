@@ -131,7 +131,16 @@ Array.from = $A;
 
   /**
    *  Array#clear() -> Array
-   *  Empties an array.
+   *
+   *  Clears the array (makes it empty) and returns the array reference.
+   *
+   *  ### Example
+   *
+   *      var guys = ['Sam', 'Justin', 'Andrew', 'Dan'];
+   *      guys.clear();
+   *      // -> []
+   *      guys
+   *      // -> []
   **/
   function clear() {
     this.length = 0;
