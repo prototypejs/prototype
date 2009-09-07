@@ -644,9 +644,23 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#sortBy(iterator[, context]) -> Array
+   *  - iterator (Function): The function to use to compute the criterion for
+   *    each element in the enumeration.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
-   *  Provides a custom-sorted view of the elements based on the criteria computed,
-   *  for each element, by the iterator.
+   *  Creates a custom-sorted array of the elements based on the criteria
+   *  computed, for each element, by the iterator. Computed criteria must have
+   *  well-defined ordering semantics (i.e. the `<` operator must exist between
+   *  any two criteria).
+   *
+   *  `sortBy` does not guarantee a *stable* sort; adjacent equivalent elements
+   *  may be swapped.
+   *
+   *  ### Example
+   *
+   *      ['hello', 'world', 'this', 'is', 'nice'].sortBy(function(s) { return s.length; })
+   *      // -> ['is', 'nice', 'this', 'world', 'hello']
   **/
   function sortBy(iterator, context) {
     return this.map(function(value, index) {
