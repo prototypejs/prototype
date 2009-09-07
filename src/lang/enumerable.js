@@ -419,10 +419,33 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#inject(accumulator, iterator[, context]) -> accumulatedValue
+   *  - accumulator (Object): The initial value to which the `iterator` adds.
+   *  - iterator (Function): An iterator function used to build the accumulated
+   *    result.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
    *  Incrementally builds a result value based on the successive results
-   *  of the iterator.
-   *  This can be used for array construction, numerical sums/averages, etc.
+   *  of the iterator. This can be used for array construction, numerical
+   *  sums/averages, etc.
+   *
+   *  The `iterator` function is called once for each element in the
+   *  enumeration, receiving the current value of the accumulator as its first
+   *  argument, the element as its second argument, and the element's index as
+   *  its third. It returns the new value for the accumulator.
+   *
+   *  ### Examples
+   *
+   *      $R(1,10).inject(0, function(acc, n) { return acc + n; });
+   *      // -> 55 (sum of 1 to 10)
+   *
+   *      ['a', 'b', 'c', 'd', 'e'].inject([], function(string, value, index) {
+   *        if (index % 2 === 0) { // even numbers
+   *          string += value;
+   *        }
+   *        return string;
+   *      });
+   *      // -> 'ace'
   **/
   function inject(memo, iterator, context) {
     this.each(function(value, index) {
