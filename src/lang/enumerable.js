@@ -120,11 +120,31 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#eachSlice(number[, iterator = Prototype.K[, context]]) -> Enumerable
+   *  - number (Number): The number of items to include in each slice.
+   *  - iterator (Function): An optional function to use to transform each
+   *    element before it's included in the slice; if this is not provided,
+   *    the element itself is included.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
-   *  Groups items into chunks of the given size.
-   *  The final "slice" may have fewer than `number` items; it won't "pad" the
-   *  last group with empty values. For that behavior, use
-   *  [[Enumerable#inGroupsOf]].
+   *  Groups items into chunks of the given size. The final "slice" may have
+   *  fewer than `number` items; it won't "pad" the last group with empty
+   *  values. For that behavior, use [[Enumerable#inGroupsOf]].
+   *
+   *  ### Example
+   *
+   *      var students = [
+   *        { name: 'Sunny', age: 20 },
+   *        { name: 'Audrey', age: 21 },
+   *        { name: 'Matt', age: 20 },
+   *        { name: 'Amelie', age: 26 },
+   *        { name: 'Will', age: 21 }
+   *      ];
+   *
+   *      students.eachSlice(3, function(student) {
+   *        return student.name;
+   *      });
+   *      // -> [['Sunny', 'Audrey', 'Matt'], ['Amelie', 'Will']]
   **/
   function eachSlice(number, iterator, context) {
     var index = -number, slices = [], array = this.toArray();
