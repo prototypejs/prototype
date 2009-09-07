@@ -167,7 +167,15 @@ Array.from = $A;
 
   /**
    *  Array#compact() -> Array
-   *  Returns a copy of the array without any `null` or `undefined` values.
+   *
+   *  Returns a **copy** of the array without any `null` or `undefined` values.
+   *
+   *  ### Example
+   *
+   *      var orig = [undefined, 'A', undefined, 'B', null, 'C'];
+   *      var copy = orig.compact();
+   *      // orig -> [undefined, 'A', undefined, 'B', null, 'C'];
+   *      // copy -> ['A', 'B', 'C'];
   **/
   function compact() {
     return this.select(function(value) {
