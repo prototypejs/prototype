@@ -44,8 +44,7 @@ Array.from = $A;
  *
  *  This is done in two ways:
  *
- *  * It mixes in the [[Enumerable]] module, which brings a ton of methods in
- *    already.
+ *  * It mixes in the [[Enumerable]] module, which brings in a ton of methods.
  *  * It adds quite a few extra methods, which are documented in this section.
  *
  *  With Prototype, arrays become much, much more than the trivial objects we
