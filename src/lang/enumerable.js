@@ -225,9 +225,18 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#detect(iterator[, context]) -> firstElement | undefined
+   *  - iterator (Function): The iterator function to apply to each element
+   *    in the array.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
-   *  Finds the first element for which the iterator returns a "truthy" value.
+   *  Returns the first element for which the iterator returns a truthy value.
    *  Aliased by the [[Enumerable#find]] method.
+   *
+   *  ### Example
+   *
+   *      [1, 7, -2, -4, 5].detect(function(n) { return n < 0; })
+   *      // -> -2
   **/
   function detect(iterator, context) {
     var result;
