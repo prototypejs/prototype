@@ -291,7 +291,8 @@ Array.from = $A;
 
   /** related to: Enumerable#size
    *  Array#size() -> Number
-   *  Returns the size of the array.
+   *
+   *  Returns the size of the array (e.g., `array.length`).
    *
    *  This is just a local optimization of the mixed-in [[Enumerable#size]]
    *  which avoids array cloning and uses the array's native length property.
