@@ -690,11 +690,35 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#zip(sequence...[, iterator = Prototype.K]) -> Array
+   *  - sequence (Object): A sequence to zip with this enumerable (there can
+   *    be several of these if desired).
+   *  - iterator (Function): Optional function to use to transform the tuples
+   *    once generated; this is always the last argument provided.
    *
-   *  Zips together (think of the zip on a pair of trousers) 2+ sequences,
-   *  providing an array of tuples.
-   *  Each tuple contains one value per original sequence.
-   *  Tuples can be converted to something else by applying the optional iterator on them.
+   *  Zips together (think of the zipper on a pair of trousers) 2+ sequences,
+   *  returning a new array of tuples. Each tuple is an array containing one
+   *  value per original sequence. Tuples can be transformed to something else
+   *  by applying the optional `iterator` on them.
+   *
+   *  If supplied, `iterator` is called with each tuple as its only argument
+   *  and should return the value to use in place of that tuple.
+   *
+   *  ### Examples
+   *
+   *      var firstNames = ['Jane', 'Nitin', 'Guy'];
+   *      var lastNames  = ['Doe',  'Patel', 'Forcier'];
+   *      var ages       = [23,     41,      17];
+   *
+   *      firstNames.zip(lastNames)
+   *      // -> [['Jane', 'Doe'], ['Nitin', 'Patel'], ['Guy', 'Forcier']]
+   *
+   *      firstNames.zip(lastNames, ages)
+   *      // -> [['Jane', 'Doe', 23], ['Nitin', 'Patel', 41], ['Guy', 'Forcier', 17]]
+   *
+   *      firstNames.zip(lastNames, ages, function(tuple) {
+   *        return tuple[0] + " " + tuple[1] + " is " + tuple[2];
+   *      })
+   *      // -> ['Jane Doe is 23', 'Nitin Patel is 41', 'Guy Forcier is 17']
   **/
   function zip() {
     var iterator = Prototype.K, args = $A(arguments);
