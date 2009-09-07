@@ -481,13 +481,34 @@ var Enumerable = (function() {
     });
   }
 
-  /**
+  /** related to: Enumerable#min
    *  Enumerable#max([iterator = Prototype.K[, context]]) -> maxValue
+   *  - iterator (Function): An optional function to use to evaluate each
+   *    element in the enumeration; the function should return the value to
+   *    test. If this is not provided, the element itself is tested.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
-   *  Returns the maximum element (or element-based computation), or undefined if
-   *  the enumeration is empty.
-   *  Elements are either compared directly, or by first applying the iterator
-   *  and comparing returned values.
+   *  Returns the maximum element (or element-based `iterator` result), or
+   *  `undefined` if the enumeration is empty. Elements are either compared
+   *  directly, or by first calling `iterator` and comparing returned values.
+   *  If multiple "max" elements (or results) are equivalent, the one closest
+   *  to the end of the enumeration is returned.
+   *
+   *  If provided, `iterator` is called with two arguments: The element being
+   *  evaluated, and its index in the enumeration; it should return the value
+   *  `max` should consider (and potentially return).
+   *
+   *  ### Examples
+   *
+   *      ['c', 'b', 'a'].max();
+   *      // -> 'c'
+   *
+   *      [1, 3, '3', 2].max();
+   *      // -> '3' (because both 3 and '3' are "max", and '3' was later)
+   *
+   *      ['zero', 'one', 'two'].max(function(item) { return item.length; });
+   *      // -> 4
   **/
   function max(iterator, context) {
     iterator = iterator || Prototype.K;
@@ -500,13 +521,34 @@ var Enumerable = (function() {
     return result;
   }
 
-  /**
+  /** related to: Enumerable#max
    *  Enumerable#min([iterator = Prototype.K[, context]]) -> minValue
+   *  - iterator (Function): An optional function to use to evaluate each
+   *    element in the enumeration; the function should return the value to
+   *    test. If this is not provided, the element itself is tested.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
-   *  Returns the minimum element (or element-based computation), or undefined if
-   *  the enumeration is empty.
-   *  Elements are either compared directly, or by first applying the iterator
-   *  and comparing returned values.
+   *  Returns the minimum element (or element-based `iterator` result), or
+   *  `undefined` if the enumeration is empty. Elements are either compared
+   *  directly, or by first calling `iterator` and comparing returned values.
+   *  If multiple "min" elements (or results) are equivalent, the one closest
+   *  to the *beginning* of the enumeration is returned.
+   *
+   *  If provided, `iterator` is called with two arguments: The element being
+   *  evaluated, and its index in the enumeration; it should return the value
+   *  `min` should consider (and potentially return).
+   *
+   *  ### Examples
+   *
+   *      ['c', 'b', 'a'].min();
+   *      // -> 'a'
+   *
+   *      [3, 1, '1', 2].min();
+   *      // -> 1 (because both 1 and '1' are "min", and 1 was earlier)
+   *
+   *      ['un', 'deux', 'trois'].min(function(item) { return item.length; });
+   *      // -> 2
   **/
   function min(iterator, context) {
     iterator = iterator || Prototype.K;
