@@ -193,9 +193,26 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#collect([iterator = Prototype.K[, context]]) -> Array
+   *  - iterator (Function): The iterator function to apply to each element
+   *    in the enumeration.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
-   *  Returns the results of applying the iterator to each element.
-   *  Aliased as [[Enumerable#map]].
+   *  Returns the result of applying `iterator` to each element. If no
+   *  `iterator` is provided, the elements are simply copied to the
+   *  result array.
+   *
+   *  ### Examples
+   *
+   *      ['Hitch', "Hiker's", 'Guide', 'to', 'the', 'Galaxy'].collect(function(s) {
+   *        return s.charAt(0).toUpperCase();
+   *      })
+   *      // -> ['H', 'H', 'G', 'T', 'T', 'G']
+   *
+   *      $R(1,5).collect(function(n) {
+   *        return n * n;
+   *      })
+   *      // -> [1, 4, 9, 16, 25]
   **/
   function collect(iterator, context) {
     iterator = iterator || Prototype.K;
