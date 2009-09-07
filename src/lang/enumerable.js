@@ -92,6 +92,19 @@ var Enumerable = (function() {
    *    the keyword `this` means inside `iterator`.
    *
    *  Calls `iterator` for each item in the collection.
+   *
+   *  ### Examples
+   *
+   *      ['one', 'two', 'three'].each(alert);
+   *      // Alerts "one", then alerts "two", then alerts "three"
+   *
+   *  ### Built-In Variants
+   *
+   *  Most of the common use cases for `each` are already available pre-coded
+   *  as other methods on `Enumerable`. Whether you want to find the first
+   *  matching item in an enumeration, or transform it, or determine whether it
+   *  has any (or all) values matching a particular condition, `Enumerable`
+   *  has a method to do that for you.
   **/
   function each(iterator, context) {
     var index = 0;
