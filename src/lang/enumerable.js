@@ -161,9 +161,25 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#any([iterator = Prototype.K[, context]]) -> Boolean
+   *  - iterator (Function): An optional function to use to evaluate
+   *    each element in the array; the function should return the value to
+   *    test. If this is not provided, the element itself is tested.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
-   *  Determines whether at least one element is boolean-equivalent to `true`,
-   *  either directly or through computation by the provided iterator.
+   *  Determines whether at least one element is truthy (boolean-equivalent to
+   *  `true`), either directly or through computation by the provided iterator.
+   *
+   *  ### Examples
+   *
+   *      [].any()
+   *      // -> false (empty arrays have no elements that could be truthy)
+   *
+   *      $R(0, 2).any()
+   *      // -> true (on the second loop, 1 is truthy)
+   *
+   *      [2, 4, 6, 8, 10].any(function(n) { return n > 5; })
+   *      // -> true (the iterator will return true on 6)
   **/
   function any(iterator, context) {
     iterator = iterator || Prototype.K;
