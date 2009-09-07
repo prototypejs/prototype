@@ -313,11 +313,22 @@ Array.from = $A;
   /**
    *  Array#indexOf(item[, offset = 0]) -> Number
    *  - item (?): A value that may or may not be in the array.
-   *  - offset (Number): The number of initial items to skip before beginning the
-   *      search.
+   *  - offset (Number): The number of initial items to skip before beginning
+   *      the search.
    *
-   *  Returns the position of the first occurrence of `item` within the array &mdash; or
-   *  `-1` if `item` doesn't exist in the array.
+   *  Returns the index of the first occurrence of `item` within the array,
+   *  or `-1` if `item` doesn't exist in the array.
+   *
+   *  ### Examples
+   *
+   *      [3, 5, 6, 1, 20].indexOf(1)
+   *      // -> 3
+   *
+   *      [3, 5, 6, 1, 20].indexOf(90)
+   *      // -> -1 (not found)
+   *
+   *      ['1', '2', '3'].indexOf(1);
+   *      // -> -1 (not found, 1 !== '1')
   **/
   function indexOf(item, i) {
     i || (i = 0);
