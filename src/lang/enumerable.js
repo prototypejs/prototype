@@ -677,7 +677,12 @@ var Enumerable = (function() {
   /**
    *  Enumerable#toArray() -> Array
    *
-   *  Returns an Array representation of the enumeration.
+   *  Returns an Array containing the elements of the Enumeration.
+   *
+   *  ### Example
+   *
+   *      $R(1, 5).toArray()
+   *      // -> [1, 2, 3, 4, 5]
   **/
   function toArray() {
     return this.map();
