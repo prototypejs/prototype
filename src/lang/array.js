@@ -149,7 +149,8 @@ Array.from = $A;
 
   /**
    *  Array#first() -> ?
-   *  Returns the array's first item.
+   *
+   *  Returns the array's first item (e.g., `array[0]`).
   **/
   function first() {
     return this[0];
@@ -157,7 +158,8 @@ Array.from = $A;
 
   /**
    *  Array#last() -> ?
-   *  Returns the array's last item.
+   *
+   *  Returns the array's last item (e.g., `array[array.length - 1]`).
   **/
   function last() {
     return this[this.length - 1];
