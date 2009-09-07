@@ -563,11 +563,30 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#partition([iterator = Prototype.K[, context]]) -> [TrueArray, FalseArray]
+   *  - iterator (Function): An optional function to use to evaluate each
+   *    element in the enumeration; the function should return the value to
+   *    test. If this is not provided, the element itself is tested.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
    *
    *  Partitions the elements in two groups: those regarded as true, and those
-   *  considered false.
-   *  By default, regular JavaScript boolean equivalence is used, but an iterator
-   *  can be provided, that computes a boolean representation of the elements.
+   *  considered false. By default, regular JavaScript boolean equivalence
+   *  (e.g., truthiness vs. falsiness) is used, but an iterator can be provided
+   *  that computes a boolean representation of the elements.
+   *
+   *  Using `partition` is more efficient than using [[Enumerable#findAll]] and
+   *  then using [[Enumerable#reject]] because the enumeration is only processed
+   *  once.
+   *
+   *  ### Examples
+   *
+   *      ['hello', null, 42, false, true, , 17].partition()
+   *      // -> [['hello', 42, true, 17], [null, false, undefined]]
+   *
+   *      $R(1, 10).partition(function(n) {
+   *        return 0 == n % 2;
+   *      })
+   *      // -> [[2, 4, 6, 8, 10], [1, 3, 5, 7, 9]]
   **/
   function partition(iterator, context) {
     iterator = iterator || Prototype.K;
