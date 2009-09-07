@@ -599,10 +599,17 @@ var Enumerable = (function() {
   }
 
   /**
-   *  Enumerable#pluck(propertyName) -> Array
+   *  Enumerable#pluck(property) -> Array
+   *  - property (String): The name of the property to fetch.
    *
-   *  Optimization for a common use-case of collect: fetching the same property
-   *  for all the elements. Returns the property values.
+   *  Pre-baked implementation for a common use-case of [[Enumerable#collect]]
+   *  and [[Enumerable#each]]: fetching the same property for all of the
+   *  elements. Returns an array of the property values.
+   *
+   *  ### Example
+   *
+   *      ['hello', 'world', 'this', 'is', 'nice'].pluck('length')
+   *      // -> [5, 5, 4, 2, 4]
   **/
   function pluck(property) {
     var results = [];
