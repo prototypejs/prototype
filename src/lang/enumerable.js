@@ -456,9 +456,23 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#invoke(methodName[, arg...]) -> Array
+   *  - methodName (String): The name of the method to invoke.
+   *  - args (?): Optional arguments to pass to the method.
    *
-   *  Invokes the same method, with the same arguments, for all items in a collection.
-   *  Returns the results of the method calls.
+   *  Invokes the same method, with the same arguments, for all items in a
+   *  collection. Returns an array of the results of the method calls.
+   *
+   *  ### Examples
+   *
+   *      ['hello', 'world'].invoke('toUpperCase');
+   *      // -> ['HELLO', 'WORLD']
+   *
+   *      ['hello', 'world'].invoke('substring', 0, 3);
+   *      // -> ['hel', 'wor']
+   *
+   *      $$('input').invoke('stopObserving', 'change');
+   *      // -> Stops observing the 'change' event on all input elements,
+   *      // returns an array of the element references.
   **/
   function invoke(method) {
     var args = $A(arguments).slice(1);
