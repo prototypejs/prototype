@@ -25,8 +25,8 @@
  *        this[name] = index;
  *      }, myObject); // we have specified the context
  *
- *      myObject
- *      //-> { foo: 0, bar: 1, baz: 2}
+ *      myObject;
+ *      // -> { foo: 0, bar: 1, baz: 2}
  *
  *  If there is no `context` argument, the iterator function will execute in
  *  the scope from which the `Enumerable` method itself was called.
@@ -157,29 +157,29 @@ var Enumerable = (function() {
   /**
    *  Enumerable#all([iterator = Prototype.K[, context]]) -> Boolean
    *  - iterator (Function): An optional function to use to evaluate
-   *    each element in the array; the function should return the value to
+   *    each element in the enumeration; the function should return the value to
    *    test. If this is not provided, the element itself is tested.
    *  - context (Object): An optional object to use as `this` within
    *    calls to the iterator.
    *
    *  Determines whether all the elements are "truthy" (boolean-equivalent to
    *  `true`), either directly or through computation by the provided iterator.
-   *  Stops on the first falsey element found (e.g., the first element that
+   *  Stops on the first falsy element found (e.g., the first element that
    *  is boolean-equivalent to `false`, such as `undefined`, `0`, or indeed
    *  `false`);
    *
    *  ### Examples
    *
-   *      [].all()
-   *      // -> true (empty arrays have no elements that could be falsey)
+   *      [].all();
+   *      // -> true (empty arrays have no elements that could be falsy)
    *
-   *      $R(1, 5).all()
+   *      $R(1, 5).all();
    *      // -> true (all values in [1..5] are truthy)
    *
-   *      [0, 1, 2].all()
-   *      // -> false (with only one loop cycle: 0 is falsey)
+   *      [0, 1, 2].all();
+   *      // -> false (with only one loop cycle: 0 is falsy)
    *
-   *      [9, 10, 15].all(function(n) { return n >= 10; })
+   *      [9, 10, 15].all(function(n) { return n >= 10; });
    *      // -> false (the iterator returns false on 9)
   **/
   function all(iterator, context) {
@@ -194,8 +194,8 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#any([iterator = Prototype.K[, context]]) -> Boolean
-   *  - iterator (Function): An optional function to use to evaluate
-   *    each element in the array; the function should return the value to
+   *  - iterator (Function): An optional function to use to evaluate each
+   *    element in the enumeration; the function should return the value to
    *    test. If this is not provided, the element itself is tested.
    *  - context (Object): An optional object to use as `this` within
    *    calls to the iterator.
@@ -205,13 +205,13 @@ var Enumerable = (function() {
    *
    *  ### Examples
    *
-   *      [].any()
+   *      [].any();
    *      // -> false (empty arrays have no elements that could be truthy)
    *
-   *      $R(0, 2).any()
+   *      $R(0, 2).any();
    *      // -> true (on the second loop, 1 is truthy)
    *
-   *      [2, 4, 6, 8, 10].any(function(n) { return n > 5; })
+   *      [2, 4, 6, 8, 10].any(function(n) { return n > 5; });
    *      // -> true (the iterator will return true on 6)
   **/
   function any(iterator, context) {
@@ -233,18 +233,18 @@ var Enumerable = (function() {
    *
    *  Returns the result of applying `iterator` to each element. If no
    *  `iterator` is provided, the elements are simply copied to the
-   *  result array.
+   *  returned array.
    *
    *  ### Examples
    *
    *      ['Hitch', "Hiker's", 'Guide', 'to', 'the', 'Galaxy'].collect(function(s) {
    *        return s.charAt(0).toUpperCase();
-   *      })
+   *      });
    *      // -> ['H', 'H', 'G', 'T', 'T', 'G']
    *
    *      $R(1,5).collect(function(n) {
    *        return n * n;
-   *      })
+   *      });
    *      // -> [1, 4, 9, 16, 25]
   **/
   function collect(iterator, context) {
@@ -259,7 +259,7 @@ var Enumerable = (function() {
   /**
    *  Enumerable#detect(iterator[, context]) -> firstElement | undefined
    *  - iterator (Function): The iterator function to apply to each element
-   *    in the array.
+   *    in the enumeration.
    *  - context (Object): An optional object to use as `this` within
    *    calls to the iterator.
    *
@@ -268,7 +268,7 @@ var Enumerable = (function() {
    *
    *  ### Example
    *
-   *      [1, 7, -2, -4, 5].detect(function(n) { return n < 0; })
+   *      [1, 7, -2, -4, 5].detect(function(n) { return n < 0; });
    *      // -> -2
   **/
   function detect(iterator, context) {
@@ -293,8 +293,8 @@ var Enumerable = (function() {
    *
    *  ### Example
    *
-   *      [1, "two", 3, "four", 5].findAll(Object.isString);
-   *      // -> ["two", "four"]
+   *      [1, 'two', 3, 'four', 5].findAll(Object.isString);
+   *      // -> ['two', 'four']
   **/
   function findAll(iterator, context) {
     var results = [];
@@ -329,11 +329,11 @@ var Enumerable = (function() {
    *  ### Examples
    *
    *      // Get all strings containing a repeated letter
-   *      ['hello', 'world', 'this', 'is', 'cool'].grep(/(.)\1/)
+   *      ['hello', 'world', 'this', 'is', 'cool'].grep(/(.)\1/);
    *      // -> ['hello', 'cool']
    *
    *      // Get all numbers ending with 0 or 5 and subtract 1 from them
-   *      $R(1,30).grep(/[05]$/, function(n) { return n - 1; })
+   *      $R(1, 30).grep(/[05]$/, function(n) { return n - 1; });
    *      // -> [4, 9, 14, 19, 24, 29]
   **/
   function grep(filter, iterator, context) {
@@ -352,15 +352,15 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#include(object) -> Boolean
-   *  - object (Object): The object to look for.
+   *  - object (?): The object to look for.
    *
-   *  Determines whether a given object is in the Enumerable or not,
+   *  Determines whether a given object is in the enumerable or not,
    *  based on the `==` comparison operator (equality with implicit type
    *  conversion).
    *
    *  ### Examples
    *
-   *      $R(1,15).include(10);
+   *      $R(1, 15).include(10);
    *      // -> true
    *
    *      ['hello', 'world'].include('HELLO');
@@ -419,7 +419,7 @@ var Enumerable = (function() {
 
   /**
    *  Enumerable#inject(accumulator, iterator[, context]) -> accumulatedValue
-   *  - accumulator (Object): The initial value to which the `iterator` adds.
+   *  - accumulator (?): The initial value to which the `iterator` adds.
    *  - iterator (Function): An iterator function used to build the accumulated
    *    result.
    *  - context (Object): An optional object to use as `this` within
@@ -580,12 +580,12 @@ var Enumerable = (function() {
    *
    *  ### Examples
    *
-   *      ['hello', null, 42, false, true, , 17].partition()
+   *      ['hello', null, 42, false, true, , 17].partition();
    *      // -> [['hello', 42, true, 17], [null, false, undefined]]
    *
    *      $R(1, 10).partition(function(n) {
    *        return 0 == n % 2;
-   *      })
+   *      });
    *      // -> [[2, 4, 6, 8, 10], [1, 3, 5, 7, 9]]
   **/
   function partition(iterator, context) {
@@ -608,7 +608,7 @@ var Enumerable = (function() {
    *
    *  ### Example
    *
-   *      ['hello', 'world', 'this', 'is', 'nice'].pluck('length')
+   *      ['hello', 'world', 'this', 'is', 'nice'].pluck('length');
    *      // -> [5, 5, 4, 2, 4]
   **/
   function pluck(property) {
@@ -659,7 +659,9 @@ var Enumerable = (function() {
    *
    *  ### Example
    *
-   *      ['hello', 'world', 'this', 'is', 'nice'].sortBy(function(s) { return s.length; })
+   *      ['hello', 'world', 'this', 'is', 'nice'].sortBy(function(s) {
+   *        return s.length;
+   *      });
    *      // -> ['is', 'nice', 'this', 'world', 'hello']
   **/
   function sortBy(iterator, context) {
@@ -677,12 +679,15 @@ var Enumerable = (function() {
   /**
    *  Enumerable#toArray() -> Array
    *
-   *  Returns an Array containing the elements of the Enumeration.
+   *  Returns an Array containing the elements of the enumeration.
    *
    *  ### Example
    *
-   *      $R(1, 5).toArray()
+   *      $R(1, 5).toArray();
    *      // -> [1, 2, 3, 4, 5]
+   *
+   *      $H({ name: 'Sunny', age: 20 }).toArray();
+   *      // -> [['name', 'Sunny'], ['age', 20]]
   **/
   function toArray() {
     return this.map();
@@ -709,15 +714,15 @@ var Enumerable = (function() {
    *      var lastNames  = ['Doe',  'Patel', 'Forcier'];
    *      var ages       = [23,     41,      17];
    *
-   *      firstNames.zip(lastNames)
+   *      firstNames.zip(lastNames);
    *      // -> [['Jane', 'Doe'], ['Nitin', 'Patel'], ['Guy', 'Forcier']]
    *
-   *      firstNames.zip(lastNames, ages)
+   *      firstNames.zip(lastNames, ages);
    *      // -> [['Jane', 'Doe', 23], ['Nitin', 'Patel', 41], ['Guy', 'Forcier', 17]]
    *
    *      firstNames.zip(lastNames, ages, function(tuple) {
-   *        return tuple[0] + " " + tuple[1] + " is " + tuple[2];
-   *      })
+   *        return tuple[0] + ' ' + tuple[1] + ' is ' + tuple[2];
+   *      });
    *      // -> ['Jane Doe is 23', 'Nitin Patel is 41', 'Guy Forcier is 17']
   **/
   function zip() {
