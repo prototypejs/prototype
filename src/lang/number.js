@@ -90,6 +90,8 @@ Object.extend(Number.prototype, (function() {
    *  Number#ceil() -> Number
    *
    *  Returns the smallest integer greater than or equal to the number.
+   *  Convenience method that simply calls `Math.ceil` on this instance and
+   *  returns the result.
   **/
   function ceil() {
     return Math.ceil(this);
