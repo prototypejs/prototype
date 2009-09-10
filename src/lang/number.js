@@ -17,8 +17,13 @@ Object.extend(Number.prototype, (function() {
    *  Number#toColorPart() -> String
    *
    *  Produces a 2-digit hexadecimal representation of the number
-   *  (which is therefore assumed to be in the [0..255] range).
+   *  (which is therefore assumed to be in the \[0..255\] range, inclusive).
    *  Useful for composing CSS color strings.
+   *
+   *  ### Example
+   *
+   *      10.toColorPart()
+   *      // -> "0a"
   **/
   function toColorPart() {
     return this.toPaddedString(2, 16);
