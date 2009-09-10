@@ -91,8 +91,22 @@ var Hash = Class.create(Enumerable, (function() {
 
   /**
    *  Hash#set(key, value) -> value
+   *  - key (String): The key to use for this value.
+   *  - value (?): The value to use for this key.
    *
-   *  Sets the hash's `key` property to `value` and returns `value`.
+   *  Stores `value` in the hash using the key `key` and returns `value`.
+   *
+   *  ### Example
+   *
+   *      var h = $H();
+   *      h.keys();
+   *      // -> [] (initially empty)
+   *      h.set('a', 'apple');
+   *      // -> "apple"
+   *      h.keys();
+   *      // -> ["a"] (has the new entry)
+   *      h.get('a');
+   *      // -> "apple"
   **/
   function set(key, value) {
     return this._object[key] = value;
