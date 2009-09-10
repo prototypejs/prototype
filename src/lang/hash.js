@@ -232,10 +232,22 @@ var Hash = Class.create(Enumerable, (function() {
 
   /**
    *  Hash#update(object) -> Hash
+   *  - object (Object | Hash): The object to merge with this hash to produce
+   *    the resulting hash.
    *
-   *  Updates hash with the key/value pairs of `object`.
-   *  The original hash will be modified. To return a new hash instead, use
+   *  Updates a hash *in place* with the key/value pairs of `object`, returns
+   *  the hash.
+   *
+   *  `update` modifies the hash. To get a new hash instead, use
    *  [[Hash#merge]].
+   *
+   *  ### Example
+   *
+   *      var h = $H({one: "uno", two: "due"});
+   *      h.update({three: "tre"});
+   *      // -> h (a reference to the original hash)
+   *      h.keys();
+   *      // -> ["one", "two", "three"] (has merged contents)
   **/
   function update(object) {
     return new Hash(object).inject(this, function(result, pair) {
