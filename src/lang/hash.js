@@ -143,7 +143,15 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#toObject() -> Object
    *
-   *  Returns a cloned, vanilla object.
+   *  Returns a cloned, vanilla object whose properties (and property values)
+   *  match the keys (and values) from the hash.
+   *
+   *  ### Example
+   *
+   *      var h = new Hash({ a: 'apple', b: 'banana', c: 'coconut' });
+   *      var obj = h.toObject();
+   *      obj.a;
+   *      // -> "apple"
   **/
   function toObject() {
     return Object.clone(this._object);
