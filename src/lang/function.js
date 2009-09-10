@@ -211,17 +211,28 @@ Object.extend(Function.prototype, (function() {
   }
 
   /**
-   *  Function#delay(seconds[, args...]) -> Number
-   *  - seconds (Number): How long to wait before calling the function.
+   *  Function#delay(timeout[, args...]) -> Number
+   *  - timeout (Number): The time, in seconds, to wait before calling the
+   *    function.
+   *  - args (?): Optional arguments to pass to the function when calling it.
    *
    *  Schedules the function to run after the specified amount of time, passing
    *  any arguments given.
    *
-   *  Behaves much like `window.setTimeout`. Returns an integer ID that can be
-   *  used to clear the timeout with `window.clearTimeout` before it runs.
+   *  Behaves much like `window.setTimeout`, but the timeout is in seconds
+   *  rather than milliseconds. Returns an integer ID that can be used to
+   *  clear the timeout with `window.clearTimeout` before it runs.
    *
    *  To schedule a function to run as soon as the interpreter is idle, use
    *  [[Function#defer]].
+   *
+   *  ### Example
+   *
+   *      function showMsg(msg) {
+   *        alert(msg);
+   *      }
+   *      showMsg.delay(0.1, "Hi there!");
+   *      // -> Waits a 10th of a second, then alerts "Hi there!"
   **/
   function delay(timeout) {
     var __method = this, args = slice.call(arguments, 1);
