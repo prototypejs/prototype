@@ -23,6 +23,17 @@ Object.extend(Function.prototype, (function() {
    *  Reads the argument names as stated in the function definition and returns
    *  the values as an array of strings (or an empty array if the function is
    *  defined without parameters).
+   *
+   *  ### Examples
+   *
+   *      function fn(foo, bar) {
+   *        return foo + bar;
+   *      }
+   *      fn.argumentNames();
+   *      //-> ['foo', 'bar']
+   *
+   *      Prototype.emptyFunction.argumentNames();
+   *      //-> []
   **/
   function argumentNames() {
     var names = this.toString().match(/^[\s\(]*function[^(]*\(([^)]*)\)/)[1]
