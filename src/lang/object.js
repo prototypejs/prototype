@@ -173,7 +173,7 @@
    *  Do note that this is a _shallow_ copy, not a _deep_ copy. Nested objects
    *  will retain their references.
    *
-   *  ### Examples
+   *  <h5>Examples</h5>
    *
    *      var original = {name: 'primaryColors', values: ['red', 'green', 'blue']};
    *      var copy = Object.clone(original);

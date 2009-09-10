@@ -24,7 +24,7 @@ Object.extend(Function.prototype, (function() {
    *  the values as an array of strings (or an empty array if the function is
    *  defined without parameters).
    *
-   *  ### Examples
+   *  <h5>Examples</h5>
    *
    *      function fn(foo, bar) {
    *        return foo + bar;
@@ -52,7 +52,7 @@ Object.extend(Function.prototype, (function() {
    *  function is called, it will call the original ensuring that `this` is set
    *  to `context`. Also optionally curries arguments for the function.
    *
-   *  ### Examples
+   *  <h5>Examples</h5>
    *
    *  A typical use of `Function#bind` is to ensure that a callback (event
    *  handler, etc.) that is an object method gets called with the correct
@@ -136,7 +136,7 @@ Object.extend(Function.prototype, (function() {
    *    This mostly happens if the number of arguments will vary, and so you
    *    want to know the event object is the first argument.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var ContentUpdater = Class.create({
    *        initialize: function(initialData) {
@@ -226,7 +226,7 @@ Object.extend(Function.prototype, (function() {
    *  To schedule a function to run as soon as the interpreter is idle, use
    *  [[Function#defer]].
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      function showMsg(msg) {
    *        alert(msg);
@@ -255,7 +255,7 @@ Object.extend(Function.prototype, (function() {
    *  ID that can be used to clear the timeout with `window.clearTimeout` before
    *  it runs.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      function showMsg(msg) {
    *        alert(msg);
@@ -293,7 +293,7 @@ Object.extend(Function.prototype, (function() {
    *  indirection in-between that sets up the proper context \[`this` value\] for
    *  it.)
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      // Wrap String#capitalize so it accepts an additional argument
    *      String.prototype.capitalize = String.prototype.capitalize.wrap(
@@ -333,7 +333,7 @@ Object.extend(Function.prototype, (function() {
    *  want to transform a function that takes an object to a method of that
    *  object or its prototype, shortening its signature by one argument.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      // A function that sets a name on a target object
    *      function setName(target, name) {

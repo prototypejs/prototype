@@ -7,7 +7,7 @@
  *  `Ajax.Updater` is a subclass of [[Ajax.Request]] built for a common
  *  use-case.
  *
- *  <h4>Example</h4>
+ *  <h5>Example</h5>
  *
  *      new Ajax.Updater('items', '/items', {
  *        parameters: { text: $F('text') }
@@ -17,13 +17,13 @@
  *  parameters); it will then replace the contents of the element with the ID
  *  of `items` with whatever response it receives.
  *
- *  <h4>Callbacks</h4>
+ *  <h5>Callbacks</h5>
  *
  *  `Ajax.Updater` supports all the callbacks listed in the [[Ajax section]].
  *  Note that the `onComplete` callback will be invoked **after** the element
  *  is updated.
  *
- *  <h4>Additional options</h4>
+ *  <h5>Additional options</h5>
  *
  *  `Ajax.Updater` has some options of its own apart from the common options
  *  described in the [[Ajax section]]:
@@ -37,7 +37,7 @@
  *    `top`, `bottom`, `before`, or `after` &mdash; and _inserts_ the contents of the
  *    response in the manner described by [[Element#insert]].
  *
- *  <h4>More About `evalScripts`</h4>
+ *  <h5>More About `evalScripts`</h5>
  *
  *  If you use `evalScripts: true`, any _inline_ `<script>` block will be evaluated.
  *  This **does not** mean it will be evaluated in the global scope; it won't, and that
@@ -45,7 +45,7 @@
  *  that only inline `<script>` blocks are supported; external scripts are ignored.
  *  See [[String#evalScripts]] for the details.
  *
- *  <h4>Single container, or success/failure split?</h4>
+ *  <h5>Single container, or success/failure split?</h5>
  *
  *  The examples above all assume you're going to update the same container
  *  whether your request succeeds or fails. Instead, you may want to update

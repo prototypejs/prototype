@@ -52,7 +52,7 @@ Array.from = $A;
  *  their `[]` indexing operator. They become very powerful objects that
  *  greatly simplify the code for 99% of the common use cases involving them.
  *
- *  <h4>Why you should stop using for...in to iterate</h4>
+ *  <h5>Why you should stop using for...in to iterate</h5>
  *
  *  Many JavaScript authors have been misled into using the `for...in` JavaScript
  *  construct to loop over array elements. This kind of code just won't work
@@ -77,7 +77,7 @@ Array.from = $A;
  *  those coming from the [[Enumerable]] module, and those Prototype puts in the
  *  Array namespace (listed further below).
  *
- *  <h4>What you should use instead</h4>
+ *  <h5>What you should use instead</h5>
  *
  *  You can revert to vanilla loops:
  *
@@ -99,7 +99,7 @@ Array.from = $A;
  *  module. So manual loops should be fairly rare.
  *
  *
- *  <h4>A note on performance</h4>
+ *  <h5>A note on performance</h5>
  *
  *  Should you have a very large array, using iterators with lexical closures
  *  (anonymous functions that you pass to the iterators and that get invoked at
@@ -134,7 +134,7 @@ Array.from = $A;
    *
    *  Clears the array (makes it empty) and returns the array reference.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var guys = ['Sam', 'Justin', 'Andrew', 'Dan'];
    *      guys.clear();
@@ -170,7 +170,7 @@ Array.from = $A;
    *
    *  Returns a **copy** of the array without any `null` or `undefined` values.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var orig = [undefined, 'A', undefined, 'B', null, 'C'];
    *      var copy = orig.compact();
@@ -193,7 +193,7 @@ Array.from = $A;
    *  useful when handling the results of a recursive collection algorithm,
    *  for instance.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var a = ['frank', ['bob', 'lisa'], ['jill', ['tom', 'sally']]];
    *      var b = a.flatten();
@@ -216,7 +216,7 @@ Array.from = $A;
    *  Produces a new version of the array that does not contain any of the
    *  specified values, leaving the original array unchanged.
    *
-   *  ### Examples
+   *  <h5>Examples</h5>
    *
    *      [3, 5, 6].without(3)
    *      // -> [5, 6]
@@ -238,7 +238,7 @@ Array.from = $A;
    *
    *  Reverses the array's contents, optionally cloning it first.
    *
-   *  ### Examples
+   *  <h5>Examples</h5>
    *
    *      // Making a copy
    *      var nums = [3, 5, 6, 1, 20];
@@ -266,7 +266,7 @@ Array.from = $A;
    *  On large arrays when `sorted` is `false`, this method has a potentially
    *  large performance cost.
    *
-   *  ### Examples
+   *  <h5>Examples</h5>
    *
    *      [1, 3, 2, 1].uniq();
    *      // -> [1, 2, 3]
@@ -325,7 +325,7 @@ Array.from = $A;
    *
    *  Returns the debug-oriented string representation of an array.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      ['Apples', {good: 'yes', bad: 'no'}, 3, 34].inspect()
    *      // -> "['Apples', [object Object], 3, 34]"
@@ -339,7 +339,7 @@ Array.from = $A;
    *
    *  Returns a JSON string representation of the array.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      ['a', {b: null}].toJSON();
    *      //-> '["a", {"b": null}]'
@@ -363,7 +363,7 @@ Array.from = $A;
    *  or `-1` if `item` doesn't exist in the array. `Array#indexOf` compares
    *  items using *strict equality* (`===`).
    *
-   *  ### Examples
+   *  <h5>Examples</h5>
    *
    *      [3, 5, 6, 1, 20].indexOf(1)
    *      // -> 3

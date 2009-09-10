@@ -5,7 +5,7 @@
    *
    *  The namespace for Prototype's event system.
    *
-   *  <h4>Events: a fine mess</h4>
+   *  <h5>Events: a fine mess</h5>
    *
    *  Event management is one of the really sore spots of cross-browser
    *  scripting.
@@ -17,7 +17,7 @@
    *  Safari). Also, MSIE has a tendency to leak memory when it comes to
    *  discarding event handlers.
    *
-   *  <h4>Prototype to the rescue</h4>
+   *  <h5>Prototype to the rescue</h5>
    *
    *  Of course, Prototype smooths it over so well you'll forget these
    *  troubles even exist. Enter the `Event` namespace. It is replete with
@@ -418,7 +418,7 @@
    *
    *  The examples in this documentation use the [[Element#observe]] form.
    *
-   *  <h4>The Handler</h4>
+   *  <h5>The Handler</h5>
    *
    *  Signature:
    *
@@ -435,13 +435,13 @@
    *  Note that we used `this` to refer to the element, and that we received the `event` object
    *  as a parameter (even on MSIE).
    *
-   *  <h4>It's All About Timing</h4>
+   *  <h5>It's All About Timing</h5>
    *
    *  One of the most common errors trying to observe events is trying to do it before the element
    *  exists in the DOM. Don't try to observe elements until after the
    *  [[document.observe dom:loaded]] event or `window` `load` event has been fired.
    *
-   *  <h4>Preventing the Default Event Action and Bubbling</h4>
+   *  <h5>Preventing the Default Event Action and Bubbling</h5>
    *
    *  If we want to stop the event (e.g., prevent its default action and stop it bubbling), we can
    *  do so with the extended event object's [[Event#stop]] method:
@@ -450,7 +450,7 @@
    *        event.stop();
    *      });
    *
-   *  <h4>Finding the Element Where the Event Occurred</h4>
+   *  <h5>Finding the Element Where the Event Occurred</h5>
    *
    *  Since most events bubble from descendant elements up through the hierarchy until they're
    *  handled, we can observe an event on a container rather than individual elements within the
@@ -481,12 +481,12 @@
    *  record was clicked. [[Event#findElement]] finds the row that was clicked, and `this` refers
    *  to the table we were observing.
    *
-   *  <h4>Stopping Observing the Event</h4>
+   *  <h5>Stopping Observing the Event</h5>
    *
    *  If we don't need to observe the event anymore, we can stop observing it with
    *  [[Event.stopObserving]] (aka [[Element#stopObserving]]).
    *
-   *  <h4>Using an Instance Method as a Handler</h4>
+   *  <h5>Using an Instance Method as a Handler</h5>
    *
    *  If we want to use an instance method as a handler, we will probably want to use
    *  [[Function#bind]] to set the handler's context; otherwise, the context will be lost and
@@ -511,13 +511,13 @@
    *  details. There's also [[Function#bindAsEventListener]], which is handy for certain very
    *  specific situations. (Normally, `bind` is all you need.)
    *
-   *  <h4>Side Notes</h4>
+   *  <h5>Side Notes</h5>
    *
    *  Although Prototype smooths out most of the differences between browsers, the fundamental
    *  behavior of a browser implementation isn't changed. For example, the timing of the `change`
    *  or `blur` events varies a bit from browser to browser.
    *
-   *  <h4>Changes in 1.6.x</h4>
+   *  <h5>Changes in 1.6.x</h5>
    *
    *  Prior to Prototype 1.6, `observe` supported a fourth argument (`useCapture`), a boolean that
    *  indicated whether to use the browser's capturing phase or its bubbling phase. Since MSIE does
@@ -572,7 +572,7 @@
    *  for that `eventName`. If `eventName` is also omitted, unregisters _all_
    *  event handlers on `element`. (In each case, only affects handlers registered via Prototype.)
    *
-   *  <h4>Examples</h4>
+   *  <h5>Examples</h5>
    *
    *  Assuming:
    *
@@ -591,7 +591,7 @@
    *
    *      $('foo').stopObserving();
    *
-   *  <h4>A Common Error</h4>
+   *  <h5>A Common Error</h5>
    *
    *  When using instance methods as observers, it's common to use [[Function#bind]] on them, e.g.:
    *

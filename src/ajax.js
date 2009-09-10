@@ -8,7 +8,7 @@
  *
  *  Actual requests are made by creating instances of [[Ajax.Request]].
  *
- *  <h4>Request headers</h4>
+ *  <h5>Request headers</h5>
  *
  *  The following headers are sent with all Ajax requests (and can be
  *  overridden with the `requestHeaders` option described below):
@@ -21,7 +21,7 @@
  *  * `Content-type` is automatically determined based on the `contentType`
  *    and `encoding` options.
  *
- *  <h4>Ajax options</h4>
+ *  <h5>Ajax options</h5>
  *
  *  All Ajax classes share a common set of _options_ and _callbacks_.
  *  Callbacks are called at various points in the life-cycle of a request, and
@@ -64,7 +64,7 @@
  *    `true` otherwise): Sanitizes the contents of
  *    [[Ajax.Response#responseText]] before evaluating it.
  *
- *  <h4>Common callbacks</h4>
+ *  <h5>Common callbacks</h5>
  *
  *  When used on individual instances, all callbacks (except `onException`) are
  *  invoked with two parameters: the `XMLHttpRequest` object and the result of

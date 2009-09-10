@@ -22,7 +22,7 @@ function $H(object) {
  *  methods that let you enumerate keys and values, iterate over key/value
  *  pairs, merge two hashes together, and much more.
  *
- *  <h4>Creating a hash</h4>
+ *  <h5>Creating a hash</h5>
  *
  *  You can create a Hash either via `new Hash()` or the convenience alias
  *  `$H()`; there is **no** difference between them. In either case, you may
@@ -67,7 +67,7 @@ var Hash = Class.create(Enumerable, (function() {
    *  implementations exhibit *ordered* behavior, this is not standardized and
    *  may not always be the case, and so cannot be relied upon.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var h = $H({version: 1.6, author: 'The Core Team'});
    *
@@ -96,7 +96,7 @@ var Hash = Class.create(Enumerable, (function() {
    *
    *  Stores `value` in the hash using the key `key` and returns `value`.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var h = $H();
    *      h.keys();
@@ -117,7 +117,7 @@ var Hash = Class.create(Enumerable, (function() {
    *
    *  Returns the stored value for the given `key`.
    *
-   *  ### Examples
+   *  <h5>Examples</h5>
    *
    *      var h = new Hash({a: 'apple', b: 'banana', c: 'coconut'});
    *      h.get('a');
@@ -135,7 +135,7 @@ var Hash = Class.create(Enumerable, (function() {
    *  Deletes the stored pair for the given `key` from the hash and returns its
    *  value.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var h = new Hash({a: 'apple', b: 'banana', c: 'coconut'});
    *      h.keys();
@@ -157,7 +157,7 @@ var Hash = Class.create(Enumerable, (function() {
    *  Returns a cloned, vanilla object whose properties (and property values)
    *  match the keys (and values) from the hash.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var h = new Hash({ a: 'apple', b: 'banana', c: 'coconut' });
    *      var obj = h.toObject();
@@ -175,7 +175,7 @@ var Hash = Class.create(Enumerable, (function() {
    *
    *  The order of the keys is not guaranteed.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var h = $H({one: "uno", two: "due", three: "tre"});
    *      h.keys();
@@ -192,7 +192,7 @@ var Hash = Class.create(Enumerable, (function() {
    *
    *  The order of the values is not guaranteed.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var h = $H({one: "uno", two: "due", three: "tre"});
    *      h.values();
@@ -225,7 +225,7 @@ var Hash = Class.create(Enumerable, (function() {
    *
    *  To modify the original hash in place, use [[Hash#update]].
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var h = $H({one: "uno", two: "due"});
    *      var h2 = h.merge({three: "tre"});
@@ -249,7 +249,7 @@ var Hash = Class.create(Enumerable, (function() {
    *  `update` modifies the hash. To get a new hash instead, use
    *  [[Hash#merge]].
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var h = $H({one: "uno", two: "due"});
    *      h.update({three: "tre"});
@@ -289,7 +289,7 @@ var Hash = Class.create(Enumerable, (function() {
    *  The order of pairs in the string is not guaranteed, other than the order
    *  of array values described above.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      $H({action: 'ship',
    *          order_id: 123,
@@ -337,7 +337,7 @@ var Hash = Class.create(Enumerable, (function() {
    *
    *  Returns a JSON string containing the keys and values in this hash.
    *
-   *  ### Example
+   *  <h5>Example</h5>
    *
    *      var h = $H({'a': 'apple', 'b': 23, 'c': false});
    *      h.toJSON();

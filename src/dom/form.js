@@ -39,7 +39,7 @@ var Form = {
    *  the value for that key in the object will be an array of the field values
    *  in the order they appeared on the array of elements.
    *
-   *  <h4>The Options</h4>
+   *  <h5>The Options</h5>
    *
    *  The options allow you to control two things: What kind of return
    *  value you get (an object or a string), and whether and which `submit`
@@ -64,7 +64,7 @@ var Form = {
    *  _(Deprecated)_ If you pass in a [[Boolean]] instead of an object for `options`, it
    *  is used as the `hash` option and all other options are defaulted.
    *
-   *  <h4>A <em>hash</em>, not a Hash</h4>
+   *  <h5>A <em>hash</em>, not a Hash</h5>
    *
    *  If you opt to receive an object, it is a plain JavaScript object with keys
    *  and values, __not__ a [[Hash]]. All JavaScript objects are hashes in the lower-case
@@ -490,7 +490,7 @@ Form.Element.Serializers = {
  *  [[Form.Observer]], which serializes a form and triggers when the result has changed; and
  *  [[Form.Element.Observer]], which triggers when the value of a given form field changes.
  *
- *  <h4>Creating Your Own TimedObserver Implementations</h4>
+ *  <h5>Creating Your Own TimedObserver Implementations</h5>
  *
  *  It's easy to create your own `TimedObserver` implementations: Simply subclass `TimedObserver`
  *  and provide the `getValue()` method. For example, this is the complete source code for
