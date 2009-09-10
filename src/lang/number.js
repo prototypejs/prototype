@@ -70,7 +70,8 @@ Object.extend(Number.prototype, (function() {
   /**
    *  Number#abs() -> Number
    *
-   *  Returns the absolute value of the number.
+   *  Returns the absolute value of the number. Convenience method that simply
+   *  calls `Math.abs` on this instance and returns the result.
   **/
   function abs() {
     return Math.abs(this);
