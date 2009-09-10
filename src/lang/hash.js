@@ -132,7 +132,18 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#unset(key) -> value
    *
-   *  Deletes the hash's `key` property and returns its value.
+   *  Deletes the stored pair for the given `key` from the hash and returns its
+   *  value.
+   *
+   *  ### Example
+   *
+   *      var h = new Hash({a: 'apple', b: 'banana', c: 'coconut'});
+   *      h.keys();
+   *      // -> ["a", "b", "c"]
+   *      h.unset('a');
+   *      // -> 'apple'
+   *      h.keys();
+   *      // -> ["b", "c"] ("a" is no longer in the hash)
   **/
   function unset(key) {
     var value = this._object[key];
