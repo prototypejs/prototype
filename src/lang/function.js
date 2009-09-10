@@ -233,6 +233,8 @@ Object.extend(Function.prototype, (function() {
 
   /**
    *  Function#defer(args...) -> Number
+   *  - args (?): Optional arguments to pass into the function.
+   *
    *  Schedules the function to run as soon as the interpreter is idle.
    *
    *  A "deferred" function will not run immediately; rather, it will run as soon
@@ -241,6 +243,18 @@ Object.extend(Function.prototype, (function() {
    *  Behaves much like `window.setTimeout` with a delay set to `0`. Returns an
    *  ID that can be used to clear the timeout with `window.clearTimeout` before
    *  it runs.
+   *
+   *  ### Example
+   *
+   *      function showMsg(msg) {
+   *        alert(msg);
+   *      }
+   *
+   *      showMsg("One");
+   *      showMsg.defer("Two");
+   *      showMsg("Three");
+   *      // Alerts "One", then "Three", then (after a brief pause) "Two"
+   *      // Note that "Three" happens before "Two"
   **/
   function defer() {
     var args = update([0.01], arguments);
