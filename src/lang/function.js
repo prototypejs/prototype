@@ -179,12 +179,27 @@ Object.extend(Function.prototype, (function() {
 
   /**
    *  Function#curry(args...) -> Function
-   *  Partially applies the function, returning a function with one or more
-   *  arguments already "filled in."
+   *  - args (?): The arguments to curry.
    *
-   *  Function#curry works just like [[Function#bind]] without the initial
-   *  scope argument. Use the latter if you need to partially apply a function
-   *  _and_ modify its execution scope at the same time.
+   *  *Curries* (burns in) arguments to a function, returning a new function
+   *  that when called with call the original passing in the curried arguments
+   *  (along with any new ones):
+   *
+   *      function showArguments() {
+   *        alert($A(arguments).join(', '));
+   *      }
+   *      showArguments(1, 2,, 3);
+   *      // -> alerts "1, 2, 3"
+   *
+   *      var f = showArguments.curry(1, 2, 3);
+   *      f('a', 'b');
+   *      // -> alerts "1, 2, 3, a, b"
+   *
+   *  `Function#curry` works just like [[Function#bind]] without the initial
+   *  context argument. Use `bind` if you need to curry arguments _and_ set
+   *  context at the same time.
+   *
+   *  The name "curry" comes from [mathematics](http://en.wikipedia.org/wiki/Currying).
   **/
   function curry() {
     if (!arguments.length) return this;
