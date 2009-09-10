@@ -41,6 +41,45 @@ var Hash = Class.create(Enumerable, (function() {
     this._object = Object.isHash(object) ? object.toObject() : Object.clone(object);
   }
 
+  // Docs for #each even though technically it's implemented by Enumerable
+  /**
+   *  Hash#each(iterator[, context]) -> Hash
+   *  - iterator (Function): A function that expects each item in the `Hash`
+   *    as the first argument and a numerical index as the second.
+   *  - context (Object): The scope in which to call `iterator`. Determines what
+   *    `this` means inside `iterator`.
+   *
+   *  Iterates over the name/value pairs in the hash.
+   *
+   *  This is actually just the [[Enumerable#each #each]] method from the
+   *  mixed-in [[Enumerable]] module. It is documented here to describe the
+   *  structure of the elements passed to the iterator and the order of
+   *  iteration.
+   *
+   *  The iterator's first argument (the "item") is an object with two
+   *  properties:
+   *
+   *  - `key`: the key name as a `String`
+   *  - `value`: the corresponding value (which may be `undefined`)
+   *
+   *  The order of iteration is implementation-dependent, as it relies on
+   *  the order of the native `for..in` loop. Although most modern
+   *  implementations exhibit *ordered* behavior, this is not standardized and
+   *  may not always be the case, and so cannot be relied upon.
+   *
+   *  ### Example
+   *
+   *      var h = $H({version: 1.6, author: 'The Core Team'});
+   *
+   *      h.each(function(pair) {
+   *        alert(pair.key + ' = "' + pair.value + '"');
+   *      });
+   *      // Alerts 'version = "1.6"' and 'author = "The Core Team"'
+   *      // -or-
+   *      // Alerts 'author = "The Core Team"' and 'version = "1.6"'
+  **/
+
+  // Our _internal_ each
   function _each(iterator) {
     for (var key in this._object) {
       var value = this._object[key], pair = [key, value];
