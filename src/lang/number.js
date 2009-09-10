@@ -101,6 +101,8 @@ Object.extend(Number.prototype, (function() {
    *  Number#floor() -> Number
    *
    *  Returns the largest integer less than or equal to the number.
+   *  Convenience method that simply calls `Math.floor` on this instance and
+   *  returns the result.
   **/
   function floor() {
     return Math.floor(this);
