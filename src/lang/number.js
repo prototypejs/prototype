@@ -73,10 +73,30 @@ Object.extend(Number.prototype, (function() {
 
   /**
    *  Number#toPaddedString(length[, radix]) -> String
+   *  - length (Number): The minimum length for the resulting string.
+   *  - radix (Number): An optional radix for the string representation,
+   *    defaults to 10 (decimal).
    *
-   *  Converts the number into a string padded with 0s so that the string's length
-   *  is at least equal to `length`.
-   *  Takes an optional `radix` argument which specifies the base to use for conversion.
+   *  Returns a string representation of the number padded with leading 0s so
+   *  that the string's length is at least equal to `length`. Takes an optional
+   *  `radix` argument which specifies the base to use for conversion.
+   *
+   *  ### Examples
+   *
+   *      (13).toPaddedString(4);
+   *      // -> "0013"
+   *
+   *      (13).toPaddedString(2);
+   *      // -> "13"
+   *
+   *      (13).toPaddedString(1);
+   *      // -> "13"
+   *
+   *      (13).toPaddedString(4, 16)
+   *      // -> "000d"
+   *
+   *      (13).toPaddedString(4, 2);
+   *      // -> "1101"
   **/
   function toPaddedString(length, radix) {
     var string = this.toString(radix || 10);
