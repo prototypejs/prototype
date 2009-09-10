@@ -1,11 +1,9 @@
 /** section: Language, related to: Hash
  *  $H([object]) -> Hash
  *
- *  Creates a `Hash`.
- *
- *  `$H` is a convenience wrapper around the Hash constructor, with a safeguard
- *  that lets you pass an existing Hash object and get it back untouched
- *  (instead of uselessly cloning it).
+ *  Creates a `Hash`. This is purely a convenience wrapper around the Hash
+ *  constructor, it does not do anything other than pass any argument it's
+ *  given into the Hash constructor and return the result.
  **/
 function $H(object) {
   return new Hash(object);
@@ -26,11 +24,10 @@ function $H(object) {
  *
  *  <h4>Creating a hash</h4>
  *
- *  There are two ways to construct a Hash instance: the first is regular
- *  JavaScript object instantiation with the `new` keyword, and the second is
- *  using the [[$H]] function. There is one difference between them: if a `Hash`
- *  is passed to `$H`, it will be returned as-is, wherease the same hash passed
- *  to `new Hash` will be _cloned_ instead.
+ *  You can create a Hash either via `new Hash()` or the convenience alias
+ *  `$H()`; there is **no** difference between them. In either case, you may
+ *  optionally pass in an object to seed the `Hash`. If you pass in a `Hash`,
+ *  it will be cloned.
  *
 **/
 var Hash = Class.create(Enumerable, (function() {
