@@ -80,7 +80,8 @@ Object.extend(Number.prototype, (function() {
   /**
    *  Number#round() -> Number
    *
-   *  Rounds the number to the nearest integer.
+   *  Rounds the number to the nearest integer. Convenience method that simply
+   *  calls `Math.round` on this instance and returns the result.
   **/
   function round() {
     return Math.round(this);
