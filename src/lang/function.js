@@ -115,12 +115,59 @@ Object.extend(Function.prototype, (function() {
   }
 
   /** related to: Function#bind
-   *  Function#bindAsEventListener(object[, args...]) -> Function
-   *  - object (Object): The object to bind to.
+   *  Function#bindAsEventListener(context[, args...]) -> Function
+   *  - context (Object): The object to bind to.
+   *  - args (?): Optional arguments to curry after the event argument.
    *
    *  An event-specific variant of [[Function#bind]] which ensures the function
    *  will recieve the current event object as the first argument when
    *  executing.
+   *
+   *  It is not necessary to use `bindAsEventListener` for all bound event
+   *  handlers; [[Function#bind]] works well for the vast majority of cases.
+   *  `bindAsEventListener` is only needed when:
+   *
+   *  - Using old-style DOM0 handlers rather than handlers hooked up via
+   *    [[Event.observe]], because `bindAsEventListener` gets the event object
+   *    from the right place (even on MSIE). (If you're using `Event.observe`,
+   *    that's already handled.)
+   *  - You want to bind an event handler and curry additional arguments but
+   *    have those arguments appear after, rather than before, the event object.
+   *    This mostly happens if the number of arguments will vary, and so you
+   *    want to know the event object is the first argument.
+   *
+   *  ### Example
+   *
+   *      var ContentUpdater = Class.create({
+   *        initialize: function(initialData) {
+   *          this.data = Object.extend({}, initialData);
+   *        },
+   *        // On an event, update the content in the elements whose
+   *        // IDs are passed as arguments from our data
+   *        updateTheseHandler: function(event) {
+   *          var argIndex, id, element;
+   *          event.stop();
+   *          for (argIndex = 1; argIndex < arguments.length; ++argIndex) {
+   *            id = arguments[argIndex];
+   *            element = $(id);
+   *            if (element) {
+   *              element.update(String(this.data[id]).escapeHTML());
+   *            }
+   *          }
+   *        }
+   *      });
+   *      var cu = new ContentUpdater({
+   *        dispName: 'Joe Bloggs',
+   *        dispTitle: 'Manager <provisional>',
+   *        dispAge: 47
+   *      });
+   *      // Using bindAsEventListener because of the variable arg lists:
+   *      $('btnUpdateName').observe('click',
+   *        cu.updateTheseHandler.bindAsEventListener(cu, 'dispName')
+   *      );
+   *      $('btnUpdateAll').observe('click',
+   *        cu.updateTheseHandler.bindAsEventListener(cu, 'dispName', 'dispTitle', 'dispAge')
+   *      );
   **/
   function bindAsEventListener(context) {
     var __method = this, args = slice.call(arguments, 1);
