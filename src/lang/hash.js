@@ -188,7 +188,15 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#values() -> Array
    *
-   *  Collect the values of a hash and returns them in an array.
+   *  Collects the values of the hash and returns them in an array.
+   *
+   *  The order of the values is not guaranteed.
+   *
+   *  ### Example
+   *
+   *      var h = $H({one: "uno", two: "due", three: "tre"});
+   *      h.values();
+   *      // -> ["uno", "tre", "due"] (these may be in any order)
   **/
   function values() {
     return this.pluck('value');
