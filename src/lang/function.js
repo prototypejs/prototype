@@ -273,8 +273,8 @@ Object.extend(Function.prototype, (function() {
   }
 
   /**
-   *  Function#wrap(wrapperFunction) -> Function
-   *  - wrapperFunction (Function): The function to use as a wrapper.
+   *  Function#wrap(wrapper) -> Function
+   *  - wrapper (Function): The function to use as a wrapper.
    *
    *  Returns a function "wrapped" around the original function.
    *
@@ -285,7 +285,7 @@ Object.extend(Function.prototype, (function() {
    *
    *  The wraper function is called with this signature:
    *
-   *      function wrapperFunction(callOriginal[, args...])
+   *      function wrapper(callOriginal[, args...])
    *
    *  ...where `callOriginal` is a function that can be used to call the
    *  original (wrapped) function (or not, as appropriate). (`callOriginal` is
