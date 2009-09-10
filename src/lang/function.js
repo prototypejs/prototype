@@ -293,10 +293,51 @@ Object.extend(Function.prototype, (function() {
 
   /**
    *  Function#methodize() -> Function
-   *  Wraps the function inside another function that, at call time, pushes
-   *  `this` to the original function as the first argument.
    *
-   *  Used to define both a generic method and an instance method.
+   *  Wraps the function inside another function that, when called, pushes
+   *  `this` to the original function as the first argument (with any further
+   *  arguments following it).
+   *
+   *  The `methodize` method transforms the original function that has an
+   *  explicit first argument to a function that passes `this` (the current
+   *  context) as an implicit first argument at call time. It is useful when we
+   *  want to transform a function that takes an object to a method of that
+   *  object or its prototype, shortening its signature by one argument.
+   *
+   *  ### Example
+   *
+   *      // A function that sets a name on a target object
+   *      function setName(target, name) {
+   *        target.name = name;
+   *      }
+   *
+   *      // Use it
+   *      obj = {};
+   *      setName(obj, 'Fred');
+   *      obj.name;
+   *      // -> "Fred"
+   *
+   *      // Make it a method of the object
+   *      obj.setName = setName.methodize();
+   *
+   *      // Use the method instead
+   *      obj.setName('Barney');
+   *      obj.name;
+   *      // -> "Barney"
+   *
+   *  The example above is quite simplistic. It's more useful to copy methodized
+   *  functions to object prototypes so that new methods are immediately shared
+   *  among instances. In the Prototype library, `methodize` is used in various
+   *  places such as the DOM module, so that (for instance) you can hide an
+   *  element either by calling the static version of `Element.hide` and passing in
+   *  an element reference or ID, like so:
+   *
+   *      Element.hide('myElement');
+   *
+   *  ...or if you already have an element reference, just calling the
+   *  methodized form instead:
+   *
+   *      myElement.hide();
   **/
   function methodize() {
     if (this._methodized) return this._methodized;
