@@ -172,7 +172,7 @@ var Hash = Class.create(Enumerable, (function() {
   /** related to: Object.inspect
    *  Hash#inspect() -> String
    *
-   *  Returns the debug-oriented string representation of the hash.
+   *  Returns the debug-oriented string representation of the Hash.
   **/
   function inspect() {
     return '#<Hash:{' + this.map(function(pair) {
@@ -192,7 +192,7 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#clone() -> Hash
    *
-   *  Returns a clone of hash.
+   *  Returns a clone of this Hash.
   **/
   function clone() {
     return new Hash(this);
