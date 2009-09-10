@@ -101,7 +101,13 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#get(key) -> value
    *
-   *  Returns the value of the hash's `key` property.
+   *  Returns the stored value for the given `key`.
+   *
+   *  ### Examples
+   *
+   *      var h = new Hash({a: 'apple', b: 'banana', c: 'coconut'});
+   *      h.get('a');
+   *      // -> 'apple'
   **/
   function get(key) {
     // simulating poorly supported hasOwnProperty
