@@ -242,7 +242,41 @@ var Hash = Class.create(Enumerable, (function() {
   /** related to: String#toQueryParams
    *  Hash#toQueryString() -> String
    *
-   *  Turns a hash into its URL-encoded query string representation.
+   *  Returns a URL-encoded string containing the hash's contents as query
+   *  parameters according to the following rules:
+   *
+   *  - An undefined value results a parameter with no value portion at all
+   *    (simply the key name, no equal sign).
+   *  - A null value results a parameter with a blank value (the key followed
+   *    by an equal sign and nothing else).
+   *  - A boolean value results a parameter with the value "true" or "false".
+   *  - An Array value results in a parameter for each array element, in
+   *    array order, each using the same key.
+   *  - All keys and values are URI-encoded using JavaScript's native
+   *    `encodeURIComponent` function.
+   *
+   *  The order of pairs in the string is not guaranteed, other than the order
+   *  of array values described above.
+   *
+   *  ### Example
+   *
+   *      $H({action: 'ship',
+   *          order_id: 123,
+   *          fees: ['f1', 'f2']
+   *      }).toQueryString();
+   *      // -> "action=ship&order_id=123&fees=f1&fees=f2"
+   *
+   *      $H({comment: '',
+   *          'key with spaces': true,
+   *          related_order: undefined,
+   *          contents: null,
+   *          'label': 'a demo'
+   *      }).toQueryString();
+   *      // -> "comment=&key%20with%20spaces=true&related_order&contents=&label=a%20demo"
+   *
+   *      // an empty hash is an empty query string:
+   *      $H().toQueryString();
+   *      // -> ""
   **/
   function toQueryString() {
     return this.inject([], function(results, pair) {
