@@ -35,11 +35,31 @@ Object.extend(Number.prototype, (function() {
   }
 
   /**
-   *  Number#times(iterator) -> Number
+   *  Number#times(iterator[,context]) -> Number
+   *  - iterator (Function): An iterator function to call.
+   *  - context (Object): An optional context (`this` value) to use when
+   *    calling `iterator`.
    *
-   *  Calls `iterator` the specified number of times.
-   *  The function takes an integer as the first parameter; it will start at 0
-   *  and be incremented after each invocation.
+   *  Calls `iterator` the specified number of times, passing in a number as
+   *  the first parameter. The number will be 0 on first call, 1 on second
+   *  call, etc. `times` returns the number instance it was called on.
+   *
+   *  ### Example
+   *
+   *      (3).times(alert);
+   *      // -> Alerts "0", then "1", then "2"; returns 3
+   *
+   *      var obj = {count: 0, total: 0};
+   *      function add(addend) {
+   *        ++this.count;
+   *        this.total += addend;
+   *      }
+   *      (4).times(add, obj);
+   *      // -> 4
+   *      obj.count;
+   *      // -> 4
+   *      obj.total;
+   *      // -> 6 (e.g., 0 + 1 + 2 + 3)
   **/
   function times(iterator, context) {
     $R(0, this, true).each(iterator, context);
