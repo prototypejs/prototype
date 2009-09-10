@@ -274,7 +274,7 @@ Object.extend(Function.prototype, (function() {
 
   /**
    *  Function#wrap(wrapperFunction) -> Function
-   *  - wrapperFunction (Function): The function to act as a wrapper.
+   *  - wrapperFunction (Function): The function to use as a wrapper.
    *
    *  Returns a function "wrapped" around the original function.
    *
@@ -282,6 +282,35 @@ Object.extend(Function.prototype, (function() {
    *  a single method, letting you easily build on existing functions by
    *  specifying before and after behavior, transforming the return value, or
    *  even preventing the original function from being called.
+   *
+   *  The wraper function is called with this signature:
+   *
+   *      function wrapperFunction(callOriginal[, args...])
+   *
+   *  ...where `callOriginal` is a function that can be used to call the
+   *  original (wrapped) function (or not, as appropriate). (`callOriginal` is
+   *  not a direct reference to the original function, there's a layer of
+   *  indirection in-between that sets up the proper context \[`this` value\] for
+   *  it.)
+   *
+   *  ### Example
+   *
+   *      // Wrap String#capitalize so it accepts an additional argument
+   *      String.prototype.capitalize = String.prototype.capitalize.wrap(
+   *        function(callOriginal, eachWord) {
+   *          if (eachWord && this.include(" ")) {
+   *            // capitalize each word in the string
+   *            return this.split(" ").invoke("capitalize").join(" ");
+   *          } else {
+   *            // proceed using the original function
+   *            return callOriginal();
+   *          }
+   *        });
+   *
+   *      "hello world".capitalize();
+   *      // -> "Hello world" (only the 'H' is capitalized)
+   *      "hello world".capitalize(true);
+   *      // -> "Hello World" (both 'H' and 'W' are capitalized)
   **/
   function wrap(wrapper) {
     var __method = this;
