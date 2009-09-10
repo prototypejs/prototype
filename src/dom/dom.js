@@ -320,7 +320,7 @@ Element.Methods = {
    *  - `top` (as `element`'s first child)
    *  - `bottom` (as `element`'s last child)
    *
-   *  <h4>Examples</h4>
+   *  <h5>Examples</h5>
    *
    *  Insert the given HTML at the bottom of the element (using the default):
    *

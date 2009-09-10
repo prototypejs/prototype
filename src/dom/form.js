@@ -39,14 +39,14 @@ var Form = {
    *  the value for that key in the object will be an array of the field values
    *  in the order they appeared on the array of elements.
    *
-   *  <h4>The Options</h4>
+   *  <h5>The Options</h5>
    *
    *  The options allow you to control two things: What kind of return
    *  value you get (an object or a string), and whether and which `submit`
    *  fields are included in that object or string.
    *
    *  If you do not supply an `options` object _at all_, the options
-   *  `{hash: false}` are used.
+   *  `{ hash: false }` are used.
    *
    *  If you supply an `options` object, it may have the following options:
    *  - `hash` ([[Boolean]]): `true` to return a plain object with keys and values
@@ -64,7 +64,7 @@ var Form = {
    *  _(Deprecated)_ If you pass in a [[Boolean]] instead of an object for `options`, it
    *  is used as the `hash` option and all other options are defaulted.
    *
-   *  <h4>A <em>hash</em>, not a Hash</h4>
+   *  <h5>A <em>hash</em>, not a Hash</h5>
    *
    *  If you opt to receive an object, it is a plain JavaScript object with keys
    *  and values, __not__ a [[Hash]]. All JavaScript objects are hashes in the lower-case
@@ -629,7 +629,7 @@ Form.Element.EventObserver = Class.create(Abstract.EventObserver, {
 });
 
 /** section: DOM
- *  class Form.Element.EventObserver < Abstract.EventObserver
+ *  class Form.EventObserver < Abstract.EventObserver
 **/
 Form.EventObserver = Class.create(Abstract.EventObserver, {
   getValue: function() {

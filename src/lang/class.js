@@ -86,7 +86,7 @@ var Class = (function() {
    *  of the class and of all its subclasses, even those that have already been
    *  instantiated.
    *
-   *  <h4>Examples</h4>
+   *  <h5>Examples</h5>
    *
    *      var Animal = Class.create({
    *        initialize: function(name, sound) {

@@ -127,11 +127,11 @@ Object.extend(String.prototype, (function() {
    *  `span`, and `abbr`. It _will not_ strip namespace-prefixed tags such
    *  as `h:table` or `xsl:template`.
    *
-   *  <h4>Caveat User</h4>
+   *  <h5>Caveat User</h5>
    *
    *  Note that the processing `stripTags` does is good enough for most purposes, but
    *  you cannot rely on it for security purposes. If you're processing end-user-supplied
-   *  content, `stripTags` is probably _not_ sufficiently robust to ensure that the content
+   *  content, `stripTags` is _not_ sufficiently robust to ensure that the content
    *  is completely devoid of HTML tags in the case of a user intentionally trying to circumvent
    *  tag restrictions. But then, you'll be running them through [[String#escapeHTML]] anyway,
    *  won't you?
@@ -145,12 +145,12 @@ Object.extend(String.prototype, (function() {
    *
    *  Strips a string of things that look like an HTML script blocks.
    *
-   *  <h4>Example</h4>
+   *  <h5>Example</h5>
    *
    *      "<p>This is a test.<script>alert("Look, a test!");</script>End of test</p>".stripScripts();
    *      // => "<p>This is a test.End of test</p>"
    *
-   *  <h4>Caveat User</h4>
+   *  <h5>Caveat User</h5>
    *
    *  Note that the processing `stripScripts` does is good enough for most purposes,
    *  but you cannot rely on it for security purposes. If you're processing end-user-supplied
@@ -183,7 +183,7 @@ Object.extend(String.prototype, (function() {
    *  they were empty (the result for that position in the array will be `undefined`);
    *  external files are _not_ loaded and processed by `evalScripts`.
    *
-   *  <h4>About `evalScripts`, `var`s, and defining functions</h4>
+   *  <h5>About `evalScripts`, `var`s, and defining functions</h5>
    *
    *  `evalScripts` evaluates script blocks, but this **does not** mean they are
    *  evaluated in the global scope. They aren't, they're evaluated in the scope of
@@ -302,7 +302,7 @@ Object.extend(String.prototype, (function() {
    *  Converts a string separated by dashes into a camelCase equivalent.
    *  For instance, 'foo-bar' would be converted to 'fooBar'.
    *
-   *  <h4>Examples</h4>
+   *  <h5>Examples</h5>
    *
    *      'background-color'.camelize();
    *      // -> 'backgroundColor'
