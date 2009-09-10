@@ -179,7 +179,7 @@ var Hash = Class.create(Enumerable, (function() {
    *
    *      var h = $H({one: "uno", two: "due", three: "tre"});
    *      h.keys();
-   *      // -> ["one", "three", "two] (these may be in any order)
+   *      // -> ["one", "three", "two"] (these may be in any order)
   **/
   function keys() {
     return this.pluck('key');
