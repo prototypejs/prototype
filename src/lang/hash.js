@@ -176,10 +176,22 @@ var Hash = Class.create(Enumerable, (function() {
 
   /**
    *  Hash#merge(object) -> Hash
+   *  - object (Object | Hash): The object to merge with this hash to produce
+   *    the resulting hash.
    *
-   *  Returns a new hash with `object`'s key/value pairs merged in.
+   *  Returns a new `Hash` instance with `object`'s key/value pairs merged in;
+   *  this hash remains unchanged.
+   *
    *  To modify the original hash in place, use [[Hash#update]].
    *
+   *  ### Example
+   *
+   *      var h = $H({one: "uno", two: "due"});
+   *      var h2 = h.merge({three: "tre"});
+   *      h.keys();
+   *      // -> ["one", "two"] (unchanged)
+   *      h2.keys();
+   *      // -> ["one", "two", "three"] (has merged contents)
   **/
   function merge(object) {
     return this.clone().update(object);
