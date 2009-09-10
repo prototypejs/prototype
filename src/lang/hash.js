@@ -262,7 +262,13 @@ var Hash = Class.create(Enumerable, (function() {
   /** related to: Object.toJSON
    *  Hash#toJSON() -> String
    *
-   *  Returns a JSON string.
+   *  Returns a JSON string containing the keys and values in this hash.
+   *
+   *  ### Example
+   *
+   *      var h = $H({'a': 'apple', 'b': 23, 'c': false});
+   *      h.toJSON();
+   *      // -> {"a": "apple", "b": 23, "c": false}
   **/
   function toJSON() {
     return Object.toJSON(this.toObject());
