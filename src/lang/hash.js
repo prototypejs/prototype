@@ -138,7 +138,15 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#keys() -> [String...]
    *
-   *  Provides an Array of keys (that is, property names) for the hash.
+   *  Provides an Array containing the keys for items stored in the hash.
+   *
+   *  The order of the keys is not guaranteed.
+   *
+   *  ### Example
+   *
+   *      var h = $H({one: "uno", two: "due", three: "tre"});
+   *      h.keys();
+   *      // -> ["one", "three", "two] (these may be in any order)
   **/
   function keys() {
     return this.pluck('key');
