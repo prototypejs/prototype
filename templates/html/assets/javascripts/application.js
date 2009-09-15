@@ -1,332 +1,439 @@
-if (typeof PDoc === "undefined") window.PDoc = {};
+//= require <prototype>
 
-// Poor-man's history manager. Polls for changes to the hash.
-(function() {  
-  var PREVIOUS_HASH = null;
-  
-  Event.observe(window, "load", function() {    
-    var hash = window.location.hash;
-    if (hash && hash !== PREVIOUS_HASH) {
-      document.fire("hash:changed",
-       { previous: PREVIOUS_HASH, current: hash });        
-      PREVIOUS_HASH = hash;      
+if (!Prototype || Prototype.Version.indexOf('1.6') !== 0) {
+  throw "This script requires Prototype >= 1.6.";
+}
+
+Object.isDate = function(object) {
+  return object instanceof Date;
+};
+
+/** 
+ *  class Cookie
+ *  Creates a cookie.
+**/
+var Cookie = Class.create({
+  /**
+   *  new Cookie(name, value[, expires])
+   *  
+   *  - name (String): The name of the cookie.
+   *  - value (String): The value of the cookie.
+   *  - expires (Number | Date): Exact date (or number of days from now) that
+   *     the cookie will expire.
+  **/
+  initialize: function(name, value, expires) {
+    expires = expires || "";
+    if (Object.isNumber(expires)) {
+      var days = expires;
+      expires = new Date();
+      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
     }
     
-    window.setTimeout(arguments.callee, 100);  
-  });  
-})();
+    if (Object.isDate(expires))
+      expires = expires.toGMTString();
 
-// Place a "frame" around the element described by the hash.
-// Update the frame when the hash changes.
-PDoc.highlightSelected = function() {
-  if (!window.location.hash) return;  
-  element = $(window.location.hash.substr(1));
-  if (element) PDoc.highlight(element.up('li, div'));
-};
+    if (!Object.isUndefined(expires) && expires !== "")
+      expires = "; expires=" + expires;
+    
+    this.name    = name;
+    this.value   = value;
+    this.expires = expires;
+    
+    document.cookie = name + "=" + value + expires + "; path=/";      
+  },
+  
+  toString: function() {
+    return this.value;
+  },
+  
+  inspect: function() {
+    return "#<Cookie #{name}:#{value}>".interpolate(this);
+  }
+});
 
-document.observe("hash:changed", PDoc.highlightSelected);
+/**
+ * Cookie
+**/
+Object.extend(Cookie, {
+  /**
+   *  Cookie.set(name, value, expires)
+   *  
+   *  Alias of [[Cookie#initialize]].
+  **/
+  set: function(name, value, expires) {
+    return new Cookie(name, value, expires);
+  },
+  
+  /**
+   *  Cookie.get(name)
+   *  
+   *  Returns the value of the cookie with the given name.
+   *  - name (String): The name of the cookie to retrieve.
+  **/
+  get: function(name) {
+    var c = document.cookie.split(';');
+    
+    for (var i = 0, cookie; i < c.length; i++) {
+      cookie = c[i].split('=');
+      if (cookie[0].strip() === name)
+        return cookie[1].strip();
+    }
+    
+    return null;
+  },
+  
+  /**
+   *  Cookie.unset(name)
+   *  
+   *  Deletes a cookie.
+   *  - name (String): The name of the cookie to delete.
+   *  
+  **/
+  unset: function(name) {
+    return Cookie.set(name, "", -1);
+  }
+});
 
-PDoc.highlight = function(element) {
-  var self = arguments.callee;
-  if (!self.frame) {
-    self.frame = new Element('div', { 'class': 'highlighter' });
-    document.body.appendChild(self.frame);
+Cookie.erase = Cookie.unset;
+
+
+
+if (typeof PDoc === 'undefined') {
+  window.PDoc = {
+    Sidebar: {}
+  };
+}
+
+// HISTORY MANAGER (sort of)
+// Polls for changes to the hash.
+
+(function() {
+  var PREVIOUS_HASH = null;
+  
+  function poll() {
+    var hash = window.location.hash;
+    if (hash && hash !== PREVIOUS_HASH) {
+      document.fire('hash:changed', {
+        previous: PREVIOUS_HASH, current: hash
+      });
+    }
+    PREVIOUS_HASH = hash;
+    window.setTimeout(arguments.callee, 100);
   }
   
-  var frame = self.frame;
+  Event.observe(window, 'load', poll);  
+})();
+
+Object.extend(PDoc, {
+  highlightSelected: function() {
+    if (!window.location.hash) return;
+    var element = $(window.location.hash.substr(1));
+    if (element) this.highlight(element.up('li, div'));
+  },
   
-  element.getOffsetParent().appendChild(frame);
+  highlight: function(element) {
+    var self = arguments.callee;
+    if (!self.frame) {
+      self.frame = new Element('div', { 'class': 'highlighter' });
+      document.body.appendChild(self.frame);
+    }
+    
+    var frame = self.frame;
+    element.getOffsetParent().appendChild(frame);
+
+    var offset = element.positionedOffset();
+    var w = parseFloat(element.getStyle('width')),
+        h = parseFloat(element.getStyle('height'));
+
+    frame.setStyle({
+      position: 'absolute',
+      top: (offset.top - 15) + 'px',
+      left: (offset.left - 12) + 'px',
+      width:  (w + 20) + 'px',
+      height: (h + 30) + 'px'
+    });
+
+    // Defer this call because Safari hasn't yet scrolled the viewport.
+    (function() {
+      var frameOffset = frame.viewportOffset(frame);
+      if (frameOffset.top < 0) {
+        $('page').scrollTop += (frameOffset.top - 10);
+      }    
+    }).defer();
+  }
+});
+
+Object.extend(PDoc.Sidebar, {
+  getActiveTab: function() {
+    var activeTab = $('sidebar_tabs').down('.active');
+    if (!activeTab) return null;
+    
+    var href = activeTab.readAttribute('href');    
+    return href.endsWith('menu_pane') ? 'menu_pane' : 'search_pane';    
+  },
   
-  var offset = element.positionedOffset();
-  var w = parseFloat(element.getStyle('width')),
-      h = parseFloat(element.getStyle('height'));
-      
-  frame.setStyle({
-    position: 'absolute',
-    top: (offset.top - 15) + 'px',
-    left: (offset.left - 12) + 'px',
-    width:  (w + 20) + 'px',
-    height: (h + 30) + 'px'
-  });
+  // Remember the state of the sidebar so it can be restored on the next page.
+  serialize: function() {
+    var state = $H({
+      activeTab: PDoc.Sidebar.getActiveTab(),
+      menuScrollOffset: $('menu_pane').scrollTop,
+      searchScrollOffset: $('search_results').scrollTop,
+      searchValue: $('search').getValue()
+    });
+    
+    return escape(state.toJSON());
+  },
   
-  // Defer this call because Safari hasn't yet scrolled the viewport.
-  (function() {
-    var frameOffset = frame.viewportOffset(frame);
-    if (frameOffset.top < 0) {
-      window.scrollBy(0, frameOffset.top - 10);
-    }    
-  }).defer();
-  
-};
+  // Restore the tree to a certain point based on a cookie.
+  restore: function(state) {
+    try {
+      state = unescape(state).evalJSON();
+      var filterer = $('search').retrieve('filterer');    
+      filterer.setSearchValue(state.searchValue);
+
+      (function() {
+        $('menu_pane').scrollTop = state.menuScrollOffset;
+        $('search_results').scrollTop = state.searchScrollOffset;
+      }).defer();
+    } catch(error) {
+      console.log(error);
+      if (!(error instanceof SyntaxError)) throw error;
+    }
+  }
+});
+
+
 
 // Live API search.
-var Filterer = Class.create({
+PDoc.Sidebar.Filterer = Class.create({
   initialize: function(element, options) {
     this.element = $(element);
-    this.options = Object.extend({
-      interval: 0.1,
-      resultsElement: '.search-results'
-    }, options || {});
+    this.options = Object.extend(
+      Object.clone(PDoc.Sidebar.Filterer.DEFAULT_OPTIONS),
+      options || {}
+    );
     
-    this.element.writeAttribute("autocomplete", "off");    
+    // The browser's "helpful" auto-complete gets in the way.
+    this.element.writeAttribute("autocomplete", "off");
+    this.element.setValue('');
+    
+    // Hitting "enter" should do nothing.
     this.element.up('form').observe("submit", Event.stop);
     
-    // // The Safari-only "search" input type is prettier
-    // if (Prototype.Browser.WebKit)
-    //   this.element.type = "search";
-    
-    this.menu = this.options.menu;
+    this.menu  = this.options.menu;
     this.links = this.menu.select('a');
     
     this.resultsElement = this.options.resultsElement;
-    this.resultsElement.setStyle({
-      overflowX: 'hidden'
-    });
     
-    this.events = {
-      filter:   this.filter.bind(this),
-      keydown: this.keydown.bind(this)
+    this.observers = {
+      filter:  this.filter.bind(this),
+      keydown: this.keydown.bind(this),
+      keyup:   this.keyup.bind(this)
     };
     
     this.menu.setStyle({ opacity: 0.9 });
-    this.addObservers();
-    
-    this.element.value = '';
+    this.addObservers();    
   },
   
   addObservers: function() {
-    this.element.observe('keyup', this.events.filter);
+    this.element.observe('keyup', this.observers.filter);
   },
-  
+
+  // Called whenever the list of results needs to update as a result of a 
+  // changed search key.
   filter: function(event) {
-    if (this._timer) window.clearTimeout(this._timer);
-    
-    // Clear the text box on ESC
+    // Clear the text box on ESC.
     if (event.keyCode && event.keyCode === Event.KEY_ESC) {
-      this.element.value = '';
+      this.element.setValue('');
     }
     
-    if ([Event.KEY_UP, Event.KEY_DOWN, Event.KEY_RETURN].include(event.keyCode))
+    if (PDoc.Sidebar.Filterer.INTERCEPT_KEYS.include(event.keyCode))
       return;
-    
+        
+    // If there's nothing in the text box, clear the results list.
     var value = $F(this.element).strip().toLowerCase();    
-    if (value === "") {
-      this.onEmpty();
+    if (value === '') {
+      this.emptyResults();
+      this.hideResults();
       return;
     }
     
-    var urls  = this.findURLs(value);  
+    var urls  = this.findURLs(value);
     this.buildResults(urls);
   },
   
-  keydown: function(event) {
-    if (![Event.KEY_UP, Event.KEY_DOWN, Event.KEY_RETURN].include(event.keyCode))
+  setSearchValue: function(value) {
+    this.element.setValue(value);
+    if (value.strip() === "") {
+      PDoc.Sidebar.Tabs.setActiveTab(0);
       return;
-      
-    // ignore if any modifier keys are present
-    if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey)
-      return;
-      
-    event.stop();
-    
-    var highlighted = this.resultsElement.down('.highlighted');
-    if (event.keyCode === Event.KEY_RETURN) {
-      // Follow the highlighted item.
-      if (!highlighted) return;
-      window.location.href = highlighted.down('a').href;
-    } else {
-      var direction = (Event.KEY_DOWN === event.keyCode) ? 1 : -1;
-      highlighted = this.moveHighlight(direction);
     }
-    
-    
-    if ([Event.KEY_UP, Event.KEY_DOWN].include(event.keyCode) &&
-     !Prototype.Browser.WebKit) {    
-      // If up/down key is held down, list should keep scrolling.
-      // Safari does this automatically because it fires the keydown
-      // event over and over.
-      this._timer = window.setTimeout(this.scrollList.bind(this, direction), 1000);
-    }
+    this.buildResults(this.findURLs(value));
   },
   
-  moveHighlight: function(direction) {
-    var highlighted = this.resultsElement.down('.highlighted');
-    // move the focus
-    if (!highlighted) {
-      // if there is none, highlight the first result
-      var highlighted = this.resultsElement.down('li').addClassName('highlighted');
-    } else {
-      var method = (direction === 1) ? 'next' : 'previous';
-      highlighted.removeClassName('highlighted');
-      var adjacent = highlighted[method]('li');
-      if (!adjacent) {
-        adjacent = method == 'next' ? this.resultsElement.down('li') :
-         this.resultsElement.down('li:last-of-type');
-      }
-      adjacent.addClassName('highlighted');
-      highlighted = adjacent;
+  // Given a key, finds all the PDoc objects that match.
+  findURLs: function(str) {
+    var results = [];
+    for (var name in PDoc.elements) {
+      if (name.toLowerCase().include(str.toLowerCase()))
+        results.push(PDoc.elements[name]);
     }
-
-    // Adjust the scroll offset of the container so that the highlighted
-    // item is always in view.
-    var distanceToBottom = highlighted.offsetTop + highlighted.offsetHeight;
-    if (distanceToBottom > this.resultsElement.offsetHeight + this.resultsElement.scrollTop) {
-      // item is too low
-      this.resultsElement.scrollTop = distanceToBottom - this.resultsElement.offsetHeight;
-    } else if (highlighted.offsetTop < this.resultsElement.scrollTop) {
-      // item is too high
-      this.resultsElement.scrollTop = highlighted.offsetTop;
-    }
-    
-    return highlighted;
+    return results;
   },
   
-  scrollList: function(direction) {
-    this.moveHighlight(direction);
-    this._timer = window.setTimeout(this.scrollList.bind(this, direction), 100);
+  buildResults: function(results) {
+    this.emptyResults();
+    
+    results.each( function(result) {
+      var li = this._buildResult(result);
+      this.resultsElement.appendChild(li);
+    }, this);
+    this.showResults();
+  },
+  
+  _buildResult: function(obj) {
+    var li = new Element('li', { 'class': 'menu-item' });
+    var a = new Element('a', {
+      'class': obj.type.gsub(/\s/, '_'),
+      'href':  PDoc.pathPrefix + this._fixPath(obj.path)
+    }).update(obj.name);
+    
+    li.appendChild(a);
+    return li;
+  },
+  
+  emptyResults: function() {
+    this.resultsElement.update();
+  },
+  
+  hideResults: function() {
+    PDoc.Sidebar.Tabs.setActiveTab(0);    
+    //this.resultsElement.hide();
+    document.stopObserving('keydown', this.observers.keydown);
+    document.stopObserving('keyup', this.observers.keyup);
+  },
+  
+  showResults: function() {
+    PDoc.Sidebar.Tabs.setActiveTab(1);
+    //this.resultsElement.show();
+    document.stopObserving('keydown', this.observers.keydown);
+    this.element.stopObserving('keyup', this.observers.keyup);
+    this.element.observe('keydown', this.observers.keydown);
+    document.observe('keyup', this.observers.keyup);
   },
   
   // Given a path with any number of `../`s in front of it, remove them all.
   // TODO: Fix this a better way.
   _fixPath: function(path) {
     return path.replace('../', '');
-  },
+  },  
   
-  buildResults: function(urls) {
-    this.resultsElement.update();
-    var ul = this.resultsElement;
-    urls.each( function(url) {
-      var a  = new Element('a', {
-        'class': url.type.gsub(/\s/, '_'),
-        href:    PDoc.pathPrefix + this._fixPath(url.path)
-      }).update(url.name);
-      var li = new Element('li', { 'class': 'menu-item' });
-      li.appendChild(a);
-      ul.appendChild(li);
-    }, this);    
-    this.showResults();
-  },
-    
-  
-  findURLs: function(str) {
-    var results = [];
-    for (var i in PDoc.elements) {
-      if (i.toLowerCase().include(str)) results.push(PDoc.elements[i]);
+  keydown: function(event) {
+    if (!PDoc.Sidebar.Filterer.INTERCEPT_KEYS.include(event.keyCode))
+      return;
+      
+    // Also ignore if any modifier keys are present.
+    if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey)
+      return;
+      
+    event.stop();
+
+    if (event.keyCode === Event.KEY_RETURN) {
+      // Follow the highlighted item, unless there is none.
+      if (!this.highlighted) return;
+      var a = this.highlighted.down('a');
+      if (a) {
+        window.location.href = a.href;
+      }
+    } else if ([Event.KEY_UP, Event.KEY_DOWN].include(event.keyCode)) {
+      // Is an arrow key.
+      var direction = (Event.KEY_DOWN === event.keyCode) ? 1 : -1;
+      this.highlighted = this.moveHighlight(direction);
+      
+      if (!Prototype.Browser.WebKit) {
+        // If up/down key is held down, list should keep scrolling.
+        // WebKit does this automatically because it fires the keydown
+        // event over and over.
+        this._scrollTimer = window.setTimeout(
+          this.scrollList.bind(this, direction), 1000);
+      }
     }
-    return results;
   },
   
-  onEmpty: function() {
-    this.hideResults();
-  },
-  
-  showResults: function() {
-    this.resultsElement.show();
-    document.stopObserving("keydown", this.events.keydown);
-    document.observe("keydown", this.events.keydown);
-  },
-  
-  hideResults: function() {
-    this.resultsElement.hide();
-    document.stopObserving("keydown", this.events.keydown);
-  }  
-});
-
-document.observe('dom:loaded', function() {
-  new Filterer($('search'), {
-    menu: $('api_menu'), 
-    resultsElement: $('search_results')
-  });
-});
-
-
-Event.observe(window, 'load', function() {
-  var menu = $('menu');
-  var OFFSET = menu.viewportOffset().top;
-  
-  Event.observe(window, 'scroll', function() {
-    var sOffset = document.viewport.getScrollOffsets();
-    if (sOffset.top > OFFSET) {
-      menu.addClassName('fixed');
-    } else menu.removeClassName('fixed');
-  });
-});
-
-(function() {
-  function menuButtonMouseOver(event) {
-    var menuButton = $('api_menu_button');
-    var target = event.element();
-    if (target === menuButton || target.descendantOf(menuButton)) {
-      $('api_menu').show();
+  keyup: function(event) {
+    if (this._scrollTimer) {
+      window.clearTimeout(this._scrollTimer);
     }
-  }
+  },
   
-  function menuButtonMouseOut(event) {
-    var menuButton = $('api_menu_button');
-    var menu = $('api_menu');
-    var target = event.element(), related = event.relatedTarget || event.toElement;
-    
-    if (related && (related === menu || related.descendantOf(menu))) return;
-    menu.hide();
-  }
-  
-  function menuMouseOut(event) {
-    var menu = $('api_menu'), related = event.relatedTarget || event.toElement;
-    if (related && !related.descendantOf(menu)) {
-      arguments.callee.timer = Element.hide.delay(0.5, menu);
+  moveHighlight: function(direction) {
+    if (!this.highlighted) {
+      // If there is none, highlight the first result.
+      this.highlighted =
+       this.resultsElement.down('li').addClassName('highlighted');
     } else {
-      window.clearTimeout(arguments.callee.timer);
+      var method = (direction === 1) ? 'next' : 'previous';
+      this.highlighted.removeClassName('highlighted');
+      var adjacent = this.highlighted[method]('li');
+      // If there isn't an adjacent one, we're at the top or bottom
+      // of the list. Flip it.
+      if (!adjacent) {
+        adjacent = method == 'next' ? this.resultsElement.down('li') :
+         this.resultsElement.down('li:last-of-type');
+      }
+      adjacent.addClassName('highlighted');
+      this.highlighted = adjacent;
     }
-  }
-  
-  function menuItemMouseOver(event) {
-    var element = event.element();    
-    if (element.tagName.toLowerCase() === 'a') {
-      element.addClassName('highlighted');
-    }
-  }
-  
-  function menuItemMouseOut(event) {
-    var element = event.element();    
-    if (element.tagName.toLowerCase() === 'a') {
-      element.removeClassName('highlighted');
-    }
-  }
-  
-  var MENU_ITEMS;
-  
-  document.observe('dom:loaded', function() {
-    MENU_ITEMS = $$('.api-box .menu-item a');
     
-    $('api_menu_button').observe('mouseenter', menuButtonMouseOver);
-    $('api_menu_button').observe('mouseleave', menuButtonMouseOut );
+    var h = this.highlighted, r = this.resultsElement;
     
-    $('api_menu').observe('mouseleave', menuMouseOut);
-    
-    if (Prototype.Browser.IE) {
-      $('api_menu').observe('mouseover', menuItemMouseOver);
-      $('api_menu').observe('mouseout',  menuItemMouseOut);
+    var distanceToBottom = h.offsetTop + h.offsetHeight;
+    if (distanceToBottom > (r.offsetHeight + r.scrollTop)) {
+      // Item is below the visible frame.
+      r.scrollTop = distanceToBottom - r.offsetHeight;
+    } else if (h.offsetTop < r.scrollTop) {
+      // Item is above the visible frame.
+      r.scrollTop = h.offsetTop;
     }
-  });
-})();
+
+    return this.highlighted;
+  },
+  
+  scrollList: function(direction) {
+    this.moveHighlight(direction);
+    this._scrollTimer = window.setTimeout(
+      this.scrollList.bind(this, direction), 100);
+  }
+});
+
+Object.extend(PDoc.Sidebar.Filterer, {
+  INTERCEPT_KEYS: [Event.KEY_UP, Event.KEY_DOWN, Event.KEY_RETURN],
+  DEFAULT_OPTIONS: {
+    interval: 0.1,
+    resultsElement: '.search-results'
+  }
+});
+
 
 Form.GhostedField = Class.create({
   initialize: function(element, title, options) {
+    options = options || {};
+    
     this.element = $(element);
     this.title = title;
-    
-    options = options || {};
     
     this.isGhosted = true;
     
     if (options.cloak) {
+      
       // Wrap the native getValue function so that it never returns the
       // ghosted value. This is optional because it presumes the ghosted
       // value isn't valid input for the field.
       this.element.getValue = this.element.getValue.wrap(this.wrappedGetValue.bind(this));      
-    }    
+    }
     
     this.addObservers();
+    
     this.onBlur();
   },
   
@@ -384,6 +491,35 @@ Form.GhostedField = Class.create({
   }
 });
 
-document.observe("dom:loaded", function() {
-  new Form.GhostedField($('search'), "Search");
+
+document.observe('hash:changed', PDoc.highlightSelected.bind(PDoc));
+document.observe('dom:loaded', function() {
+  PDoc.Sidebar.Tabs = new Control.Tabs($('sidebar_tabs'));
+  
+  var searchField = $('search');
+  
+  if (searchField) {
+    var filterer = new PDoc.Sidebar.Filterer(searchField, {
+      menu: $('api_menu'),
+      resultsElement: $('search_results')
+    });
+    searchField.store('filterer', filterer);
+  }  
+  
+  // Prevent horizontal scrolling in scrollable sidebar areas.
+  $$('.scrollable').invoke('observe', 'scroll', function() {
+    this.scrollLeft = 0;
+  });
+  
+  var sidebarState = Cookie.get('sidebar_state');
+  if (sidebarState) {
+    PDoc.Sidebar.restore(sidebarState);
+  }
+  
+  new Form.GhostedField(searchField, searchField.getAttribute('title'), 
+    { cloak: true });
+});
+
+Event.observe(window, 'unload', function() {
+  Cookie.set('sidebar_state', PDoc.Sidebar.serialize());
 });

@@ -11,9 +11,9 @@
       <ul class="argument-list">
         <% object.arguments.each do |arg| %>
           <li>
-            <code><%= arg.name %></code>
+            <code class="argument-name"><%= arg.name %></code>
             <% unless arg.types.empty? %>
-              (<%= arg.types.map { |t| auto_link_code(t, false) }.join(' | ') %>)
+              <span class="argument-types">(<%= arg.types.map { |t| auto_link_code(t, false) }.join(' | ') %>)</span>
             <% end %>
             <%= ' &ndash; ' + inline_htmlize(arg.description) unless arg.description.empty? %>
           </li>
