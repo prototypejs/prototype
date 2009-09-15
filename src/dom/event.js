@@ -5,7 +5,7 @@
    *
    *  The namespace for Prototype's event system.
    *
-   *  <h4>Events: a fine mess</h4>
+   *  <h5>Events: a fine mess</h5>
    *
    *  Event management is one of the really sore spots of cross-browser
    *  scripting.
@@ -17,7 +17,7 @@
    *  Safari). Also, MSIE has a tendency to leak memory when it comes to
    *  discarding event handlers.
    *
-   *  <h4>Prototype to the rescue</h4>
+   *  <h5>Prototype to the rescue</h5>
    *
    *  Of course, Prototype smooths it over so well you'll forget these
    *  troubles even exist. Enter the `Event` namespace. It is replete with

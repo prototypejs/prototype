@@ -490,7 +490,7 @@ Form.Element.Serializers = {
  *  [[Form.Observer]], which serializes a form and triggers when the result has changed; and
  *  [[Form.Element.Observer]], which triggers when the value of a given form field changes.
  *
- *  <h4>Creating Your Own TimedObserver Implementations</h4>
+ *  <h5>Creating Your Own TimedObserver Implementations</h5>
  *
  *  It's easy to create your own `TimedObserver` implementations: Simply subclass `TimedObserver`
  *  and provide the `getValue()` method. For example, this is the complete source code for

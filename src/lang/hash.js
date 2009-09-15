@@ -1,11 +1,9 @@
 /** section: Language, related to: Hash
  *  $H([object]) -> Hash
  *
- *  Creates a `Hash`.
- *
- *  `$H` is a convenience wrapper around the Hash constructor, with a safeguard
- *  that lets you pass an existing Hash object and get it back untouched
- *  (instead of uselessly cloning it).
+ *  Creates a `Hash`. This is purely a convenience wrapper around the Hash
+ *  constructor, it does not do anything other than pass any argument it's
+ *  given into the Hash constructor and return the result.
  **/
 function $H(object) {
   return new Hash(object);
@@ -24,13 +22,12 @@ function $H(object) {
  *  methods that let you enumerate keys and values, iterate over key/value
  *  pairs, merge two hashes together, and much more.
  *
- *  <h4>Creating a hash</h4>
+ *  <h5>Creating a hash</h5>
  *
- *  There are two ways to construct a Hash instance: the first is regular
- *  JavaScript object instantiation with the `new` keyword, and the second is
- *  using the [[$H]] function. There is one difference between them: if a `Hash`
- *  is passed to `$H`, it will be returned as-is, wherease the same hash passed
- *  to `new Hash` will be _cloned_ instead.
+ *  You can create a Hash either via `new Hash()` or the convenience alias
+ *  `$H()`; there is **no** difference between them. In either case, you may
+ *  optionally pass in an object to seed the `Hash`. If you pass in a `Hash`,
+ *  it will be cloned.
  *
 **/
 var Hash = Class.create(Enumerable, (function() {
@@ -44,6 +41,45 @@ var Hash = Class.create(Enumerable, (function() {
     this._object = Object.isHash(object) ? object.toObject() : Object.clone(object);
   }
 
+  // Docs for #each even though technically it's implemented by Enumerable
+  /**
+   *  Hash#each(iterator[, context]) -> Hash
+   *  - iterator (Function): A function that expects each item in the `Hash`
+   *    as the first argument and a numerical index as the second.
+   *  - context (Object): The scope in which to call `iterator`. Determines what
+   *    `this` means inside `iterator`.
+   *
+   *  Iterates over the name/value pairs in the hash.
+   *
+   *  This is actually just the [[Enumerable#each #each]] method from the
+   *  mixed-in [[Enumerable]] module. It is documented here to describe the
+   *  structure of the elements passed to the iterator and the order of
+   *  iteration.
+   *
+   *  The iterator's first argument (the "item") is an object with two
+   *  properties:
+   *
+   *  - `key`: the key name as a `String`
+   *  - `value`: the corresponding value (which may be `undefined`)
+   *
+   *  The order of iteration is implementation-dependent, as it relies on
+   *  the order of the native `for..in` loop. Although most modern
+   *  implementations exhibit *ordered* behavior, this is not standardized and
+   *  may not always be the case, and so cannot be relied upon.
+   *
+   *  <h5>Example</h5>
+   *
+   *      var h = $H({version: 1.6, author: 'The Core Team'});
+   *
+   *      h.each(function(pair) {
+   *        alert(pair.key + ' = "' + pair.value + '"');
+   *      });
+   *      // Alerts 'version = "1.6"' and 'author = "The Core Team"'
+   *      // -or-
+   *      // Alerts 'author = "The Core Team"' and 'version = "1.6"'
+  **/
+
+  // Our _internal_ each
   function _each(iterator) {
     for (var key in this._object) {
       var value = this._object[key], pair = [key, value];
@@ -55,8 +91,22 @@ var Hash = Class.create(Enumerable, (function() {
 
   /**
    *  Hash#set(key, value) -> value
+   *  - key (String): The key to use for this value.
+   *  - value (?): The value to use for this key.
    *
-   *  Sets the hash's `key` property to `value` and returns `value`.
+   *  Stores `value` in the hash using the key `key` and returns `value`.
+   *
+   *  <h5>Example</h5>
+   *
+   *      var h = $H();
+   *      h.keys();
+   *      // -> [] (initially empty)
+   *      h.set('a', 'apple');
+   *      // -> "apple"
+   *      h.keys();
+   *      // -> ["a"] (has the new entry)
+   *      h.get('a');
+   *      // -> "apple"
   **/
   function set(key, value) {
     return this._object[key] = value;
@@ -65,7 +115,13 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#get(key) -> value
    *
-   *  Returns the value of the hash's `key` property.
+   *  Returns the stored value for the given `key`.
+   *
+   *  <h5>Examples</h5>
+   *
+   *      var h = new Hash({a: 'apple', b: 'banana', c: 'coconut'});
+   *      h.get('a');
+   *      // -> 'apple'
   **/
   function get(key) {
     // simulating poorly supported hasOwnProperty
@@ -76,7 +132,18 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#unset(key) -> value
    *
-   *  Deletes the hash's `key` property and returns its value.
+   *  Deletes the stored pair for the given `key` from the hash and returns its
+   *  value.
+   *
+   *  <h5>Example</h5>
+   *
+   *      var h = new Hash({a: 'apple', b: 'banana', c: 'coconut'});
+   *      h.keys();
+   *      // -> ["a", "b", "c"]
+   *      h.unset('a');
+   *      // -> 'apple'
+   *      h.keys();
+   *      // -> ["b", "c"] ("a" is no longer in the hash)
   **/
   function unset(key) {
     var value = this._object[key];
@@ -87,7 +154,15 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#toObject() -> Object
    *
-   *  Returns a cloned, vanilla object.
+   *  Returns a cloned, vanilla object whose properties (and property values)
+   *  match the keys (and values) from the hash.
+   *
+   *  <h5>Example</h5>
+   *
+   *      var h = new Hash({ a: 'apple', b: 'banana', c: 'coconut' });
+   *      var obj = h.toObject();
+   *      obj.a;
+   *      // -> "apple"
   **/
   function toObject() {
     return Object.clone(this._object);
@@ -96,7 +171,15 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#keys() -> [String...]
    *
-   *  Provides an Array of keys (that is, property names) for the hash.
+   *  Provides an Array containing the keys for items stored in the hash.
+   *
+   *  The order of the keys is not guaranteed.
+   *
+   *  <h5>Example</h5>
+   *
+   *      var h = $H({one: "uno", two: "due", three: "tre"});
+   *      h.keys();
+   *      // -> ["one", "three", "two"] (these may be in any order)
   **/
   function keys() {
     return this.pluck('key');
@@ -105,7 +188,15 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#values() -> Array
    *
-   *  Collect the values of a hash and returns them in an array.
+   *  Collects the values of the hash and returns them in an array.
+   *
+   *  The order of the values is not guaranteed.
+   *
+   *  <h5>Example</h5>
+   *
+   *      var h = $H({one: "uno", two: "due", three: "tre"});
+   *      h.values();
+   *      // -> ["uno", "tre", "due"] (these may be in any order)
   **/
   function values() {
     return this.pluck('value');
@@ -126,10 +217,22 @@ var Hash = Class.create(Enumerable, (function() {
 
   /**
    *  Hash#merge(object) -> Hash
+   *  - object (Object | Hash): The object to merge with this hash to produce
+   *    the resulting hash.
    *
-   *  Returns a new hash with `object`'s key/value pairs merged in.
+   *  Returns a new `Hash` instance with `object`'s key/value pairs merged in;
+   *  this hash remains unchanged.
+   *
    *  To modify the original hash in place, use [[Hash#update]].
    *
+   *  <h5>Example</h5>
+   *
+   *      var h = $H({one: "uno", two: "due"});
+   *      var h2 = h.merge({three: "tre"});
+   *      h.keys();
+   *      // -> ["one", "two"] (unchanged)
+   *      h2.keys();
+   *      // -> ["one", "two", "three"] (has merged contents)
   **/
   function merge(object) {
     return this.clone().update(object);
@@ -137,10 +240,22 @@ var Hash = Class.create(Enumerable, (function() {
 
   /**
    *  Hash#update(object) -> Hash
+   *  - object (Object | Hash): The object to merge with this hash to produce
+   *    the resulting hash.
    *
-   *  Updates hash with the key/value pairs of `object`.
-   *  The original hash will be modified. To return a new hash instead, use
+   *  Updates a hash *in place* with the key/value pairs of `object`, returns
+   *  the hash.
+   *
+   *  `update` modifies the hash. To get a new hash instead, use
    *  [[Hash#merge]].
+   *
+   *  <h5>Example</h5>
+   *
+   *      var h = $H({one: "uno", two: "due"});
+   *      h.update({three: "tre"});
+   *      // -> h (a reference to the original hash)
+   *      h.keys();
+   *      // -> ["one", "two", "three"] (has merged contents)
   **/
   function update(object) {
     return new Hash(object).inject(this, function(result, pair) {
@@ -158,7 +273,41 @@ var Hash = Class.create(Enumerable, (function() {
   /** related to: String#toQueryParams
    *  Hash#toQueryString() -> String
    *
-   *  Turns a hash into its URL-encoded query string representation.
+   *  Returns a URL-encoded string containing the hash's contents as query
+   *  parameters according to the following rules:
+   *
+   *  - An undefined value results a parameter with no value portion at all
+   *    (simply the key name, no equal sign).
+   *  - A null value results a parameter with a blank value (the key followed
+   *    by an equal sign and nothing else).
+   *  - A boolean value results a parameter with the value "true" or "false".
+   *  - An Array value results in a parameter for each array element, in
+   *    array order, each using the same key.
+   *  - All keys and values are URI-encoded using JavaScript's native
+   *    `encodeURIComponent` function.
+   *
+   *  The order of pairs in the string is not guaranteed, other than the order
+   *  of array values described above.
+   *
+   *  <h5>Example</h5>
+   *
+   *      $H({action: 'ship',
+   *          order_id: 123,
+   *          fees: ['f1', 'f2']
+   *      }).toQueryString();
+   *      // -> "action=ship&order_id=123&fees=f1&fees=f2"
+   *
+   *      $H({comment: '',
+   *          'key with spaces': true,
+   *          related_order: undefined,
+   *          contents: null,
+   *          'label': 'a demo'
+   *      }).toQueryString();
+   *      // -> "comment=&key%20with%20spaces=true&related_order&contents=&label=a%20demo"
+   *
+   *      // an empty hash is an empty query string:
+   *      $H().toQueryString();
+   *      // -> ""
   **/
   function toQueryString() {
     return this.inject([], function(results, pair) {
@@ -175,7 +324,7 @@ var Hash = Class.create(Enumerable, (function() {
   /** related to: Object.inspect
    *  Hash#inspect() -> String
    *
-   *  Returns the debug-oriented string representation of the hash.
+   *  Returns the debug-oriented string representation of the Hash.
   **/
   function inspect() {
     return '#<Hash:{' + this.map(function(pair) {
@@ -186,7 +335,13 @@ var Hash = Class.create(Enumerable, (function() {
   /** related to: Object.toJSON
    *  Hash#toJSON() -> String
    *
-   *  Returns a JSON string.
+   *  Returns a JSON string containing the keys and values in this hash.
+   *
+   *  <h5>Example</h5>
+   *
+   *      var h = $H({'a': 'apple', 'b': 23, 'c': false});
+   *      h.toJSON();
+   *      // -> {"a": "apple", "b": 23, "c": false}
   **/
   function toJSON() {
     return Object.toJSON(this.toObject());
@@ -195,7 +350,7 @@ var Hash = Class.create(Enumerable, (function() {
   /**
    *  Hash#clone() -> Hash
    *
-   *  Returns a clone of hash.
+   *  Returns a clone of this Hash.
   **/
   function clone() {
     return new Hash(this);

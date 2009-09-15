@@ -167,12 +167,32 @@
    *  Object.clone(object) -> Object
    *  - object (Object): The object to clone.
    *
-   *  Duplicates the passed object.
-   *
-   *  Copies all the original's key/value pairs onto an empty object.
+   *  Creates and returns a shallow duplicate of the passed object by copying
+   *  all of the original's key/value pairs onto an empty object.
    *
    *  Do note that this is a _shallow_ copy, not a _deep_ copy. Nested objects
    *  will retain their references.
+   *
+   *  <h5>Examples</h5>
+   *
+   *      var original = {name: 'primaryColors', values: ['red', 'green', 'blue']};
+   *      var copy = Object.clone(original);
+   *      original.name;
+   *      // -> "primaryColors"
+   *      original.values[0];
+   *      // -> "red"
+   *      copy.name;
+   *      // -> "primaryColors"
+   *      copy.name = "secondaryColors";
+   *      original.name;
+   *      // -> "primaryColors"
+   *      copy.name;
+   *      // -> "secondaryColors"
+   *      copy.values[0] = 'magenta';
+   *      copy.values[1] = 'cyan';
+   *      copy.values[2] = 'yellow';
+   *      original.values[0];
+   *      // -> "magenta" (it was a shallow copy, so they shared the array)
   **/
   function clone(object) {
     return extend({ }, object);

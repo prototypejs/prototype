@@ -5,7 +5,7 @@
  *
  *  `Ajax.Request` is a general-purpose class for making HTTP requests.
  *
- *  <h4>Automatic JavaScript response evaluation</h4>
+ *  <h5>Automatic JavaScript response evaluation</h5>
  *
  *  If an Ajax request follows the _same-origin policy_ **and** its response
  *  has a JavaScript-related `Content-type`, the content of the `responseText`
@@ -28,7 +28,7 @@
  *
  *  The MIME-type string is examined in a case-insensitive manner.
  *
- *  <h4>Methods you may find useful</h4>
+ *  <h5>Methods you may find useful</h5>
  *
  *  Instances of the `Request` object provide several methods that can come in
  *  handy in your callback functions, especially once the request is complete.

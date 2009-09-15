@@ -16,7 +16,7 @@
  *  keeping track of the response text so it can (optionally) react to
  *  receiving the exact same response consecutively.
  *
- *  <h4>Additional options</h4>
+ *  <h5>Additional options</h5>
  *
  *  `Ajax.PeriodicalUpdater` features all the common options and callbacks
  *  described in the [[Ajax section]] &mdash; _plus_ those added by `Ajax.Updater`.
@@ -34,7 +34,7 @@
  *    is the same; when the result is different once again, `frequency` will
  *    revert to its original value.
  *
- *  <h4>Disabling and re-enabling a <code>PeriodicalUpdater</code></h4>
+ *  <h5>Disabling and re-enabling a <code>PeriodicalUpdater</code></h5>
  *
  *  You can hit the brakes on a running `PeriodicalUpdater` by calling
  *  [[Ajax.PeriodicalUpdater#stop]]. If you wish to re-enable it later, call
