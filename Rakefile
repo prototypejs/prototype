@@ -9,6 +9,7 @@ module PrototypeHelper
   DOC_DIR       = File.join(ROOT_DIR, 'doc')
   TEMPLATES_DIR = File.join(ROOT_DIR, 'templates')
   PKG_DIR       = File.join(ROOT_DIR, 'pkg')
+  SIZZLE_DIR    = File.join(ROOT_DIR, 'vendor', 'sizzle')
   TEST_DIR      = File.join(ROOT_DIR, 'test')
   TEST_UNIT_DIR = File.join(TEST_DIR, 'unit')
   TMP_DIR       = File.join(TEST_UNIT_DIR, 'tmp')
@@ -18,7 +19,7 @@ module PrototypeHelper
     require_sprockets
     secretary = Sprockets::Secretary.new(
       :root           => File.join(ROOT_DIR, path),
-      :load_path      => [SRC_DIR],
+      :load_path      => [SRC_DIR, SIZZLE_DIR],
       :source_files   => [source],
       :strip_comments => strip_comments
     )

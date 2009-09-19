@@ -356,14 +356,6 @@ new Test.Unit.Runner({
     this.assert(typeof results[2].show == 'function');
   },
   
-  testCountedIsNotAnAttribute: function() {
-    var el = $('list');
-    Selector.handlers.mark([el]);
-    this.assert(!el.innerHTML.include("_counted"));
-    Selector.handlers.unmark([el]);
-    this.assert(!el.innerHTML.include("_counted"));      
-  },
-
   testCopiedNodesGetIncluded: function() {
     this.assertElementsMatch(
       Selector.matchElements($('counted_container').descendants(), 'div'),

@@ -11,3 +11,6 @@
   path = vendor/sprockets
   url = git://github.com/sstephenson/sprockets.git
 
+[submodule "vendor/sizzle"]
+	path = vendor/sizzle
+	url = git://github.com/jeresig/sizzle.git
