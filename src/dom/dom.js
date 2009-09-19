@@ -418,12 +418,18 @@ Element.Methods = {
    *  won't do!) of `element` that points to a single DOM node (e.g.,
    *  `nextSibling` or `parentNode`).
   **/
-  recursivelyCollect: function(element, property) {
+  recursivelyCollect: function(element, property, maximumLength) {
     element = $(element);
+    maximumLength = maximumLength || -1;
     var elements = [];
-    while (element = element[property])
+    
+    while (element = element[property]) {
       if (element.nodeType == 1)
         elements.push(Element.extend(element));
+      if (elements.length == maximumLength) 
+        break;
+    }
+    
     return elements;
   },
 
@@ -480,7 +486,7 @@ Element.Methods = {
    *  Collects all of `element`'s previous siblings and returns them as an
    *  array of elements.
   **/
-  previousSiblings: function(element) {
+  previousSiblings: function(element, maximumLength) {
     return Element.recursivelyCollect(element, 'previousSibling');
   },
 
@@ -564,10 +570,14 @@ Element.Methods = {
   **/
   previous: function(element, expression, index) {
     element = $(element);
-    if (arguments.length == 1) return $(Selector.handlers.previousElementSibling(element));
-    var previousSiblings = Element.previousSiblings(element);
-    return Object.isNumber(expression) ? previousSiblings[expression] :
-      Selector.findElement(previousSiblings, expression, index);
+    if (Object.isNumber(expression)) index = expression, expression = false;
+    if (!Object.isNumber(index)) index = 0;
+    
+    if (expression) {
+      return Selector.findElement(element.previousSiblings(), expression, index);
+    } else {
+      return element.recursivelyCollect("previousSibling", index + 1)[index];
+    }
   },
 
   /**
@@ -582,10 +592,15 @@ Element.Methods = {
   **/
   next: function(element, expression, index) {
     element = $(element);
-    if (arguments.length == 1) return $(Selector.handlers.nextElementSibling(element));
-    var nextSiblings = Element.nextSiblings(element);
-    return Object.isNumber(expression) ? nextSiblings[expression] :
-      Selector.findElement(nextSiblings, expression, index);
+    if (Object.isNumber(expression)) index = expression, expression = false;
+    if (!Object.isNumber(index)) index = 0;
+    
+    if (expression) {
+      return Selector.findElement(element.nextSiblings(), expression, index);
+    } else {
+      var maximumLength = Object.isNumber(index) ? index + 1 : 1;
+      return element.recursivelyCollect("nextSibling", index + 1)[index];
+    }
   },
 
 
