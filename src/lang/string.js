@@ -429,7 +429,7 @@ Object.extend(String.prototype, (function() {
    *  Checks if the string starts with `substring`.
   **/
   function startsWith(pattern) {
-    return this.indexOf(pattern) === 0;
+    return !this.lastIndexOf(pattern,0);
   }
 
   /**
@@ -439,7 +439,7 @@ Object.extend(String.prototype, (function() {
   **/
   function endsWith(pattern) {
     var d = this.length - pattern.length;
-    return d >= 0 && this.lastIndexOf(pattern) === d;
+    return d >= 0 && this.indexOf(pattern,d) === d;
   }
 
   /**
