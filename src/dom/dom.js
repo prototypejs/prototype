@@ -1758,12 +1758,126 @@ Element.hasAttribute = function(element, attribute) {
 /**
  *  Element.addMethods(methods) -> undefined
  *  Element.addMethods(tagName, methods) -> undefined
+ *  - tagName (String): (Optional) The name of the HTML tag for which the
+ *    methods should be available; if not given, all HTML elements will have
+ *    the new methods.
+ *  - methods (Object): A hash of methods to add.
  *
- *  Takes a hash of methods and makes them available as methods of extended
- *  elements and of the `Element` object.
+ *  `Element.addMethods` makes it possible to mix your *own* methods into the
+ *  `Element` object and extended element instances (all of them, or only ones
+ *  with the given HTML tag if you specify `tagName`).
  *
- *  The second usage form is for adding methods only to specific tag names.
+ *  You define the methods in a hash that you provide to `Element.addMethods`.
+ *  Here's an example adding two methods:
  *
+ *      Element.addMethods({
+ *
+ *        // myOwnMethod: Do something cool with the element
+ *        myOwnMethod: function(element) {
+ *          if (!(element = $(element))) return;
+ *          // ...do smething with 'element'...
+ *          return element;
+ *        },
+ *
+ *        // wrap: Wrap the element in a new element using the given tag
+ *        wrap: function(element, tagName) {
+ *          var wrapper;
+ *          if (!(element = $(element))) return;
+ *          wrapper = new Element(tagName);
+ *          element.parentNode.replaceChild(wrapper, element);
+ *          wrapper.appendChild(element);
+ *          return wrapper;
+ *        }
+ *
+ *      });
+ *
+ *  Once added, those can be used either via `Element`:
+ *
+ *      // Wrap the element with the ID 'foo' in a div
+ *      Element.wrap('foo', 'div');
+ *
+ *  ...or as instance methods of extended elements:
+ *
+ *      // Wrap the element with the ID 'foo' in a div
+ *      $('foo').wrap('div');
+ *
+ *  Note the following requirements and conventions for methods added to
+ *  `Element`:
+ *
+ *  - The first argument is *always* an element or ID, by convention this
+ *    argument is called `element`.
+ *  - The method passes the `element` argument through [[$]] and typically
+ *    returns if the result is undefined.
+ *  - Barring a good reason to return something else, the method returns the
+ *    extended element to enable chaining.
+ *
+ *  Our `myOwnMethod` method above returns the element because it doesn't have
+ *  a good reason to return anything else. Our `wrap` method returns the
+ *  wrapper, because that makes more sense for that method.
+ *
+ *  ##### Extending only specific elements
+ *
+ *  If you call `Element.addMethods` with *two* arguments, it will apply the
+ *  methods only to elements with the given HTML tag:
+ *
+ *      Element.addMethods('DIV', my_div_methods);
+ *      // the given methods are now available on DIV elements, but not others
+ *
+ *  You can also pass an *array* of tag names as the first argument:
+ *
+ *      Element.addMethods(['DIV', 'SPAN'], my_additional_methods);
+ *      // DIV and SPAN now both have the given methods
+ *
+ *  (Tag names in the first argument are not case sensitive.)
+ *
+ *  Note: `Element.addMethods` has built-in security which prevents you from
+ *  overriding native element methods or properties (like `getAttribute` or
+ *  `innerHTML`), but nothing prevents you from overriding one of Prototype's
+ *  methods. Prototype uses a lot of its methods internally; overriding its
+ *  methods is best avoided or at least done only with great care.
+ *
+ *  ##### Example 1
+ *
+ *  Our `wrap` method earlier was a complete example. For instance, given this
+ *  paragraph:
+ *
+ *      language: html
+ *      <p id="first">Some content...</p>
+ *
+ *  ...we might wrap it in a `div`:
+ *
+ *      $('first').wrap('div');
+ *
+ *  ...or perhaps wrap it and apply some style to the `div` as well:
+ *
+ *      $('first').wrap('div').setStyle({
+ *        backgroundImage: 'url(images/rounded-corner-top-left.png) top left'
+ *      });
+ *
+ *  ##### Example 2
+ *
+ *  We can add a method to elements that makes it a bit easier to update them
+ *  via [[Ajax.Updater]]:
+ *
+ *      Element.addMethods({
+ *        ajaxUpdate: function(element, url, options) {
+ *          if (!(element = $(element))) return;
+ *          element.update('<img src="/images/spinner.gif" alt="Loading...">');
+ *          options = options || {};
+ *          options.onFailure = options.onFailure || defaultFailureHandler.curry(element);
+ *          new Ajax.Updater(element, url, options);
+ *          return element;
+ *        }
+ *      });
+ *
+ *  Now we can update an element via an Ajax call much more concisely than
+ *  before:
+ *
+ *      $('foo').ajaxUpdate('/new/content');
+ *
+ *  That will use Ajax.Updater to load new content into the 'foo' element,
+ *  showing a spinner while the call is in progress. It even applies a default
+ *  failure handler (since we didn't supply one).
 **/
 Element.addMethods = function(methods) {
   var F = Prototype.BrowserFeatures, T = Element.Methods.ByTag;
