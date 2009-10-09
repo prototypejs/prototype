@@ -860,7 +860,44 @@ Element.Methods = {
   /**
    *  Element.cleanWhitespace(@element) -> Element
    *
-   *  Removes whitespace-only text node children from `element`.
+   *  Removes all of `element`'s child text nodes that contain *only*
+   *  whitespace. Returns `element`.
+   *
+   *  This can be very useful when using standard methods like `nextSibling`,
+   *  `previousSibling`, `firstChild` or `lastChild` to walk the DOM. Usually
+   *  you'd only do that if you are interested in all of the DOM nodes, not
+   *  just Elements (since if you just need to traverse the Elements in the
+   *  DOM tree, you can use [[Element.up]], [[Element.down]],
+   *  [[Element.next]], and [[Element.previous]] instead).
+   *
+   *  #### Example
+   *
+   *  Consider the following HTML snippet:
+   *
+   *      language: html
+   *      <ul id="apples">
+   *        <li>Mutsu</li>
+   *        <li>McIntosh</li>
+   *        <li>Ida Red</li>
+   *      </ul>
+   *
+   *  Let's grab what we think is the first list item using the raw DOM
+   *  method:
+   *
+   *      var element = $('apples');
+   *      element.firstChild.innerHTML;
+   *      // -> undefined
+   *
+   *  It's undefined because the `firstChild` of the `apples` element is a
+   *  text node containing the whitespace after the end of the `ul` and before
+   *  the first `li`.
+   *
+   *  If we remove the useless whitespace, then `firstChild` works as expected:
+   *
+   *      var element = $('apples');
+   *      element.cleanWhitespace();
+   *      element.firstChild.innerHTML;
+   *      // -> 'Mutsu'
   **/
   cleanWhitespace: function(element) {
     element = $(element);
