@@ -1286,15 +1286,60 @@ Element.Methods = {
 
   /**
    *  Element.clonePosition(@element, source[, options]) -> Element
+   *  - source (Element | String): The source element (or its ID).
+   *  - options (Object): The position fields to clone.
    *
-   *  Clones the position and/or dimensions of `source` onto `element` as
-   *  defined by `options`.
+   *  Clones the position and/or dimensions of `source` onto the element as
+   *  defined by `options`, with an optional offset for the `left` and `top`
+   *  properties.
    *
-   *  Valid keys for `options` are: `setLeft`, `setTop`, `setWidth`, and
-   *  `setHeight` (all booleans which default to `true`); and `offsetTop`
-   *  and `offsetLeft` (numbers which default to `0`). Use these to control
-   *  which aspects of `source`'s layout are cloned and how much to offset
-   *  the resulting position of `element`.
+   *  Note that the element will be positioned exactly like `source` whether or
+   *  not it is part of the same [CSS containing
+   *  block](http://www.w3.org/TR/CSS21/visudet.html#containing-block-details).
+   *
+   *  ##### Options
+   *
+   *  <table class='options'>
+   *  <thead>
+   *    <tr>
+   *      <th style='text-align: left; padding-right: 1em'>Name</th>
+   *      <th style='text-align: left; padding-right: 1em'>Default</th>
+   *      <th style='text-align: left; padding-right: 1em'>Description</th>
+   *    </tr>
+   *  </thead>
+   *  <tbody>
+   *    <tr>
+   *    <td><code>setLeft</code></td>
+   *    <td><code>true</code></td>
+   *  <td>Clones <code>source</code>'s <code>left</code> CSS property onto <code>element</code>.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>setTop</code></td>
+   *    <td><code>true</code></td>
+   *  <td>Clones <code>source</code>'s <code>top</code> CSS property onto <code>element</code>.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>setWidth</code></td>
+   *    <td><code>true</code></td>
+   *  <td>Clones <code>source</code>'s <code>width</code> onto <code>element</code>.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>setHeight</code></td>
+   *    <td><code>true</code></td>
+   *  <td>Clones <code>source</code>'s <code>width</code> onto <code>element</code>.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>offsetLeft</code></td>
+   *    <td><code>0</code></td>
+   *  <td>Number by which to offset <code>element</code>'s <code>left</code> CSS property.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>offsetTop</code></td>
+   *    <td><code>0</code></td>
+   *  <td>Number by which to offset <code>element</code>'s <code>top</code> CSS property.</td>
+   *  </tr>
+   *  </tbody>
+   *  </table>
   **/
   clonePosition: function(element, source) {
     var options = Object.extend({
