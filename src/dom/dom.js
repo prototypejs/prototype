@@ -646,7 +646,30 @@ Element.Methods = {
    *  - selector (String): A CSS selector.
    *
    *  Finds all siblings of the current element that match the given
-   *  selector(s).
+   *  selector(s). If you provide multiple selectors, siblings matching *any*
+   *  of the selectors are included. If a sibling matches multiple selectors,
+   *  it is only included once. The order of the returned array is not defined.
+   *
+   *  ##### Example
+   *
+   *  Assuming this list:
+   *
+   *      language: html
+   *      <ul id="cities">
+   *        <li class="us" id="nyc">New York</li>
+   *        <li class="uk" id="lon">London</li>
+   *        <li class="us" id="chi">Chicago</li>
+   *        <li class="jp" id="tok">Tokyo</li>
+   *        <li class="us" id="la">Los Angeles</li>
+   *        <li class="us" id="aus">Austin</li>
+   *      </ul>
+   *
+   *  Then:
+   *
+   *      $('nyc').adjacent('li.us');
+   *      // -> [li#chi, li#la, li#aus]
+   *      $('nyc').adjacent('li.uk', 'li.jp');
+   *      // -> [li#lon, li#tok]
   **/
   adjacent: function(element) {
     var args = Array.prototype.slice.call(arguments, 1);
