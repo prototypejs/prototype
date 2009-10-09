@@ -60,6 +60,32 @@ if (!Node.ELEMENT_NODE) {
 
 /** section: DOM
  *  class Element
+ *
+ *  The `Element` object provides a variety of powerful DOM methods for
+ *  interacting with DOM elements&nbsp;&mdash; creating them, updating them,
+ *  traversing them, etc. You can access these either as methods of `Element`
+ *  itself, passing in the element to work with as the first argument, or as
+ *  methods on extended element *instances*:
+ *
+ *      // Using Element:
+ *      Element.addClassName('target', 'highlighted');
+ *
+ *      // Using an extended element instance:
+ *      $('target').addClassName('highlighted');
+ *
+ *  `Element` is also a constructor for building element instances from scratch,
+ *  see [`new Element`](#new-constructor) for details.
+ *
+ *  Most `Element` methods return the element instance, so that you can chain
+ *  them easily:
+ *
+ *      $('message').addClassName('read').update('I read this message!');
+ *
+ *  ##### More Information
+ *
+ *  For more information about extended elements, check out ["How Prototype
+ *  extends the DOM"](http://prototypejs.org/learn/extensions), which will walk
+ *  you through the inner workings of Prototype's DOM extension mechanism.
 **/
 
 /**
