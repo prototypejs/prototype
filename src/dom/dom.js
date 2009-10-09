@@ -1124,10 +1124,24 @@ Element.Methods = {
    *  Element.cumulativeOffset(@element) -> Array
    *
    *  Returns the offsets of `element` from the top left corner of the
-   *  document.
+   *  document, in pixels.
    *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
+   *
+   *  ##### Example
+   *
+   *  Assuming the div `foo` is at (25,40), then:
+   *
+   *      var offset = $('foo').cumulativeOffset();
+   *      offset[0];
+   *      // -> 25
+   *      offset[1];
+   *      // -> 40
+   *      offset.left;
+   *      // -> 25
+   *      offset.top;
+   *      // -> 40
   **/
   cumulativeOffset: function(element) {
     var valueT = 0, valueL = 0;
