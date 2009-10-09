@@ -1703,11 +1703,26 @@ Object.extend(Element, Element.Methods);
 /**
  *  Element.extend(element) -> Element
  *
- *  Extends `element` with all of the methods contained in `Element.Methods`
- *  and `Element.Methods.Simulated`.
- *  If `element` is an `input`, `textarea`, or `select` tag, it will also be
- *  extended with the methods from `Form.Element.Methods`. If it is a `form`
- *  tag, it will also be extended with the methods from `Form.Methods`.
+ *  Extends the given element instance with all of the Prototype goodness and
+ *  syntactic sugar, as well as any extensions added via [[Element.addMethods]].
+ *  (If the element instance was already extended, this is a no-op.)
+ *
+ *  You only need to use `Element.extend` on element instances you've acquired
+ *  directly from the DOM; **all** Prototype methods that return element
+ *  instances (such as [[$]], [[Element.down]], etc.) will pre-extend the
+ *  element before returning it.
+ *
+ *  Check out ["How Prototype extends the
+ *  DOM"](http://prototypejs.org/learn/extensions) for more about element
+ *  extensions.
+ *
+ *  ##### Details
+ *
+ *  Specifically, `Element.extend` extends the given instance with the methods
+ *  contained in `Element.Methods` and `Element.Methods.Simulated`. If `element`
+ *  is an `input`, `textarea`, or `select` element, it will also be extended
+ *  with the methods from `Form.Element.Methods`. If it is a `form` element, it
+ *  will also be extended with the methods from `Form.Methods`.
 **/
 Element.extend = (function() {
 
