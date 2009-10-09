@@ -506,8 +506,10 @@ Element.Methods = {
   /**
    *  Element.descendants(@element) -> [Element...]
    *
-   *  Collects all of element's descendants and returns them as an array of
-   *  elements.
+   *  Collects all of the element's descendants (its children, their children,
+   *  etc.) and returns them as an array of extended elements. As with all of
+   *  Prototype's DOM traversal methods, only Elements are returned, other
+   *  nodes (text nodes, etc.) are skipped.
   **/
   descendants: function(element) {
     return Element.select(element, "*");
