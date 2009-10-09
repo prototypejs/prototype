@@ -470,8 +470,34 @@ Element.Methods = {
   /**
    *  Element.ancestors(@element) -> [Element...]
    *
-   *  Collects all of `element`'s ancestors and returns them as an array of
-   *  elements.
+   *  Collects all of `element`'s ancestor elements and returns them as an
+   *  array of extended elements.
+   *
+   *  The returned array's first element is `element`'s direct ancestor (its
+   *  `parentNode`), the second one is its grandparent, and so on until the
+   *  `html` element is reached. `html` will always be the last member of the
+   *  array. Calling `ancestors` on the `html` element will return an empty
+   *  array.
+   *
+   *  ##### Example
+   *
+   *  Assuming:
+   *
+   *      language: html
+   *      <html>
+   *      [...]
+   *        <body>
+   *          <div id="father">
+   *            <div id="kid">
+   *            </div>
+   *          </div>
+   *        </body>
+   *      </html>
+   *
+   *  Then:
+   *
+   *      $('kid').ancestors();
+   *      // -> [div#father, body, html]
   **/
   ancestors: function(element) {
     return Element.recursivelyCollect(element, 'parentNode');
