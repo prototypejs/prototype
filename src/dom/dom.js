@@ -90,11 +90,25 @@ if (!Node.ELEMENT_NODE) {
 
 /**
  *  new Element(tagName[, attributes])
- *    - tagName (String): The name of the HTML element to create.
- *    - attributes (Object): A list of attribute/value pairs to set on the
- *      element.
+ *  - tagName (String): The name of the HTML element to create.
+ *  - attributes (Object): An optional group of attribute/value pairs to set on
+ *    the element.
  *
- *  Creates an HTML element with `tagName` as the tag name.
+ *  Creates an HTML element with `tagName` as the tag name, optionally with the
+ *  given attributes. This can be markedly more concise than working directly
+ *  with the DOM methods, and takes advantage of Prototype's workarounds for
+ *  various browser issues with certain attributes:
+ *
+ *  ##### Example
+ *
+ *      // The old way:
+ *      var a = document.createElement('a');
+ *      a.setAttribute('class', 'foo');
+ *      a.setAttribute('href', '/foo.html');
+ *      a.appendChild(document.createTextNode("Next page"));
+ *
+ *      // The new way:
+ *      var a = new Element('a', {'class': 'foo', href: '/foo.html'}).update("Next page");
 **/
 (function(global) {
 
