@@ -756,8 +756,24 @@ Element.Methods = {
 
   /**
    *  Element.addClassName(@element, className) -> Element
+   *  - className (String): The class name to add.
    *
-   *  Adds a CSS class to `element`.
+   *  Adds the given CSS class to `element`.
+   *
+   *  ##### Example
+   *
+   *  Assuming this HTML:
+   *
+   *      language: html
+   *      <div id="mutsu" class="apple fruit"></div>
+   *
+   *  Then:
+   *
+   *      $('mutsu').className;
+   *      // -> 'apple fruit'
+   *      $('mutsu').addClassName('food');
+   *      $('mutsu').className;
+   *      // -> 'apple fruit food'
   **/
   addClassName: function(element, className) {
     if (!(element = $(element))) return;
