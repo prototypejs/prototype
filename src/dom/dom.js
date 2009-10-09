@@ -527,11 +527,10 @@ Element.Methods = {
     return $(element);
   },
 
-  /**
+  /** deprecated, alias of: Element.childElements
    *  Element.immediateDescendants(@element) -> [Element...]
    *
-   *  Collects all of `element`'s immediate descendants (i.e., children) and
-   *  returns them as an array of elements.
+   *  **This method is deprecated, please see [[Element.childElements]]**.
   **/
   immediateDescendants: function(element) {
     if (!(element = $(element).firstChild)) return [];
@@ -1302,8 +1301,40 @@ Object.extend(Element.Methods, {
   **/
   getElementsBySelector: Element.Methods.select,
 
-  /** alias of: Element.immediateDescendants
+  /**
    *  Element.childElements(@element) -> [Element...]
+   *
+   *  Collects all of the element's children and returns them as an array of
+   *  [extended](http://prototypejs.org/api/element/extend) elements, in
+   *  document order. The first entry in the array is the topmost child of
+   *  `element`, the next is the child after that, etc.
+   *
+   *  Like all of Prototype's DOM traversal methods, `childElements` ignores
+   *  text nodes and returns element nodes only.
+   *
+   *  ##### Example
+   *
+   *  Assuming:
+   *
+   *      language: html
+   *      <div id="australopithecus">
+   *        Some text in a text node
+   *        <div id="homo-erectus">
+   *          <div id="homo-neanderthalensis"></div>
+   *          <div id="homo-sapiens"></div>
+   *        </div>
+   *      </div>
+   *
+   *  Then:
+   *
+   *      $('australopithecus').childElements();
+   *      // -> [div#homo-erectus]
+   *
+   *      $('homo-erectus').childElements();
+   *      // -> [div#homo-neanderthalensis, div#homo-sapiens]
+   *
+   *      $('homo-sapiens').childElements();
+   *      // -> []
   **/
   childElements: Element.Methods.immediateDescendants
 });
