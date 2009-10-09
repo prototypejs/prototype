@@ -922,8 +922,28 @@ Element.Methods = {
 
   /**
    *  Element.descendantOf(@element, ancestor) -> Boolean
+   *  - ancestor (Element | String): The element to check against (or its ID).
    *
    *  Checks if `element` is a descendant of `ancestor`.
+   *
+   *  ##### Example
+   *
+   *  Assuming:
+   *
+   *      language: html
+   *      <div id="australopithecus">
+   *        <div id="homo-erectus">
+   *          <div id="homo-sapiens"></div>
+   *        </div>
+   *      </div>
+   *
+   *  Then:
+   *
+   *      $('homo-sapiens').descendantOf('australopithecus');
+   *      // -> true
+   *
+   *      $('homo-erectus').descendantOf('homo-sapiens');
+   *      // -> false
   **/
   descendantOf: function(element, ancestor) {
     element = $(element), ancestor = $(ancestor);
