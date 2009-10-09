@@ -1232,11 +1232,25 @@ Element.Methods = {
   /**
    *  Element.cumulativeScrollOffset(@element) -> Array
    *
-   *  Calculates the cumulative scroll offset of an element in nested
-   *  scrolling containers.
+   *  Calculates the cumulative scroll offset (in pixels) of an element in
+   *  nested scrolling containers.
    *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
+   *
+   *  ##### Example
+   *
+   *  Assuming the div `foo` is at scroll offset (0,257), then:
+   *
+   *      var offset = $('foo').cumulativeOffset();
+   *      offset[0];
+   *      // -> 0
+   *      offset[1];
+   *      // -> 257
+   *      offset.left;
+   *      // -> 0
+   *      offset.top;
+   *      // -> 257
   **/
   cumulativeScrollOffset: function(element) {
     var valueT = 0, valueL = 0;
