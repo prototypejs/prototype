@@ -77,7 +77,14 @@
     **/
     findElement: function(elements, expression, index) {
       if (Object.isUndefined(index)) index = 0;
-      return Element.extend(Sizzle.matches(expression, elements)[index]);
+      var selector = new Selector(expression), length = elements.length, matchIndex = 0, i;
+
+      // Match each element individually, since Sizzle.matches does not preserve order
+      for (i = 0; i < length; i++) {
+        if (selector.match(elements[i]) && index == matchIndex++) {
+          return Element.extend(elements[i]);
+        }
+      }
     },
 
     /**
