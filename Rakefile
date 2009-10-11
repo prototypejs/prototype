@@ -18,6 +18,24 @@ module PrototypeHelper
   %w[sprockets pdoc unittest_js caja_builder sizzle].each do |name|
     $:.unshift File.join(PrototypeHelper::ROOT_DIR, 'vendor', name, 'lib')
   end
+
+  def self.has_git?
+    begin
+      `git --version`
+      return true
+    rescue Error => e
+      return false
+    end
+  end
+  
+  def self.require_git
+    return if has_git?
+    puts "\nPrototype requires Git in order to load its dependencies."
+    puts "\nMake sure you've got Git installed and in your path."
+    puts "\nFor more information, visit:\n\n"
+    puts "  http://book.git-scm.com/2_installing_git.html"
+    exit
+  end
   
   def self.sprocketize(path, source, destination = nil, strip_comments = true)
     require_sprockets
@@ -66,25 +84,37 @@ module PrototypeHelper
   
   def self.require_sizzle
     if !File.exists?(File.join(SIZZLE_DIR, 'sizzle.js'))
-      puts "\nIt looks like you're missing Sizzle. Just run:\n\n"
-      puts "  $ git submodule init"
-      puts "  $ git submodule update"
-      puts "\nand you should be all set.\n\n"
-      exit
+      exit unless get_submodule("Sizzle", "sizzle")
     end
+  end
+  
+  def self.get_submodule(name, path)
+    require_git
+    puts "\nYou seem to be missing #{name}. Obtaining it via git...\n\n"
+    
+    Kernel.system("git submodule init")
+    return true if Kernel.system("git submodule update vendor/#{path}")
+    
+    # If we got this far, something went wrong.
+    puts "\nLooks like it didn't work. Try it manually:\n\n"
+    puts "  $ git submodule init"
+    puts "  $ git submodule update vendor/#{path}"
+    false
   end
   
   def self.require_submodule(name, path)
     begin
       require path
     rescue LoadError => e
+      # Wait until we notice that a submodule is missing before we bother the
+      # user about installing git. (Maybe they brought all the files over
+      # from a different machine.)
       missing_file = e.message.sub('no such file to load -- ', '')
       if missing_file == path
-        puts "\nIt looks like you're missing #{name}. Just run:\n\n"
-        puts "  $ git submodule init"
-        puts "  $ git submodule update"
-        puts "\nand you should be all set.\n\n"
+        # Missing a git submodule.
+        retry if get_submodule(name, path)
       else
+        # Missing a gem.
         puts "\nIt looks like #{name} is missing the '#{missing_file}' gem. Just run:\n\n"
         puts "  $ gem install #{missing_file}"
         puts "\nand you should be all set.\n\n"
@@ -93,8 +123,6 @@ module PrototypeHelper
     end
   end
 end
-
-
 
 task :default => [:dist, :dist_helper, :package, :clean_package_source]
 
