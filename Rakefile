@@ -14,9 +14,14 @@ module PrototypeHelper
   TEST_UNIT_DIR = File.join(TEST_DIR, 'unit')
   TMP_DIR       = File.join(TEST_UNIT_DIR, 'tmp')
   VERSION       = YAML.load(IO.read(File.join(SRC_DIR, 'constants.yml')))['PROTOTYPE_VERSION']
+
+  %w[sprockets pdoc unittest_js caja_builder sizzle].each do |name|
+    $:.unshift File.join(PrototypeHelper::ROOT_DIR, 'vendor', name, 'lib')
+  end
   
   def self.sprocketize(path, source, destination = nil, strip_comments = true)
     require_sprockets
+    require_sizzle
     secretary = Sprockets::Secretary.new(
       :root           => File.join(ROOT_DIR, path),
       :load_path      => [SRC_DIR, SIZZLE_DIR],
@@ -59,6 +64,16 @@ module PrototypeHelper
     require_submodule('CajaBuilder', 'caja_builder')
   end
   
+  def self.require_sizzle
+    if !File.exists?(File.join(SIZZLE_DIR, 'sizzle.js'))
+      puts "\nIt looks like you're missing Sizzle. Just run:\n\n"
+      puts "  $ git submodule init"
+      puts "  $ git submodule update"
+      puts "\nand you should be all set.\n\n"
+      exit
+    end
+  end
+  
   def self.require_submodule(name, path)
     begin
       require path
@@ -67,7 +82,7 @@ module PrototypeHelper
       if missing_file == path
         puts "\nIt looks like you're missing #{name}. Just run:\n\n"
         puts "  $ git submodule init"
-        puts "  $ git submodule update vendor/#{path}"
+        puts "  $ git submodule update"
         puts "\nand you should be all set.\n\n"
       else
         puts "\nIt looks like #{name} is missing the '#{missing_file}' gem. Just run:\n\n"
@@ -79,9 +94,7 @@ module PrototypeHelper
   end
 end
 
-%w[sprockets pdoc unittest_js caja_builder].each do |name|
-  $:.unshift File.join(PrototypeHelper::ROOT_DIR, 'vendor', name, 'lib')
-end
+
 
 task :default => [:dist, :dist_helper, :package, :clean_package_source]
 
