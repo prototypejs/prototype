@@ -1930,7 +1930,7 @@ Object.extend(Element, Element.Methods);
 
   div = null;
 
-})(document.createElement('div'))
+})(document.createElement('div'));
 
 /**
  *  Element.extend(element) -> Element
