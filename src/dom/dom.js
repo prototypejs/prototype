@@ -865,7 +865,7 @@ Element.Methods = {
    *  Removes all of `element`'s child text nodes that contain *only*
    *  whitespace. Returns `element`.
    *
-   *  This can be very useful when using standard methods like `nextSibling`,
+   *  This can be very useful when using standard properties like `nextSibling`,
    *  `previousSibling`, `firstChild` or `lastChild` to walk the DOM. Usually
    *  you'd only do that if you are interested in all of the DOM nodes, not
    *  just Elements (since if you just need to traverse the Elements in the
