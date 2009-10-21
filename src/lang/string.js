@@ -429,8 +429,8 @@ Object.extend(String.prototype, (function() {
    *  Checks if the string starts with `substring`.
   **/
   function startsWith(pattern) {
-    // Using `lastIndexOf` instead of `indexOf` because execution time doesn't
-    // depend on string length.
+    // We use `lastIndexOf` instead of `indexOf` to avoid tying execution
+    // time to string length when string doesn't start with pattern.
     return this.lastIndexOf(pattern, 0) === 0;
   }
 
@@ -441,8 +441,8 @@ Object.extend(String.prototype, (function() {
   **/
   function endsWith(pattern) {
     var d = this.length - pattern.length;
-    // Using `indexOf` instead of `lastIndexOf` because execution time doesn't
-    // depend on string length.
+    // We use `indexOf` instead of `lastIndexOf` to avoid tying execution
+    // time to string length when string doesn't end with pattern.
     return d >= 0 && this.indexOf(pattern, d) === d;
   }
 
