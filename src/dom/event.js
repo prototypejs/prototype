@@ -617,7 +617,7 @@
   function stopObserving(element, eventName, handler) {
     element = $(element);
 
-    var registry = Element.retrieve(element, 'prototype_event_registry')
+    var registry = Element.retrieve(element, 'prototype_event_registry');
     if (!registry) return element;
 
     if (!eventName) {
