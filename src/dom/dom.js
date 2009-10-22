@@ -518,9 +518,10 @@ Element.Methods = {
    *  Checks if `element` matches the given CSS selector.
   **/
   match: function(element, selector) {
+    element = $(element);
     if (Object.isString(selector))
-      selector = new Selector(selector);
-    return selector.match($(element));
+      return Prototype.Selector.match(element, selector);
+    return selector.match(element);
   },
 
   /**
@@ -538,7 +539,7 @@ Element.Methods = {
     if (arguments.length == 1) return $(element.parentNode);
     var ancestors = Element.ancestors(element);
     return Object.isNumber(expression) ? ancestors[expression] :
-      Selector.findElement(ancestors, expression, index);
+      Prototype.Selector.filter(ancestors, expression)[index || 0];
   },
 
   /**
@@ -574,7 +575,7 @@ Element.Methods = {
     if (!Object.isNumber(index)) index = 0;
     
     if (expression) {
-      return Selector.findElement(element.previousSiblings(), expression, index);
+      return Prototype.Selector.filter(element.previousSiblings(), expression)[index];
     } else {
       return element.recursivelyCollect("previousSibling", index + 1)[index];
     }
@@ -596,7 +597,7 @@ Element.Methods = {
     if (!Object.isNumber(index)) index = 0;
     
     if (expression) {
-      return Selector.findElement(element.nextSiblings(), expression, index);
+      return Prototype.Selector.filter(element.nextSiblings(), expression)[index];
     } else {
       var maximumLength = Object.isNumber(index) ? index + 1 : 1;
       return element.recursivelyCollect("nextSibling", index + 1)[index];
@@ -605,15 +606,16 @@ Element.Methods = {
 
 
   /**
-   *  Element.select(@element, selector...) -> [Element...]
-   *  - selector (String): A CSS selector.
+   *  Element.select(@element, expression...) -> [Element...]
+   *  - expression (String): A CSS selector.
    *
    *  Takes an arbitrary number of CSS selectors and returns an array of
    *  descendants of `element` that match any of them.
   **/
   select: function(element) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    return Selector.findChildElements(element, args);
+    element = $(element);
+    var expressions = Array.prototype.slice.call(arguments, 1).join(', ');
+    return Prototype.Selector.select(expressions, element);
   },
 
   /**
@@ -624,8 +626,9 @@ Element.Methods = {
    *  selector(s).
   **/
   adjacent: function(element) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    return Selector.findChildElements(element.parentNode, args).without(element);
+    element = $(element);
+    var expressions = Array.prototype.slice.call(arguments, 1).join(', ');
+    return Prototype.Selector.select(expressions, element.parentNode).without(element);
   },
 
   /**
