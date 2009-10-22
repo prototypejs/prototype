@@ -1,5 +1,3 @@
-//= require <sizzle>
-
 /** section: DOM
  *  class Selector
  *
@@ -7,12 +5,6 @@
  *  selector.
 **/
 (function() {
-  function extend(elements) {
-    for (var i = 0, length = elements.length; i < length; i++)
-      elements[i] = Element.extend(elements[i]);
-    return elements;
-  }
-
   window.Selector = Class.create({
     /**
      *  new Selector(expression)
@@ -33,7 +25,7 @@
      *  selector.
     **/
     findElements: function(rootElement) {
-      return extend(Sizzle(this.expression, rootElement || document));
+      return Prototype.Selector.select(this.expression);
     },
   
     /**
@@ -42,7 +34,7 @@
      *  Tests whether a `element` matches the instance's CSS selector.
     **/
     match: function(element) {
-      return Sizzle.matches(this.expression, [element]).length == 1;
+      return Prototype.Selector.match(element, this.expression);
     },
   
     toString: function() {
@@ -62,9 +54,7 @@
      *
      *  The only nodes returned will be those that match the given CSS selector.
     **/
-    matchElements: function(elements, expression) {
-      return extend(Sizzle.matches(expression, elements));
-    },
+    matchElements: Prototype.Selector.filter,
 
     /**
      *  Selector.findElement(elements, expression[, index = 0]) -> Element
@@ -76,13 +66,13 @@
      *  Returns the `index`th element overall if `expression` is not given.
     **/
     findElement: function(elements, expression, index) {
-      if (Object.isUndefined(index)) index = 0;
-      var selector = new Selector(expression), length = elements.length, matchIndex = 0, i;
-
+      index = index || 0;
+      var matchIndex = 0, element;
       // Match each element individually, since Sizzle.matches does not preserve order
-      for (i = 0; i < length; i++) {
-        if (selector.match(elements[i]) && index == matchIndex++) {
-          return Element.extend(elements[i]);
+      for (var i = 0, length = elements.length; i < length; i++) {
+        element = elements[i];
+        if (Prototype.Selector.match(element, expression) && index === matchIndex++) {
+          return Element.extend(element);
         }
       }
     },
@@ -94,18 +84,8 @@
      *  (or selectors) specified in `expressions`.
     **/
     findChildElements: function(element, expressions) {
-      var results = [], exprs = expressions.toArray();
-      while (exprs.length) Sizzle(exprs.shift(), element || document, results);
-      return extend(results);
+      var selector = expressions.toArray().join(', ');
+      return Prototype.Selector.select(selector, element || document);
     }
   });
-
-  /** related to: Selector
-   *  $$(expression...) -> [Element...]
-   *
-   *  Returns all elements in the document that match the provided CSS selectors.
-  **/
-  window.$$ = function() {
-    return Selector.findChildElements(document, $A(arguments));
-  }
 })();
