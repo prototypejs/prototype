@@ -184,6 +184,8 @@ new Test.Unit.Runner({
     span.observe("test:somethingHappened", observer);
     this.assertEqual(span, span.stopObserving("test:somethingHappened"));
 
+    this.assertEqual(span, span.stopObserving("test:somethingOtherHappened", observer));
+
     span.observe("test:somethingHappened", observer);
     this.assertEqual(span, span.stopObserving());
     this.assertEqual(span, span.stopObserving()); // assert it again, after there are no observers

@@ -617,43 +617,33 @@
   function stopObserving(element, eventName, handler) {
     element = $(element);
 
-    var registry = Element.retrieve(element, 'prototype_event_registry');
+    var registry = Element.retrieve(element, 'prototype_event_registry')
+    if (!registry) return element;
 
-    if (Object.isUndefined(registry)) return element;
-
-    if (eventName && !handler) {
-      // If an event name is passed without a handler, we stop observing all
-      // handlers of that type.
-      var responders = registry.get(eventName);
-
-      if (Object.isUndefined(responders)) return element;
-
-      responders.each( function(r) {
-        Element.stopObserving(element, eventName, r.handler);
-      });
-      return element;
-    } else if (!eventName) {
-      // If both the event name and the handler are omitted, we stop observing
-      // _all_ handlers on the element.
+    if (!eventName) {
+      // We stop observing all events.
+      // e.g.: $(element).stopObserving();
       registry.each( function(pair) {
-        var eventName = pair.key, responders = pair.value;
-
-        responders.each( function(r) {
-          Element.stopObserving(element, eventName, r.handler);
-        });
+        var eventName = pair.key;
+        stopObserving(element, eventName);
       });
       return element;
     }
 
     var responders = registry.get(eventName);
+    if (!responders) return element;
 
-    // Fail gracefully if there are no responders assigned.
-    if (!responders) return;
+    if (!handler) {
+      // We stop observing all handlers for the given eventName.
+      // e.g.: $(element).stopObserving('click');
+      responders.each(function(r) {
+        stopObserving(element, eventName, r.handler);
+      });
+      return element;
+    }
 
     var responder = responders.find( function(r) { return r.handler === handler; });
     if (!responder) return element;
-
-    var actualEventName = _getDOMEventName(eventName);
 
     if (eventName.include(':')) {
       // Custom event.
@@ -665,6 +655,7 @@
       }
     } else {
       // Ordinary event.
+      var actualEventName = _getDOMEventName(eventName);
       if (element.removeEventListener)
         element.removeEventListener(actualEventName, responder, false);
       else
