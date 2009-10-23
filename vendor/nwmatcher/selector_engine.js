@@ -1,5 +1,5 @@
 Prototype._original_nw = window.NW;
-//= require <nwmatcher-1.1.1>
+//= require "nwmatcher/src/nwmatcher"
 Prototype.NW = window.NW;
 
 // Restore globals.
@@ -7,14 +7,8 @@ window.NW = Prototype._original_nw;
 delete Prototype._original_nw;
 
 Prototype.Selector = (function(NW) {
-  function extend(elements) {
-    for (var i = 0, length = elements.length; i < length; i++)
-      elements[i] = Element.extend(elements[i]);
-    return elements;
-  }
-  
   function select(selector, scope) {
-    return extend(NW.select(selector, scope || document));
+    return NW.select(selector, scope || document, null, Element.extend);
   }
 
   function filter(elements, selector) {

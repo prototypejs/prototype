@@ -14,3 +14,6 @@
 [submodule "vendor/sizzle/sizzle"]
 	path = vendor/sizzle/sizzle
 	url = git://github.com/jeresig/sizzle.git
+[submodule "vendor/nwmatcher/nwmatcher"]
+	path = vendor/nwmatcher/nwmatcher
+	url = git://github.com/dperini/nwmatcher.git

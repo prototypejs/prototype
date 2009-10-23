@@ -40,6 +40,7 @@ module PrototypeHelper
   def self.sprocketize(path, source, destination = nil, strip_comments = true)
     require_sprockets
     require_sizzle
+    require_nwmatcher
     secretary = Sprockets::Secretary.new(
       :root           => File.join(ROOT_DIR, path),
       :load_path      => self.load_path,
@@ -97,6 +98,12 @@ module PrototypeHelper
   def self.require_sizzle
     if !File.exists?(File.join(SIZZLE_DIR, 'sizzle', 'sizzle.js'))
       exit unless get_submodule("Sizzle", "sizzle/sizzle")
+    end
+  end
+  
+  def self.require_nwmatcher
+    if !File.exists?(File.join(ROOT_DIR, 'vendor', 'nwmatcher', 'src', 'nwmatcher.js'))
+      exit unless get_submodule("NWMmatcher", "nwmatcher/nwmatcher")
     end
   end
   
