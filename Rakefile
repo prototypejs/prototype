@@ -9,13 +9,13 @@ module PrototypeHelper
   DOC_DIR       = File.join(ROOT_DIR, 'doc')
   TEMPLATES_DIR = File.join(ROOT_DIR, 'templates')
   PKG_DIR       = File.join(ROOT_DIR, 'pkg')
-  SIZZLE_DIR    = File.join(ROOT_DIR, 'vendor', 'sizzle')
   TEST_DIR      = File.join(ROOT_DIR, 'test')
   TEST_UNIT_DIR = File.join(TEST_DIR, 'unit')
   TMP_DIR       = File.join(TEST_UNIT_DIR, 'tmp')
   VERSION       = YAML.load(IO.read(File.join(SRC_DIR, 'constants.yml')))['PROTOTYPE_VERSION']
-
-  %w[sprockets pdoc unittest_js caja_builder sizzle].each do |name|
+  DEFAULT_SELECTOR_ENGINE = 'sizzle'
+  
+  %w[sprockets pdoc unittest_js caja_builder].each do |name|
     $:.unshift File.join(PrototypeHelper::ROOT_DIR, 'vendor', name, 'lib')
   end
 
@@ -39,11 +39,10 @@ module PrototypeHelper
   
   def self.sprocketize(path, source, destination = nil, strip_comments = true)
     require_sprockets
-    require_sizzle
-    require_nwmatcher
+    get_selector_engine(selector)
     secretary = Sprockets::Secretary.new(
       :root           => File.join(ROOT_DIR, path),
-      :load_path      => self.load_path,
+      :load_path      => [SRC_DIR, selector_path],
       :source_files   => [source],
       :strip_comments => strip_comments
     )
@@ -52,16 +51,12 @@ module PrototypeHelper
     secretary.concatenation.save_to(destination)
   end
   
-  def self.load_path
-    selector = ENV['SELECTOR_ENGINE'] || 'sizzle'
-    selector_path = File.join(ROOT_DIR, 'vendor', selector)
-    if File.exists?(selector_path)
-      [SRC_DIR, selector_path]
-    else
-      puts "\nYou seem to be missing vendor/#{selector}."
-      puts "Built Prototype using Sizzle instead.\n\n"
-      [SRC_DIR, SIZZLE_DIR]
-    end
+  def self.selector
+    ENV['SELECTOR_ENGINE'] || DEFAULT_SELECTOR_ENGINE
+  end
+  
+  def self.selector_path
+    File.join(ROOT_DIR, 'vendor', selector)
   end
   
   def self.build_doc_for(file)
@@ -95,15 +90,14 @@ module PrototypeHelper
     require_submodule('CajaBuilder', 'caja_builder')
   end
   
-  def self.require_sizzle
-    if !File.exists?(File.join(SIZZLE_DIR, 'sizzle', 'sizzle.js'))
-      exit unless get_submodule("Sizzle", "sizzle/sizzle")
-    end
-  end
-  
-  def self.require_nwmatcher
-    if !File.exists?(File.join(ROOT_DIR, 'vendor', 'nwmatcher', 'nwmatcher', 'src', 'nwmatcher.js'))
-      exit unless get_submodule("NWMmatcher", "nwmatcher/nwmatcher")
+  def self.get_selector_engine(name)
+    file = File.join(ROOT_DIR, 'vendor', name, 'repository')
+    unless File.exists?(file)
+      get_submodule('the required selector engine', "#{name}/repository")
+      unless File.exists?(file)
+        puts "The selector engine you required isn't available at vendor/#{name}.\n\n"
+        exit
+      end
     end
   end
   
@@ -113,7 +107,6 @@ module PrototypeHelper
     
     Kernel.system("git submodule init")
     return true if Kernel.system("git submodule update vendor/#{path}")
-    
     # If we got this far, something went wrong.
     puts "\nLooks like it didn't work. Try it manually:\n\n"
     puts "  $ git submodule init"

@@ -1,4 +1,4 @@
-//= require "legacy"
+//= require "repository/legacy"
 
 Prototype.Selector = (function(Legacy) {
   function select(selector, scope) {

@@ -1,5 +1,5 @@
 Prototype._original_nw = window.NW;
-//= require "nwmatcher/src/nwmatcher"
+//= require "repository/src/nwmatcher"
 Prototype.NW = window.NW;
 
 // Restore globals.

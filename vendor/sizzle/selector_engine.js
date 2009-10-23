@@ -1,5 +1,5 @@
 Prototype._original_sizzle = window.Sizzle;
-//= require "sizzle/sizzle"
+//= require "repository/sizzle"
 Prototype.Sizzle = window.Sizzle;
 
 // Restore globals.
