@@ -42,13 +42,25 @@ module PrototypeHelper
     require_sizzle
     secretary = Sprockets::Secretary.new(
       :root           => File.join(ROOT_DIR, path),
-      :load_path      => [SRC_DIR, SIZZLE_DIR],
+      :load_path      => self.load_path,
       :source_files   => [source],
       :strip_comments => strip_comments
     )
     
     destination = File.join(DIST_DIR, source) unless destination
     secretary.concatenation.save_to(destination)
+  end
+  
+  def self.load_path
+    selector = ENV['SELECTOR_ENGINE'] || 'sizzle'
+    selector_path = File.join(ROOT_DIR, 'vendor', selector)
+    if File.exists?(selector_path)
+      [SRC_DIR, selector_path]
+    else
+      puts "\nYou seem to be missing vendor/#{selector}."
+      puts "Built Prototype using Sizzle instead.\n\n"
+      [SRC_DIR, SIZZLE_DIR]
+    end
   end
   
   def self.build_doc_for(file)
@@ -83,8 +95,8 @@ module PrototypeHelper
   end
   
   def self.require_sizzle
-    if !File.exists?(File.join(SIZZLE_DIR, 'sizzle.js'))
-      exit unless get_submodule("Sizzle", "sizzle")
+    if !File.exists?(File.join(SIZZLE_DIR, 'sizzle', 'sizzle.js'))
+      exit unless get_submodule("Sizzle", "sizzle/sizzle")
     end
   end
   
