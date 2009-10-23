@@ -25,7 +25,7 @@
      *  selector.
     **/
     findElements: function(rootElement) {
-      return Prototype.Selector.select(this.expression);
+      return Prototype.Selector.select(this.expression, rootElement);
     },
   
     /**
