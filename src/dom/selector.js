@@ -1,4 +1,4 @@
-/** section: DOM
+/** deprecated, section: DOM
  *  class Selector
  *
  *  A class that queries the document for elements that match a given CSS
@@ -6,7 +6,7 @@
 **/
 (function() {
   window.Selector = Class.create({
-    /**
+    /** deprecated
      *  new Selector(expression)
      *  - expression (String): A CSS selector.
      *
@@ -16,7 +16,7 @@
       this.expression = expression.strip();
     },
   
-    /**
+    /** deprecated
      *  Selector#findElements(root) -> [Element...]
      *  - root (Element || document): A "scope" to search within. All results will
      *    be descendants of this node.
@@ -28,7 +28,7 @@
       return Prototype.Selector.select(this.expression, rootElement);
     },
   
-    /**
+    /** deprecated
      *  Selector#match(element) -> Boolean
      *
      *  Tests whether a `element` matches the instance's CSS selector.
@@ -47,7 +47,7 @@
   });
 
   Object.extend(Selector, {
-    /**
+    /** deprecated
      *  Selector.matchElements(elements, expression) -> [Element...]
      *
      *  Filters the given collection of elements with `expression`.
@@ -56,7 +56,7 @@
     **/
     matchElements: Prototype.Selector.filter,
 
-    /**
+    /** deprecated
      *  Selector.findElement(elements, expression[, index = 0]) -> Element
      *  Selector.findElement(elements[, index = 0]) -> Element
      *
@@ -77,7 +77,7 @@
       }
     },
 
-    /**
+    /** deprecated
      *  Selector.findChildElements(element, expressions) -> [Element...]
      *
      *  Searches beneath `element` for any elements that match the selector
