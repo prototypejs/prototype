@@ -6,21 +6,17 @@ Prototype.NW = window.NW;
 window.NW = Prototype._original_nw;
 delete Prototype._original_nw;
 
-Prototype.Selector = (function(NW) {
+Prototype.Selector = (function(NWDom) {
   function select(selector, scope) {
-    var results = [], resultsIndex = 0;
-    NW.select(selector, scope || document, null, function(element) {
-      results[resultsIndex++] = Element.extend(element);
-    });
-    return results;
+    return NWDom.select(selector, scope || document, null, Element.extend);
   }
 
   function filter(elements, selector) {
-    var results = [], resultsIndex = 0, element;
-    for (var i = 0, length = elements.length; i < length; i++) {
-      element = elements[i];
-      if (NW.match(element, selector)) {
-        results[resultsIndex++] = Element.extend(element);
+    var results = [], element, i = 0;
+    while (element = elements[i++]) {
+      if (NWDom.match(element, selector)) {
+        Element.extend(element);
+        results.push(element);
       }
     }
     return results;
@@ -28,7 +24,7 @@ Prototype.Selector = (function(NW) {
   
   return {
     select: select,
-    match:  NW.match,
+    match:  NWDom.match,
     filter: filter
   };
 })(Prototype.NW.Dom);
