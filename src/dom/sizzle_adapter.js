@@ -1,4 +1,10 @@
+Prototype._original_sizzle = window.Sizzle;
 //= require <sizzle>
+Prototype.Sizzle = window.Sizzle;
+
+// Restore globals.
+window.Sizzle = Prototype._original_sizzle;
+delete Prototype._original_sizzle;
 
 Prototype.Selector = (function(Sizzle) {
   function extend(elements) {
@@ -24,14 +30,5 @@ Prototype.Selector = (function(Sizzle) {
     match:  match,
     filter: filter
   };
-})(Sizzle);
+})(Prototype.Sizzle);
 
-/** related to: Selector
- *  $$(expression...) -> [Element...]
- *
- *  Returns all elements in the document that match the provided CSS selectors.
-**/
-window.$$ = function() {
-  var expression = $A(arguments).join(', ');
-  return Prototype.Selector.select(expression, document);
-};

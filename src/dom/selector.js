@@ -89,3 +89,13 @@
     }
   });
 })();
+
+/** related to: Selector
+ *  $$(expression...) -> [Element...]
+ *
+ *  Returns all elements in the document that match the provided CSS selectors.
+**/
+window.$$ = function() {
+  var expression = $A(arguments).join(', ');
+  return Prototype.Selector.select(expression, document);
+};
