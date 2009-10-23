@@ -8,7 +8,11 @@ delete Prototype._original_nw;
 
 Prototype.Selector = (function(NW) {
   function select(selector, scope) {
-    return NW.select(selector, scope || document, null, Element.extend);
+    var results = [];
+    NW.select(selector, scope || document, null, function(element) {
+      results.push(Element.extend(element));
+    });
+    return results;
   }
 
   function filter(elements, selector) {

@@ -102,7 +102,7 @@ module PrototypeHelper
   end
   
   def self.require_nwmatcher
-    if !File.exists?(File.join(ROOT_DIR, 'vendor', 'nwmatcher', 'src', 'nwmatcher.js'))
+    if !File.exists?(File.join(ROOT_DIR, 'vendor', 'nwmatcher', 'nwmatcher', 'src', 'nwmatcher.js'))
       exit unless get_submodule("NWMmatcher", "nwmatcher/nwmatcher")
     end
   end
