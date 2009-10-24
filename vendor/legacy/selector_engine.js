@@ -1,17 +1,18 @@
 //= require "repository/legacy"
 
-Prototype.Selector = (function(Legacy) {
+Prototype.Selector = (function(engine) {
   function select(selector, scope) {
-    return Legacy.findChildElements(scope || document, [selector]);
+    return engine.findChildElements(scope || document, [selector]);
   }
   
   function match(element, selector) {
-    return !!Legacy.findElement([element], selector);
+    return !!engine.findElement([element], selector);
   }
   
   return {
-    select: select,
-    match:  match,
-    filter: Legacy.matchElements
+    engine:  engine,
+    select:  select,
+    match:   match,
+    filter:  engine.matchElements
   };
 })(Prototype.Legacy);

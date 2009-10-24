@@ -1,20 +1,15 @@
-Prototype._original_nw = window.NW;
+Prototype._original_property = window.NW;
 //= require "repository/src/nwmatcher"
-Prototype.NW = window.NW;
 
-// Restore globals.
-window.NW = Prototype._original_nw;
-delete Prototype._original_nw;
-
-Prototype.Selector = (function(NWDom) {
+Prototype.Selector = (function(engine) {
   function select(selector, scope) {
-    return NWDom.select(selector, scope || document, null, Element.extend);
+    return engine.select(selector, scope || document, null, Element.extend);
   }
 
   function filter(elements, selector) {
     var results = [], element, i = 0;
     while (element = elements[i++]) {
-      if (NWDom.match(element, selector)) {
+      if (engine.match(element, selector)) {
         Element.extend(element);
         results.push(element);
       }
@@ -23,9 +18,13 @@ Prototype.Selector = (function(NWDom) {
   }
   
   return {
-    select: select,
-    match:  NWDom.match,
-    filter: filter
+    engine:  engine,
+    select:  select,
+    match:   engine.match,
+    filter:  filter
   };
-})(Prototype.NW.Dom);
+})(NW.Dom);
 
+// Restore globals.
+window.NW = Prototype._original_property;
+delete Prototype._original_property;

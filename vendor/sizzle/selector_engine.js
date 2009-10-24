@@ -1,12 +1,7 @@
-Prototype._original_sizzle = window.Sizzle;
+Prototype._original_property = window.Sizzle;
 //= require "repository/sizzle"
-Prototype.Sizzle = window.Sizzle;
 
-// Restore globals.
-window.Sizzle = Prototype._original_sizzle;
-delete Prototype._original_sizzle;
-
-Prototype.Selector = (function(Sizzle) {
+Prototype.Selector = (function(engine) {
   function extend(elements) {
     for (var i = 0, length = elements.length; i < length; i++)
       elements[i] = Element.extend(elements[i]);
@@ -14,21 +9,25 @@ Prototype.Selector = (function(Sizzle) {
   }
   
   function select(selector, scope) {
-    return extend(Sizzle(selector, scope || document));
+    return extend(engine(selector, scope || document));
   }
 
   function match(element, selector) {
-    return Sizzle.matches(selector, [element]).length == 1;
+    return engine.matches(selector, [element]).length == 1;
   }
 
   function filter(elements, selector) {
-    return extend(Sizzle.matches(selector, elements));
+    return extend(engine.matches(selector, elements));
   }
   
   return {
-    select: select,
-    match:  match,
-    filter: filter
+    engine:  engine,
+    select:  select,
+    match:   match,
+    filter:  filter
   };
-})(Prototype.Sizzle);
+})(Sizzle);
 
+// Restore globals.
+window.Sizzle = Prototype._original_property;
+delete Prototype._original_property;
