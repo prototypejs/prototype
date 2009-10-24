@@ -13,8 +13,7 @@ module PrototypeHelper
   TEST_UNIT_DIR = File.join(TEST_DIR, 'unit')
   TMP_DIR       = File.join(TEST_UNIT_DIR, 'tmp')
   VERSION       = YAML.load(IO.read(File.join(SRC_DIR, 'constants.yml')))['PROTOTYPE_VERSION']
-  DEFAULT_SELECTOR_ENGINE = 'sizzle'
-  
+
   %w[sprockets pdoc unittest_js caja_builder].each do |name|
     $:.unshift File.join(PrototypeHelper::ROOT_DIR, 'vendor', name, 'lib')
   end
@@ -37,32 +36,40 @@ module PrototypeHelper
     exit
   end
   
-  def self.sprocketize(path, source, destination = nil, strip_comments = true)
+  def self.sprocketize(options = {})
+    options = {
+      :destination    => File.join(DIST_DIR, options[:source]),
+      :strip_comments => true
+    }.merge(options)
+    
     require_sprockets
-    get_selector_engine(selector)
+    load_path = [SRC_DIR]
+    
+    if selector = options[:selector_engine]
+      get_selector_engine(selector)
+      load_path << File.join(ROOT_DIR, 'vendor', selector)
+    end
+    
     secretary = Sprockets::Secretary.new(
-      :root           => File.join(ROOT_DIR, path),
-      :load_path      => [SRC_DIR, selector_path],
-      :source_files   => [source],
-      :strip_comments => strip_comments
+      :root           => File.join(ROOT_DIR, options[:path]),
+      :load_path      => load_path,
+      :source_files   => [options[:source]],
+      :strip_comments => options[:strip_comments]
     )
     
-    destination = File.join(DIST_DIR, source) unless destination
-    secretary.concatenation.save_to(destination)
-  end
-  
-  def self.selector
-    ENV['SELECTOR_ENGINE'] || DEFAULT_SELECTOR_ENGINE
-  end
-  
-  def self.selector_path
-    File.join(ROOT_DIR, 'vendor', selector)
+    secretary.concatenation.save_to(options[:destination])
   end
   
   def self.build_doc_for(file)
     mkdir_p TMP_DIR
     temp_path = File.join(TMP_DIR, "prototype.temp.js")
-    sprocketize('src', file, temp_path, false)
+    sprocketize(
+      :path => 'src',
+      :source => file,
+      :destination => temp_path,
+      :selector_engine => ENV['SELECTOR_ENGINE'] || 'sizzle',
+      :strip_comments => false
+    )
     rm_rf DOC_DIR
     
     PDoc::Runner.new(temp_path, {
@@ -140,7 +147,11 @@ task :default => [:dist, :dist_helper, :package, :clean_package_source]
 
 desc "Builds the distribution."
 task :dist do
-  PrototypeHelper.sprocketize("src", "prototype.js")
+  PrototypeHelper.sprocketize(
+    :path => 'src',
+    :source => 'prototype.js',
+    :selector_engine => ENV['SELECTOR_ENGINE'] || 'sizzle'
+  )
 end
 
 namespace :doc do
@@ -158,7 +169,7 @@ task :doc => ['doc:build']
 
 desc "Builds the updating helper."
 task :dist_helper do
-  PrototypeHelper.sprocketize("ext/update_helper", "prototype_update_helper.js")
+  PrototypeHelper.sprocketize(:path => 'ext/update_helper', :source => 'prototype_update_helper.js')
 end
 
 Rake::PackageTask.new('prototype', PrototypeHelper::VERSION) do |package|
