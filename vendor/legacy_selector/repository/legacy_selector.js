@@ -1,8 +1,8 @@
-/* Portions of the Prototype.Legacy class are derived from Jack Slocum's DomQuery,
+/* Portions of the Prototype.LegacySelector class are derived from Jack Slocum's DomQuery,
  * part of YUI-Ext version 0.40, distributed under the terms of an MIT-style
  * license.  Please see http://www.yui-ext.com/ for more information. */
 
-Prototype.Legacy = Class.create({
+Prototype.LegacySelector = Class.create({
   initialize: function(expression) {
     this.expression = expression.strip();
 
@@ -66,14 +66,14 @@ Prototype.Legacy = Class.create({
   shouldUseSelectorsAPI: function() {
     if (!Prototype.BrowserFeatures.SelectorsAPI) return false;
 
-    if (Prototype.Legacy.CASE_INSENSITIVE_CLASS_NAMES) return false;
+    if (Prototype.LegacySelector.CASE_INSENSITIVE_CLASS_NAMES) return false;
 
-    if (!Prototype.Legacy._div) Prototype.Legacy._div = new Element('div');
+    if (!Prototype.LegacySelector._div) Prototype.LegacySelector._div = new Element('div');
 
     // Make sure the browser treats the selector as valid. Test on an
     // isolated element to minimize cost of this check.
     try {
-      Prototype.Legacy._div.querySelector(this.expression);
+      Prototype.LegacySelector._div.querySelector(this.expression);
     } catch(e) {
       return false;
     }
@@ -82,16 +82,16 @@ Prototype.Legacy = Class.create({
   },
 
   compileMatcher: function() {
-    var e = this.expression, ps = Prototype.Legacy.patterns, h = Prototype.Legacy.handlers,
-        c = Prototype.Legacy.criteria, le, p, m, len = ps.length, name;
+    var e = this.expression, ps = Prototype.LegacySelector.patterns, h = Prototype.LegacySelector.handlers,
+        c = Prototype.LegacySelector.criteria, le, p, m, len = ps.length, name;
 
-    if (Prototype.Legacy._cache[e]) {
-      this.matcher = Prototype.Legacy._cache[e];
+    if (Prototype.LegacySelector._cache[e]) {
+      this.matcher = Prototype.LegacySelector._cache[e];
       return;
     }
 
     this.matcher = ["this.matcher = function(root) {",
-                    "var r = root, h = Prototype.Legacy.handlers, c = false, n;"];
+                    "var r = root, h = Prototype.LegacySelector.handlers, c = false, n;"];
 
     while (e && le != e && (/\S/).test(e)) {
       le = e;
@@ -109,15 +109,15 @@ Prototype.Legacy = Class.create({
 
     this.matcher.push("return h.unique(n);\n}");
     eval(this.matcher.join('\n'));
-    Prototype.Legacy._cache[this.expression] = this.matcher;
+    Prototype.LegacySelector._cache[this.expression] = this.matcher;
   },
 
   compileXPathMatcher: function() {
-    var e = this.expression, ps = Prototype.Legacy.patterns,
-        x = Prototype.Legacy.xpath, le, m, len = ps.length, name;
+    var e = this.expression, ps = Prototype.LegacySelector.patterns,
+        x = Prototype.LegacySelector.xpath, le, m, len = ps.length, name;
 
-    if (Prototype.Legacy._cache[e]) {
-      this.xpath = Prototype.Legacy._cache[e]; return;
+    if (Prototype.LegacySelector._cache[e]) {
+      this.xpath = Prototype.LegacySelector._cache[e]; return;
     }
 
     this.matcher = ['.//*'];
@@ -135,7 +135,7 @@ Prototype.Legacy = Class.create({
     }
 
     this.xpath = this.matcher.join('');
-    Prototype.Legacy._cache[this.expression] = this.xpath;
+    Prototype.LegacySelector._cache[this.expression] = this.xpath;
   },
 
   findElements: function(root) {
@@ -168,7 +168,7 @@ Prototype.Legacy = Class.create({
   match: function(element) {
     this.tokens = [];
 
-    var e = this.expression, ps = Prototype.Legacy.patterns, as = Prototype.Legacy.assertions;
+    var e = this.expression, ps = Prototype.LegacySelector.patterns, as = Prototype.LegacySelector.assertions;
     var le, p, m, len = ps.length, name;
 
     while (e && le !== e && (/\S/).test(e)) {
@@ -177,7 +177,7 @@ Prototype.Legacy = Class.create({
         p = ps[i].re;
         name = ps[i].name;
         if (m = e.match(p)) {
-          // use the Prototype.Legacy.assertions methods unless the selector
+          // use the Prototype.LegacySelector.assertions methods unless the selector
           // is too complex.
           if (as[name]) {
             this.tokens.push([name, Object.clone(m)]);
@@ -194,7 +194,7 @@ Prototype.Legacy = Class.create({
     var match = true, name, matches;
     for (var i = 0, token; token = this.tokens[i]; i++) {
       name = token[0], matches = token[1];
-      if (!Prototype.Legacy.assertions[name](element, matches)) {
+      if (!Prototype.LegacySelector.assertions[name](element, matches)) {
         match = false; break;
       }
     }
@@ -207,7 +207,7 @@ Prototype.Legacy = Class.create({
   },
 
   inspect: function() {
-    return "#<Prototype.Legacy:" + this.expression.inspect() + ">";
+    return "#<Prototype.LegacySelector:" + this.expression.inspect() + ">";
   }
 });
 
@@ -216,7 +216,7 @@ if (Prototype.BrowserFeatures.SelectorsAPI &&
   // Versions of Safari 3 before 3.1.2 treat class names case-insensitively in
   // quirks mode. If we detect this behavior, we should use a different
   // approach.
-  Prototype.Legacy.CASE_INSENSITIVE_CLASS_NAMES = (function(){
+  Prototype.LegacySelector.CASE_INSENSITIVE_CLASS_NAMES = (function(){
     var div = document.createElement('div'),
      span = document.createElement('span');
 
@@ -229,7 +229,7 @@ if (Prototype.BrowserFeatures.SelectorsAPI &&
   })();
 }
 
-Object.extend(Prototype.Legacy, {
+Object.extend(Prototype.LegacySelector, {
   _cache: { },
 
   xpath: {
@@ -251,13 +251,13 @@ Object.extend(Prototype.Legacy, {
     attr: function(m) {
       m[1] = m[1].toLowerCase();
       m[3] = m[5] || m[6];
-      return new Template(Prototype.Legacy.xpath.operators[m[2]]).evaluate(m);
+      return new Template(Prototype.LegacySelector.xpath.operators[m[2]]).evaluate(m);
     },
     pseudo: function(m) {
-      var h = Prototype.Legacy.xpath.pseudos[m[1]];
+      var h = Prototype.LegacySelector.xpath.pseudos[m[1]];
       if (!h) return '';
       if (Object.isFunction(h)) return h(m);
-      return new Template(Prototype.Legacy.xpath.pseudos[m[1]]).evaluate(m);
+      return new Template(Prototype.LegacySelector.xpath.pseudos[m[1]]).evaluate(m);
     },
     operators: {
       '=':  "[@#{1}='#{3}']",
@@ -277,8 +277,8 @@ Object.extend(Prototype.Legacy, {
       'disabled':    "[(@disabled) and (@type!='hidden')]",
       'enabled':     "[not(@disabled) and (@type!='hidden')]",
       'not': function(m) {
-        var e = m[6], p = Prototype.Legacy.patterns,
-            x = Prototype.Legacy.xpath, le, v, len = p.length, name;
+        var e = m[6], p = Prototype.LegacySelector.patterns,
+            x = Prototype.LegacySelector.xpath, le, v, len = p.length, name;
 
         var exclusion = [];
         while (e && le != e && (/\S/).test(e)) {
@@ -296,25 +296,25 @@ Object.extend(Prototype.Legacy, {
         return "[not(" + exclusion.join(" and ") + ")]";
       },
       'nth-child':      function(m) {
-        return Prototype.Legacy.xpath.pseudos.nth("(count(./preceding-sibling::*) + 1) ", m);
+        return Prototype.LegacySelector.xpath.pseudos.nth("(count(./preceding-sibling::*) + 1) ", m);
       },
       'nth-last-child': function(m) {
-        return Prototype.Legacy.xpath.pseudos.nth("(count(./following-sibling::*) + 1) ", m);
+        return Prototype.LegacySelector.xpath.pseudos.nth("(count(./following-sibling::*) + 1) ", m);
       },
       'nth-of-type':    function(m) {
-        return Prototype.Legacy.xpath.pseudos.nth("position() ", m);
+        return Prototype.LegacySelector.xpath.pseudos.nth("position() ", m);
       },
       'nth-last-of-type': function(m) {
-        return Prototype.Legacy.xpath.pseudos.nth("(last() + 1 - position()) ", m);
+        return Prototype.LegacySelector.xpath.pseudos.nth("(last() + 1 - position()) ", m);
       },
       'first-of-type':  function(m) {
-        m[6] = "1"; return Prototype.Legacy.xpath.pseudos['nth-of-type'](m);
+        m[6] = "1"; return Prototype.LegacySelector.xpath.pseudos['nth-of-type'](m);
       },
       'last-of-type':   function(m) {
-        m[6] = "1"; return Prototype.Legacy.xpath.pseudos['nth-last-of-type'](m);
+        m[6] = "1"; return Prototype.LegacySelector.xpath.pseudos['nth-last-of-type'](m);
       },
       'only-of-type':   function(m) {
-        var p = Prototype.Legacy.xpath.pseudos; return p['first-of-type'](m) + p['last-of-type'](m);
+        var p = Prototype.LegacySelector.xpath.pseudos; return p['first-of-type'](m) + p['last-of-type'](m);
       },
       nth: function(fragment, m) {
         var mm, formula = m[6], predicate;
@@ -371,7 +371,7 @@ Object.extend(Prototype.Legacy, {
     { name: 'attr',         re: /\[((?:[\w-]*:)?[\w-]+)\s*(?:([!^$*~|]?=)\s*((['"])([^\4]*?)\4|([^'"][^\]]*?)))?\]/ }
   ],
 
-  // for Prototype.Legacy.match and Element#match
+  // for Prototype.LegacySelector.match and Element#match
   assertions: {
     tagName: function(element, matches) {
       return matches[1].toUpperCase() == element.tagName.toUpperCase();
@@ -391,7 +391,7 @@ Object.extend(Prototype.Legacy, {
 
     attr: function(element, matches) {
       var nodeValue = Element.readAttribute(element, matches[1]);
-      return nodeValue && Prototype.Legacy.operators[matches[2]](nodeValue, matches[5] || matches[6]);
+      return nodeValue && Prototype.LegacySelector.operators[matches[2]](nodeValue, matches[5] || matches[6]);
     }
   },
 
@@ -466,19 +466,19 @@ Object.extend(Prototype.Legacy, {
           n._countedByPrototype = Prototype.emptyFunction;
           results.push(Element.extend(n));
         }
-      return Prototype.Legacy.handlers.unmark(results);
+      return Prototype.LegacySelector.handlers.unmark(results);
     },
 
     // COMBINATOR FUNCTIONS
     descendant: function(nodes) {
-      var h = Prototype.Legacy.handlers;
+      var h = Prototype.LegacySelector.handlers;
       for (var i = 0, results = [], node; node = nodes[i]; i++)
         h.concat(results, node.getElementsByTagName('*'));
       return results;
     },
 
     child: function(nodes) {
-      var h = Prototype.Legacy.handlers;
+      var h = Prototype.LegacySelector.handlers;
       for (var i = 0, results = [], node; node = nodes[i]; i++) {
         for (var j = 0, child; child = node.childNodes[j]; j++)
           if (child.nodeType == 1 && child.tagName != '!') results.push(child);
@@ -495,7 +495,7 @@ Object.extend(Prototype.Legacy, {
     },
 
     laterSibling: function(nodes) {
-      var h = Prototype.Legacy.handlers;
+      var h = Prototype.LegacySelector.handlers;
       for (var i = 0, results = [], node; node = nodes[i]; i++)
         h.concat(results, Element.nextSiblings(node));
       return results;
@@ -516,7 +516,7 @@ Object.extend(Prototype.Legacy, {
     // TOKEN FUNCTIONS
     tagName: function(nodes, root, tagName, combinator) {
       var uTagName = tagName.toUpperCase();
-      var results = [], h = Prototype.Legacy.handlers;
+      var results = [], h = Prototype.LegacySelector.handlers;
       if (nodes) {
         if (combinator) {
           // fastlane for ordinary descendant combinators
@@ -534,7 +534,7 @@ Object.extend(Prototype.Legacy, {
     },
 
     id: function(nodes, root, id, combinator) {
-      var targetNode = $(id), h = Prototype.Legacy.handlers;
+      var targetNode = $(id), h = Prototype.LegacySelector.handlers;
 
       if (root == document) {
         // We don't have to deal with orphan nodes. Easy.
@@ -562,7 +562,7 @@ Object.extend(Prototype.Legacy, {
               if (Element.descendantOf(targetNode, node)) return [targetNode];
           } else if (combinator == 'adjacent') {
             for (var i = 0, node; node = nodes[i]; i++)
-              if (Prototype.Legacy.handlers.previousElementSibling(targetNode) == node)
+              if (Prototype.LegacySelector.handlers.previousElementSibling(targetNode) == node)
                 return [targetNode];
           } else nodes = h[combinator](nodes);
         }
@@ -575,11 +575,11 @@ Object.extend(Prototype.Legacy, {
 
     className: function(nodes, root, className, combinator) {
       if (nodes && combinator) nodes = this[combinator](nodes);
-      return Prototype.Legacy.handlers.byClassName(nodes, root, className);
+      return Prototype.LegacySelector.handlers.byClassName(nodes, root, className);
     },
 
     byClassName: function(nodes, root, className) {
-      if (!nodes) nodes = Prototype.Legacy.handlers.descendant([root]);
+      if (!nodes) nodes = Prototype.LegacySelector.handlers.descendant([root]);
       var needle = ' ' + className + ' ';
       for (var i = 0, results = [], node, nodeClassName; node = nodes[i]; i++) {
         nodeClassName = node.className;
@@ -602,7 +602,7 @@ Object.extend(Prototype.Legacy, {
     attr: function(nodes, root, attr, value, operator, combinator) {
       if (!nodes) nodes = root.getElementsByTagName("*");
       if (nodes && combinator) nodes = this[combinator](nodes);
-      var handler = Prototype.Legacy.operators[operator], results = [];
+      var handler = Prototype.LegacySelector.operators[operator], results = [];
       for (var i = 0, node; node = nodes[i]; i++) {
         var nodeValue = Element.readAttribute(node, attr);
         if (nodeValue === null) continue;
@@ -614,52 +614,52 @@ Object.extend(Prototype.Legacy, {
     pseudo: function(nodes, name, value, root, combinator) {
       if (nodes && combinator) nodes = this[combinator](nodes);
       if (!nodes) nodes = root.getElementsByTagName("*");
-      return Prototype.Legacy.pseudos[name](nodes, value, root);
+      return Prototype.LegacySelector.pseudos[name](nodes, value, root);
     }
   },
 
   pseudos: {
     'first-child': function(nodes, value, root) {
       for (var i = 0, results = [], node; node = nodes[i]; i++) {
-        if (Prototype.Legacy.handlers.previousElementSibling(node)) continue;
+        if (Prototype.LegacySelector.handlers.previousElementSibling(node)) continue;
           results.push(node);
       }
       return results;
     },
     'last-child': function(nodes, value, root) {
       for (var i = 0, results = [], node; node = nodes[i]; i++) {
-        if (Prototype.Legacy.handlers.nextElementSibling(node)) continue;
+        if (Prototype.LegacySelector.handlers.nextElementSibling(node)) continue;
           results.push(node);
       }
       return results;
     },
     'only-child': function(nodes, value, root) {
-      var h = Prototype.Legacy.handlers;
+      var h = Prototype.LegacySelector.handlers;
       for (var i = 0, results = [], node; node = nodes[i]; i++)
         if (!h.previousElementSibling(node) && !h.nextElementSibling(node))
           results.push(node);
       return results;
     },
     'nth-child':        function(nodes, formula, root) {
-      return Prototype.Legacy.pseudos.nth(nodes, formula, root);
+      return Prototype.LegacySelector.pseudos.nth(nodes, formula, root);
     },
     'nth-last-child':   function(nodes, formula, root) {
-      return Prototype.Legacy.pseudos.nth(nodes, formula, root, true);
+      return Prototype.LegacySelector.pseudos.nth(nodes, formula, root, true);
     },
     'nth-of-type':      function(nodes, formula, root) {
-      return Prototype.Legacy.pseudos.nth(nodes, formula, root, false, true);
+      return Prototype.LegacySelector.pseudos.nth(nodes, formula, root, false, true);
     },
     'nth-last-of-type': function(nodes, formula, root) {
-      return Prototype.Legacy.pseudos.nth(nodes, formula, root, true, true);
+      return Prototype.LegacySelector.pseudos.nth(nodes, formula, root, true, true);
     },
     'first-of-type':    function(nodes, formula, root) {
-      return Prototype.Legacy.pseudos.nth(nodes, "1", root, false, true);
+      return Prototype.LegacySelector.pseudos.nth(nodes, "1", root, false, true);
     },
     'last-of-type':     function(nodes, formula, root) {
-      return Prototype.Legacy.pseudos.nth(nodes, "1", root, true, true);
+      return Prototype.LegacySelector.pseudos.nth(nodes, "1", root, true, true);
     },
     'only-of-type':     function(nodes, formula, root) {
-      var p = Prototype.Legacy.pseudos;
+      var p = Prototype.LegacySelector.pseudos;
       return p['last-of-type'](p['first-of-type'](nodes, formula, root), formula, root);
     },
 
@@ -677,7 +677,7 @@ Object.extend(Prototype.Legacy, {
       if (nodes.length == 0) return [];
       if (formula == 'even') formula = '2n+0';
       if (formula == 'odd')  formula = '2n+1';
-      var h = Prototype.Legacy.handlers, results = [], indexed = [], m;
+      var h = Prototype.LegacySelector.handlers, results = [], indexed = [], m;
       h.mark(nodes);
       for (var i = 0, node; node = nodes[i]; i++) {
         if (!node.parentNode._countedByPrototype) {
@@ -693,7 +693,7 @@ Object.extend(Prototype.Legacy, {
         if (m[1] == "-") m[1] = -1;
         var a = m[1] ? Number(m[1]) : 1;
         var b = m[2] ? Number(m[2]) : 0;
-        var indices = Prototype.Legacy.pseudos.getIndices(a, b, nodes.length);
+        var indices = Prototype.LegacySelector.pseudos.getIndices(a, b, nodes.length);
         for (var i = 0, node, l = indices.length; node = nodes[i]; i++) {
           for (var j = 0; j < l; j++)
             if (node.nodeIndex == indices[j]) results.push(node);
@@ -714,8 +714,8 @@ Object.extend(Prototype.Legacy, {
     },
 
     'not': function(nodes, selector, root) {
-      var h = Prototype.Legacy.handlers, selectorType, m;
-      var exclusions = new Prototype.Legacy(selector).findElements(root);
+      var h = Prototype.LegacySelector.handlers, selectorType, m;
+      var exclusions = new Prototype.LegacySelector(selector).findElements(root);
       h.mark(exclusions);
       for (var i = 0, results = [], node; node = nodes[i]; i++)
         if (!node._countedByPrototype) results.push(node);
@@ -763,7 +763,7 @@ Object.extend(Prototype.Legacy, {
   },
 
   matchElements: function(elements, expression) {
-    var matches = $$(expression), h = Prototype.Legacy.handlers;
+    var matches = $$(expression), h = Prototype.LegacySelector.handlers;
     h.mark(matches);
     for (var i = 0, results = [], element; element = elements[i]; i++)
       if (element._countedByPrototype) results.push(element);
@@ -775,14 +775,14 @@ Object.extend(Prototype.Legacy, {
     if (Object.isNumber(expression)) {
       index = expression; expression = false;
     }
-    return Prototype.Legacy.matchElements(elements, expression || '*')[index || 0];
+    return Prototype.LegacySelector.matchElements(elements, expression || '*')[index || 0];
   },
 
   findChildElements: function(element, expressions) {
-    expressions = Prototype.Legacy.split(expressions.join(','));
-    var results = [], h = Prototype.Legacy.handlers;
+    expressions = Prototype.LegacySelector.split(expressions.join(','));
+    var results = [], h = Prototype.LegacySelector.handlers;
     for (var i = 0, l = expressions.length, selector; i < l; i++) {
-      selector = new Prototype.Legacy(expressions[i].strip());
+      selector = new Prototype.LegacySelector(expressions[i].strip());
       h.concat(results, selector.findElements(element));
     }
     return (l > 1) ? h.unique(results) : results;
@@ -790,7 +790,7 @@ Object.extend(Prototype.Legacy, {
 });
 
 if (Prototype.Browser.IE) {
-  Object.extend(Prototype.Legacy.handlers, {
+  Object.extend(Prototype.LegacySelector.handlers, {
     // IE returns comment nodes on getElementsByTagName("*").
     // Filter them out.
     concat: function(a, b) {

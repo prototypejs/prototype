@@ -1,4 +1,4 @@
-//= require "repository/legacy"
+//= require "repository/legacy_selector"
 
 Prototype.Selector = (function(engine) {
   function select(selector, scope) {
@@ -15,4 +15,4 @@ Prototype.Selector = (function(engine) {
     match:   match,
     filter:  engine.matchElements
   };
-})(Prototype.Legacy);
+})(Prototype.LegacySelector);
