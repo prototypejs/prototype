@@ -1,6 +1,6 @@
 //= require "update_helper"
 
-/* UpdateHelper for Prototype <%= PROTOTYPE_VERSION %> (c) 2008 Tobie Langel
+/* UpdateHelper for Prototype <%= PROTOTYPE_VERSION %> (c) 2008-2009 Tobie Langel
  * 
  * UpdateHelper for Prototype is freely distributable under the same
  * terms as Prototype (MIT-style license).
@@ -17,7 +17,7 @@
  *
  * This, for example, will prevent deprecation messages from being logged.
  * 
- *                THIS SCRIPT WORKS IN FIREFOX ONLY
+ *              THIS SCRIPT DOES NOT WORK IN INTERNET EXPLORER
  *--------------------------------------------------------------------------*/
 
 var prototypeUpdateHelper = new UpdateHelper([

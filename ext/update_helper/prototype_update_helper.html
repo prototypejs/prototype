@@ -81,7 +81,12 @@
   
   new Test.Unit.Runner({
     testGetStack: function() {
-      this.assertMatch(/prototype_update_helper\.html:\d+\n$/, prototypeUpdateHelper.getStack());
+      var stack = prototypeUpdateHelper.getStack();
+      if (stack === '') {
+        this.info('UpdaterHelper#getStack is currently not supported on this browser.')
+      } else {
+        this.assertMatch(/prototype_update_helper\.html:\d+\n$/, prototypeUpdateHelper.getStack());
+      }
     },
 
     testDisplay: function() {
