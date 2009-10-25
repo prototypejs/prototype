@@ -275,6 +275,62 @@ var prototypeUpdateHelper = new UpdateHelper([
     message: 'The class API has been fully revised and now allows for mixins and inheritance.\n' + 
       'You can find more about it here: http://prototypejs.org/learn/class-inheritance',
     condition: function() { return !arguments.length }
+  },
+  
+  {
+    methodName: 'initialize',
+    namespace: Selector.prototype,
+    message: 'The Selector class has been deprecated. Please use the new Prototype.Selector API instead.',
+    type: 'warn'
+  },
+  
+  {
+    methodName: 'findElements',
+    namespace: Selector.prototype,
+    message: 'Selector#findElements has been deprecated. Please use the new Prototype.Selector API instead.',
+    type: 'warn'
+  },
+  
+  {
+    methodName: 'match',
+    namespace: Selector.prototype,
+    message: 'Selector#match has been deprecated. Please use the new Prototype.Selector API instead.',
+    type: 'warn'
+  },
+  
+  {
+    methodName: 'toString',
+    namespace: Selector.prototype,
+    message: 'Selector#toString has been deprecated. Please use the new Prototype.Selector API instead.',
+    type: 'warn'
+  },
+  
+  {
+    methodName: 'inspect',
+    namespace: Selector.prototype,
+    message: 'Selector#inspect has been deprecated. Please use the new Prototype.Selector API instead.',
+    type: 'warn'
+  },
+  
+  {
+    methodName: 'matchElements',
+    namespace: Selector,
+    message: 'Selector.matchElements has been deprecated. Please use the new Prototype.Selector API instead.',
+    type: 'warn'
+  },
+
+  {
+    methodName: 'findElement',
+    namespace: Selector,
+    message: 'Selector.findElement has been deprecated. Please use the new Prototype.Selector API instead.',
+    type: 'warn'
+  },
+
+  {
+    methodName: 'findChildElements',
+    namespace: Selector,
+    message: 'Selector.findChildElements has been deprecated. Please use the new Prototype.Selector API instead.',
+    type: 'warn'
   }
 ]);
 
