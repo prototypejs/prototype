@@ -21,6 +21,7 @@
 
 
 //= require "dom/dom"
+//= require "dom/layout"
 //= require "dom/selector"
 //= require "dom/form"
 //= require "dom/event"
