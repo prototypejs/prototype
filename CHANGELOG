@@ -1,3 +1,9 @@
+* Make `Event.stopObserving` return element in all cases. [#810 state:resolved] (Yaffle, Tobie Langel)
+
+* String#startsWith, String#endsWith performance optimization (Yaffle, Tobie Langel, kangax)
+
+* Rewrite String#camelize using String#replace with a replacement function (Phred, John-David Dalton, Samuel Lebeau, kangax)
+
 *1.6.1* (August 24, 2009)
 
 * Avoid triggering a warning when Java is disabled in IE8. [#668 state:resolved] (orv, kangax, Andrew Dupont, Tobie Langel)

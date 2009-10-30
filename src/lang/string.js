@@ -311,17 +311,9 @@ Object.extend(String.prototype, (function() {
    *      // -> 'MozBinding'
   **/
   function camelize() {
-    var parts = this.split('-'), len = parts.length;
-    if (len == 1) return parts[0];
-
-    var camelized = this.charAt(0) == '-'
-      ? parts[0].charAt(0).toUpperCase() + parts[0].substring(1)
-      : parts[0];
-
-    for (var i = 1; i < len; i++)
-      camelized += parts[i].charAt(0).toUpperCase() + parts[i].substring(1);
-
-    return camelized;
+    return this.replace(/-+(.)?/g, function(match, chr) {
+      return chr ? chr.toUpperCase() : '';
+    });
   }
 
   /**
@@ -437,7 +429,9 @@ Object.extend(String.prototype, (function() {
    *  Checks if the string starts with `substring`.
   **/
   function startsWith(pattern) {
-    return this.indexOf(pattern) === 0;
+    // We use `lastIndexOf` instead of `indexOf` to avoid tying execution
+    // time to string length when string doesn't start with pattern.
+    return this.lastIndexOf(pattern, 0) === 0;
   }
 
   /**
@@ -447,7 +441,9 @@ Object.extend(String.prototype, (function() {
   **/
   function endsWith(pattern) {
     var d = this.length - pattern.length;
-    return d >= 0 && this.lastIndexOf(pattern) === d;
+    // We use `indexOf` instead of `lastIndexOf` to avoid tying execution
+    // time to string length when string doesn't end with pattern.
+    return d >= 0 && this.indexOf(pattern, d) === d;
   }
 
   /**

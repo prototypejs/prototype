@@ -309,7 +309,7 @@ Object.extend(Selector, {
         while (e && le != e && (/\S/).test(e)) {
           le = e;
           for (var i = 0; i<len; i++) {
-            name = p[i].name
+            name = p[i].name;
             if (m = e.match(p[i].re)) {
               v = Object.isFunction(x[name]) ? x[name](m) : new Template(x[name]).evaluate(m);
               exclusion.push("(" + v.substring(1, v.length - 1) + ")");
@@ -445,7 +445,7 @@ Object.extend(Selector, {
         var el = document.createElement('div'),
             isBuggy = false,
             propName = '_countedByPrototype',
-            value = 'x'
+            value = 'x';
         el[propName] = value;
         isBuggy = (el.getAttribute(propName) === value);
         el = null;

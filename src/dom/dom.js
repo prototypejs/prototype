@@ -60,15 +60,55 @@ if (!Node.ELEMENT_NODE) {
 
 /** section: DOM
  *  class Element
+ *
+ *  The `Element` object provides a variety of powerful DOM methods for
+ *  interacting with DOM elements&nbsp;&mdash; creating them, updating them,
+ *  traversing them, etc. You can access these either as methods of `Element`
+ *  itself, passing in the element to work with as the first argument, or as
+ *  methods on extended element *instances*:
+ *
+ *      // Using Element:
+ *      Element.addClassName('target', 'highlighted');
+ *
+ *      // Using an extended element instance:
+ *      $('target').addClassName('highlighted');
+ *
+ *  `Element` is also a constructor for building element instances from scratch,
+ *  see [`new Element`](#new-constructor) for details.
+ *
+ *  Most `Element` methods return the element instance, so that you can chain
+ *  them easily:
+ *
+ *      $('message').addClassName('read').update('I read this message!');
+ *
+ *  ##### More Information
+ *
+ *  For more information about extended elements, check out ["How Prototype
+ *  extends the DOM"](http://prototypejs.org/learn/extensions), which will walk
+ *  you through the inner workings of Prototype's DOM extension mechanism.
 **/
 
 /**
  *  new Element(tagName[, attributes])
- *    - tagName (String): The name of the HTML element to create.
- *    - attributes (Object): A list of attribute/value pairs to set on the
- *      element.
+ *  - tagName (String): The name of the HTML element to create.
+ *  - attributes (Object): An optional group of attribute/value pairs to set on
+ *    the element.
  *
- *  Creates an HTML element with `tagName` as the tag name.
+ *  Creates an HTML element with `tagName` as the tag name, optionally with the
+ *  given attributes. This can be markedly more concise than working directly
+ *  with the DOM methods, and takes advantage of Prototype's workarounds for
+ *  various browser issues with certain attributes:
+ *
+ *  ##### Example
+ *
+ *      // The old way:
+ *      var a = document.createElement('a');
+ *      a.setAttribute('class', 'foo');
+ *      a.setAttribute('href', '/foo.html');
+ *      a.appendChild(document.createTextNode("Next page"));
+ *
+ *      // The new way:
+ *      var a = new Element('a', {'class': 'foo', href: '/foo.html'}).update("Next page");
 **/
 (function(global) {
 
@@ -430,8 +470,34 @@ Element.Methods = {
   /**
    *  Element.ancestors(@element) -> [Element...]
    *
-   *  Collects all of `element`'s ancestors and returns them as an array of
-   *  elements.
+   *  Collects all of `element`'s ancestor elements and returns them as an
+   *  array of extended elements.
+   *
+   *  The returned array's first element is `element`'s direct ancestor (its
+   *  `parentNode`), the second one is its grandparent, and so on until the
+   *  `html` element is reached. `html` will always be the last member of the
+   *  array. Calling `ancestors` on the `html` element will return an empty
+   *  array.
+   *
+   *  ##### Example
+   *
+   *  Assuming:
+   *
+   *      language: html
+   *      <html>
+   *      [...]
+   *        <body>
+   *          <div id="father">
+   *            <div id="kid">
+   *            </div>
+   *          </div>
+   *        </body>
+   *      </html>
+   *
+   *  Then:
+   *
+   *      $('kid').ancestors();
+   *      // -> [div#father, body, html]
   **/
   ancestors: function(element) {
     return Element.recursivelyCollect(element, 'parentNode');
@@ -440,8 +506,10 @@ Element.Methods = {
   /**
    *  Element.descendants(@element) -> [Element...]
    *
-   *  Collects all of element's descendants and returns them as an array of
-   *  elements.
+   *  Collects all of the element's descendants (its children, their children,
+   *  etc.) and returns them as an array of extended elements. As with all of
+   *  Prototype's DOM traversal methods, only Elements are returned, other
+   *  nodes (text nodes, etc.) are skipped.
   **/
   descendants: function(element) {
     return Element.select(element, "*");
@@ -461,11 +529,10 @@ Element.Methods = {
     return $(element);
   },
 
-  /**
+  /** deprecated, alias of: Element.childElements
    *  Element.immediateDescendants(@element) -> [Element...]
    *
-   *  Collects all of `element`'s immediate descendants (i.e., children) and
-   *  returns them as an array of elements.
+   *  **This method is deprecated, please see [[Element.childElements]]**.
   **/
   immediateDescendants: function(element) {
     if (!(element = $(element).firstChild)) return [];
@@ -606,7 +673,30 @@ Element.Methods = {
    *  - selector (String): A CSS selector.
    *
    *  Finds all siblings of the current element that match the given
-   *  selector(s).
+   *  selector(s). If you provide multiple selectors, siblings matching *any*
+   *  of the selectors are included. If a sibling matches multiple selectors,
+   *  it is only included once. The order of the returned array is not defined.
+   *
+   *  ##### Example
+   *
+   *  Assuming this list:
+   *
+   *      language: html
+   *      <ul id="cities">
+   *        <li class="us" id="nyc">New York</li>
+   *        <li class="uk" id="lon">London</li>
+   *        <li class="us" id="chi">Chicago</li>
+   *        <li class="jp" id="tok">Tokyo</li>
+   *        <li class="us" id="la">Los Angeles</li>
+   *        <li class="us" id="aus">Austin</li>
+   *      </ul>
+   *
+   *  Then:
+   *
+   *      $('nyc').adjacent('li.us');
+   *      // -> [li#chi, li#la, li#aus]
+   *      $('nyc').adjacent('li.uk', 'li.jp');
+   *      // -> [li#lon, li#tok]
   **/
   adjacent: function(element) {
     var args = Array.prototype.slice.call(arguments, 1);
@@ -692,11 +782,15 @@ Element.Methods = {
     return Element.getDimensions(element).width;
   },
 
-  /**
+  /** deprecated
    *  Element.classNames(@element) -> [String...]
    *
    *  Returns a new instance of [[Element.ClassNames]], an [[Enumerable]]
    *  object used to read and write CSS class names of `element`.
+   *
+   *  **Deprecated**, please see [[Element.addClassName]],
+   *  [[Element.removeClassName]], and [[Element.hasClassName]]. If you want
+   *  an array of classnames, you can use `$w(element.className)`.
   **/
   classNames: function(element) {
     return new Element.ClassNames(element);
@@ -716,8 +810,24 @@ Element.Methods = {
 
   /**
    *  Element.addClassName(@element, className) -> Element
+   *  - className (String): The class name to add.
    *
-   *  Adds a CSS class to `element`.
+   *  Adds the given CSS class to `element`.
+   *
+   *  ##### Example
+   *
+   *  Assuming this HTML:
+   *
+   *      language: html
+   *      <div id="mutsu" class="apple fruit"></div>
+   *
+   *  Then:
+   *
+   *      $('mutsu').className;
+   *      // -> 'apple fruit'
+   *      $('mutsu').addClassName('food');
+   *      $('mutsu').className;
+   *      // -> 'apple fruit food'
   **/
   addClassName: function(element, className) {
     if (!(element = $(element))) return;
@@ -752,7 +862,44 @@ Element.Methods = {
   /**
    *  Element.cleanWhitespace(@element) -> Element
    *
-   *  Removes whitespace-only text node children from `element`.
+   *  Removes all of `element`'s child text nodes that contain *only*
+   *  whitespace. Returns `element`.
+   *
+   *  This can be very useful when using standard properties like `nextSibling`,
+   *  `previousSibling`, `firstChild` or `lastChild` to walk the DOM. Usually
+   *  you'd only do that if you are interested in all of the DOM nodes, not
+   *  just Elements (since if you just need to traverse the Elements in the
+   *  DOM tree, you can use [[Element.up]], [[Element.down]],
+   *  [[Element.next]], and [[Element.previous]] instead).
+   *
+   *  #### Example
+   *
+   *  Consider the following HTML snippet:
+   *
+   *      language: html
+   *      <ul id="apples">
+   *        <li>Mutsu</li>
+   *        <li>McIntosh</li>
+   *        <li>Ida Red</li>
+   *      </ul>
+   *
+   *  Let's grab what we think is the first list item using the raw DOM
+   *  method:
+   *
+   *      var element = $('apples');
+   *      element.firstChild.innerHTML;
+   *      // -> undefined
+   *
+   *  It's undefined because the `firstChild` of the `apples` element is a
+   *  text node containing the whitespace after the end of the `ul` and before
+   *  the first `li`.
+   *
+   *  If we remove the useless whitespace, then `firstChild` works as expected:
+   *
+   *      var element = $('apples');
+   *      element.cleanWhitespace();
+   *      element.firstChild.innerHTML;
+   *      // -> 'Mutsu'
   **/
   cleanWhitespace: function(element) {
     element = $(element);
@@ -777,8 +924,28 @@ Element.Methods = {
 
   /**
    *  Element.descendantOf(@element, ancestor) -> Boolean
+   *  - ancestor (Element | String): The element to check against (or its ID).
    *
    *  Checks if `element` is a descendant of `ancestor`.
+   *
+   *  ##### Example
+   *
+   *  Assuming:
+   *
+   *      language: html
+   *      <div id="australopithecus">
+   *        <div id="homo-erectus">
+   *          <div id="homo-sapiens"></div>
+   *        </div>
+   *      </div>
+   *
+   *  Then:
+   *
+   *      $('homo-sapiens').descendantOf('australopithecus');
+   *      // -> true
+   *
+   *      $('homo-erectus').descendantOf('homo-sapiens');
+   *      // -> false
   **/
   descendantOf: function(element, ancestor) {
     element = $(element), ancestor = $(ancestor);
@@ -979,10 +1146,24 @@ Element.Methods = {
    *  Element.cumulativeOffset(@element) -> Array
    *
    *  Returns the offsets of `element` from the top left corner of the
-   *  document.
+   *  document, in pixels.
    *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
+   *
+   *  ##### Example
+   *
+   *  Assuming the div `foo` is at (25,40), then:
+   *
+   *      var offset = $('foo').cumulativeOffset();
+   *      offset[0];
+   *      // -> 25
+   *      offset[1];
+   *      // -> 40
+   *      offset.left;
+   *      // -> 25
+   *      offset.top;
+   *      // -> 40
   **/
   cumulativeOffset: function(element) {
     var valueT = 0, valueL = 0;
@@ -1073,11 +1254,25 @@ Element.Methods = {
   /**
    *  Element.cumulativeScrollOffset(@element) -> Array
    *
-   *  Calculates the cumulative scroll offset of an element in nested
-   *  scrolling containers.
+   *  Calculates the cumulative scroll offset (in pixels) of an element in
+   *  nested scrolling containers.
    *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
+   *
+   *  ##### Example
+   *
+   *  Assuming the div `foo` is at scroll offset (0,257), then:
+   *
+   *      var offset = $('foo').cumulativeOffset();
+   *      offset[0];
+   *      // -> 0
+   *      offset[1];
+   *      // -> 257
+   *      offset.left;
+   *      // -> 0
+   *      offset.top;
+   *      // -> 257
   **/
   cumulativeScrollOffset: function(element) {
     var valueT = 0, valueL = 0;
@@ -1141,15 +1336,60 @@ Element.Methods = {
 
   /**
    *  Element.clonePosition(@element, source[, options]) -> Element
+   *  - source (Element | String): The source element (or its ID).
+   *  - options (Object): The position fields to clone.
    *
-   *  Clones the position and/or dimensions of `source` onto `element` as
-   *  defined by `options`.
+   *  Clones the position and/or dimensions of `source` onto the element as
+   *  defined by `options`, with an optional offset for the `left` and `top`
+   *  properties.
    *
-   *  Valid keys for `options` are: `setLeft`, `setTop`, `setWidth`, and
-   *  `setHeight` (all booleans which default to `true`); and `offsetTop`
-   *  and `offsetLeft` (numbers which default to `0`). Use these to control
-   *  which aspects of `source`'s layout are cloned and how much to offset
-   *  the resulting position of `element`.
+   *  Note that the element will be positioned exactly like `source` whether or
+   *  not it is part of the same [CSS containing
+   *  block](http://www.w3.org/TR/CSS21/visudet.html#containing-block-details).
+   *
+   *  ##### Options
+   *
+   *  <table class='options'>
+   *  <thead>
+   *    <tr>
+   *      <th style='text-align: left; padding-right: 1em'>Name</th>
+   *      <th style='text-align: left; padding-right: 1em'>Default</th>
+   *      <th style='text-align: left; padding-right: 1em'>Description</th>
+   *    </tr>
+   *  </thead>
+   *  <tbody>
+   *    <tr>
+   *    <td><code>setLeft</code></td>
+   *    <td><code>true</code></td>
+   *  <td>Clones <code>source</code>'s <code>left</code> CSS property onto <code>element</code>.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>setTop</code></td>
+   *    <td><code>true</code></td>
+   *  <td>Clones <code>source</code>'s <code>top</code> CSS property onto <code>element</code>.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>setWidth</code></td>
+   *    <td><code>true</code></td>
+   *  <td>Clones <code>source</code>'s <code>width</code> onto <code>element</code>.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>setHeight</code></td>
+   *    <td><code>true</code></td>
+   *  <td>Clones <code>source</code>'s <code>width</code> onto <code>element</code>.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>offsetLeft</code></td>
+   *    <td><code>0</code></td>
+   *  <td>Number by which to offset <code>element</code>'s <code>left</code> CSS property.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>offsetTop</code></td>
+   *    <td><code>0</code></td>
+   *  <td>Number by which to offset <code>element</code>'s <code>top</code> CSS property.</td>
+   *  </tr>
+   *  </tbody>
+   *  </table>
   **/
   clonePosition: function(element, source) {
     var options = Object.extend({
@@ -1197,8 +1437,40 @@ Object.extend(Element.Methods, {
   **/
   getElementsBySelector: Element.Methods.select,
 
-  /** alias of: Element.immediateDescendants
+  /**
    *  Element.childElements(@element) -> [Element...]
+   *
+   *  Collects all of the element's children and returns them as an array of
+   *  [extended](http://prototypejs.org/api/element/extend) elements, in
+   *  document order. The first entry in the array is the topmost child of
+   *  `element`, the next is the child after that, etc.
+   *
+   *  Like all of Prototype's DOM traversal methods, `childElements` ignores
+   *  text nodes and returns element nodes only.
+   *
+   *  ##### Example
+   *
+   *  Assuming:
+   *
+   *      language: html
+   *      <div id="australopithecus">
+   *        Some text in a text node
+   *        <div id="homo-erectus">
+   *          <div id="homo-neanderthalensis"></div>
+   *          <div id="homo-sapiens"></div>
+   *        </div>
+   *      </div>
+   *
+   *  Then:
+   *
+   *      $('australopithecus').childElements();
+   *      // -> [div#homo-erectus]
+   *
+   *      $('homo-erectus').childElements();
+   *      // -> [div#homo-neanderthalensis, div#homo-sapiens]
+   *
+   *      $('homo-sapiens').childElements();
+   *      // -> []
   **/
   childElements: Element.Methods.immediateDescendants
 });
@@ -1658,16 +1930,31 @@ Object.extend(Element, Element.Methods);
 
   div = null;
 
-})(document.createElement('div'))
+})(document.createElement('div'));
 
 /**
  *  Element.extend(element) -> Element
  *
- *  Extends `element` with all of the methods contained in `Element.Methods`
- *  and `Element.Methods.Simulated`.
- *  If `element` is an `input`, `textarea`, or `select` tag, it will also be
- *  extended with the methods from `Form.Element.Methods`. If it is a `form`
- *  tag, it will also be extended with the methods from `Form.Methods`.
+ *  Extends the given element instance with all of the Prototype goodness and
+ *  syntactic sugar, as well as any extensions added via [[Element.addMethods]].
+ *  (If the element instance was already extended, this is a no-op.)
+ *
+ *  You only need to use `Element.extend` on element instances you've acquired
+ *  directly from the DOM; **all** Prototype methods that return element
+ *  instances (such as [[$]], [[Element.down]], etc.) will pre-extend the
+ *  element before returning it.
+ *
+ *  Check out ["How Prototype extends the
+ *  DOM"](http://prototypejs.org/learn/extensions) for more about element
+ *  extensions.
+ *
+ *  ##### Details
+ *
+ *  Specifically, `Element.extend` extends the given instance with the methods
+ *  contained in `Element.Methods` and `Element.Methods.Simulated`. If `element`
+ *  is an `input`, `textarea`, or `select` element, it will also be extended
+ *  with the methods from `Form.Element.Methods`. If it is a `form` element, it
+ *  will also be extended with the methods from `Form.Methods`.
 **/
 Element.extend = (function() {
 
@@ -1758,12 +2045,126 @@ Element.hasAttribute = function(element, attribute) {
 /**
  *  Element.addMethods(methods) -> undefined
  *  Element.addMethods(tagName, methods) -> undefined
+ *  - tagName (String): (Optional) The name of the HTML tag for which the
+ *    methods should be available; if not given, all HTML elements will have
+ *    the new methods.
+ *  - methods (Object): A hash of methods to add.
  *
- *  Takes a hash of methods and makes them available as methods of extended
- *  elements and of the `Element` object.
+ *  `Element.addMethods` makes it possible to mix your *own* methods into the
+ *  `Element` object and extended element instances (all of them, or only ones
+ *  with the given HTML tag if you specify `tagName`).
  *
- *  The second usage form is for adding methods only to specific tag names.
+ *  You define the methods in a hash that you provide to `Element.addMethods`.
+ *  Here's an example adding two methods:
  *
+ *      Element.addMethods({
+ *
+ *        // myOwnMethod: Do something cool with the element
+ *        myOwnMethod: function(element) {
+ *          if (!(element = $(element))) return;
+ *          // ...do smething with 'element'...
+ *          return element;
+ *        },
+ *
+ *        // wrap: Wrap the element in a new element using the given tag
+ *        wrap: function(element, tagName) {
+ *          var wrapper;
+ *          if (!(element = $(element))) return;
+ *          wrapper = new Element(tagName);
+ *          element.parentNode.replaceChild(wrapper, element);
+ *          wrapper.appendChild(element);
+ *          return wrapper;
+ *        }
+ *
+ *      });
+ *
+ *  Once added, those can be used either via `Element`:
+ *
+ *      // Wrap the element with the ID 'foo' in a div
+ *      Element.wrap('foo', 'div');
+ *
+ *  ...or as instance methods of extended elements:
+ *
+ *      // Wrap the element with the ID 'foo' in a div
+ *      $('foo').wrap('div');
+ *
+ *  Note the following requirements and conventions for methods added to
+ *  `Element`:
+ *
+ *  - The first argument is *always* an element or ID, by convention this
+ *    argument is called `element`.
+ *  - The method passes the `element` argument through [[$]] and typically
+ *    returns if the result is undefined.
+ *  - Barring a good reason to return something else, the method returns the
+ *    extended element to enable chaining.
+ *
+ *  Our `myOwnMethod` method above returns the element because it doesn't have
+ *  a good reason to return anything else. Our `wrap` method returns the
+ *  wrapper, because that makes more sense for that method.
+ *
+ *  ##### Extending only specific elements
+ *
+ *  If you call `Element.addMethods` with *two* arguments, it will apply the
+ *  methods only to elements with the given HTML tag:
+ *
+ *      Element.addMethods('DIV', my_div_methods);
+ *      // the given methods are now available on DIV elements, but not others
+ *
+ *  You can also pass an *array* of tag names as the first argument:
+ *
+ *      Element.addMethods(['DIV', 'SPAN'], my_additional_methods);
+ *      // DIV and SPAN now both have the given methods
+ *
+ *  (Tag names in the first argument are not case sensitive.)
+ *
+ *  Note: `Element.addMethods` has built-in security which prevents you from
+ *  overriding native element methods or properties (like `getAttribute` or
+ *  `innerHTML`), but nothing prevents you from overriding one of Prototype's
+ *  methods. Prototype uses a lot of its methods internally; overriding its
+ *  methods is best avoided or at least done only with great care.
+ *
+ *  ##### Example 1
+ *
+ *  Our `wrap` method earlier was a complete example. For instance, given this
+ *  paragraph:
+ *
+ *      language: html
+ *      <p id="first">Some content...</p>
+ *
+ *  ...we might wrap it in a `div`:
+ *
+ *      $('first').wrap('div');
+ *
+ *  ...or perhaps wrap it and apply some style to the `div` as well:
+ *
+ *      $('first').wrap('div').setStyle({
+ *        backgroundImage: 'url(images/rounded-corner-top-left.png) top left'
+ *      });
+ *
+ *  ##### Example 2
+ *
+ *  We can add a method to elements that makes it a bit easier to update them
+ *  via [[Ajax.Updater]]:
+ *
+ *      Element.addMethods({
+ *        ajaxUpdate: function(element, url, options) {
+ *          if (!(element = $(element))) return;
+ *          element.update('<img src="/images/spinner.gif" alt="Loading...">');
+ *          options = options || {};
+ *          options.onFailure = options.onFailure || defaultFailureHandler.curry(element);
+ *          new Ajax.Updater(element, url, options);
+ *          return element;
+ *        }
+ *      });
+ *
+ *  Now we can update an element via an Ajax call much more concisely than
+ *  before:
+ *
+ *      $('foo').ajaxUpdate('/new/content');
+ *
+ *  That will use Ajax.Updater to load new content into the 'foo' element,
+ *  showing a spinner while the call is in progress. It even applies a default
+ *  failure handler (since we didn't supply one).
 **/
 Element.addMethods = function(methods) {
   var F = Prototype.BrowserFeatures, T = Element.Methods.ByTag;
