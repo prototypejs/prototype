@@ -31,29 +31,34 @@ new Test.Unit.Runner({
   'test layout on elements with display: none and exact width': function() {
     var layout = $('box2').getLayout();
     
+    this.assert(!isDisplayed($('box3')), 'box should be hidden');
+
     this.assertEqual(500, layout.get('width'), 'width');
     this.assertEqual(3, layout.get('border-right'), 'border-right');
     this.assertEqual(10, layout.get('padding-bottom'), 'padding-bottom');
+
+    this.assert(!isDisplayed($('box3')), 'box should still be hidden');
   },
   
   'test layout on elements with display: none and width: auto': function() {
     var layout = $('box3').getLayout();
     
-    // Ensure that we cleaned up after ourselves.
-    this.assert(!isDisplayed($('box3')), 'box should still be hidden');
+    this.assert(!isDisplayed($('box3')), 'box should be hidden');
     
-
     this.assertEqual(364, layout.get('width'), 'width');
     this.assertEqual(400, layout.get('margin-box-width'), 'margin-box-width');
     this.assertEqual(3, layout.get('border-right'), 'border-top');
     this.assertEqual(10, layout.get('padding-bottom'), 'padding-right');
+
+    // Ensure that we cleaned up after ourselves.
+    this.assert(!isDisplayed($('box3')), 'box should still be hidden');
   },
   
   'test layout on elements with display: none ancestors': function() {
     var layout = $('box4').getLayout();
     
     // Ensure that we cleaned up after ourselves.
-    this.assert(!isDisplayed($('box4')), 'box should still be hidden');
+    this.assert(!isDisplayed($('box4')), 'box should be hidden');
     
     // Width and height values are nonsensical for deeply-hidden elements.
     this.assertEqual(0, layout.get('width'), 'width of a deeply-hidden element should be 0');

@@ -30,7 +30,7 @@
     
     // When IE gives us something other than a pixel value, this technique
     // (invented by Dean Edwards) will convert it to pixels.
-    if (element.runtimeStyle) {
+    if (/\d/.test(value) && element.runtimeStyle) {
       var style = element.style.left, rStyle = element.runtimeStyle.left; 
       element.runtimeStyle.left = element.currentStyle.left;
       element.style.left = value || 0;  
@@ -38,7 +38,7 @@
       element.style.left = style;
       element.runtimeStyle.left = rStyle;
       
-      return value;    
+      return value;
     }
     
     // For other browsers, we have to do a bit of work.
@@ -57,7 +57,7 @@
     }
     
     // If we get this far, we should probably give up.
-    return null;
+    return 0;
   }
   
   function toCSSPixels(number) {
@@ -154,10 +154,9 @@
       var position = element.getStyle('position'),
        width = element.getStyle('width');
        
-      var layout = element.getLayout();
       element.setStyle({
         position:   'absolute',
-        visibility: 'visible',
+        visibility: 'hidden',
         display:    'block'
       });
       
@@ -177,15 +176,16 @@
       } else {
         // If not, that means the element's width depends upon the width of
         // its parent.
-        var parent = element.up(), pLayout = parent.getLayout();
+        var parent = element.parentNode, pLayout = $(parent).getLayout();
+        
         
         newWidth = pLayout.get('width') -
-         layout.get('margin-left') -
-         layout.get('border-left') -
-         layout.get('padding-left') -
-         layout.get('padding-right') -
-         layout.get('border-right') -
-         layout.get('margin-right');
+         this.get('margin-left') -
+         this.get('border-left') -
+         this.get('padding-left') -
+         this.get('padding-right') -
+         this.get('border-right') -
+         this.get('margin-right');
       }
       
       element.setStyle({ width: newWidth + 'px' });
@@ -333,22 +333,22 @@
       },
       
       'border-top': function(element) {
-        return element.clientTop ||
+        return Object.isNumber(element.clientTop) ? element.clientTop : 
          getPixelValue(element, 'borderTopWidth');
       },
       
       'border-bottom': function(element) {
-        return element.clientBottom ||
+        return Object.isNumber(element.clientBottom) ? element.clientBottom : 
          getPixelValue(element, 'borderBottomWidth');
       },
       
       'border-left': function(element) {
-        return element.clientLeft ||
+        return Object.isNumber(element.clientLeft) ? element.clientLeft : 
          getPixelValue(element, 'borderLeftWidth');
       },
       
       'border-right': function(element) {
-        return element.clientRight ||
+        return Object.isNumber(element.clientRight) ? element.clientRight : 
          getPixelValue(element, 'borderRightWidth');
       },
       
