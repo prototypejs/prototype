@@ -96,8 +96,115 @@
    *  
    *  A set of key/value pairs representing measurements of various
    *  dimensions of an element.
+   *  
+   *  <h4>Overview</h4>
+   *  
+   *  The `Element.Layout` class is a specialized way to measure elements.
+   *  It helps mitigate:
+   *  
+   *  * The convoluted steps often needed to get common measurements for
+   *    elements.
+   *  * The tendency of browsers to report measurements in non-pixel units.
+   *  * The quirks that lead some browsers to report inaccurate measurements.
+   *  * The difficulty of measuring elements that are hidden.
+   *  
+   *  <h4>Usage</h4>
+   *  
+   *  Instantiate an `Element.Layout` class by passing an element into the
+   *  constructor:
+   *  
+   *    var layout = new Element.Layout(someElement);
+   *  
+   *  You can also use [[Element.getLayout]], if you prefer.
+   *  
+   *  Once you have a layout object, retrieve properties using [[Hash]]'s
+   *  familiar `get` and `set` syntax.
+   *  
+   *    layout.get('width');  //-> 400
+   *    layout.get('top');    //-> 180
+   *  
+   *  The following are the CSS-related properties that can be retrieved.
+   *  Nearly all of them map directly to their property names in CSS. (The
+   *  only exception is for borders — e.g., `border-width` instead of 
+   *  `border-left-width`.)
+   *  
+   *  * `height`
+   *  * `width`
+   *  * `top`
+   *  * `left`
+   *  * `right`
+   *  * `bottom`
+   *  * `border-left`
+   *  * `border-right`
+   *  * `border-top`
+   *  * `border-bottom`
+   *  * `padding-left`
+   *  * `padding-right`
+   *  * `padding-top`
+   *  * `padding-bottom`
+   *  * `margin-top`
+   *  * `margin-bottom`
+   *  * `margin-left`
+   *  * `margin-right`
+   *  
+   *  In addition, these "composite" properties can be retrieved:
+   *  
+   *  * `padding-box-width` (width of the content area, from the beginning of
+   *    the left padding to the end of the right padding)
+   *  * `padding-box-height` (height of the content area, from the beginning
+   *    of the top padding to the end of the bottom padding)
+   *  * `border-box-width` (width of the content area, from the outer edge of
+   *    the left border to the outer edge of the right border)
+   *  * `border-box-height` (height of the content area, from the outer edge
+   *    of the top border to the outer edge of the bottom border)
+   *  * `margin-box-width` (width of the content area, from the beginning of
+   *    the left margin to the end of the right margin)
+   *  * `margin-box-height` (height of the content area, from the beginning
+   *    of the top margin to the end of the bottom margin)
+   *  
+   *  <h4>Caching</h4>
+   *  
+   *  Because these properties can be costly to retrieve, `Element.Layout`
+   *  behaves differently from an ordinary [[Hash]].
+   *  
+   *  First: by default, values are "lazy-loaded" — they aren't computed
+   *  until they're retrieved. To measure all properties at once, pass
+   *  a second argument into the constructor:
+   *  
+   *      var layout = new Element.Layout(someElement, true);
+   *  
+   *  Second: once a particular value is computed, it's cached. Asking for
+   *  the same property again will return the original value without
+   *  re-computation. This means that **an instance of `Element.Layout`
+   *  becomes stale when the element's dimensions change**. When this
+   *  happens, obtain a new instance.
+   *  
+   *  <h4>Hidden elements<h4>
+   *  
+   *  Because it's a common case to want the dimensions of a hidden element
+   *  (e.g., for animations), it's possible to measure elements that are
+   *  hidden with `display: none`.
+   *  
+   *  However, **it's only possible to measure a hidden element if its parent
+   *  is visible**. If its parent (or any other ancestor) is hidden, any
+   *  width and height measurements will return `0`, as will measurements for 
+   *  `top|bottom|left|right`.
+   *  
   **/
   Element.Layout = Class.create(Hash, {
+    /**
+     *  new Element.Layout(element[, preCompute])
+     *  - element (Element): The element to be measured.
+     *  - preCompute (Boolean): Whether to compute all values at once.
+     *  
+     *  Declare a new layout hash.
+     *  
+     *  The `preCompute` argument determines whether measurements will be
+     *  lazy-loaded or not. If you plan to use many different measurements,
+     *  it's often more performant to pre-compute, as it minimizes the
+     *  amount of overhead needed to measure. If you need only one or two
+     *  measurements, it's probably not worth it.
+    **/
     initialize: function($super, element, preCompute) {
       $super();      
       this.element = $(element);
@@ -125,14 +232,25 @@
       return Hash.prototype.set.call(this, property, value);
     },
     
+    
+    // TODO: Investigate.
     set: function(property, value) {
-      if (Element.Layout.COMPOSITE_PROPERTIES.include(property)) {
-        throw "Cannot set a composite property.";
-      }
-      
-      return this._set(property, toCSSPixels(value));
+      throw "Properties of Element.Layout are read-only.";
+      // if (Element.Layout.COMPOSITE_PROPERTIES.include(property)) {
+      //   throw "Cannot set a composite property.";
+      // }
+      // 
+      // return this._set(property, toCSSPixels(value));
     },
     
+    /**
+     *  Element.Layout#get(property) -> Number
+     *  - property (String): One of the properties defined in
+     *    [[Element.Layout.PROPERTIES]].
+     *  
+     *  Retrieve the measurement specified by `property`. Will throw an error
+     *  if the property is invalid.
+    **/
     get: function($super, property) {
       // Try to fetch from the cache.
       var value = $super(property);      
@@ -228,9 +346,20 @@
   
   Object.extend(Element.Layout, {
     // All measurable properties.
+    /**
+     *  Element.Layout.PROPERTIES = Array
+     *  
+     *  A list of all measurable properties.
+    **/
     PROPERTIES: $w('height width top left right bottom border-left border-right border-top border-bottom padding-left padding-right padding-top padding-bottom margin-top margin-bottom margin-left margin-right padding-box-width padding-box-height border-box-width border-box-height margin-box-width margin-box-height'),
     
-    // Sums of other properties. Can be read but not written.
+    /**
+     *  Element.Layout.COMPOSITE_PROPERTIES = Array
+     *  
+     *  A list of all composite properties. Composite properties don't map
+     *  directly to CSS properties — they're combinations of other
+     *  properties.
+    **/
     COMPOSITE_PROPERTIES: $w('padding-box-width padding-box-height margin-box-width margin-box-height border-box-width border-box-height'),
     
     COMPUTATIONS: {
@@ -313,19 +442,37 @@
       },
       
       'top': function(element) {
-        return getPixelValue(element, 'top');
+        var offset = element.positionedOffset();
+        return offset.top;
       },
       
       'bottom': function(element) {
-        return getPixelValue(element, 'bottom');
+        var offset = element.positionedOffset(),
+         parent = element.getOffsetParent(),
+         pHeight = parent.measure('height');
+        
+        var mHeight = this.get('border-box-height');
+        
+        return pHeight - mHeight - offset.top;
+        // 
+        // return getPixelValue(element, 'bottom');
       },
       
       'left': function(element) {
-        return getPixelValue(element, 'left');
+        var offset = element.positionedOffset();
+        return offset.left;
       },
       
       'right': function(element) {
-        return getPixelValue(element, 'right');
+        var offset = element.positionedOffset(),
+         parent = element.getOffsetParent(),
+         pWidth = parent.measure('width');
+        
+        var mWidth = this.get('border-box-width');
+        
+        return pWidth - mWidth - offset.left;
+        //  
+        // return getPixelValue(element, 'right');
       },
       
       'padding-top': function(element) {
@@ -381,6 +528,27 @@
       }
     }
   });
+  
+  // An easier way to compute right and bottom offsets.
+  if ('getBoundingClientRect' in document.documentElement) {
+    Object.extend(Element.Layout.COMPUTATIONS, {
+      'right': function(element) {
+        var parent = hasLayout(element.getOffsetParent());
+        var rect = element.getBoundingClientRect(),
+         pRect = parent.getBoundingClientRect();
+         
+        return (pRect.right - rect.right).round();
+      },
+      
+      'bottom': function(element) {
+        var parent = hasLayout(element.getOffsetParent());
+        var rect = element.getBoundingClientRect(),
+         pRect = parent.getBoundingClientRect();
+         
+        return (pRect.bottom - rect.bottom).round();
+      }
+    });
+  }
   
   /**
    *  class Element.Offset
