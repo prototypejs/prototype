@@ -79,6 +79,18 @@
     return true;
   }
   
+  var hasLayout = Prototype.K;
+  
+  if ('currentStyle' in document.documentElement) {
+    hasLayout = function(element) {
+      if (!element.currentStyle.hasLayout) {
+        element.style.zoom = 1;
+      }
+      return element;
+    };
+  }
+  
+  
   /**
    *  class Element.Layout < Hash
    *  
@@ -411,7 +423,14 @@
      *  Element.Offset#inspect() -> String
     **/
     inspect: function() {
-      return "#<Element.Offset left: #{left} top: #{top}".interpolate(this);
+      return "#<Element.Offset left: #{left} top: #{top}>".interpolate(this);
+    },
+    
+    /**
+     *  Element.Offset#toString() -> String
+    **/
+    toString: function() {
+      return "[#{left}, #{top}]".interpolate(this);
     },
     
     /**
@@ -477,17 +496,24 @@
    *  (the element that would be returned by [[Element.getOffsetParent]]).
   **/  
   function positionedOffset(element) {
+    // Account for the margin of the element.
+    var layout = element.getLayout();
+
     var valueT = 0, valueL = 0;
     do {
       valueT += element.offsetTop  || 0;
       valueL += element.offsetLeft || 0;
       element = element.offsetParent;
       if (element) {
-        if (element.tagName.toUpperCase() == 'BODY') break;
+        if (isBody(element)) break;
         var p = Element.getStyle(element, 'position');
         if (p !== 'static') break;
       }
     } while (element);
+    
+    valueL -= layout.get('margin-top');
+    valueT -= layout.get('margin-left');    
+    
     return new Element.Offset(valueL, valueT);
   }
 
@@ -544,6 +570,10 @@
     viewportOffset:         viewportOffset
   });
   
+  function isBody(element) {
+    return $w('BODY HTML').include(element.nodeName.toUpperCase());
+  }
+  
   // If the browser supports the nonstandard `getBoundingClientRect`
   // (currently only IE and Firefox), it becomes far easier to obtain
   // true offsets.
@@ -565,11 +595,26 @@
       positionedOffset: function(element) {
         element = $(element);
         var parent = element.getOffsetParent();
-        var isBody = (parent.nodeName.toUpperCase() === 'BODY');
+        
+        // When the BODY is the offsetParent, IE6 mistakenly reports the
+        // parent as HTML. Use that as the litmus test to fix another
+        // annoying IE6 quirk.
+        if (parent.nodeName.toUpperCase() === 'HTML') {
+          return positionedOffset(element);
+        }
+        
         var eOffset = element.viewportOffset(),
-          pOffset = isBody ? viewportOffset(parent) : parent.viewportOffset();
-        return eOffset.relativeTo(pOffset);
+         pOffset = isBody(parent) ? viewportOffset(parent) : 
+          parent.viewportOffset();
+        var retOffset = eOffset.relativeTo(pOffset);
+        
+        // Account for the margin of the element.
+        var layout = element.getLayout();
+        var top  = retOffset.top  - layout.get('margin-top');
+        var left = retOffset.left - layout.get('margin-left');
+        
+        return new Element.Offset(left, top);
       }
-    });
+    });    
   }  
 })();
