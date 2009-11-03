@@ -57,7 +57,6 @@ new Test.Unit.Runner({
   'test layout on elements with display: none ancestors': function() {
     var layout = $('box4').getLayout();
     
-    // Ensure that we cleaned up after ourselves.
     this.assert(!isDisplayed($('box4')), 'box should be hidden');
     
     // Width and height values are nonsensical for deeply-hidden elements.
@@ -67,6 +66,9 @@ new Test.Unit.Runner({
     // But we can still get meaningful values for other measurements.
     this.assertEqual(0, layout.get('border-right'), 'border-top');
     this.assertEqual(13, layout.get('padding-bottom'), 'padding-right');
+    
+    // Ensure that we cleaned up after ourselves.
+    this.assert(!isDisplayed($('box3')), 'box should still be hidden');
   },
   
   'test positioning on absolutely-positioned elements': function() {
@@ -75,6 +77,6 @@ new Test.Unit.Runner({
     this.assertEqual(30, layout.get('top'), 'top');
     this.assertEqual(60, layout.get('right'), 'right (percentage value)');
     
-    this.assertNull(layout.get('left'), 'left (should be null because none was set)');
+    this.assertEqual(340, layout.get('left'), 'left');
   }
 });
