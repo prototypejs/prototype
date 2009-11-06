@@ -756,8 +756,8 @@
         // The HTML element on IE < 8 has a 2px border by default, giving
         // an incorrect offset. We correct this by subtracting clientTop
         // and clientLeft.
-        return new Element.Offset(rect.top - docEl.clientTop,
-         rect.left - docEl.clientLeft);
+        return new Element.Offset(rect.left - docEl.clientLeft,
+         rect.top - docEl.clientTop);
       },
       
       cumulativeOffset: function(element) {
