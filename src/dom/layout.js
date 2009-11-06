@@ -707,21 +707,23 @@
    *  Returns the X/Y coordinates of element relative to the viewport.
   **/
   function viewportOffset(forElement) {
-    var valueT = 0, valueL = 0;
+    var valueT = 0, valueL = 0, docBody = document.body;
 
     var element = forElement;
     do {
       valueT += element.offsetTop  || 0;
       valueL += element.offsetLeft || 0;
       // Safari fix
-      if (element.offsetParent == document.body &&
+      if (element.offsetParent == docBody &&
         Element.getStyle(element, 'position') == 'absolute') break;
     } while (element = element.offsetParent);
 
-    element = forElement;    
-    var tagName = element.tagName, O = Prototype.Browser.Opera;
+    element = forElement;
     do {
-      if (!O || tagName && tagName.toUpperCase() === 'BODY') {
+      // Opera < 9.5 sets scrollTop/Left on both HTML and BODY elements.
+      // Other browsers set it only on the HTML element. The BODY element
+      // can be skipped since its scrollTop/Left should always be 0.
+      if (element != docBody) {
         valueT -= element.scrollTop  || 0;
         valueL -= element.scrollLeft || 0;
       }
