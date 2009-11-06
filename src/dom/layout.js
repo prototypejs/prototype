@@ -751,8 +751,13 @@
     Element.addMethods({
       viewportOffset: function(element) {
         element = $(element);
-        var rect = element.getBoundingClientRect();
-        return new Element.Offset(rect.left, rect.top);
+        var rect  = element.getBoundingClientRect(),
+         docEl = document.documentElement;
+        // The HTML element on IE < 8 has a 2px border by default, giving
+        // an incorrect offset. We correct this by subtracting clientTop
+        // and clientLeft.
+        return new Element.Offset(rect.top - docEl.clientTop,
+         rect.left - docEl.clientLeft);
       },
       
       cumulativeOffset: function(element) {
