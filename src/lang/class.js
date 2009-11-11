@@ -135,8 +135,8 @@ var Class = (function() {
    *      //-> alerts "You should probably run. He looks really mad."
   **/
   function addMethods(source) {
-    var ancestor   = this.superclass && this.superclass.prototype;
-    var properties = Object.keys(source);
+    var ancestor   = this.superclass && this.superclass.prototype,
+        properties = Object.keys(source);
 
     // IE6 doesn't enumerate toString and valueOf properties,
     // Force copy if they're not coming from Object.prototype.

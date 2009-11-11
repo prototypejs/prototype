@@ -167,8 +167,8 @@ Object.extend(String.prototype, (function() {
    *  returns them as an array of strings.
   **/
   function extractScripts() {
-    var matchAll = new RegExp(Prototype.ScriptFragment, 'img');
-    var matchOne = new RegExp(Prototype.ScriptFragment, 'im');
+    var matchAll = new RegExp(Prototype.ScriptFragment, 'img'),
+        matchOne = new RegExp(Prototype.ScriptFragment, 'im');
     return (this.match(matchAll) || []).map(function(scriptTag) {
       return (scriptTag.match(matchOne) || ['', ''])[1];
     });
@@ -251,8 +251,9 @@ Object.extend(String.prototype, (function() {
 
     return match[1].split(separator || '&').inject({ }, function(hash, pair) {
       if ((pair = pair.split('='))[0]) {
-        var key = decodeURIComponent(pair.shift());
-        var value = pair.length > 1 ? pair.join('=') : pair[0];
+        var key = decodeURIComponent(pair.shift()),
+            value = pair.length > 1 ? pair.join('=') : pair[0];
+            
         if (value != undefined) value = decodeURIComponent(value);
 
         if (key in hash) {

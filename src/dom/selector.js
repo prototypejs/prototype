@@ -349,8 +349,8 @@ Object.extend(Selector, {
           return '[' + fragment + "= " + mm[1] + ']';
         if (mm = formula.match(/^(-?\d*)?n(([+-])(\d+))?/)) { // an+b
           if (mm[1] == "-") mm[1] = -1;
-          var a = mm[1] ? Number(mm[1]) : 1;
-          var b = mm[2] ? Number(mm[2]) : 0;
+          var a = mm[1] ? Number(mm[1]) : 1,
+              b = mm[2] ? Number(mm[2]) : 0;
           predicate = "[((#{fragment} - #{b}) mod #{a} = 0) and " +
           "((#{fragment} - #{b}) div #{a} >= 0)]";
           return new Template(predicate).evaluate({
@@ -716,9 +716,11 @@ Object.extend(Selector, {
           if (node.nodeIndex == formula) results.push(node);
       } else if (m = formula.match(/^(-?\d*)?n(([+-])(\d+))?/)) { // an+b
         if (m[1] == "-") m[1] = -1;
-        var a = m[1] ? Number(m[1]) : 1;
-        var b = m[2] ? Number(m[2]) : 0;
-        var indices = Selector.pseudos.getIndices(a, b, nodes.length);
+        
+        var a = m[1] ? Number(m[1]) : 1,
+            b = m[2] ? Number(m[2]) : 0,
+            indices = Selector.pseudos.getIndices(a, b, nodes.length);
+            
         for (var i = 0, node, l = indices.length; node = nodes[i]; i++) {
           for (var j = 0; j < l; j++)
             if (node.nodeIndex == indices[j]) results.push(node);
@@ -739,8 +741,8 @@ Object.extend(Selector, {
     },
 
     'not': function(nodes, selector, root) {
-      var h = Selector.handlers, selectorType, m;
-      var exclusions = new Selector(selector).findElements(root);
+      var h = Selector.handlers, selectorType, m,
+          exclusions = new Selector(selector).findElements(root);
       h.mark(exclusions);
       for (var i = 0, results = [], node; node = nodes[i]; i++)
         if (!node._countedByPrototype) results.push(node);

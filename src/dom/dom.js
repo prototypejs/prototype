@@ -115,9 +115,9 @@ if (!Node.ELEMENT_NODE) {
   // setAttribute is broken in IE (particularly when setting name attribute)
   // see: http://msdn.microsoft.com/en-us/library/ms536389.aspx
   var SETATTRIBUTE_IGNORES_NAME = (function(){
-    var elForm = document.createElement("form");
-    var elInput = document.createElement("input");
-    var root = document.documentElement;
+    var elForm = document.createElement("form"),
+        elInput = document.createElement("input"),
+        root = document.documentElement;
     elInput.setAttribute("name", "test");
     elForm.appendChild(elInput);
     root.appendChild(elForm);
@@ -443,8 +443,9 @@ Element.Methods = {
     element = $(element);
     var result = '<' + element.tagName.toLowerCase();
     $H({'id': 'id', 'className': 'class'}).each(function(pair) {
-      var property = pair.first(), attribute = pair.last();
-      var value = (element[property] || '').toString();
+      var property = pair.first(), 
+          attribute = pair.last(),
+          value = (element[property] || '').toString();
       if (value) result += ' ' + attribute + '=' + value.inspect(true);
     });
     return result + '>';
@@ -1055,16 +1056,16 @@ Element.Methods = {
 
     // All *Width and *Height properties give 0 on elements with display none,
     // so enable the element temporarily
-    var els = element.style;
-    var originalVisibility = els.visibility;
-    var originalPosition = els.position;
-    var originalDisplay = els.display;
+    var els = element.style,
+        originalVisibility = els.visibility,
+        originalPosition = els.position,
+        originalDisplay = els.display;
     els.visibility = 'hidden';
     if (originalPosition != 'fixed') // Switching fixed to absolute causes issues in Safari
       els.position = 'absolute';
     els.display = 'block';
-    var originalWidth = element.clientWidth;
-    var originalHeight = element.clientHeight;
+    var originalWidth = element.clientWidth,
+        originalHeight = element.clientHeight;
     els.display = originalDisplay;
     els.position = originalPosition;
     els.visibility = originalVisibility;
@@ -1209,11 +1210,11 @@ Element.Methods = {
     element = $(element);
     if (Element.getStyle(element, 'position') == 'absolute') return element;
 
-    var offsets = Element.positionedOffset(element);
-    var top     = offsets[1];
-    var left    = offsets[0];
-    var width   = element.clientWidth;
-    var height  = element.clientHeight;
+    var offsets = Element.positionedOffset(element),
+        top     = offsets[1],
+        left    = offsets[0],
+        width   = element.clientWidth,
+        height  = element.clientHeight;
 
     element._originalLeft   = left - parseFloat(element.style.left  || 0);
     element._originalTop    = top  - parseFloat(element.style.top || 0);
@@ -1241,8 +1242,8 @@ Element.Methods = {
     if (Element.getStyle(element, 'position') == 'relative') return element;
 
     element.style.position = 'relative';
-    var top  = parseFloat(element.style.top  || 0) - (element._originalTop || 0);
-    var left = parseFloat(element.style.left || 0) - (element._originalLeft || 0);
+    var top  = parseFloat(element.style.top  || 0) - (element._originalTop || 0),
+        left = parseFloat(element.style.left || 0) - (element._originalLeft || 0);
 
     element.style.top    = top + 'px';
     element.style.left   = left + 'px';
@@ -1310,9 +1311,10 @@ Element.Methods = {
    *  as properties: `{ left: leftValue, top: topValue }`.
   **/
   viewportOffset: function(forElement) {
-    var valueT = 0, valueL = 0;
-
-    var element = forElement;
+    var valueT = 0, 
+        valueL = 0,
+        element = forElement;
+        
     do {
       valueT += element.offsetTop  || 0;
       valueL += element.offsetLeft || 0;
@@ -1403,12 +1405,11 @@ Element.Methods = {
 
     // find page position of source
     source = $(source);
-    var p = Element.viewportOffset(source);
+    var p = Element.viewportOffset(source), delta = [0, 0], parent = null;
 
     // find coordinate system to use
     element = $(element);
-    var delta = [0, 0];
-    var parent = null;
+    
     // delta [0,0] will do fine with position: fixed elements,
     // position:absolute needs offsetParent deltas
     if (Element.getStyle(element, 'position') == 'absolute') {
@@ -1618,10 +1619,9 @@ else if (Prototype.Browser.IE) {
 
   Element._attributeTranslations = (function(){
 
-    var classProp = 'className';
-    var forProp = 'for';
-
-    var el = document.createElement('div');
+    var classProp = 'className', 
+        forProp = 'for', 
+        el = document.createElement('div');
 
     // try "className" first (IE <8)
     el.setAttribute(classProp, 'x');
@@ -1666,10 +1666,9 @@ else if (Prototype.Browser.IE) {
           },
           _getEv: (function(){
 
-            var el = document.createElement('div');
+            var el = document.createElement('div'), f;
             el.onclick = Prototype.emptyFunction;
             var value = el.getAttribute('onclick');
-            var f;
 
             // IE<8
             if (String(value).indexOf('{') > -1) {
@@ -1846,8 +1845,8 @@ if ('outerHTML' in document.documentElement) {
     var parent = element.parentNode, tagName = parent.tagName.toUpperCase();
 
     if (Element._insertionTranslations.tags[tagName]) {
-      var nextSibling = element.next();
-      var fragments = Element._getContentFromAnonymousElement(tagName, content.stripScripts());
+      var nextSibling = element.next(),
+          fragments = Element._getContentFromAnonymousElement(tagName, content.stripScripts());
       parent.removeChild(element);
       if (nextSibling)
         fragments.each(function(node) { parent.insertBefore(node, nextSibling) });
@@ -1962,8 +1961,8 @@ Element.extend = (function() {
     if (typeof window.Element != 'undefined') {
       var proto = window.Element.prototype;
       if (proto) {
-        var id = '_' + (Math.random()+'').slice(2);
-        var el = document.createElement(tagName);
+        var id = '_' + (Math.random()+'').slice(2),
+            el = document.createElement(tagName);
         proto[id] = 'x';
         var isBuggy = (el[id] !== 'x');
         delete proto[id];
@@ -2228,8 +2227,9 @@ Element.addMethods = function(methods) {
     klass = 'HTML' + tagName.capitalize() + 'Element';
     if (window[klass]) return window[klass];
 
-    var element = document.createElement(tagName);
-    var proto = element['__proto__'] || element.constructor.prototype;
+    var element = document.createElement(tagName),
+        proto = element['__proto__'] || element.constructor.prototype;
+        
     element = null;
     return proto;
   }
