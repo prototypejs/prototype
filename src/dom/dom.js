@@ -1802,7 +1802,7 @@ else if (Prototype.Browser.WebKit) {
       (value < 0.00001) ? 0 : value;
 
     if (value == 1)
-      if(element.tagName.toUpperCase() == 'IMG' && element.width) {
+      if (element.tagName.toUpperCase() == 'IMG' && element.width) {
         element.width++; element.width--;
       } else try {
         var n = document.createTextNode(' ');
