@@ -59,7 +59,7 @@ var Class = (function() {
       parent.subclasses.push(klass);
     }
 
-    for (var i = 0; i < properties.length; i++)
+    for (var i = 0, length = properties.length; i < length; i++)
       klass.addMethods(properties[i]);
 
     if (!klass.prototype.initialize)
@@ -150,7 +150,7 @@ var Class = (function() {
     for (var i = 0, length = properties.length; i < length; i++) {
       var property = properties[i], value = source[property];
       if (ancestor && Object.isFunction(value) &&
-          value.argumentNames().first() == "$super") {
+          value.argumentNames()[0] == "$super") {
         var method = value;
         value = (function(m) {
           return function() { return ancestor[m].apply(this, arguments); };
