@@ -1,3 +1,5 @@
+* Eliminate runtime forking and long method lookup in `Element.hasAttribute`. (kangax)
+
 * Remove redundant ternary. (kangax)
 
 * Avoid repeating declaration statements where it makes sense, for slightly better runtime performance and minification. (kangax)

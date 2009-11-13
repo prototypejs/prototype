@@ -2036,10 +2036,14 @@ Element.extend = (function() {
   return extend;
 })();
 
-Element.hasAttribute = function(element, attribute) {
-  if (element.hasAttribute) return element.hasAttribute(attribute);
-  return Element.Methods.Simulated.hasAttribute(element, attribute);
-};
+if (document.documentElement.hasAttribute) {
+  Element.hasAttribute = function(element, attribute) {
+    return element.hasAttribute(attribute);
+  };
+}
+else {
+  Element.hasAttribute = Element.Methods.Simulated.hasAttribute;
+}
 
 /**
  *  Element.addMethods(methods) -> undefined
