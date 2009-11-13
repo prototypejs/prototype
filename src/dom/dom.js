@@ -536,10 +536,14 @@ Element.Methods = {
    *  **This method is deprecated, please see [[Element.childElements]]**.
   **/
   immediateDescendants: function(element) {
-    if (!(element = $(element).firstChild)) return [];
-    while (element && element.nodeType != 1) element = element.nextSibling;
-    if (element) return [element].concat($(element).nextSiblings());
-    return [];
+    var results = [], child = $(element).firstChild;
+    while (child) {
+      if (child.nodeType === 1) {
+        results.push(Element.extend(child));
+      }
+      child = child.nextSibling;
+    }
+    return results;
   },
 
   /**

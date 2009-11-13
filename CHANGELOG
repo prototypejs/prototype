@@ -1,3 +1,5 @@
+* Optimize Element#immediateDescendants. (kangax, Tobie Langel)
+
 * Remove unnecessary function object creation and `Number#times` in `Element._getContentFromAnonymousElement`. (kangax)
 
 * Eliminate runtime forking and long method lookup in `Element.hasAttribute`. (kangax)
