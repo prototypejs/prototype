@@ -483,7 +483,7 @@ Object.extend(String.prototype, (function() {
     truncate:       truncate,
     // Firefox 3.5+ supports String.prototype.trim
     // (`trim` is ~ 5x faster than `strip` in FF3.5)
-    strip:          String.prototype.trim ? String.prototype.trim : strip,
+    strip:          String.prototype.trim || strip,
     stripTags:      stripTags,
     stripScripts:   stripScripts,
     extractScripts: extractScripts,

@@ -1,3 +1,5 @@
+* Remove redundant ternary. (kangax)
+
 * Avoid repeating declaration statements where it makes sense, for slightly better runtime performance and minification. (kangax)
 
 * Make `Event.stopObserving` return element in all cases. [#810 state:resolved] (Yaffle, Tobie Langel)
