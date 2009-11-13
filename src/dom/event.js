@@ -379,12 +379,12 @@
     window.addEventListener('unload', Prototype.emptyFunction, false);
 
 
-  var _getDOMEventName = Prototype.K;
+  var _getDOMEventName = Prototype.K,
+      translations = { mouseenter: "mouseover", mouseleave: "mouseout" };
 
   if (!MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED) {
     _getDOMEventName = function(eventName) {
-      var translations = { mouseenter: "mouseover", mouseleave: "mouseout" };
-      return eventName in translations ? translations[eventName] : eventName;
+      return (translations[eventName] || eventName);
     };
   }
 
