@@ -295,6 +295,14 @@ Object.extend(String.prototype, (function() {
    *
    *  Splits the string character-by-character and returns an array with
    *  the result.
+   *
+   *  <h5>Examples</h5>
+   *  
+   *      'a'.toArray();
+   *      // -> ['a']
+   *      
+   *      'hello world!'.toArray();
+   *      // -> ['h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!']
   **/
   function toArray() {
     return this.split('');
