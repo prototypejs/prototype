@@ -137,6 +137,9 @@ Object.extend(String.prototype, (function() {
    *  `span`, and `abbr`. It _will not_ strip namespace-prefixed tags such
    *  as `h:table` or `xsl:template`.
    *
+   *  Watch out for `<script>` tags in your string, as `String#stripTags` will _not_ remove
+   *  their content. Use [[String#stripScripts]] to do so.
+   *
    *  <h5>Caveat User</h5>
    *
    *  Note that the processing `stripTags` does is good enough for most purposes, but
@@ -145,6 +148,17 @@ Object.extend(String.prototype, (function() {
    *  is completely devoid of HTML tags in the case of a user intentionally trying to circumvent
    *  tag restrictions. But then, you'll be running them through [[String#escapeHTML]] anyway,
    *  won't you?
+   *  
+   *  <h5>Examples</h5>
+   *  
+   *      'a <a href="#">link</a>'.stripTags();
+   *       // -> 'a link'
+   *      
+   *      'a <a href="#">link</a><script>alert("hello world!");</script>'.stripTags();
+   *      // -> 'a linkalert("hello world!");'
+   *      
+   *      'a <a href="#">link</a><script>alert("hello world!");</script>'.stripScripts().stripTags();
+   *      // -> 'a link'
   **/
   function stripTags() {
     return this.replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?>|<\/\w+>/gi, '');
