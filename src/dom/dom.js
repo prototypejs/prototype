@@ -1858,7 +1858,46 @@ Element.Methods = {
    *  Returns the given CSS property value of `element`. The property can be
    *  specified in either its CSS form (`font-size`) or its camelized form
    *  (`fontSize`).
-  **/
+   *  This method looks up the CSS property of an element whether it was applied inline
+   *  or in a stylesheet. It works around browser inconsistencies regarding `float`, `opacity`,
+   *  which returns a value between `0` (fully transparent) and `1` (fully opaque), position
+   *  properties (`left`, `top`, `right` and `bottom`) and when getting the dimensions (`width`
+   *  or `height`) of hidden elements.
+   *  
+   *  ##### Examples
+   *  
+   *      $(element).getStyle('font-size');
+   *      // equivalent:
+   *      
+   *      $(element).getStyle('fontSize');
+   *      // -> '12px'
+   *  
+   *  ##### Notes
+   *  
+   *  Internet Explorer returns literal values while other browsers return computed values.
+   *  Consider the following HTML snippet:
+   *  
+   *      language: html
+   *      <style>
+   *        #test {
+   *          font-size: 12px;
+   *          margin-left: 1em;
+   *        }
+   *      </style>
+   *      <div id="test"></div>
+   *  
+   *  
+   *      $('test').getStyle('margin-left');
+   *      // -> '1em' in Internet Explorer,
+   *      // -> '12px' elsewhere.
+   *  
+   *  Safari returns `null` for *any* non-inline property if the element is hidden (has
+   *  `display` set to `'none'`).
+   *  
+   *  Not all CSS shorthand properties are supported. You may only use the CSS properties
+   *  described in the [Document Object Model (DOM) Level 2 Style Specification](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle).
+   **/
+
   getStyle: function(element, style) {
     element = $(element);
     style = style == 'float' ? 'cssFloat' : style.camelize();
@@ -1880,14 +1919,44 @@ Element.Methods = {
     return $(element).getStyle('opacity');
   },
 
-  /**
+  /** 
    *  Element.setStyle(@element, styles) -> Element
-   *
-   *  Modifies `element`'s CSS style properties.
-   *
-   *  Styles are passed as an object of property-value pairs in which the
-   *  properties are specified in their camelized form (e.g., `fontSize`).
+   *  
+   *  Modifies `element`'s CSS style properties. Styles are passed as a hash of property-value
+   *  pairs in which the properties are specified in their camelized form.
+   *  
+   *  ##### Examples
+   *  
+   *      $(element).setStyle({
+   *        backgroundColor: '#900',
+   *        fontSize: '12px'
+   *      });
+   *      // -> Element
+   *  
+   *  ##### Notes
+   *  
+   *  The method transparently deals with browser inconsistencies for `float` (however,
+   *  as `float` is a reserved keyword, you must either escape it or use `cssFloat` instead) and
+   *  `opacity` (which accepts values between `0` -fully transparent- and `1` -fully opaque-).
+   *  You can safely use either of the following across all browsers:
+   *  
+   *      $(element).setStyle({
+   *        cssFloat: 'left',
+   *        opacity: 0.5
+   *      });
+   *      // -> Element
+   *      
+   *      $(element).setStyle({
+   *        'float': 'left', // notice how float is surrounded by single quotes
+   *        opacity: 0.5
+   *      });
+   *      // -> Element
+   *  
+   *  Not all CSS shorthand properties are supported. You may only use the CSS properties
+   *  described in the [Document Object Model (DOM) Level 2 Style Specification](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle).
+   *  
   **/
+
   setStyle: function(element, styles) {
     element = $(element);
     var elementStyle = element.style, match;
@@ -1906,11 +1975,27 @@ Element.Methods = {
     return element;
   },
 
-  /**
-   *  Element.setOpacity(@element, value) -> Element
-   *
-   *  Sets the opacity of `element`.
-  **/
+  /** 
+   *  Element.setOpacity(@element, opacity) -> [Element...]
+   *  
+   *  Sets the visual opacity of an element while working around inconsistencies in various
+   *  browsers. The `opacity` argument should be a floating point number, where the value
+   *  of `0` is fully transparent and `1` is fully opaque.
+   *  
+   *  [[Element.setStyle]] method uses [[Element.setOpacity]] internally when needed.
+   *  
+   *  ##### Examples
+   *  
+   *      var element = $('myelement');
+   *      // set to 50% transparency
+   *      element.setOpacity(0.5);
+   *      
+   *      // these are equivalent, but allow for setting more than
+   *      // one CSS property at once:
+   *      element.setStyle({ opacity: 0.5 });
+   *      element.setStyle("opacity: 0.5");
+   **/
+
   setOpacity: function(element, value) {
     element = $(element);
     element.style.opacity = (value == 1 || value === '') ? '' :
