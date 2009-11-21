@@ -1,10 +1,23 @@
 /** section: Language, related to: Hash
- *  $H([object]) -> Hash
- *
- *  Creates a `Hash`. This is purely a convenience wrapper around the Hash
- *  constructor, it does not do anything other than pass any argument it's
- *  given into the Hash constructor and return the result.
- **/
+ *  $H([obj]) -> Hash
+ *  
+ *  Creates a [`Hash`](/api/hash) (which is synonymous to "map" or "associative array"
+ *  for our purposes). A convenience wrapper around the `Hash` constructor, with a safeguard
+ *  that lets you pass an existing `Hash` object and get it back untouched (instead of
+ *  uselessly cloning it).
+ *  
+ *  The `$H` function is the shorter way to obtain a hash (prior to 1.5 final, it was
+ *  the *only* proper way of getting one).
+ *  
+ *  ##### Example
+ *  
+ *      var h = $H({name: 'John', age: 26, country: 'Australia'});
+ *      // Equivalent to:
+ *      var h = new Hash({name: 'John', age: 26, country: 'Australia'});
+ *      // Can then be accessed the classic Hash way
+ *      h.get('country');
+ *      // -> 'Australia'
+**/
 function $H(object) {
   return new Hash(object);
 };

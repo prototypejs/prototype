@@ -1,11 +1,59 @@
 /** section: Language, related to: Array
- *    $A(iterable) -> Array
- *
- *  Accepts an array-like collection (anything with numeric indices) and returns
- *  its equivalent as an actual Array object.
- *  This method is a convenience alias of [[Array.from]], but is the preferred way
- *  of casting to an Array.
- **/
+ *  $A(iterable) -> actualArray
+ *  
+ *  Accepts an array-like collection (anything with numeric indices) and returns its equivalent
+ *  as an actual `Array` object. This method is a convenience alias of [`Array.from`](/api/array/from),
+ *  but is the preferred way of casting to an `Array`.
+ *  
+ *  The primary use of `$A()` is to obtain an actual `Array` object based on anything
+ *  that could pass as an array (e.g. the `NodeList` or `HTMLCollection` objects returned
+ *  by numerous DOM methods, or the predefined `arguments` reference within your functions).
+ *  
+ *  The reason you would want an actual `Array` is simple: [Prototype extends `Array`](/api/array)
+ *  to equip it with numerous extra methods, and also mixes in the [`Enumerable`](/api/enumerable)
+ *  module, which brings in another boatload of nifty methods. Therefore, in Prototype,
+ *  actual `Array`s trump any other collection type you might otherwise get.
+ *  
+ *  The conversion performed is rather simple: `null`, `undefined` and `false` become
+ *  an empty array; any object featuring an explicit `toArray` method (as many Prototype
+ *  objects do) has it invoked; otherwise, we assume the argument "looks like an array"
+ *  (e.g. features a `length` property and the `[]` operator), and iterate over its components
+ *  in the usual way.
+ *  
+ *  When passed an array, `$A` _makes a copy_ of that array and returns it.
+ *  
+ *  ##### Examples
+ *  
+ *  The well-known DOM method [`document.getElementsByTagName()`](http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-A6C9094)
+ *  doesn't return an `Array`, but a `NodeList` object that implements the basic array
+ *  "interface." Internet Explorer does not allow us to extend `Enumerable` onto `NodeList.prototype`,
+ *  so instead we cast the returned `NodeList` to an `Array`:
+ *  
+ *      var paras = $A(document.getElementsByTagName('p'));
+ *      paras.each(Element.hide);
+ *      $(paras.last()).show();
+ *  
+ *  Notice we had to use `each` and `Element.hide` because `$A` doesn't perform DOM extensions,
+ *  since the array could contain anything (not just DOM elements). To use the `hide`
+ *  instance method we first must make sure all the target elements are extended:
+ *  
+ *      $A(document.getElementsByTagName('p')).map(Element.extend).invoke('hide');
+ *  
+ *  Want to display your arguments easily? `Array` features a `join` method, but the `arguments`
+ *  value that exists in all functions *does not* inherit from `Array`. So, the tough
+ *  way, or the easy way?
+ *  
+ *      // The hard way...
+ *      function showArgs() {
+ *        alert(Array.prototype.join.call(arguments, ', '));
+ *      }
+ *      
+ *      // The easy way...
+ *      function showArgs() {
+ *        alert($A(arguments).join(', '));
+ *      }
+**/
+
 function $A(iterable) {
   if (!iterable) return [];
   // Safari <2.0.4 crashes when accessing property of a node list with property accessor.
@@ -17,13 +65,30 @@ function $A(iterable) {
 }
 
 /** section: Language, related to: Array
- *  $w(string) -> Array
- *  - string (String): A string with zero or more spaces.
- *
- *  Splits a string into an array, treating all whitespace as delimiters.
- *
- *  Equivalent to Ruby's `%w{foo bar}` or Perl's `qw(foo bar)`.
+ *  $w(String) -> Array
+ *  
+ *  Splits a string into an `Array`, treating all whitespace as delimiters. Equivalent
+ *  to Ruby's `%w{foo bar}` or Perl's `qw(foo bar)`.
+ *  
+ *  This is one of those life-savers for people who just hate commas in literal arrays :-)
+ *  
+ *  ### Examples
+ *  
+ *      $w('apples bananas kiwis')
+ *      // -> ['apples', 'bananas', 'kiwis']
+ *  
+ *  This can slightly shorten code when writing simple iterations:
+ *  
+ *      $w('apples bananas kiwis').each(function(fruit){
+ *        var message = 'I like ' + fruit
+ *        // do something with the message
+ *      })
+ *  
+ *  This also becomes sweet when combined with [`Element`](/api/element) functions:
+ *  
+ *      $w('ads navbar funkyLinks').each(Element.hide);
 **/
+
 function $w(string) {
   if (!Object.isString(string)) return [];
   string = string.strip();

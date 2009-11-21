@@ -22,11 +22,45 @@
 
 /** section: Language
  *  $R(start, end[, exclusive = false]) -> ObjectRange
- *
- *  Creates a new ObjectRange object.
- *  This method is a convenience wrapper around the [[ObjectRange]] constructor,
- *  but $R is the preferred alias.
+ *  
+ *  Creates a new `ObjectRange` object. This method is a convenience wrapper around the
+ *  [`ObjectRange`](/api/objectRange) constructor, but `$R` is the preferred alias.
+ *  
+ *  [`ObjectRange`](/api/objectRange) instances represent a range of consecutive values,
+ *  be they numerical, textual, or of another type that semantically supports value ranges.
+ *  See the type's documentation for further details, and to discover how your own objects
+ *  can support value ranges.
+ *  
+ *  The `$R` function takes exactly the same arguments as the original constructor: the
+ *  **lower and upper bounds** (value of the same, proper type), and **whether the upper
+ *  bound is exclusive** or not. By default, the upper bound is inclusive.
+ *  
+ *  ##### Examples
+ *  
+ *      $R(0, 10).include(10)
+ *      // -> true
+ *      
+ *      $A($R(0, 5)).join(', ')
+ *      // -> '0, 1, 2, 3, 4, 5'
+ *      
+ *      $A($R('aa', 'ah')).join(', ')
+ *      // -> 'aa, ab, ac, ad, ae, af, ag, ah'
+ *      
+ *      $R(0, 10, true).include(10)
+ *      // -> false
+ *      
+ *      $R(0, 10, true).each(function(value) {
+ *        // invoked 10 times for value = 0 to 9
+ *      });
+ *  
+ *  Note that `ObjectRange` mixes in the [`Enumerable`](/api/enumerable) module: this
+ *  makes it easy to convert a range to an `Array` (`Enumerable` provides the [`toArray`](/api/enumerable/toArray)
+ *  method, which makes the [`$A`](dollar-a) conversion straightforward), or to iterate
+ *  through values. (Note, however, that getting the bounds back will be more efficiently
+ *  done using the `start` and `end` properties than calling the [`min()`](/api/enumerable/min)
+ *  and [`max()`](/api/enumerable/max) methods).
 **/
+
 function $R(start, end, exclusive) {
   return new ObjectRange(start, end, exclusive);
 }
