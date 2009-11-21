@@ -23,14 +23,22 @@
 
   var _toString = Object.prototype.toString;
 
-  /**
-   *  Object.extend(destination, source) -> Object
-   *  - destination (Object): The object to receive the new properties.
-   *  - source (Object): The object whose properties will be duplicated.
-   *
-   *  Copies all properties from the source to the destination object. Returns
-   *  the destination object.
-  **/
+/**
+ *  Object.extend(destination, source) -> Object
+ *  - destination (Object): The object to receive the new properties.
+ *  - source (Object): The object whose properties will be duplicated.
+ *
+ *  Copies all properties from the source to the destination object. Used by Prototype
+ *  to simulate inheritance (rather statically) by copying to prototypes.
+ *  
+ *  Documentation should soon become available that describes how Prototype implements
+ *  OOP, where you will find further details on how Prototype uses [[Object.extend]] and
+ *  [[Class.create]] (something that may well change in version 2.0). It will be linked
+ *  from here.
+ *  
+ *  Do not mistake this method with its quasi-namesake [[Element.extend]],
+ *  which implements Prototype's (much more complex) DOM extension mechanism.
+**/
   function extend(destination, source) {
     for (var property in source)
       destination[property] = source[property];
@@ -253,26 +261,29 @@
    *  Do note that this is a _shallow_ copy, not a _deep_ copy. Nested objects
    *  will retain their references.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      var original = {name: 'primaryColors', values: ['red', 'green', 'blue']};
    *      var copy = Object.clone(original);
+   *
    *      original.name;
    *      // -> "primaryColors"
    *      original.values[0];
    *      // -> "red"
    *      copy.name;
    *      // -> "primaryColors"
+   *      
    *      copy.name = "secondaryColors";
    *      original.name;
    *      // -> "primaryColors"
    *      copy.name;
    *      // -> "secondaryColors"
+   *      
    *      copy.values[0] = 'magenta';
    *      copy.values[1] = 'cyan';
    *      copy.values[2] = 'yellow';
    *      original.values[0];
-   *      // -> "magenta" (it was a shallow copy, so they shared the array)
+   *      // -> "magenta" (it's a shallow copy, so they share the array)
   **/
   function clone(object) {
     return extend({ }, object);
