@@ -459,12 +459,18 @@ Element.Methods = {
    *  won't do!) of `element` that points to a single DOM node (e.g.,
    *  `nextSibling` or `parentNode`).
   **/
-  recursivelyCollect: function(element, property) {
+  recursivelyCollect: function(element, property, maximumLength) {
     element = $(element);
+    maximumLength = maximumLength || -1;
     var elements = [];
-    while (element = element[property])
+    
+    while (element = element[property]) {
       if (element.nodeType == 1)
         elements.push(Element.extend(element));
+      if (elements.length == maximumLength) 
+        break;
+    }
+    
     return elements;
   },
 
@@ -552,7 +558,7 @@ Element.Methods = {
    *  Collects all of `element`'s previous siblings and returns them as an
    *  array of elements.
   **/
-  previousSiblings: function(element) {
+  previousSiblings: function(element, maximumLength) {
     return Element.recursivelyCollect(element, 'previousSibling');
   },
 
@@ -584,9 +590,10 @@ Element.Methods = {
    *  Checks if `element` matches the given CSS selector.
   **/
   match: function(element, selector) {
+    element = $(element);
     if (Object.isString(selector))
-      selector = new Selector(selector);
-    return selector.match($(element));
+      return Prototype.Selector.match(element, selector);
+    return selector.match(element);
   },
 
   /**
@@ -604,7 +611,7 @@ Element.Methods = {
     if (arguments.length == 1) return $(element.parentNode);
     var ancestors = Element.ancestors(element);
     return Object.isNumber(expression) ? ancestors[expression] :
-      Selector.findElement(ancestors, expression, index);
+      Prototype.Selector.filter(ancestors, expression)[index || 0];
   },
 
   /**
@@ -636,10 +643,14 @@ Element.Methods = {
   **/
   previous: function(element, expression, index) {
     element = $(element);
-    if (arguments.length == 1) return $(Selector.handlers.previousElementSibling(element));
-    var previousSiblings = Element.previousSiblings(element);
-    return Object.isNumber(expression) ? previousSiblings[expression] :
-      Selector.findElement(previousSiblings, expression, index);
+    if (Object.isNumber(expression)) index = expression, expression = false;
+    if (!Object.isNumber(index)) index = 0;
+    
+    if (expression) {
+      return Prototype.Selector.filter(element.previousSiblings(), expression)[index];
+    } else {
+      return element.recursivelyCollect("previousSibling", index + 1)[index];
+    }
   },
 
   /**
@@ -654,23 +665,29 @@ Element.Methods = {
   **/
   next: function(element, expression, index) {
     element = $(element);
-    if (arguments.length == 1) return $(Selector.handlers.nextElementSibling(element));
-    var nextSiblings = Element.nextSiblings(element);
-    return Object.isNumber(expression) ? nextSiblings[expression] :
-      Selector.findElement(nextSiblings, expression, index);
+    if (Object.isNumber(expression)) index = expression, expression = false;
+    if (!Object.isNumber(index)) index = 0;
+    
+    if (expression) {
+      return Prototype.Selector.filter(element.nextSiblings(), expression)[index];
+    } else {
+      var maximumLength = Object.isNumber(index) ? index + 1 : 1;
+      return element.recursivelyCollect("nextSibling", index + 1)[index];
+    }
   },
 
 
   /**
-   *  Element.select(@element, selector...) -> [Element...]
-   *  - selector (String): A CSS selector.
+   *  Element.select(@element, expression...) -> [Element...]
+   *  - expression (String): A CSS selector.
    *
    *  Takes an arbitrary number of CSS selectors and returns an array of
    *  descendants of `element` that match any of them.
   **/
   select: function(element) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    return Selector.findChildElements(element, args);
+    element = $(element);
+    var expressions = Array.prototype.slice.call(arguments, 1).join(', ');
+    return Prototype.Selector.select(expressions, element);
   },
 
   /**
@@ -704,8 +721,9 @@ Element.Methods = {
    *      // -> [li#lon, li#tok]
   **/
   adjacent: function(element) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    return Selector.findChildElements(element.parentNode, args).without(element);
+    element = $(element);
+    var expressions = Array.prototype.slice.call(arguments, 1).join(', ');
+    return Prototype.Selector.select(expressions, element.parentNode).without(element);
   },
 
   /**

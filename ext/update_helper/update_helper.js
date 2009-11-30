@@ -1,4 +1,4 @@
-/* Update Helper (c) 2008 Tobie Langel
+/* Update Helper (c) 2008-2009 Tobie Langel
  * 
  * Requires Prototype >= 1.6.0
  * 
@@ -54,9 +54,12 @@ var UpdateHelper = Class.create({
     try {
       throw new Error("stack");
     } catch(e) {
-      return (e.stack || '').match(this.Regexp).reject(function(path) {
-        return /(prototype|unittest|update_helper)\.js/.test(path);
-      }).join("\n");
+      var match = (e.stack || '').match(this.Regexp);
+      if (match) {
+        return match.reject(function(path) {
+          return (/(prototype|unittest|update_helper)\.js/).test(path);
+        }).join("\n");
+      } else { return ''; }
     }
   },
   
