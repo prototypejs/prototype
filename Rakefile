@@ -43,11 +43,10 @@ module PrototypeHelper
     }.merge(options)
     
     require_sprockets
-    load_path = [SRC_DIR, File.join(ROOT_DIR, 'ext', 'sizzle')]
+    load_path = [SRC_DIR]
     
     if selector = options[:selector_engine]
-      get_selector_engine(selector)
-      load_path << File.join(ROOT_DIR, 'vendor', selector)
+      load_path << get_selector_engine(selector)
     end
     
     secretary = Sprockets::Secretary.new(
@@ -98,14 +97,15 @@ module PrototypeHelper
   end
   
   def self.get_selector_engine(name)
-    submodule = File.join(ROOT_DIR, 'vendor', name, 'repository')
-    ext = File.join(ROOT_DIR, 'ext', name)
-    unless File.exist?(submodule) || File.exist?(ext)
-      get_submodule('the required selector engine', "#{name}/repository")
-      unless File.exist?(submodule)
-        puts "The selector engine you required isn't available at vendor/#{name}.\n\n"
-        exit
-      end
+    submodule_path = File.join(ROOT_DIR, "vendor", name)
+    return submodule_path if File.exist?(File.join(submodule_path, "repository", ".git"))
+    ext_path = File.join(ROOT_DIR, "ext", name)
+    return ext_path if File.exist?(ext_path)
+    
+    get_submodule('the required selector engine', "#{name}/repository")
+    unless File.exist?(submodule)
+      puts "The selector engine you required isn't available at vendor/#{name}.\n\n"
+      exit
     end
   end
   
