@@ -43,7 +43,7 @@ module PrototypeHelper
     }.merge(options)
     
     require_sprockets
-    load_path = [SRC_DIR]
+    load_path = [SRC_DIR, File.join(ROOT_DIR, 'ext', 'sizzle')]
     
     if selector = options[:selector_engine]
       get_selector_engine(selector)
@@ -98,10 +98,11 @@ module PrototypeHelper
   end
   
   def self.get_selector_engine(name)
-    file = File.join(ROOT_DIR, 'vendor', name, 'repository')
-    unless File.exists?(file)
+    submodule = File.join(ROOT_DIR, 'vendor', name, 'repository')
+    ext = File.join(ROOT_DIR, 'ext', name)
+    unless File.exist?(submodule) || File.exist?(ext)
       get_submodule('the required selector engine', "#{name}/repository")
-      unless File.exists?(file)
+      unless File.exist?(submodule)
         puts "The selector engine you required isn't available at vendor/#{name}.\n\n"
         exit
       end
