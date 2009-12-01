@@ -103,7 +103,7 @@ module PrototypeHelper
     return ext_path if File.exist?(ext_path)
     
     get_submodule('the required selector engine', "#{name}/repository")
-    unless File.exist?(submodule)
+    unless File.exist?(submodule_path)
       puts "The selector engine you required isn't available at vendor/#{name}.\n\n"
       exit
     end
