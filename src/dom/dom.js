@@ -611,7 +611,7 @@ Element.Methods = {
     if (arguments.length == 1) return $(element.parentNode);
     var ancestors = Element.ancestors(element);
     return Object.isNumber(expression) ? ancestors[expression] :
-      Prototype.Selector.filter(ancestors, expression)[index || 0];
+      Prototype.Selector.find(ancestors, expression, index);
   },
 
   /**
@@ -647,7 +647,7 @@ Element.Methods = {
     if (!Object.isNumber(index)) index = 0;
     
     if (expression) {
-      return Prototype.Selector.filter(element.previousSiblings(), expression)[index];
+      return Prototype.Selector.find(element.previousSiblings(), expression, index);
     } else {
       return element.recursivelyCollect("previousSibling", index + 1)[index];
     }
@@ -669,7 +669,7 @@ Element.Methods = {
     if (!Object.isNumber(index)) index = 0;
     
     if (expression) {
-      return Prototype.Selector.filter(element.nextSiblings(), expression)[index];
+      return Prototype.Selector.find(element.nextSiblings(), expression, index);
     } else {
       var maximumLength = Object.isNumber(index) ? index + 1 : 1;
       return element.recursivelyCollect("nextSibling", index + 1)[index];

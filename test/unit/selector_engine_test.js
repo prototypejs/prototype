@@ -41,13 +41,10 @@ new Test.Unit.Runner({
     this.assertEqual(false, Prototype.Selector.match(element, '.non_existent'));
   },
   
-  testFilter: function() {
+  testFind: function() {
     var elements = document.getElementsByTagName('*'),
-        filtered = Prototype.Selector.filter(elements, '.test_class');
-        
-    this.assert(Object.isArray(filtered));
-    this.assertEqual(2, filtered.length);
-    this.assertEqual('test_div_parent', filtered[0].id);
-    this.assertEqual('test_div_child', filtered[1].id);
+        expression = '.test_class';
+    this.assertEqual('test_div_parent', Prototype.Selector.find(elements, expression).id);
+    this.assertEqual('test_div_child', Prototype.Selector.find(elements, expression, 1).id);
   }
 });

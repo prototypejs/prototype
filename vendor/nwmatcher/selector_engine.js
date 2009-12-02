@@ -6,22 +6,10 @@ Prototype.Selector = (function(engine) {
     return engine.select(selector, scope || document, null, Element.extend);
   }
 
-  function filter(elements, selector) {
-    var results = [], element, i = 0;
-    while (element = elements[i++]) {
-      if (engine.match(element, selector)) {
-        Element.extend(element);
-        results.push(element);
-      }
-    }
-    return results;
-  }
-  
   return {
     engine:  engine,
     select:  select,
-    match:   engine.match,
-    filter:  filter
+    match:   engine.match
   };
 })(NW.Dom);
 

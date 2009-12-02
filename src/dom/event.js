@@ -149,14 +149,10 @@
   function findElement(event, expression) {
     var element = Event.element(event);
     if (!expression) return element;
-    while (element) {
-      if (Prototype.Selector.match(element, expression)) {
-        return Element.extend(element);
-      }
-      element = element.parentNode
-    }
+    var elements = [element].concat(element.ancestors());
+    return Prototype.Selector.find(elements, expression, 0);
   }
-
+  
   /**
    *  Event.pointer(@event) -> Object
    *
