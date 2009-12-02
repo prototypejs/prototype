@@ -98,9 +98,9 @@ module PrototypeHelper
   end
   
   def self.get_selector_engine(name)
+    return if name == DEFAULT_SELECTOR_ENGINE || !name
     submodule_path = File.join(ROOT_DIR, "vendor", name)
     return submodule_path if File.exist?(File.join(submodule_path, "repository", ".git"))
-    return if name == DEFAULT_SELECTOR_ENGINE
     
     get_submodule('the required selector engine', "#{name}/repository")
     unless File.exist?(submodule_path)
