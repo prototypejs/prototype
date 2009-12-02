@@ -1,5 +1,5 @@
 Prototype._original_property = window.Sizzle;
-//= require "repository/sizzle"
+//= require "sizzle"
 
 Prototype.Selector = (function(engine) {
   function extend(elements) {
