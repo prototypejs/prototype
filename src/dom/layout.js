@@ -639,7 +639,41 @@
   **/
   function measure(element, property) {
     return $(element).getLayout().get(property);  
+  }  
+
+  /**
+   *  Element.getDimensions(@element) -> Object
+   *
+   *  Finds the computed width and height of `element` and returns them as
+   *  key/value pairs of an object.
+  **/
+  function getDimensions(element) {
+    var layout = $(element).getLayout();    
+    return {
+      width:  layout.measure('width'),
+      height: layout.measure('height')
+    };    
   }
+  
+  /**
+   *  Element.getOffsetParent(@element) -> Element
+   *
+   *  Returns `element`'s closest _positioned_ ancestor. If none is found, the
+   *  `body` element is returned.
+  **/
+  function getOffsetParent(element) {
+    if (element.offsetParent) return $(element.offsetParent);
+    if (element === document.body) return $(element);
+    
+    while ((element = element.parentNode) && element !== document.body) {
+      if (Element.getStyle(element, 'position') !== 'static') {
+        return (element.nodeName === 'HTML') ? $(document.body) : $(element);
+      }
+    }
+    
+    return $(document.body);
+  }
+  
   
   /**
    *  Element.cumulativeOffset(@element) -> Element.Offset
@@ -731,17 +765,79 @@
     return new Element.Offset(valueL, valueT);
   }
   
+  /**
+   *  Element.absolutize(@element) -> Element
+   *
+   *  Turns `element` into an absolutely-positioned element _without_
+   *  changing its position in the page layout.
+  **/
+  function absolutize(element) {
+    element = $(element);
+    
+    if (Element.getStyle(element, 'position') === 'absolute') {
+      return element;
+    }
+    
+    var offsetParent = getOffsetParent(element);    
+    var eOffset = element.viewportOffset(), pOffset = 
+     offsetParent.viewportOffset();
+     
+    var offset = eOffset.relativeTo(pOffset);    
+    var layout = element.get('layout');    
+    
+    element.store('prototype_absolutize_original_styles', {
+      left:   element.getStyle('left'),
+      top:    element.getStyle('top'),
+      width:  element.getStyle('width'),
+      height: element.getStyle('height')
+    });
+    
+    element.setStyle({
+      position: 'absolute',
+      top:    offset.top + 'px',
+      left:   offset.left + 'px',
+      width:  layout.get('width') + 'px',
+      height: layout.get('height') + 'px'
+    });    
+  }
+  
+  /**
+   *  Element.relativize(@element) -> Element
+   *
+   *  Turns `element` into a relatively-positioned element without changing
+   *  its position in the page layout.
+   *
+   *  Used to undo a call to [[Element.absolutize]].
+  **/
+  function relativize(element) {
+    element = $(element);
+    if (Element.getStyle(element, 'position') === 'relative') {
+      return element;
+    }
+    
+    // Restore the original styles as captured by Element#absolutize.
+    var originalStyles = 
+     element.retrieve('prototype_absolutize_original_styles');
+    
+    if (originalStyles) element.setStyle(originalStyles);
+    return element;
+  }
+  
   Element.addMethods({
     getLayout:              getLayout,
     measure:                measure,
+    getDimensions:          getDimensions,    
+    getOffsetParent:        getOffsetParent,
     cumulativeOffset:       cumulativeOffset,
     positionedOffset:       positionedOffset,
     cumulativeScrollOffset: cumulativeScrollOffset,
-    viewportOffset:         viewportOffset
+    viewportOffset:         viewportOffset,    
+    absolutize:             absolutize,
+    relativize:             relativize    
   });
   
   function isBody(element) {
-    return $w('BODY HTML').include(element.nodeName.toUpperCase());
+    return element.nodeName.toUpperCase() === 'BODY';
   }
   
   // If the browser supports the nonstandard `getBoundingClientRect`
