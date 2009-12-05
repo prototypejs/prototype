@@ -9,6 +9,17 @@
  *  inheritance](http://prototypejs.org/learn/class-inheritance).
 **/
 var Class = (function() {
+  
+  // Some versions of JScript fail to enumerate over properties, names of which 
+  // correspond to non-enumerable properties in the prototype chain
+  var IS_DONTENUM_BUGGY = (function(){
+    for (var p in { toString: 1 }) {
+      // check actual property name, so that it works with augmented Object.prototype
+      if (p === 'toString') return false;
+    }
+    return true;
+  })();
+  
   /**
    *  Class.create([superclass][, methods...]) -> Class
    *    - superclass (Class): The optional superclass to inherit methods from.
@@ -59,7 +70,7 @@ var Class = (function() {
       parent.subclasses.push(klass);
     }
 
-    for (var i = 0; i < properties.length; i++)
+    for (var i = 0, length = properties.length; i < length; i++)
       klass.addMethods(properties[i]);
 
     if (!klass.prototype.initialize)
@@ -135,12 +146,13 @@ var Class = (function() {
    *      //-> alerts "You should probably run. He looks really mad."
   **/
   function addMethods(source) {
-    var ancestor   = this.superclass && this.superclass.prototype;
-    var properties = Object.keys(source);
+    var ancestor   = this.superclass && this.superclass.prototype,
+        properties = Object.keys(source);
 
-    // IE6 doesn't enumerate toString and valueOf properties,
-    // Force copy if they're not coming from Object.prototype.
-    if (!Object.keys({ toString: true }).length) {
+    // IE6 doesn't enumerate `toString` and `valueOf` (among other built-in `Object.prototype`) properties,
+    // Force copy if they're not Object.prototype ones.
+    // Do not copy other Object.prototype.* for performance reasons
+    if (IS_DONTENUM_BUGGY) {
       if (source.toString != Object.prototype.toString)
         properties.push("toString");
       if (source.valueOf != Object.prototype.valueOf)
@@ -150,7 +162,7 @@ var Class = (function() {
     for (var i = 0, length = properties.length; i < length; i++) {
       var property = properties[i], value = source[property];
       if (ancestor && Object.isFunction(value) &&
-          value.argumentNames().first() == "$super") {
+          value.argumentNames()[0] == "$super") {
         var method = value;
         value = (function(m) {
           return function() { return ancestor[m].apply(this, arguments); };

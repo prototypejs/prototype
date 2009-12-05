@@ -356,14 +356,6 @@ new Test.Unit.Runner({
     this.assert(typeof results[2].show == 'function');
   },
   
-  testCountedIsNotAnAttribute: function() {
-    var el = $('list');
-    Selector.handlers.mark([el]);
-    this.assert(!el.innerHTML.include("_counted"));
-    Selector.handlers.unmark([el]);
-    this.assert(!el.innerHTML.include("_counted"));      
-  },
-
   testCopiedNodesGetIncluded: function() {
     this.assertElementsMatch(
       Selector.matchElements($('counted_container').descendants(), 'div'),
@@ -412,5 +404,11 @@ new Test.Unit.Runner({
     document.body.appendChild(el);
     this.assertEqual(2, $(el).select('ul li').length);
     document.body.removeChild(el);
+  },
+  
+  testFindElementWithIndexWhenElementsAreNotInDocumentOrder: function() {
+    var ancestors = $("target_1").ancestors();
+    this.assertEqual($("container_2"), Selector.findElement(ancestors, "[container], .container", 0));
+    this.assertEqual($("container_1"), Selector.findElement(ancestors, "[container], .container", 1));
   }
 });

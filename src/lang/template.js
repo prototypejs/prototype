@@ -133,8 +133,9 @@ var Template = Class.create({
       var before = match[1] || '';
       if (before == '\\') return match[2];
 
-      var ctx = object, expr = match[3];
-      var pattern = /^([^.[]+|\[((?:.*?[^\\])?)\])(\.|\[|$)/;
+      var ctx = object, expr = match[3],
+          pattern = /^([^.[]+|\[((?:.*?[^\\])?)\])(\.|\[|$)/;
+          
       match = pattern.exec(expr);
       if (match == null) return before;
 

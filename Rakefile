@@ -13,24 +13,63 @@ module PrototypeHelper
   TEST_UNIT_DIR = File.join(TEST_DIR, 'unit')
   TMP_DIR       = File.join(TEST_UNIT_DIR, 'tmp')
   VERSION       = YAML.load(IO.read(File.join(SRC_DIR, 'constants.yml')))['PROTOTYPE_VERSION']
+  DEFAULT_SELECTOR_ENGINE = 'sizzle'
+
+  %w[sprockets pdoc unittest_js caja_builder].each do |name|
+    $:.unshift File.join(PrototypeHelper::ROOT_DIR, 'vendor', name, 'lib')
+  end
+
+  def self.has_git?
+    begin
+      `git --version`
+      return true
+    rescue Error => e
+      return false
+    end
+  end
   
-  def self.sprocketize(path, source, destination = nil, strip_comments = true)
+  def self.require_git
+    return if has_git?
+    puts "\nPrototype requires Git in order to load its dependencies."
+    puts "\nMake sure you've got Git installed and in your path."
+    puts "\nFor more information, visit:\n\n"
+    puts "  http://book.git-scm.com/2_installing_git.html"
+    exit
+  end
+  
+  def self.sprocketize(options = {})
+    options = {
+      :destination    => File.join(DIST_DIR, options[:source]),
+      :strip_comments => true
+    }.merge(options)
+    
     require_sprockets
+    load_path = [SRC_DIR]
+    
+    if selector_path = get_selector_engine(options[:selector_engine])
+      load_path << selector_path
+    end
+    
     secretary = Sprockets::Secretary.new(
-      :root           => File.join(ROOT_DIR, path),
-      :load_path      => [SRC_DIR],
-      :source_files   => [source],
-      :strip_comments => strip_comments
+      :root           => File.join(ROOT_DIR, options[:path]),
+      :load_path      => load_path,
+      :source_files   => [options[:source]],
+      :strip_comments => options[:strip_comments]
     )
     
-    destination = File.join(DIST_DIR, source) unless destination
-    secretary.concatenation.save_to(destination)
+    secretary.concatenation.save_to(options[:destination])
   end
   
   def self.build_doc_for(file)
     mkdir_p TMP_DIR
     temp_path = File.join(TMP_DIR, "prototype.temp.js")
-    sprocketize('src', file, temp_path, false)
+    sprocketize(
+      :path => 'src',
+      :source => file,
+      :destination => temp_path,
+      :selector_engine => ENV['SELECTOR_ENGINE'] || DEFAULT_SELECTOR_ENGINE,
+      :strip_comments => false
+    )
     rm_rf DOC_DIR
     
     PDoc::Runner.new(temp_path, {
@@ -58,17 +97,44 @@ module PrototypeHelper
     require_submodule('CajaBuilder', 'caja_builder')
   end
   
+  def self.get_selector_engine(name)
+    return if name == DEFAULT_SELECTOR_ENGINE || !name
+    submodule_path = File.join(ROOT_DIR, "vendor", name)
+    return submodule_path if File.exist?(File.join(submodule_path, "repository", ".git"))
+    
+    get_submodule('the required selector engine', "#{name}/repository")
+    unless File.exist?(submodule_path)
+      puts "The selector engine you required isn't available at vendor/#{name}.\n\n"
+      exit
+    end
+  end
+  
+  def self.get_submodule(name, path)
+    require_git
+    puts "\nYou seem to be missing #{name}. Obtaining it via git...\n\n"
+    
+    Kernel.system("git submodule init")
+    return true if Kernel.system("git submodule update vendor/#{path}")
+    # If we got this far, something went wrong.
+    puts "\nLooks like it didn't work. Try it manually:\n\n"
+    puts "  $ git submodule init"
+    puts "  $ git submodule update vendor/#{path}"
+    false
+  end
+  
   def self.require_submodule(name, path)
     begin
       require path
     rescue LoadError => e
+      # Wait until we notice that a submodule is missing before we bother the
+      # user about installing git. (Maybe they brought all the files over
+      # from a different machine.)
       missing_file = e.message.sub('no such file to load -- ', '')
       if missing_file == path
-        puts "\nIt looks like you're missing #{name}. Just run:\n\n"
-        puts "  $ git submodule init"
-        puts "  $ git submodule update vendor/#{path}"
-        puts "\nand you should be all set.\n\n"
+        # Missing a git submodule.
+        retry if get_submodule(name, path)
       else
+        # Missing a gem.
         puts "\nIt looks like #{name} is missing the '#{missing_file}' gem. Just run:\n\n"
         puts "  $ gem install #{missing_file}"
         puts "\nand you should be all set.\n\n"
@@ -78,15 +144,15 @@ module PrototypeHelper
   end
 end
 
-%w[sprockets pdoc unittest_js caja_builder].each do |name|
-  $:.unshift File.join(PrototypeHelper::ROOT_DIR, 'vendor', name, 'lib')
-end
-
 task :default => [:dist, :dist_helper, :package, :clean_package_source]
 
 desc "Builds the distribution."
 task :dist do
-  PrototypeHelper.sprocketize("src", "prototype.js")
+  PrototypeHelper.sprocketize(
+    :path => 'src',
+    :source => 'prototype.js',
+    :selector_engine => ENV['SELECTOR_ENGINE'] || PrototypeHelper::DEFAULT_SELECTOR_ENGINE
+  )
 end
 
 namespace :doc do
@@ -104,7 +170,7 @@ task :doc => ['doc:build']
 
 desc "Builds the updating helper."
 task :dist_helper do
-  PrototypeHelper.sprocketize("ext/update_helper", "prototype_update_helper.js")
+  PrototypeHelper.sprocketize(:path => 'ext/update_helper', :source => 'prototype_update_helper.js')
 end
 
 Rake::PackageTask.new('prototype', PrototypeHelper::VERSION) do |package|

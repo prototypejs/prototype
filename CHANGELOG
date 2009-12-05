@@ -1,3 +1,15 @@
+* Avoid object creation and an unnecessary function call in `Class#addMethods`, when working around JScript DontEnum bug. Replace with feature test and a simple boolean check at runtime. (kangax)
+
+* Optimize Element#immediateDescendants. (kangax, Tobie Langel)
+
+* Remove unnecessary function object creation and `Number#times` in `Element._getContentFromAnonymousElement`. (kangax)
+
+* Eliminate runtime forking and long method lookup in `Element.hasAttribute`. (kangax)
+
+* Remove redundant ternary. (kangax)
+
+* Avoid repeating declaration statements where it makes sense, for slightly better runtime performance and minification. (kangax)
+
 * Make `Event.stopObserving` return element in all cases. [#810 state:resolved] (Yaffle, Tobie Langel)
 
 * String#startsWith, String#endsWith performance optimization (Yaffle, Tobie Langel, kangax)

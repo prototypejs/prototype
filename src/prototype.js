@@ -35,9 +35,9 @@ var Prototype = {
       if (typeof window.HTMLDivElement !== 'undefined')
         return true;
 
-      var div = document.createElement('div');
-      var form = document.createElement('form');
-      var isSupported = false;
+      var div = document.createElement('div'),
+          form = document.createElement('form'),
+          isSupported = false;
 
       if (div['__proto__'] && (div['__proto__'] !== form['__proto__'])) {
         isSupported = true;
