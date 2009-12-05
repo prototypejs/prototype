@@ -89,6 +89,13 @@
       return element;
     };
   }
+
+  // Converts the layout hash property names back to the CSS equivalents.
+  // For now, only the border properties differ.
+  function cssNameFor(key) {
+    if (key.includes('border')) return key + '-width';
+    return key;
+  }
   
   
   /**
@@ -341,7 +348,39 @@
       var value = COMPUTATIONS[property].call(this, this.element);
       this._set(property, value);
       return value;
-    }    
+    },
+    
+    /**
+     *  Element.Layout#toCSS([keys...]) -> Object
+     *  
+     *  Converts the layout hash to a plain object of CSS property/value
+     *  pairs, optionally including only the given keys.
+     *  
+     *  Useful for passing layout properties to [[Element.setStyle]].
+    **/
+    toCSS: function() {
+      var keys = [];
+      for (var i = 0, j, argKeys, l = arguments.length; i < l; i++) {
+        argKeys = arguments[i].split(' ');
+        for (j = 0; j < argKeys.length; j++) {
+          keys.push(argKeys[j]);
+        } 
+      }
+      if (keys.length === 0) keys = Element.Layout.PROPERTIES;
+      var css = {};
+      keys.each( function(key) {
+        // Key needs to be a valid Element.Layout property...
+        if (!Element.Layout.PROPERTIES.include(key)) return;        
+        // ...but not a composite property.
+        if (Element.Layout.COMPOSITE_PROPERTIES.include(key)) return;
+
+        var value = this.get(key);
+        // Unless the value is null, add 'px' to the end and add it to the
+        // returned object.
+        if (value) css[cssNameFor(key)] = value + 'px';
+      });
+      return css;
+    }
   });
   
   Object.extend(Element.Layout, {
