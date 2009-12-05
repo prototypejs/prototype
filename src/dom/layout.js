@@ -870,7 +870,8 @@
         // When the BODY is the offsetParent, IE6 mistakenly reports the
         // parent as HTML. Use that as the litmus test to fix another
         // annoying IE6 quirk.
-        if (parent.nodeName.toUpperCase() === 'HTML') {
+        if (element.offsetParent &&
+         element.offsetParent.nodeName.toUpperCase() === 'HTML') {
           return positionedOffset(element);
         }
         
