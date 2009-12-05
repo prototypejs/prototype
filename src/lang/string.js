@@ -42,6 +42,11 @@ Object.extend(String.prototype, (function() {
    *  Returns the string with every occurence of a given pattern replaced by either
    *  a regular string, the returned value of a function or a [[Template]] string.
    *  The pattern can be a string or a regular expression.
+   *
+   *  <h5>Example</h5>
+   *
+   *      ""hello".gsub(/([aeiou])/, '<#{1}>');
+   *      // => "h<e>ll<o>"
   **/
   function gsub(pattern, replacement) {
     var result = '', source = this, match;
@@ -73,6 +78,11 @@ Object.extend(String.prototype, (function() {
    *  Returns a string with the first count occurrences of pattern replaced by either
    *  a regular string, the returned value of a function or a [[Template]] string.
    *  The pattern can be a string or a regular expression.
+   *
+   *  <h5>Example</h5>
+   *
+   *      "20091201".sub(/^(\d{4})(\d{2})(\d{2})$/, "#{1}-#{2}-#{3}");
+   *      // => "2009-12-01"
   **/
   function sub(pattern, replacement, count) {
     replacement = prepareReplacement(replacement);
