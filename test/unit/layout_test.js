@@ -78,5 +78,12 @@ new Test.Unit.Runner({
     this.assertEqual(60, layout.get('right'), 'right (percentage value)');
     
     this.assertEqual(340, layout.get('left'), 'left');
+  },
+  
+  'test positioning on absolutely-positioned element with top=0 and left=0': function() {
+    var layout = $('box6').getLayout();
+    
+    this.assertEqual(0, layout.get('top'), 'top');
+    this.assertIdentical($('box6_parent'), $('box6').getOffsetParent());
   }
 });
