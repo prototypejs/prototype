@@ -25,7 +25,10 @@
    *  browsers.
    *
    *  `Event` also provides a standardized list of key codes you can use with
-   *  keyboard-related events.
+   *  keyboard-related events, including `KEY_BACKSPACE`, `KEY_TAB`,
+   *  `KEY_RETURN`, `KEY_ESC`, `KEY_LEFT`, `KEY_UP`, `KEY_RIGHT`, `KEY_DOWN`,
+   *  `KEY_DELETE`, `KEY_HOME`, `KEY_END`, `KEY_PAGEUP`, `KEY_PAGEDOWN` and
+   *  `KEY_INSERT`.
    *
    *  The functions you're most likely to use a lot are [[Event.observe]],
    *  [[Event.element]] and [[Event.stop]]. If your web app uses custom events,
