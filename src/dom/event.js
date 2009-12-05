@@ -415,6 +415,7 @@
    *  * Prototype handles cleaning up the handler when leaving the page (important for MSIE memory
    *    leak prevention).
    *  * `observe` makes it possible to stop observing the event easily via [[Event.stopObserving]].
+   *  * Adds support for `mouseenter` / `mouseleave` in all browsers.
    *
    *  Although you can use `Event.observe` directly and there are times when that's the most
    *  convenient or direct way, it's more common to use its alias [[Element#observe]]. These two
