@@ -217,7 +217,13 @@
   function isArray(object) {
     return _toString.call(object) == "[object Array]";
   }
-
+  
+  var hasNativeIsArray = (typeof Array.isArray == 'function') 
+    && Array.isArray([]) && !Array.isArray({});
+  
+  if (hasNativeIsArray) {
+    isArray = Array.isArray;
+  }
 
   /**
    *  Object.isHash(object) -> Boolean
