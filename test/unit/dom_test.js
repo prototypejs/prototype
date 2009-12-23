@@ -1322,6 +1322,10 @@ new Test.Unit.Runner({
     this.assertEnumEqual([0,0], offset);
     this.assertIdentical(0, offset.top);
     this.assertIdentical(0, offset.left);
+    
+    var innerEl = new Element('div'), outerEl = new Element('div');
+    outerEl.appendChild(innerEl);
+    this.assertEnumEqual([0,0], innerEl.cumulativeOffset());
   },
   
   testViewportOffset: function() {
