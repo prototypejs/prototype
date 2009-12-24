@@ -121,7 +121,7 @@ Ajax.Response = Class.create({
   },
 
   /**
-   *  Ajax.Response.getResponseHeader(name) -> String
+   *  Ajax.Response#getResponseHeader(name) -> String
    *
    *  Returns the value of the requested header if present; throws an error
    *  otherwise. This is just a wrapper around the `XmlHttpRequest` method of
@@ -132,7 +132,7 @@ Ajax.Response = Class.create({
   },
 
   /**
-   *  Ajax.Response.getAllResponseHeaders() -> String
+   *  Ajax.Response#getAllResponseHeaders() -> String
    *
    *  Returns a string containing all headers separated by line breaks; throws
    *  an error if no headers exist. This is just a wrapper around the
