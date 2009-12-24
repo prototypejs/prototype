@@ -1190,11 +1190,13 @@ Element.Methods = {
   **/
   cumulativeOffset: function(element) {
     var valueT = 0, valueL = 0;
-    do {
-      valueT += element.offsetTop  || 0;
-      valueL += element.offsetLeft || 0;
-      element = element.offsetParent;
-    } while (element);
+    if (element.parentNode) {
+      do {
+        valueT += element.offsetTop  || 0;
+        valueL += element.offsetLeft || 0;
+        element = element.offsetParent;
+      } while (element);
+    }
     return Element._returnOffset(valueL, valueT);
   },
 
@@ -1558,8 +1560,7 @@ else if (Prototype.Browser.IE) {
     function(proceed, element) {
       element = $(element);
       // IE throws an error if element is not in document
-      try { element.offsetParent }
-      catch(e) { return $(document.body) }
+      if (!element.parentNode) return $(document.body);
       var position = element.getStyle('position');
       if (position !== 'static') return proceed(element);
       element.setStyle({ position: 'relative' });
@@ -1573,8 +1574,7 @@ else if (Prototype.Browser.IE) {
     Element.Methods[method] = Element.Methods[method].wrap(
       function(proceed, element) {
         element = $(element);
-        try { element.offsetParent }
-        catch(e) { return Element._returnOffset(0,0) }
+        if (!element.parentNode) return Element._returnOffset(0, 0);
         var position = element.getStyle('position');
         if (position !== 'static') return proceed(element);
         // Trigger hasLayout on the offset parent so that IE6 reports
@@ -1589,14 +1589,6 @@ else if (Prototype.Browser.IE) {
       }
     );
   });
-
-  Element.Methods.cumulativeOffset = Element.Methods.cumulativeOffset.wrap(
-    function(proceed, element) {
-      try { element.offsetParent }
-      catch(e) { return Element._returnOffset(0,0) }
-      return proceed(element);
-    }
-  );
 
   Element.Methods.getStyle = function(element, style) {
     element = $(element);
