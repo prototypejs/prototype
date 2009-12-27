@@ -46,20 +46,36 @@
   }
 
   /**
-   *  Object.inspect(object) -> String
+   *  Object.inspect(obj) -> String
    *  - object (Object): The item to be inspected.
-   *
+   *  
    *  Returns the debug-oriented string representation of the object.
-   *
-   *  `undefined` and `null` are represented as such.
-   *
-   *  Other types are checked for a `inspect` method. If there is one, it is
-   *  used; otherwise, it reverts to the `toString` method.
-   *
-   *  Prototype provides `inspect` methods for many types, both built-in and
-   *  library-defined &mdash; among them `String`, `Array`, `Enumerable` and `Hash`.
-   *  These attempt to provide useful string representations (from a
-   *  developer's standpoint) for their respective types.
+   *  
+   *  * `undefined` and `null` are represented as such.
+   *  * Other types are looked up for a `inspect` method: if there is one, it is used, otherwise,
+   *  it reverts to the `toString` method.
+   *  
+   *  Prototype provides `inspect` methods for many types, both built-in and library-defined,
+   *  such as in [[String#inspect]], [[Array#inspect]], [[Enumerable#inspect]] and [[Hash#inspect]],
+   *  which attempt to provide most-useful string representations (from a developer's standpoint)
+   *  for their respective types.
+   *  
+   *  ##### Examples
+   *  
+   *      Object.inspect();
+   *      // -> 'undefined'
+   *      
+   *      Object.inspect(null);
+   *      // -> 'null'
+   *      
+   *      Object.inspect(false);
+   *      // -> 'false'
+   *      
+   *      Object.inspect([1, 2, 3]);
+   *      // -> '[1, 2, 3]'
+   *      
+   *      Object.inspect('hello');
+   *      // -> "'hello'"
   **/
   function inspect(object) {
     try {
