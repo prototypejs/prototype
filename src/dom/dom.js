@@ -1,6 +1,6 @@
 /** section: DOM, related to: Element
  *  $(id) -> Element
- *  $(id...) -> [Element]...
+ *  $(id...) -> [Element...]
  *    - id (String | Element): A DOM node or a string that references a node's
  *      ID.
  *
@@ -2281,8 +2281,8 @@ Element.addMethods = function(methods) {
   Element.cache = { };
 };
 
-/** section: DOM
- * document.viewport
+/**
+ *  document.viewport
  *
  *  The `document.viewport` namespace contains methods that return information
  *  about the viewport &mdash; the rectangle that represents the portion of a web

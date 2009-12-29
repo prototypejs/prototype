@@ -1,4 +1,4 @@
-/** related to: Prototype.Selector
+/** section: DOM, related to: Prototype.Selector
  *  $$(expression...) -> [Element...]
  *
  *  Returns all elements in the document that match the provided CSS selectors.
