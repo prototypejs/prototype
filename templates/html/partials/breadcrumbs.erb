@@ -1,6 +1,0 @@
-<ul class="breadcrumbs clearfix">
-  <li><a href="<%= path_prefix %>index.html">Home</a> &rarr;</li>
-  <% unless object.is_a?(Documentation::Section) %>
-  <li><a href="<%= path_to(object.section) %>"><%= object.section.name %></a> &rarr;</li>
-  <% end %>
-</ul>

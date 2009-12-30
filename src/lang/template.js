@@ -82,14 +82,14 @@
  *  inadequate, there's a provision for customization. `Template`'s
  *  constructor accepts an optional second argument that is a regular expression
  *  object to match the replaceable symbols in the template string. Let's put
- *  together a template that uses a syntax similar to the ubiquitous `<&#38;= %>`
+ *  together a template that uses a syntax similar to the now ubiquitous `{{ }}`
  *  constructs:
  *
- *      // matches symbols like '<&#38;= field %>'
- *      var syntax = /(^|.|\r|\n)(\<%=\s*(\w+)\s*%\>)/;
+ *      // matches symbols like '{{ field }}'
+ *      var syntax = /(^|.|\r|\n)(\{{\s*(\w+)\s*}})/;
  *
  *      var t = new Template(
- *       '<div>Name: <b><&#38;= name %></b>, Age: <b><&#38;=age%></b></div>',
+ *       '<div>Name: <b>{{ name }}</b>, Age: <b>{{ age }}</b></div>',
  *       syntax);
  *      t.evaluate( {name: 'John Smith', age: 26} );
  *      // -> <div>Name: <b>John Smith</b>, Age: <b>26</b></div>

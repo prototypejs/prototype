@@ -248,7 +248,7 @@ Form.Methods = {
 
 /*--------------------------------------------------------------------------*/
 
-/** section: DOM
+/**
  * Form.Element
  *
  *  Utilities for dealing with form controls in the DOM.
@@ -359,7 +359,7 @@ Form.Element.Methods = {
   },
 
   /**
-   *  Form.Element#activate(element) -> Element
+   *  Form.Element.activate(@element) -> Element
    *
    *  Gives focus to a form control and selects its contents if it is a text
    *  input.
@@ -479,7 +479,7 @@ Form.Element.Serializers = {
  * Abstract
 **/
 
-/** section: DOM
+/**
  *  class Abstract.TimedObserver
  *
  *  An abstract DOM element observer class, subclasses of which can be used to periodically
@@ -528,7 +528,7 @@ Abstract.TimedObserver = Class.create(PeriodicalExecuter, {
   }
 });
 
-/** section: DOM
+/**
  *  class Form.Element.Observer < Abstract.TimedObserver
  *
  *  An [[Abstract.TimedObserver]] subclass that watches for changes to a form field's value.
@@ -551,7 +551,7 @@ Form.Element.Observer = Class.create(Abstract.TimedObserver, {
   }
 });
 
-/** section: DOM
+/**
  *  class Form.Observer < Abstract.TimedObserver
  *
  *  An [[Abstract.TimedObserver]] subclass that watches for changes to a form.
@@ -577,7 +577,7 @@ Form.Observer = Class.create(Abstract.TimedObserver, {
 
 /*--------------------------------------------------------------------------*/
 
-/** section: DOM
+/**
  *  class Abstract.EventObserver
 **/
 Abstract.EventObserver = Class.create({
@@ -619,7 +619,7 @@ Abstract.EventObserver = Class.create({
   }
 });
 
-/** section: DOM
+/**
  *  class Form.Element.EventObserver < Abstract.EventObserver
 **/
 Form.Element.EventObserver = Class.create(Abstract.EventObserver, {
@@ -628,7 +628,7 @@ Form.Element.EventObserver = Class.create(Abstract.EventObserver, {
   }
 });
 
-/** section: DOM
+/**
  *  class Form.EventObserver < Abstract.EventObserver
 **/
 Form.EventObserver = Class.create(Abstract.EventObserver, {

@@ -621,6 +621,7 @@
    *  ...and then to remove:
    *
    *      $('foo').stopObserving('click', this.boundHandlerMethod); // <== Right
+   *
   **/
   function stopObserving(element, eventName, handler) {
     element = $(element);
@@ -744,7 +745,7 @@
   });
 
   /** section: DOM
-   * document
+   *  document
    *
    *  Prototype extends the built-in `document` object with several convenience
    *  methods related to events.
