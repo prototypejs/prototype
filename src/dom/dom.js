@@ -110,31 +110,26 @@ if (!Node.ELEMENT_NODE) {
  *      // The new way:
  *      var a = new Element('a', {'class': 'foo', href: '/foo.html'}).update("Next page");
 **/
-(function(global) {
 
-  // setAttribute is broken in IE (particularly when setting name attribute)
-  // see: http://msdn.microsoft.com/en-us/library/ms536389.aspx
-  var SETATTRIBUTE_IGNORES_NAME = (function(){
-    var elForm = document.createElement("form"),
-        elInput = document.createElement("input"),
-        root = document.documentElement;
-    elInput.setAttribute("name", "test");
-    elForm.appendChild(elInput);
-    root.appendChild(elForm);
-    var isBuggy = elForm.elements
-      ? (typeof elForm.elements.test == "undefined")
-      : null;
-    root.removeChild(elForm);
-    elForm = elInput = null;
-    return isBuggy;
+(function(global) {
+  
+  var HAS_EXTENDED_CREATE_ELEMENT_SYNTAX = (function(){
+    try {
+      var el = document.createElement('<input name="x">');
+      return el.tagName.toLowerCase() === 'input' && el.name === 'x';
+    } 
+    catch(err) {
+      return false;
+    }
   })();
 
   var element = global.Element;
+      
   global.Element = function(tagName, attributes) {
     attributes = attributes || { };
     tagName = tagName.toLowerCase();
     var cache = Element.cache;
-    if (SETATTRIBUTE_IGNORES_NAME && attributes.name) {
+    if (HAS_EXTENDED_CREATE_ELEMENT_SYNTAX && attributes.name) {
       tagName = '<' + tagName + ' name="' + attributes.name + '">';
       delete attributes.name;
       return Element.writeAttribute(document.createElement(tagName), attributes);
@@ -142,12 +137,14 @@ if (!Node.ELEMENT_NODE) {
     if (!cache[tagName]) cache[tagName] = Element.extend(document.createElement(tagName));
     return Element.writeAttribute(cache[tagName].cloneNode(false), attributes);
   };
+  
   Object.extend(global.Element, element || { });
   if (element) global.Element.prototype = element.prototype;
+  
 })(this);
 
-Element.cache = { };
 Element.idCounter = 1;
+Element.cache = { };
 
 Element.Methods = {
   /**
