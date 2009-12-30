@@ -38,7 +38,7 @@ if (Prototype.BrowserFeatures.XPath) {
 
 /*--------------------------------------------------------------------------*/
 
-if (!window.Node) var Node = { };
+if (!Node) var Node = { };
 
 if (!Node.ELEMENT_NODE) {
   // DOM level 2 ECMAScript Language Binding
