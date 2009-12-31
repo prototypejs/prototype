@@ -72,11 +72,13 @@ module PrototypeHelper
     )
     rm_rf DOC_DIR
     
-    PDoc::Runner.new(temp_path, {
-      :output => DOC_DIR,
+    PDoc.run({
+      :source_files => [temp_path],
+      :destination => DOC_DIR,
       :index_page => 'README.markdown',
-      :syntax_highlighter => :pygments
-    }).run
+      :syntax_highlighter => :pygments,
+      :markdown_parser => :bluecloth
+    })
     
     rm_rf temp_path
   end
