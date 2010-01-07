@@ -473,6 +473,34 @@ Element.Methods = {
    *  specified by `property`. `property` has to be a _property_ (a method
    *  won't do!) of `element` that points to a single DOM node (e.g.,
    *  `nextSibling` or `parentNode`).
+   *
+   *  ##### More information
+   *
+   *  This method is used internally by [[Element.ancestors]],
+   *  [[Element.descendants]], [[Element.nextSiblings]],
+   *  [[Element.previousSiblings]] and [[Element.siblings]] which offer really
+   *  convenient way to grab elements, so directly accessing
+   *  `Element.recursivelyCollect` should seldom be needed. However, if you are
+   *  after something out of the ordinary, it is the way to go.
+   *  
+   *  Note that all of Prototype's DOM traversal methods ignore text nodes and return element
+   *  nodes only.
+   *  
+   *  ##### Examples
+   *  
+   *      <ul id="fruits">
+   *        <li id="apples">
+   *          <ul id="list-of-apples">
+   *            <li id="golden-delicious"><p>Golden Delicious</p></li>
+   *            <li id="mutsu">Mutsu</li>
+   *            <li id="mcintosh">McIntosh</li>
+   *            <li id="ida-red">Ida Red</li>
+   *          </ul>
+   *        </li>
+   *      </ul>
+   *  
+   *      $('fruits').recursivelyCollect('firstChild');
+   *      // -> [li#apples, ul#list-of-apples, li#golden-delicious, p]
   **/
   recursivelyCollect: function(element, property, maximumLength) {
     element = $(element);
@@ -543,7 +571,27 @@ Element.Methods = {
    *  Returns the first child that is an element.
    *
    *  This is opposed to the `firstChild` DOM property, which will return
-   *  any node, including text nodes.
+   *  any node, including text nodes and comment nodes.
+   *
+   *  ##### Examples
+   *  
+   *      <div id="australopithecus">
+   *        <div id="homo-erectus"><!-- Latin is super -->
+   *          <div id="homo-neanderthalensis"></div>
+   *          <div id="homo-sapiens"></div>
+   *        </div>
+   *      </div>
+   *
+   *      $('australopithecus').firstDescendant();
+   *      // -> div#homo-herectus
+   *      
+   *      // the DOM property returns any first node
+   *      $('homo-herectus').firstChild;
+   *      // -> comment node "Latin is super"
+   *      
+   *      // this is what we want!
+   *      $('homo-herectus').firstDescendant();
+   *      // -> div#homo-neanderthalensis
   **/
   firstDescendant: function(element) {
     element = $(element).firstChild;
@@ -591,6 +639,30 @@ Element.Methods = {
    *  Element.siblings(@element) -> [Element...]
    *  Collects all of element's siblings and returns them as an array of
    *  elements.
+   *
+   *  ##### More information
+   *
+   *  Two elements are siblings if they have the same parent. So for example,
+   *  the `head` and `body` elements are siblings (their parent is the `html`
+   *  element).
+   *  
+   *  The returned array reflects the siblings' order in the document (e.g. an
+   *  index of 0 refers to `element`'s topmost sibling).
+   *  
+   *  Note that all of Prototype's DOM traversal methods ignore text nodes and
+   *  return element nodes only.
+   *  
+   *  ##### Examples
+   *  
+   *      <ul>
+   *        <li id="golden-delicious">Golden Delicious</li>
+   *        <li id="mutsu">Mutsu</li>
+   *        <li id="mcintosh">McIntosh</li>
+   *        <li id="ida-red">Ida Red</li>
+   *      </ul>
+   *
+   *      $('mutsu').siblings();
+   *      // -> [li#golden-delicious, li#mcintosh, li#ida-red]
   **/
   siblings: function(element) {
     element = $(element);
@@ -620,6 +692,96 @@ Element.Methods = {
    *  is specified) that matches `expression`. If no `expression` is
    *  provided, all ancestors are considered. If no ancestor matches these
    *  criteria, `undefined` is returned.
+   *
+   *  ##### More information
+   *
+   *  The `Element.up` method is part of Prototype's ultimate DOM traversal
+   *  toolkit (check out [[Element.down]], [[Element.next]] and
+   *  [[Element.previous]] for some more Prototypish niceness). It allows 
+   *  precise index-based and/or CSS rule-based selection of any of `element`'s
+   *  **ancestors**.
+   *  
+   *  As it totally ignores text nodes (it only returns elements), you don't
+   *  have to worry about whitespace nodes.
+   *  
+   *  And as an added bonus, all elements returned are already extended
+   *  (see [[Element.extended]]) allowing chaining:
+   *  
+   *      $(element).up(1).next('li', 2).hide();
+   *  
+   *  Walking the DOM has never been that easy!
+   *  
+   *  ##### Arguments
+   *  
+   *  If no arguments are passed, `element`'s first ancestor is returned (this
+   *  is similar to calling `parentNode` except `Element.up` returns an already
+   *  extended element.
+   *  
+   *  If `index` is defined, `element`'s corresponding ancestor is returned.
+   *  (This is equivalent to selecting an element from the array of elements
+   *  returned by the method [[Element.ancestors]]). Note that the first element
+   *  has an index of 0.
+   *  
+   *  If `expression` is defined, `Element.up` will return the first ancestor
+   *  that matches it.
+   *  
+   *  If both `expression` and `index` are defined, `Element.up` will collect
+   *  all the ancestors matching the given CSS expression and will return the
+   *  one at the specified index.
+   *  
+   *  **In all of the above cases, if no descendant is found,** `undefined`
+   *  **will be returned.**
+   *  
+   *  ### Examples
+   *  
+   *      <html>
+   *        [...]
+   *        <body>
+   *          <ul id="fruits">
+   *            <li id="apples" class="keeps-the-doctor-away">
+   *              <ul>
+   *                <li id="golden-delicious">Golden Delicious</li>
+   *                <li id="mutsu" class="yummy">Mutsu</li>
+   *                <li id="mcintosh" class="yummy">McIntosh</li>
+   *                <li id="ida-red">Ida Red</li>
+   *              </ul>
+   *            </li>
+   *          </ul>
+   *        </body>
+   *      </html>
+   *
+   *  Get the first ancestor of "#fruites":
+   *
+   *      $('fruits').up();
+   *      // or:
+   *      $('fruits').up(0);
+   *      // -> body
+   *
+   *  Get the third ancestor of "#mutsu":
+   *      
+   *      $('mutsu').up(2);
+   *      // -> ul#fruits
+   *
+   *  Get the first ancestor of "#mutsu" with the node name "li":
+   *      
+   *      $('mutsu').up('li');
+   *      // -> li#apples
+   *
+   *  Get the first ancestor of "#mutsu" with the class name
+   *  "keeps-the-doctor-away":
+   *
+   *      $('mutsu').up('.keeps-the-doctor-away');
+   *      // -> li#apples
+   *
+   *  Get the second ancestor of "#mutsu" with the node name "ul":
+   *      
+   *      $('mutsu').up('ul', 1);
+   *      // -> ul#fruits
+   *
+   *  Try to get the first ancestor of "#mutsu" with the node name "div":
+   *      
+   *      $('mutsu').up('div');
+   *      // -> undefined
   **/
   up: function(element, expression, index) {
     element = $(element);
@@ -638,6 +800,92 @@ Element.Methods = {
    *  is specified) that matches `expression`. If no `expression` is
    *  provided, all descendants are considered. If no descendant matches these
    *  criteria, `undefined` is returned.
+   *
+   *  ##### More information
+   *
+   *  The `Element.down` method is part of Prototype's ultimate DOM traversal
+   *  toolkit (check out [[Element.up]], [[Element.next]] and
+   *  [[Element.previous]] for some more Prototypish niceness). It allows
+   *  precise index-based and/or CSS rule-based selection of any of the 
+   *  element's **descendants**.
+   *  
+   *  As it totally ignores text nodes (it only returns elements), you don't
+   *  have to worry about whitespace nodes.
+   *  
+   *  And as an added bonus, all elements returned are already extended
+   *  (see [[Element.extend]]) allowing chaining:
+   *  
+   *      $(element).down(1).next('li', 2).hide();
+   *  
+   *  Walking the DOM has never been that easy!
+   *  
+   *  ##### Arguments
+   *  
+   *  If no arguments are passed, `element`'s first descendant is returned (this
+   *  is similar to calling `firstChild` except `Element.down` returns an
+   *  extended element.
+   *  
+   *  If `index` is defined, `element`'s corresponding descendant is returned.
+   *  (This is equivalent to selecting an element from the array of elements
+   *  returned by the method [[Element.descendants]].) Note that the first
+   *  element has an index of 0.
+   *  
+   *  If `expression` is defined, `Element.down` will return the first
+   *  descendant that matches it. This is a great way to grab the first item in
+   *  a list for example (just pass in 'li' as the method's first argument).
+   *  
+   *  If both `expression` and `index` are defined, `Element.down` will collect
+   *  all the descendants matching the given CSS expression and will return the
+   *  one at the specified index.
+   *  
+   *  **In all of the above cases, if no descendant is found,** `undefined`
+   *  **will be returned.**
+   *  
+   *  ##### Examples
+   *  
+   *      <ul id="fruits">
+   *        <li id="apples">
+   *          <ul>
+   *            <li id="golden-delicious">Golden Delicious</li>
+   *            <li id="mutsu" class="yummy">Mutsu</li>
+   *            <li id="mcintosh" class="yummy">McIntosh</li>
+   *            <li id="ida-red">Ida Red</li>
+   *          </ul>
+   *        </li>
+   *      </ul>
+   *      
+   *  Get the first descendant of "#fruites":
+   *
+   *      $('fruits').down();
+   *      // or:
+   *      $('fruits').down(0);
+   *      // -> li#apples
+   *
+   *  Get the third descendant of "#fruits":
+   *      
+   *      $('fruits').down(3);
+   *      // -> li#golden-delicious
+   *      
+   *  Get the first descendant of "#apples" with the node name "li":
+   *
+   *      $('apples').down('li');
+   *      // -> li#golden-delicious
+   *
+   *  Get the first descendant of "#apples" with the node name "li" and the
+   *  class name "yummy":
+   *
+   *      $('apples').down('li.yummy');
+   *      // -> li#mutsu
+   *
+   *  Get the second descendant of "#fruits" with the class name "yummy":
+   *
+   *      $('fruits').down('.yummy', 1);
+   *      // -> li#mcintosh
+   *
+   *  Try to get the ninety-ninth descendant of "#fruits":
+   *
+   *      $('fruits').down(99);
+   *      // -> undefined
   **/
   down: function(element, expression, index) {
     element = $(element);
@@ -655,6 +903,94 @@ Element.Methods = {
    *  is specified) that matches `expression`. If no `expression` is
    *  provided, all previous siblings are considered. If none matches these
    *  criteria, `undefined` is returned.
+   *
+   *  ##### More information
+   *
+   *  The `Element.previous` method is part of Prototype's ultimate DOM
+   *  traversal toolkit (check out [[Element.up]], [[Element.down]] and
+   *  [[Element.next]] for some more Prototypish niceness). It allows precise
+   *  index-based and/or CSS expression-based selection of any of `element`'s
+   *  **previous siblings**. (Note that two elements are considered siblings if
+   *  they have the same parent, so for example, the `head` and `body` elements
+   *  are siblings&#8212;their parent is the `html` element.)
+   *  
+   *  As it totally ignores text nodes (it only returns elements), you don't
+   *  have to worry about whitespace nodes.
+   *  
+   *  And as an added bonus, all elements returned are already extended (see 
+   *  [[Element.extend]]) allowing chaining:
+   *  
+   *      $(element).down('p').previous('ul', 2).hide();
+   *  
+   *  Walking the DOM has never been that easy!
+   *  
+   *  ##### Arguments
+   *  
+   *  If no arguments are passed, `element`'s previous sibling is returned
+   *  (this is similar as calling `previousSibling` except `Element.previous`
+   *  returns an already extended element).
+   *  
+   *  If `index` is defined, `element`'s corresponding previous sibling is
+   *  returned. (This is equivalent to selecting an element from the array of
+   *  elements returned by the method [[Element.previousSiblings]]). Note that
+   *  the sibling _right above_ `element` has an index of 0.
+   *  
+   *  If `expression` is defined, `Element.previous` will return the `element`
+   *  first previous sibling that matches it.
+   *  
+   *  If both `expression` and `index` are defined, `Element.previous` will
+   *  collect all of `element`'s previous siblings matching the given CSS
+   *  expression and will return the one at the specified index.
+   *  
+   *  **In all of the above cases, if no previous sibling is found,**
+   *  `undefined` **will be returned.**
+   *  
+   *  ##### Examples
+   *  
+   *      <ul id="fruits">
+   *        <li id="apples">
+   *          <h3>Apples</h3>
+   *          <ul id="list-of-apples">
+   *            <li id="golden-delicious" class="yummy">Golden Delicious</li>
+   *            <li id="mutsu" class="yummy">Mutsu</li>
+   *            <li id="mcintosh">McIntosh</li>
+   *            <li id="ida-red">Ida Red</li>
+   *          </ul>
+   *          <p id="saying">An apple a day keeps the doctor away.</p>  
+   *        </li>
+   *      </ul>
+   *  
+   *  Get the first previous sibling of "#saying":
+   *  
+   *      $('saying').previous();
+   *      // or:
+   *      $('saying').previous(0);
+   *      // -> ul#list-of-apples
+   *
+   *  Get the second previous sibling of "#saying":
+   *
+   *      $('saying').previous(1);
+   *      // -> h3
+   *
+   *  Get the first previous sibling of "#saying" with node name "h3":
+   *
+   *      $('saying').previous('h3');
+   *      // -> h3
+   *
+   *  Get the first previous sibling of "#ida-red" with class name "yummy":
+   *
+   *      $('ida-red').previous('.yummy');
+   *      // -> li#mutsu
+   *
+   *  Get the second previous sibling of "#ida-red" with class name "yummy":
+   *
+   *      $('ida-red').previous('.yummy', 1);
+   *      // -> li#golden-delicious
+   *
+   *  Try to get the sixth previous sibling of "#ida-red":
+   *      
+   *      $('ida-red').previous(5);
+   *      // -> undefined
   **/
   previous: function(element, expression, index) {
     element = $(element);
@@ -677,6 +1013,94 @@ Element.Methods = {
    *  is specified) that matches `expression`. If no `expression` is
    *  provided, all following siblings are considered. If none matches these
    *  criteria, `undefined` is returned.
+   *
+   *  ##### More information
+   *
+   *  The `Element.next` method is part of Prototype's ultimate DOM traversal
+   *  toolkit (check out [[Element.up]], [[Element.down]] and
+   *  [[Element.previous]] for some more Prototypish niceness). It allows
+   *  precise index-based and/or CSS expression-based selection of any of
+   *  `element`'s **following siblings**. (Note that two elements are considered
+   *  siblings if they have the same parent, so for example, the `head` and
+   *  `body` elements are siblings&#8212;their parent is the `html` element.)
+   *  
+   *  As it totally ignores text nodes (it only returns elements), you don't
+   *  have to worry about whitespace nodes.
+   *  
+   *  And as an added bonus, all elements returned are already extended (see 
+   *  [[Element.extend]]) allowing chaining:
+   *  
+   *      $(element).down(1).next('li', 2).hide();
+   *  
+   *  Walking the DOM has never been that easy!
+   *  
+   *  ##### Arguments
+   *  
+   *  If no arguments are passed, `element`'s following sibling is returned
+   *  (this is similar as calling `nextSibling` except `Element.next` returns an
+   *  already extended element).
+   *  
+   *  If `index` is defined, `element`'s corresponding following sibling is
+   *  returned. (This is equivalent to selecting an element from the array of
+   *  elements returned by the method [[Element.nextSiblings]]). Note that the
+   *  sibling _right below_ `element` has an index of 0.
+   *  
+   *  If `expression` is defined, `Element.next` will return the `element` first
+   *  following sibling that matches it.
+   *  
+   *  If both `expression` and `index` are defined, `Element.next` will collect
+   *  all of `element`'s following siblings matching the given CSS expression
+   *  and will return the one at the specified index.
+   *  
+   *  **In all of the above cases, if no following sibling is found,**
+   *  `undefined` **will be returned.**
+   *  
+   *  ##### Examples
+   *  
+   *      <ul id="fruits">
+   *        <li id="apples">
+   *          <h3 id="title">Apples</h3>
+   *          <ul id="list-of-apples">
+   *            <li id="golden-delicious">Golden Delicious</li>
+   *            <li id="mutsu">Mutsu</li>
+   *            <li id="mcintosh" class="yummy">McIntosh</li>
+   *            <li id="ida-red" class="yummy">Ida Red</li>
+   *          </ul>
+   *          <p id="saying">An apple a day keeps the doctor away.</p>  
+   *        </li>
+   *      </ul>
+   *
+   *  Get the first sibling after "#title":
+   *  
+   *      $('title').next();
+   *      // or:
+   *      $('title').next(0);
+   *      // -> ul#list-of-apples
+   *
+   *  Get the second sibling after "#title":
+   *
+   *      $('title').next(1);
+   *      // -> p#saying
+   *
+   *  Get the first sibling after "#title" with node name "p":
+   *
+   *      $('title').next('p');
+   *      // -> p#sayings
+   *
+   *  Get the first sibling after "#golden-delicious" with class name "yummy":
+   *      
+   *      $('golden-delicious').next('.yummy');
+   *      // -> li#mcintosh
+   *
+   *  Get the second sibling after "#golden-delicious" with class name "yummy":
+   *
+   *      $('golden-delicious').next('.yummy', 1);
+   *      // -> li#ida-red
+   *
+   *  Try to get the first sibling after "#ida-red":
+   *
+   *      $('ida-red').next();
+   *      // -> undefined   
   **/
   next: function(element, expression, index) {
     element = $(element);
