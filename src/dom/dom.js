@@ -146,6 +146,24 @@ if (!Node.ELEMENT_NODE) {
 Element.idCounter = 1;
 Element.cache = { };
 
+/**
+ *  mixin Element.Methods
+ *
+ *  `Element.Methods` is a mixin for DOM elements. The methods of this object 
+ *  are accessed through the [[$]] utility or through the [[Element]] object and
+ *  shouldn't be accessed directly.
+ *  
+ *  ##### Examples
+ *  
+ *  Hide the element 
+ *  
+ *      $(element).hide(); 
+ *      
+ *  Return an [[Enumerable]] of all descendant nodes of the element with the id
+ *  "article"
+ *  
+ *      $('articles').descendants();
+**/
 Element.Methods = {
   /**
    *  Element.visible(@element) -> boolean
