@@ -2309,9 +2309,16 @@ document.viewport = {
   /**
    *  document.viewport.getDimensions() -> Object
    *
-   *  Returns the size of the viewport.
+   *  Returns an object containing viewport dimensions in the form
+   *  `{ width: Number, height: Number }`.
    *
-   *  Returns an object of the form `{ width: Number, height: Number }`.
+   *  The _viewport_ is the subset of the browser window that a page occupies
+   *  &mdash; the "usable" space in a browser window.
+   *  
+   *  ##### Example
+   *  
+   *      document.viewport.getDimensions();
+   *        //-> { width: 776, height: 580 }
   **/
   getDimensions: function() {
     return { width: this.getWidth(), height: this.getHeight() };
@@ -2324,6 +2331,15 @@ document.viewport = {
    *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
+   *
+   *  ##### Examples
+   *  
+   *      document.viewport.getScrollOffsets();
+   *       //-> { left: 0, top: 0 }
+   *      
+   *       window.scrollTo(0, 120);
+   *       document.viewport.getScrollOffsets();
+   *       //-> { left: 0, top: 120 }
   **/
   getScrollOffsets: function() {
     return Element._returnOffset(
@@ -2360,6 +2376,8 @@ document.viewport = {
    *  document.viewport.getWidth() -> Number
    *
    *  Returns the width of the viewport.
+   *
+   *  Equivalent to calling `document.viewport.getDimensions().width`.
   **/
   viewport.getWidth  = define.curry('Width');
 
@@ -2367,6 +2385,8 @@ document.viewport = {
    *  document.viewport.getHeight() -> Number
    *
    *  Returns the height of the viewport.
+   *
+   *  Equivalent to `document.viewport.getDimensions().height`.
   **/
   viewport.getHeight = define.curry('Height');
 })(document.viewport);
