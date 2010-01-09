@@ -436,6 +436,63 @@ Element.Methods = {
    *    element. Refer to the [[Element]] constructor for usage.
    *
    *  Wraps an element inside another, then returns the wrapper.
+   *  
+   *  If the given element exists on the page, [[Element.wrap]] will wrap it in
+   *  place — its position will remain the same.
+   *  
+   *  The `wrapper` argument can be _either_ an existing `HTMLElement` _or_ a
+   *  string representing the tag name of an element to be created. The optional
+   *  `attributes` argument can contain a list of attribute/value pairs that
+   *  will be set on the wrapper using [[Element.writeAttribute]].
+   *  
+   *  ##### Examples
+   *  
+   *  Original HTML:
+   *  
+   *      <table id="data">
+   *        <tr>
+   *          <th>Foo</th>
+   *          <th>Bar</th>
+   *        </tr>
+   *        <tr>
+   *          <td>1</td>
+   *          <td>2</td>
+   *        </tr>
+   *      </table>
+   *  
+   *  JavaScript:
+   *  
+   *      // approach 1:
+   *      var div = new Element('div', { 'class': 'table-wrapper' });
+   *      $('data').wrap(div);
+   *      
+   *      // approach 2:
+   *      $('data').wrap('div', { 'class': 'table-wrapper' });
+   *      
+   *      // Both examples are equivalent &mdash; they return the DIV.
+   *  
+   *  Resulting HTML:
+   *  
+   *      <div class="table-wrapper">
+   *        <table id="data">
+   *          <tr>
+   *            <th>Foo</th>
+   *            <th>Bar</th>
+   *          </tr>
+   *          <tr>
+   *            <td>1</td>
+   *            <td>2</td>
+   *          </tr>
+   *        </table>
+   *      </div> 
+   *  
+   *  ##### Warning
+   *
+   *  Using [[Element.wrap]] as an instance method (e.g., `$('foo').wrap('p')`)
+   *  causes errors in Internet Explorer when used on `textarea` elements. The
+   *  `wrap` property is reserved on `textarea`'s as a proprietary extension to
+   *  HTML. As a workaround, use the generic version instead
+   *  (`Element.wrap('foo', 'p')`).
   **/
   wrap: function(element, wrapper, attributes) {
     element = $(element);
