@@ -753,7 +753,15 @@
   Object.extend(document, {
     /**
      *  document.fire(eventName[, memo[, bubble = true]]) -> Event
-     *  See [[Event.fire]].
+     *  - memo (?): Metadata for the event. Will be accessible through the
+     *    event's `memo` property.
+     *  - bubble (Boolean): Whether the event will bubble.
+     *
+     *  Fires a custom event of name `eventName` with `document` as the target.
+     *
+     *  `document.fire` is the document-wide version of [[Element.fire]].
+     *
+     *  Custom events must include a colon (`:`) in their names.
     **/
     fire:          fire.methodize(),
 
