@@ -2424,6 +2424,20 @@ Element._insertionTranslations = {
 })();
 
 Element.Methods.Simulated = {
+  /**
+   *  Element.hasAttribute(@element, attribute) -> Boolean
+   *  
+   *  Simulates the standard compliant DOM method
+   *  [`hasAttribute`](http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-ElHasAttr)
+   *  for browsers missing it (Internet Explorer 6 and 7).
+   *  
+   *  ##### Example
+   *  
+   *      <a id="link" href="http://prototypejs.org">Prototype</a>
+   *  
+   *      $('link').hasAttribute('href');
+   *      // -> true
+  **/  
   hasAttribute: function(element, attribute) {
     attribute = Element._attributeTranslations.has[attribute] || attribute;
     var node = $(element).getAttributeNode(attribute);
