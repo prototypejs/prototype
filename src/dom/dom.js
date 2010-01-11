@@ -166,10 +166,39 @@ Element.cache = { };
 **/
 Element.Methods = {
   /**
-   *  Element.visible(@element) -> boolean
+   *  Element.visible(@element) -> Boolean
    *
    *  Tells whether `element` is visible (i.e., whether its inline `display`
    *  CSS property is set to `none`.
+   *  
+   *  ##### Examples
+   *  
+   *      <div id="visible"></div>
+   *      <div id="hidden" style="display: none;"></div>
+   *
+   *      $('visible').visible();
+   *      // -> true
+   *      
+   *      $('hidden').visible();
+   *      // -> false
+   *  
+   *  ##### Notes
+   *  
+   *  Styles applied via a CSS stylesheet are _not_ taken into consideration.
+   *  Note that this is not a Prototype limitation, it is a CSS limitation.
+   *  
+   *      <style>
+   *        #hidden-by-css {
+   *          display: none;
+   *        }
+   *      </style>
+   *      
+   *      [&#8230;]
+   *      
+   *      <div id="hidden-by-css"></div>
+   *
+   *      $('hidden-by-css').visible();
+   *      // -> true
   **/
   visible: function(element) {
     return $(element).style.display != 'none';
