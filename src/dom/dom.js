@@ -336,6 +336,67 @@ Element.Methods = {
    *
    *  Keep in mind that this method returns the element that has just been
    *  removed &mdash; not the element that took its place.
+   *
+   *  `newContent` can be either plain text, an HTML snippet or any JavaScript
+   *  object which has a `toString()` method.
+   *  
+   *  If `newContent` contains any `<script>` tags, these will be evaluated
+   *  after `element` has been replaced ([[Element.replace]] internally calls
+   *  [[String.evalScripts]]).
+   *  
+   *  Note that if no argument is provided, [[Element.replace]] will simply
+   *  clear `element` of its content. However, using [[Element.remove]] to do so
+   *  is both faster and more standard compliant.
+   *  
+   *  ##### Examples
+   *  
+   *      <div id="food">
+   *        <div id="fruits">
+   *          <p id="first">Kiwi, banana <em>and</em> apple.</p>
+   *        </div>
+   *      </div>
+   *  
+   *  Passing an HTML snippet:
+   *  
+   *      $('first').replace('<ul id="favorite"><li>kiwi</li><li>banana</li><li>apple</li></ul>');
+   *      // -> HTMLElement (p#first)
+   *      
+   *      $('fruits').innerHTML;
+   *      // -> '<ul id="favorite"><li>kiwi</li><li>banana</li><li>apple</li></ul>'
+   *  
+   *  Again, with a `<script>` tag thrown in:
+   *  
+   *      $('favorite').replace('<p id="still-first">Melon, oranges <em>and</em> grapes.</p><script>alert("removed!")</script>');
+   *      // -> HTMLElement (ul#favorite) and prints "removed!" in an alert dialog.
+   *      
+   *      $('fruits').innerHTML
+   *      // -> '<p id="still-first">Melon, oranges <em>and</em> grapes.</p>'
+   *  
+   *  With plain text:
+   *  
+   *      $('still-first').replace('Melon, oranges and grapes.');
+   *      // -> HTMLElement (p#still-first)
+   *
+   *      $('fruits').innerHTML
+   *      // -> 'Melon, oranges and grapes.'
+   *  
+   *  Finally, relying on the `toString()` method:
+   *  
+   *      $('fruits').replace(123);
+   *      // -> HTMLElement
+   *      
+   *      $('food').innerHTML;
+   *      // -> '123'
+   *
+   *  ##### Warning
+   *
+   *  Using [[Element.replace]] as an instance method (e.g.,
+   *  `$('foo').replace('<p>Bar</p>')`) causes errors in Opera 9 when used on
+   *  `input` elements. The `replace` property is reserved on `input` elements
+   *  as part of [Web Forms 2](http://www.whatwg.org/specs/web-forms/current-work/).
+   *  As a workaround, use the generic version instead
+   *  (`Element.replace('foo', '<p>Bar</p>')`).
+   *  
   **/
   replace: function(element, content) {
     element = $(element);
