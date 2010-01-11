@@ -571,6 +571,24 @@ Element.Methods = {
    *  Element.inspect(@element) -> String
    *
    *  Returns the debug-oriented string representation of `element`.
+   *
+   *  For more information on `inspect` methods, see [[Object.inspect]].
+   *  
+   *      <ul>
+   *        <li id="golden-delicious">Golden Delicious</li>
+   *        <li id="mutsu" class="yummy apple">Mutsu</li>
+   *        <li id="mcintosh" class="yummy">McIntosh</li>
+   *        <li></li>
+   *      </ul>
+   *  
+   *      $('golden-delicious').inspect();
+   *      // -> '<li id="golden-delicious">'
+   *      
+   *      $('mutsu').inspect();
+   *      // -> '<li id="mutsu" class="yummy apple">'
+   *      
+   *      $('mutsu').next().inspect();
+   *      // -> '<li>'
   **/
   inspect: function(element) {
     element = $(element);
