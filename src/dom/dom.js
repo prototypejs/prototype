@@ -1468,7 +1468,17 @@ Element.Methods = {
   /**
    *  Element.hasClassName(@element, className) -> Boolean
    *
-   *  Checks whether `element` has the given CSS class name.
+   *  Checks for the presence of CSS class `className` on `element`.
+   *
+   *  ##### Examples
+   *  
+   *      <div id="mutsu" class="apple fruit food"></div>
+   *  
+   *      $('mutsu').hasClassName('fruit');
+   *      // -> true
+   *      
+   *      $('mutsu').hasClassName('vegetable');
+   *      // -> false
   **/
   hasClassName: function(element, className) {
     if (!(element = $(element))) return;
@@ -1508,7 +1518,17 @@ Element.Methods = {
   /**
    *  Element.removeClassName(@element, className) -> Element
    *
-   *  Removes a CSS class from `element`.
+   *  Removes CSS class `className` from `element`.
+   *
+   *  ##### Examples
+   *  
+   *      <div id="mutsu" class="apple fruit food"></div>
+   *  
+   *      $('mutsu').removeClassName('food');
+   *      // -> Element
+   *      
+   *      $('mutsu').classNames;
+   *      // -> 'apple fruit'
   **/
   removeClassName: function(element, className) {
     if (!(element = $(element))) return;
@@ -1520,7 +1540,20 @@ Element.Methods = {
   /**
    *  Element.toggleClassName(@element, className) -> Element
    *
-   *  Toggles the presence of a CSS class on `element`.
+   *  Toggles the presence of CSS class `className` on `element`.
+   *
+   *  ##### Examples
+   *  
+   *      <div id="mutsu" class="apple"></div>
+   *  
+   *      $('mutsu').hasClassName('fruit');
+   *      // -> false
+   *      
+   *      $('mutsu').toggleClassName('fruit');
+   *      // -> element
+   *      
+   *      $('mutsu').hasClassName('fruit');
+   *      // -> true
   **/
   toggleClassName: function(element, className) {
     if (!(element = $(element))) return;
