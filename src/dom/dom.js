@@ -732,6 +732,28 @@ Element.Methods = {
    *  - selector (String): A CSS selector.
    *
    *  Checks if `element` matches the given CSS selector.
+   *
+   *  ##### Examples
+   *  
+   *      <ul id="fruits">
+   *        <li id="apples">
+   *          <ul>
+   *            <li id="golden-delicious">Golden Delicious</li>
+   *            <li id="mutsu" class="yummy">Mutsu</li>
+   *            <li id="mcintosh" class="yummy">McIntosh</li>
+   *            <li id="ida-red">Ida Red</li>
+   *          </ul>
+   *        </li>
+   *      </ul>
+   *  
+   *      $('fruits').match('ul');
+   *      // -> true
+   *      
+   *      $('mcintosh').match('li#mcintosh.yummy');
+   *      // -> true
+   *      
+   *      $('fruits').match('p');
+   *      // -> false
   **/
   match: function(element, selector) {
     element = $(element);
