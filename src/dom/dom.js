@@ -1657,6 +1657,44 @@ Element.Methods = {
    *
    *  Simulates the poorly-supported CSS `clip` property by setting `element`'s
    *  `overflow` value to `hidden`.
+   *
+   *  To undo clipping, use [[Element.undoClipping]].
+   *  
+   *  The visible area is determined by `element`'s width and height.
+   *  
+   *  ##### Example
+   *  
+   *      <div id="framer">
+   *        <img src="/assets/2007/1/14/chairs.jpg" alt="example" />
+   *      </div>
+   *  
+   *      $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+   *      // -> HTMLElement
+   *  
+   *      <a id="clipper" href="#">Click me to try it out.</a>
+   *  
+   *      <div id="framer">
+   *        <img src="/assets/2007/2/24/chairs.jpg" alt="example" />
+   *      </div>
+   *  
+   *      <script type="text/javascript" charset="utf-8">
+   *        var Example = {
+   *          clip: function(){
+   *            $('clipper').update('undo clipping!');
+   *            $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+   *          },
+   *          unClip: function(){
+   *            $('clipper').update('clip!');
+   *            $('framer').undoClipping();
+   *          },
+   *          toggleClip: function(event){
+   *            if($('clipper').innerHTML == 'undo clipping!') Example.unClip();
+   *            else Example.clip();
+   *            Event.stop(event);
+   *          }
+   *        };
+   *        Event.observe('clipper', 'click', Example.toggleClip);
+   *      </script>
   **/
   makeClipping: function(element) {
     element = $(element);
@@ -1672,6 +1710,41 @@ Element.Methods = {
    *
    *  Sets `element`'s CSS `overflow` property back to the value it had
    *  _before_ [[Element.makeClipping]] was applied.
+   *
+   *  ##### Example
+   *  
+   *      <div id="framer">
+   *        <img src="/assets/2007/1/14/chairs.jpg" alt="example" />
+   *      </div>
+   *  
+   *      $('framer').undoClipping();
+   *      // -> HTMLElement (and sets the CSS overflow property to its original value).
+   *  
+   *      <a id="clipper" href="#">Click me to try it out.</a>
+   *  
+   *      <div id="framer">
+   *        <img src="/assets/2007/2/24/chairs_1.jpg" alt="example" />
+   *      </div>
+   *  
+   *      <script type="text/javascript" charset="utf-8">
+   *        var Example = {
+   *          clip: function(){
+   *            $('clipper').update('undo clipping!');
+   *            $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+   *          },
+   *          unClip: function(){
+   *            $('clipper').update('clip!');
+   *            $('framer').undoClipping();
+   *          },
+   *          toggleClip: function(event){
+   *            if($('clipper').innerHTML == 'clip!') Example.clip();
+   *            else Example.unClip();
+   *            Event.stop(event);
+   *          }
+   *        };
+   *        $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+   *        Event.observe('clipper', 'click', Example.toggleClip);
+   *      </script>
   **/
   undoClipping: function(element) {
     element = $(element);
