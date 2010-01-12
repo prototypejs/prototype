@@ -39,14 +39,50 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#gsub(pattern, replacement) -> String
    *
-   *  Returns the string with every occurence of a given pattern replaced by either
-   *  a regular string, the returned value of a function or a [[Template]] string.
+   *  Returns the string with _every_ occurence of a given pattern replaced by either a
+   *  regular string, the returned value of a function or a [[Template]] string.
    *  The pattern can be a string or a regular expression.
-   *
-   *  <h5>Example</h5>
-   *
-   *      ""hello".gsub(/([aeiou])/, '<#{1}>');
-   *      // => "h<e>ll<o>"
+   *  
+   *  If its second argument is a string [[String#gsub]] works just like the native JavaScript
+   *  method `replace()` set to global match.
+   *  
+   *      var mouseEvents = 'click dblclick mousedown mouseup mouseover mousemove mouseout';
+   *      
+   *      mouseEvents.gsub(' ', ', ');
+   *      // -> 'click, dblclick, mousedown, mouseup, mouseover, mousemove, mouseout'
+   *      
+   *      mouseEvents.gsub(/\s+/, ', ');
+   *      // -> 'click, dblclick, mousedown, mouseup, mouseover, mousemove, mouseout'
+   *  
+   *  If you pass it a function, it will be invoked for every occurrence of the pattern
+   *  with the match of the current pattern as its unique argument. Note that this argument
+   *  is the returned value of the `match()` method called on the current pattern. It is
+   *  in the form of an array where the first element is the entire match and every subsequent
+   *  one corresponds to a parenthesis group in the regex.
+   *  
+   *      mouseEvents.gsub(/\w+/, function(match){ return 'on' + match[0].capitalize() });
+   *      // -> 'onClick onDblclick onMousedown onMouseup onMouseover onMousemove onMouseout'
+   *      
+   *      var markdown = '![a pear](/img/pear.jpg) ![an orange](/img/orange.jpg)';
+   *      
+   *      markdown.gsub(/!\[(.*?)\]\((.*?)\)/, function(match) {
+   *        return '<img alt="' + match[1] + '" src="' + match[2] + '" />';
+   *      });
+   *      // -> '<img alt="a pear" src="/img/pear.jpg" /> <img alt="an orange" src="/img/orange.jpg" />'
+   *  
+   *  Lastly, you can pass [[String#gsub]] a [[Template]] string in which you can also access
+   *  the returned value of the `match()` method using the ruby inspired notation: `#{0}` 
+   *  for the first element of the array, `#{1}` for the second one, and so on.
+   *  So our last example could be easily re-written as:
+   *  
+   *      markdown.gsub(/!\[(.*?)\]\((.*?)\)/, '<img alt="#{1}" src="#{2}" />');
+   *      // -> '<img alt="a pear" src="/img/pear.jpg" /> <img alt="an orange" src="/img/orange.jpg" />'
+   *  
+   *  If you need an equivalent to [[String#gsub]] but without global match set on, try [[String#sub]].
+   *  
+   *  ##### Note
+   *  
+   *  Do _not_ use the `"g"` flag on the regex as this will create an infinite loop.
   **/
   function gsub(pattern, replacement) {
     var result = '', source = this, match;
@@ -75,14 +111,46 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#sub(pattern, replacement[, count = 1]) -> String
    *
-   *  Returns a string with the first count occurrences of pattern replaced by either
+   *  Returns a string with the _first_ `count` occurrences of `pattern` replaced by either
    *  a regular string, the returned value of a function or a [[Template]] string.
-   *  The pattern can be a string or a regular expression.
+   *  `pattern` can be a string or a regular expression.
+   *  
+   *  Unlike [[String#gsub]], [[String#sub]] takes a third optional parameter which specifies
+   *  the number of occurrences of the pattern which will be replaced.
+   *  If not specified, it will default to 1.
+   *  
+   *  Apart from that, [[String#sub]] works just like [[String#gsub]].
+   *  Please refer to it for a complete explanation.
+   *  
+   *  ##### Examples
    *
-   *  <h5>Example</h5>
+   *      var fruits = 'apple pear orange';
+   *      
+   *      fruits.sub(' ', ', ');
+   *      // -> 'apple, pear orange'
+   *      
+   *      fruits.sub(' ', ', ', 1);
+   *      // -> 'apple, pear orange'
+   *      
+   *      fruits.sub(' ', ', ', 2);
+   *      // -> 'apple, pear, orange'
+   *      
+   *      fruits.sub(/\w+/, function(match){ return match[0].capitalize() + ',' }, 2);
+   *      // -> 'Apple, Pear, orange'
+   *      
+   *      var markdown = '![a pear](/img/pear.jpg) ![an orange](/img/orange.jpg)';
+   *      
+   *      markdown.sub(/!\[(.*?)\]\((.*?)\)/, function(match) {
+   *        return '<img alt="' + match[1] + '" src="' + match[2] + '" />';
+   *      });
+   *      // -> '<img alt="a pear" src="/img/pear.jpg" /> ![an orange](/img/orange.jpg)'
+   *      
+   *      markdown.sub(/!\[(.*?)\]\((.*?)\)/, '<img alt="#{1}" src="#{2}" />');
+   *      // -> '<img alt="a pear" src="/img/pear.jpg" /> ![an orange](/img/orange.jpg)'
    *
-   *      "20091201".sub(/^(\d{4})(\d{2})(\d{2})$/, "#{1}-#{2}-#{3}");
-   *      // => "2009-12-01"
+   *  ##### Note
+   *  
+   *  Do _not_ use the `"g"` flag on the regex as this will create an infinite loop.
   **/
   function sub(pattern, replacement, count) {
     replacement = prepareReplacement(replacement);
@@ -100,6 +168,29 @@ Object.extend(String.prototype, (function() {
    *  Allows iterating over every occurrence of the given pattern (which can be a
    *  string or a regular expression).
    *  Returns the original string.
+   *  
+   *  Internally just calls [[String#gsub]] passing it `pattern` and `iterator` as arguments.
+   *  
+   *  ##### Examples
+   *  
+   *      'apple, pear & orange'.scan(/\w+/, alert);
+   *      // -> 'apple pear orange' (and displays 'apple', 'pear' and 'orange' in three successive alert dialogs)
+   *  
+   *  Can be used to populate an array:
+   *  
+   *      var fruits = [];
+   *      'apple, pear & orange'.scan(/\w+/, function(match) { fruits.push(match[0]) });
+   *      fruits.inspect()
+   *      // -> ['apple', 'pear', 'orange']
+   *  
+   *  or even to work on the DOM:
+   *  
+   *      'failure-message, success-message & spinner'.scan(/(\w|-)+/, Element.toggle)
+   *      // -> 'failure-message, success-message & spinner' (and toggles the visibility of each DOM element)
+   *  
+   *  ##### Note
+   *  
+   *  Do _not_ use the `"g"` flag on the regex as this will create an infinite loop.
   **/
   function scan(pattern, iterator) {
     this.gsub(pattern, iterator);
