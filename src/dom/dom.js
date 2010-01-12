@@ -1240,7 +1240,27 @@ Element.Methods = {
   /**
    *  Element.readAttribute(@element, attributeName) -> String | null
    *
-   *  Returns the value of `element`'s attribute with the given name.
+   *  Returns the value of `element`'s `attribute` or `null` if `attribute` has
+   *  not been specified.
+   *  
+   *  This method serves two purposes. First it acts as a simple wrapper around
+   *  `getAttribute` which isn't a "real" function in Safari and Internet
+   *  Explorer (it doesn't have `.apply` or `.call` for instance). Secondly, it
+   *  cleans up the horrible mess Internet Explorer makes when handling
+   *  attributes.
+   *  
+   *  ##### Examples
+   *  
+   *      <a id="tag" href="/tags/prototype" rel="tag" title="view related bookmarks." my_widget="some info.">Prototype</a>
+   *  
+   *      $('tag').readAttribute('href');
+   *      // -> '/tags/prototype'
+   *      
+   *      $('tag').readAttribute('title');
+   *      // -> 'view related bookmarks.'
+   *      
+   *      $('tag').readAttribute('my_widget');
+   *      // -> 'some info.'
   **/
   readAttribute: function(element, name) {
     element = $(element);
@@ -1260,7 +1280,7 @@ Element.Methods = {
    *  Element.writeAttribute(@element, attribute[, value = true]) -> Element
    *  Element.writeAttribute(@element, attributes) -> Element
    *
-   *  Adds, changes, or removes attributes passed as either a hash or a
+   *  Adds, specifies or removes attributes passed as either a hash or a
    *  name/value pair.
   **/
   writeAttribute: function(element, name, value) {
