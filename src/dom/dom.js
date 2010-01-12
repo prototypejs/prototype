@@ -1309,6 +1309,50 @@ Element.Methods = {
    *
    *  Takes an arbitrary number of CSS selectors and returns an array of
    *  descendants of `element` that match any of them.
+   *
+   *  This method is very similar to [[$$]] but can be used within the context 
+   *  of one element, rather than the whole document. The supported CSS syntax 
+   *  is identical, so please refer to the [[$$]] docs for details.
+   *  
+   *  ##### Examples
+   *  
+   *      <ul id="fruits">
+   *        <li id="apples">
+   *          <h3 title="yummy!">Apples</h3>
+   *          <ul id="list-of-apples">
+   *            <li id="golden-delicious" title="yummy!" >Golden Delicious</li>
+   *            <li id="mutsu" title="yummy!">Mutsu</li>
+   *            <li id="mcintosh">McIntosh</li>
+   *            <li id="ida-red">Ida Red</li>
+   *          </ul>
+   *          <p id="saying">An apple a day keeps the doctor away.</p>  
+   *        </li>
+   *      </ul>
+   *  
+   *      $('apples').select('[title="yummy!"]');
+   *      // -> [h3, li#golden-delicious, li#mutsu]
+   *      
+   *      $('apples').select( 'p#saying', 'li[title="yummy!"]');
+   *      // -> [li#golden-delicious, li#mutsu,  p#saying]
+   *      
+   *      $('apples').select('[title="disgusting!"]');
+   *      // -> []
+   *  
+   *  ##### Tip
+   *  [[Element.select]] can be used as a pleasant alternative to the native
+   *  method `getElementsByTagName`:
+   *  
+   *      var nodes  = $A(someUL.getElementsByTagName('li')).map(Element.extend);
+   *      var nodes2 = someUL.select('li');
+   *  
+   *  In the first example, you must explicitly convert the result set to an
+   *  [[Array]] (so that Prototype's [[Enumerable]] methods can be used) and
+   *  must manually call [[Element.extend]] on each node (so that custom 
+   *  instance methods can be used on the nodes). [[Element.select]] takes care 
+   *  of both concerns on its own.
+   *  
+   *  If you're using 1.6 or above (and the performance optimizations therein), 
+   *  the speed difference between these two examples is negligible.
   **/
   select: function(element) {
     element = $(element);
