@@ -242,6 +242,29 @@ Element.Methods = {
    *  Element.remove(@element) -> Element
    *
    *  Completely removes `element` from the document and returns it.
+   *
+   *  If you would rather just hide the element and keep it around for further
+   *  use, try [[Element.hide]] instead.
+   *  
+   *  ##### Examples
+   *  
+   *      // Before:
+   *      <ul>
+   *        <li id="golden-delicious">Golden Delicious</li>
+   *        <li id="mutsu">Mutsu</li>
+   *        <li id="mcintosh">McIntosh</li>
+   *        <li id="ida-red">Ida Red</li>
+   *      </ul>
+   *  
+   *      $('mutsu').remove();
+   *      // -> HTMLElement (and removes li#mutsu)
+   *  
+   *      // After:
+   *      <ul>
+   *        <li id="golden-delicious">Golden Delicious</li>
+   *        <li id="mcintosh">McIntosh</li>
+   *        <li id="ida-red">Ida Red</li>
+   *      </ul>
   **/
   remove: function(element) {
     element = $(element);
@@ -265,11 +288,72 @@ Element.Methods = {
    *  If `newContent` is omitted, the element's content is blanked out (i.e.,
    *  replaced with an empty string).
    *
-   *  If `newContent` is a string and contains one or more inline `<script>` tags, the scripts
-   *  are scheduled to be evaluated after a very brief pause (using [[Function#defer]]) to allow
-   *  the browser to finish updating the DOM. Note that the scripts are evaluated
-   *  in the scope of [[String#evalScripts]], not in the global scope, which has important
-   *  ramifications for your `var`s and `function`s. See [[String#evalScripts]] for details.
+   *  If `newContent` is a string and contains one or more inline `<script>` 
+   *  tags, the scripts are scheduled to be evaluated after a very brief pause
+   *  (using [[Function#defer]]) to allow the browser to finish updating the 
+   *  DOM. Note that the scripts are evaluated in the scope of 
+   *  [[String#evalScripts]], not in the global scope, which has important
+   *  ramifications for your `var`s and `function`s.
+   *  See [[String#evalScripts]] for details.
+   *
+   *  Note that this method allows seamless content update of table related 
+   *  elements in Internet Explorer 6 and beyond.
+   *  
+   *  ##### Examples
+   *  
+   *      <div id="fruits">carrot, eggplant and cucumber</div>
+   *  
+   *  Passing a regular string:
+   *  
+   *      $('fruits').update('kiwi, banana and apple');
+   *      // -> HTMLElement
+   *      $('fruits').innerHTML
+   *      // -> 'kiwi, banana and apple'
+   *  
+   *  Clearing the element's content:
+   *  
+   *      $('fruits').update();
+   *      // -> HTMLElement
+   *      $('fruits').innerHTML;
+   *      // -> '' (an empty string)
+   *  
+   *  And now inserting an HTML snippet:
+   *  
+   *      $('fruits').update('<p>Kiwi, banana <em>and</em> apple.</p>');
+   *      // -> HTMLElement
+   *      $('fruits').innerHTML;
+   *      // -> '<p>Kiwi, banana <em>and</em> apple.</p>'
+   *  
+   *  ... with a `<script>` tag thrown in:
+   *  
+   *      $('fruits').update('<p>Kiwi, banana <em>and</em> apple.</p><script>alert("updated!")</script>');
+   *      // -> HTMLElement (and prints "updated!" in an alert dialog).
+   *      $('fruits').innerHTML;
+   *      // -> '<p>Kiwi, banana <em>and</em> apple.</p>'
+   *  
+   *  Relying on the `toString()` method:
+   *  
+   *      $('fruits').update(123);
+   *      // -> HTMLElement
+   *      $('fruits').innerHTML;
+   *      // -> '123'
+   *  
+   *  Finally, you can do some pretty funky stuff by defining your own
+   *  `toString()` method on your custom objects:
+   *  
+   *      var Fruit = Class.create({
+   *        initialize: function(fruit){
+   *          this.fruit = fruit;
+   *        },
+   *        toString: function(){
+   *          return 'I am a fruit and my name is "' + this.fruit + '".'; 
+   *        }
+   *      });
+   *      var apple = new Fruit('apple');
+   *      
+   *      $('fruits').update(apple);
+   *      $('fruits').innerHTML;
+   *      // -> 'I am a fruit and my name is "apple".'
   **/
   update: (function(){
 
@@ -445,8 +529,8 @@ Element.Methods = {
    *  Element.insert(@element, content) -> Element
    *  - content (String | Element | Object): The content to insert.
    *
-   *  Inserts content `above`, `below`, at the `top`, and/or at the `bottom` of the
-   *  given element, depending on the option(s) given.
+   *  Inserts content `above`, `below`, at the `top`, and/or at the `bottom` of
+   *  the given element, depending on the option(s) given.
    *
    *  `insert` accepts content in any of these forms:
    *  - [[String]]: A string of HTML to be parsed and rendered
@@ -455,15 +539,19 @@ Element.Methods = {
    *  - ...any object with a `toHTML` method: The method is called and the resulting HTML string
    *    is parsed and rendered
    *
-   *  The `content` argument can be the content to insert, in which case the implied
-   *  insertion point is `bottom`, or an object that specifies one or more insertion
-   *  points (e.g., `{ bottom: "foo", top: "bar" }`).
+   *  The `content` argument can be the content to insert, in which case the
+   *  implied insertion point is `bottom`, or an object that specifies one or
+   *  more insertion points (e.g., `{ bottom: "foo", top: "bar" }`).
    *
    *  Accepted insertion points are:
    *  - `before` (as `element`'s previous sibling)
    *  - `after` (as `element's` next sibling)
    *  - `top` (as `element`'s first child)
    *  - `bottom` (as `element`'s last child)
+   *
+   *  Note that if the inserted HTML contains any `<script>` tag, these will be
+   *  automatically evaluated after the insertion (`insert` internally calls
+   *  [[String.evalScripts]] when inserting HTML).
    *
    *  <h5>Examples</h5>
    *
