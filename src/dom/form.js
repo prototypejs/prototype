@@ -297,6 +297,18 @@ Form.Element.Methods = {
    *
    *  Returns a URL-encoded string representation of a form control in the
    *  `name=value` format.
+   *
+   *  The result of this method is a string suitable for Ajax requests. However,
+   *  it serializes only a single element - if you need to serialize the whole
+   *  form use [[Form.serialize]] instead.
+   *  
+   *  ##### Notes
+   *  
+   *  Serializing a disabled control or a one without a name will always result
+   *  in an empty string.
+   *  
+   *  If you simply need an element's value for reasons other than Ajax
+   *  requests, use [[Form.Element.getValue]] instead.
   **/
   serialize: function(element) {
     element = $(element);
