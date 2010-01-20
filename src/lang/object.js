@@ -132,9 +132,17 @@
    *  Returns an array of the object's property names.
    *
    *  Note that the order of the resulting array is browser-dependent &mdash; it
-   *  relies on the `for&#8230;in` loop, for which the ECMAScript spec does not
+   *  relies on the `for...in` loop, for which the ECMAScript spec does not
    *  prescribe an enumeration order. Sort the resulting array if you wish to
    *  normalize the order of the object keys.
+   *
+   *  ##### Examples
+   *  
+   *      Object.keys();
+   *      // -> []
+   *      
+   *      Object.keys({ name: 'Prototype', version: '1.6.1' }).sort();
+   *      // -> ['name', 'version']
   **/
   function keys(object) {
     var results = [];
@@ -147,14 +155,22 @@
    *  Object.values(object) -> Array
    *  - object (Object): The object to pull values from.
    *
-   *  Returns an array of the object's values.
+   *  Returns an array of the object's property values.
    *
    *  Note that the order of the resulting array is browser-dependent &mdash; it
-   *  relies on the `for&#8230;in` loop, for which the ECMAScript spec does not
+   *  relies on the `for...in` loop, for which the ECMAScript spec does not
    *  prescribe an enumeration order.
    *
    *  Also, remember that while property _names_ are unique, property _values_
    *  have no such constraint.
+   *
+   *  ##### Examples
+   *  
+   *      Object.values();
+   *      // -> []
+   *      
+   *      Object.values({ name: 'Prototype', version: '1.6.1' }).sort();
+   *      // -> ['1.6.1', 'Prototype']
   **/
   function values(object) {
     var results = [];
