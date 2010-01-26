@@ -472,6 +472,9 @@ var Field = Form.Element;
 
 /** section: DOM, related to: Form
  *  $F(element) -> String | Array
+ *
+ *  Returns the value of a form control. This is a convenience alias of 
+ *  [[Form.Element.getValue]]. Refer to it for full details.
 **/
 var $F = Form.Element.Methods.getValue;
 
