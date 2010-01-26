@@ -180,8 +180,9 @@
    *  Returns the absolute horizontal position of the pointer for a mouse
    *  event.
    *
-   *  Note that this position is absolute on the _page_, not on the
-   *  _viewport_.
+   *  Note that this position is absolute on the `<body>`, not on the
+   *  viewport: scrolling right increases the returned value for events on
+   *  the same viewport location.
   **/
   function pointerX(event) {
     var docElement = document.documentElement,
@@ -198,8 +199,9 @@
    *  Returns the absolute vertical position of the pointer for a mouse
    *  event.
    *
-   *  Note that this position is absolute on the _page_, not on the
-   *  _viewport_.
+   *  Note that this position is absolute on the `<body>`, not on the
+   *  viewport: scrolling down increases the returned value for events on
+   *  the same viewport location.
   **/
   function pointerY(event) {
     var docElement = document.documentElement,
