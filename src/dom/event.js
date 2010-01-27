@@ -728,6 +728,45 @@
     /**
      *  Element.fire(@element, eventName[, memo[, bubble = true]]) -> Event
      *  See [[Event.fire]].
+     *
+     *  Fires a custom event with the current element as its target.
+     *  
+     *  [[Element.fire]] creates a custom event with the given name, then triggers
+     *  it on the given element. The custom event has all the same properties
+     *  and methods of native events. Like a native event, it will bubble up
+     *  through the DOM unless its propagation is explicitly stopped.
+     *  
+     *  The optional second argument will be assigned to the `memo` property of
+     *  the event object so that it can be read by event handlers.
+     *  
+     *  Custom events are dispatched synchronously: [[Element.fire]] waits until
+     *  the event finishes its life cycle, then returns the event itself.
+     *  
+     *  ##### Note
+     *  
+     *  [[Element.fire]] does not support firing native events. All custom event
+     *  names _must_ be namespaced (using a colon). This is to avoid custom
+     *  event names conflicting with non-standard native DOM events such as
+     *  `mousewheel` and `DOMMouseScroll`.
+     *  
+     *  ##### Examples
+     *  
+     *      document.observe("widget:frobbed", function(event) {
+     *        console.log("Element with ID (" + event.target.id +
+     *         ") frobbed widget #" + event.memo.widgetNumber + ".");
+     *      });
+     *        
+     *      var someNode = $('foo');
+     *      someNode.fire("widget:frobbed", { widgetNumber: 19 });
+     *      
+     *      //-> "Element with ID (foo) frobbed widget #19."
+     *  
+     *  ##### Tip
+     *  
+     *  Events that have been stopped with [[Event.stop]] will have a boolean
+     *  `stopped` property set to true. Since [[Element.fire]] returns the custom 
+     *  event, you can inspect this property to determine whether the event was
+     *  stopped.
     **/
     fire:          fire,
 
