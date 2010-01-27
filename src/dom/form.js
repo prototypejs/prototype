@@ -320,6 +320,33 @@ Form.Element.Methods = {
    *  return an array of values.
    *
    *  The global shortcut for this method is [[$F]].
+   *  
+   *  ##### How to reference form controls by their _name_
+   *  
+   *  This method is consistent with other DOM extensions in that it requires an 
+   *  element **ID** as the string argument, not the name of the 
+   *  form control (as some might think). If you want to reference controls by 
+   *  their names, first find the control the regular JavaScript way and use the 
+   *  node itself instead of an ID as the argument.
+   *  
+   *  For example, if you have an `input` named "company" in a `form` with an 
+   *  ID "contact":
+   *  
+   *      var form = $('contact');
+   *      var input = form['company'];
+   *      
+   *      Form.Element.getValue(input);
+   *      
+   *      // but, the preferred call is:
+   *      $(input).getValue(); // we used the $() method so the node gets extended
+   *      
+   *      // you can also use the shortcut
+   *      $F(input);
+   *  
+   *  ##### Note
+   *  
+   *  An error is thrown ("element has no properties") if the `element` argument 
+   *  is an unknown ID.   
   **/
   getValue: function(element) {
     element = $(element);
@@ -353,6 +380,46 @@ Form.Element.Methods = {
    *  Form.Element.present(@element) -> Element
    *
    *  Returns `true` if a text input has contents, `false` otherwise.
+   *  
+   *  ##### Example
+   *  
+   *  This method is very handy in a generic form validation routine. 
+   *  On the following form's submit event, the presence of each text input is 
+   *  checked and lets the user know if they left a text input blank. 
+   *  
+   *      <form id="example" class="example" action="#">
+   *        <fieldset>
+   *          <legend>User Details</legend>
+   *          <p id="msg" class="message">Please fill out the following fields:</p>
+   *          <p>
+   *            <label for="username">Username</label>
+   *            <input id="username" type="text" name="username" />
+   *          </p>
+   *          <p>
+   *            <label for="email">Email Address</label>
+   *            <input id="email" type="text" name="email" />
+   *          </p>
+   *          <input type="submit" value="submit" />
+   *        </fieldset>
+   *      </form>
+   *
+   *      <script type="text/javascript">
+   *        $('example').onsubmit = function(){
+   *          var valid, msg = $('msg')
+   *
+   *          // are both fields present?
+   *          valid = $(this.username).present() && $(this.email).present()
+   *        
+   *          if (valid) {
+   *            // in the real world we would return true here to allow the form to be submitted
+   *            // return true
+   *            msg.update('Passed validation!').style.color = 'green'
+   *          } else {
+   *            msg.update('Please fill out <em>all</em> the fields.').style.color = 'red'
+   *          }
+   *          return false
+   *        }
+   *      </script>      
   **/
   present: function(element) {
     return $(element).value != '';
