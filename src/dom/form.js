@@ -13,9 +13,21 @@
 
 var Form = {
   /**
-   *  Form.reset(form) -> Element
+   *  Form.reset(@form) -> Element
    *
    *  Resets a form to its default values.
+   *  
+   *  Example usage:
+   *  
+   *      Form.reset('contact')
+   *      
+   *      // equivalent:
+   *      $('contact').reset()
+   *      
+   *      // both have the same effect as pressing the reset button
+   *  
+   *  This method allows you to programatically reset a form. It is a wrapper 
+   *  for the `reset()` method native to `HTMLFormElement`.
   **/
   reset: function(form) {
     form = $(form);
