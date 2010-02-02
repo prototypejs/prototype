@@ -221,7 +221,41 @@
    *
    *  Stopping an event also sets a `stopped` property on that event for
    *  future inspection.
-  **/
+   *  
+   *  There are two aspects to how your browser handles an event once it fires up:
+   *  
+   *  1. The browser usually triggers event handlers on the actual element the 
+   *  event occurred on, then on its parent element, and so on and so forth, 
+   *  until the document's root element is reached. This is called 
+   *  *event bubbling*, and is the most common form of event propagation. You 
+   *  may very well want to stop this propagation when you just handled an event, 
+   *  and don't want it to keep bubbling up (or see no need for it).
+   *  
+   *  2. Once your code had a chance to process the event, the browser handles 
+   *  it as well, if that event has a *default behavior*. For instance, clicking 
+   *  on links navigates to them; submitting forms sends them over to the server 
+   *  side; hitting the Return key in a single-line form field submits it; etc. 
+   *  You may very well want to prevent this default behavior if you do your own 
+   *  handling.
+   *  
+   *  Because stopping one of those aspects means, in 99.9% of the cases, 
+   *  preventing the other one as well, Prototype bundles both in this `stop` 
+   *  function. Calling it on an event object, stops propagation *and* prevents 
+   *  the default behavior.
+   *  
+   *  ##### Example
+   *  
+   *  Here's a simple script that prevents a form from being sent to the server 
+   *  side if certain field is empty.
+   *  
+   *      Event.observe('signinForm', 'submit', function(event) {
+   *        var login = $F('login').strip();
+   *        if ('' == login) {
+   *          Event.stop(event);
+   *          // Display the issue one way or another
+   *        }
+   *      });
+  **/  
   function stop(event) {
     Event.extend(event);
     event.preventDefault();
