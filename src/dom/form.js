@@ -580,19 +580,42 @@ Form.Element.Serializers = {
 /**
  *  class Abstract.TimedObserver
  *
- *  An abstract DOM element observer class, subclasses of which can be used to periodically
- *  check a value and trigger a callback when the value has changed.
+ *  An abstract DOM element observer class, subclasses of which can be used to 
+ *  periodically check a value and trigger a callback when the value has changed.
  *
  *  A `TimedObserver` object will try to check a value using the `getValue()`
- *  instance method which must be defined by the subclass. There are two out-of-the-box subclasses:
- *  [[Form.Observer]], which serializes a form and triggers when the result has changed; and
- *  [[Form.Element.Observer]], which triggers when the value of a given form field changes.
+ *  instance method which must be defined by the subclass. There are two 
+ *  out-of-the-box subclasses:
+ *  [[Form.Observer]], which serializes a form and triggers when the result has 
+ *  changed; and [[Form.Element.Observer]], which triggers when the value of a 
+ *  given form field changes.
  *
- *  <h5>Creating Your Own TimedObserver Implementations</h5>
+ *  
+ *  Using `TimedObserver` implementations is straightforward; simply instantiate 
+ *  them with appropriate arguments. For example:
+ *  
+ *      new Form.Element.Observer(
+ *        'myelement',
+ *        0.2,  // 200 milliseconds
+ *        function(el, value){
+ *          alert('The form control has changed value to: ' + value)
+ *        }
+ *      )
+ *  
+ *  Now that we have instantiated an object, it will check the value of the form 
+ *  control every 0.2 seconds and alert us of any change. While it is useless to 
+ *  alert the user of his own input (like in the example), we could be doing 
+ *  something useful like updating a certain part of the UI or informing the 
+ *  application on server of stuff happening (over Ajax).
+ *  
+ *  The callback function is always called with 2 arguments: the element given 
+ *  when the observer instance was made and the actual value that has changed 
+ *  and caused the callback to be triggered in the first place.
+ *  #####Creating Your Own TimedObserver Implementations
  *
- *  It's easy to create your own `TimedObserver` implementations: Simply subclass `TimedObserver`
- *  and provide the `getValue()` method. For example, this is the complete source code for
- *  [[Form.Element.Observer]]:
+ *  It's easy to create your own `TimedObserver` implementations: Simply subclass 
+ *  `TimedObserver` and provide the `getValue()` method. For example, this is the
+ *  complete source code for [[Form.Element.Observer]]:
  *
  *      Form.Element.Observer = Class.create(Abstract.TimedObserver, {
  *        getValue: function() {
@@ -629,10 +652,15 @@ Abstract.TimedObserver = Class.create(PeriodicalExecuter, {
 /**
  *  class Form.Element.Observer < Abstract.TimedObserver
  *
- *  An [[Abstract.TimedObserver]] subclass that watches for changes to a form field's value.
- *  This triggers the callback when the form field's value (according to
- *  [[Form.Element#getValue]]) changes. (Note that when the value actually changes can vary from
- *  browser to browser, particularly with `select` boxes.)
+ *  An [[Abstract.TimedObserver]] subclass that watches for changes to a form 
+ *  field's value. This triggers the callback when the form field's value 
+ *  (according to [[Form.Element.getValue]]) changes. (Note that when the value
+ *  actually changes can vary from browser to browser, particularly with 
+ *  `select` boxes.)
+ *  
+ *  Form.Element observer implements the `getValue()` method using 
+ *  [[Form.Element.getValue]] on the given element. See [[Abstract.TimedObserver]] 
+ *  for general documentation on timed observers.
 **/
 Form.Element.Observer = Class.create(Abstract.TimedObserver, {
   /**
@@ -653,9 +681,49 @@ Form.Element.Observer = Class.create(Abstract.TimedObserver, {
  *  class Form.Observer < Abstract.TimedObserver
  *
  *  An [[Abstract.TimedObserver]] subclass that watches for changes to a form.
- *  The callback is triggered when the form changes&nbsp;&mdash; e.g., when any of its fields' values
- *  changes, when fields are added/removed, etc.; anything that affects the serialized
- *  form of the form (see [[Form#serialize]]).
+ *  The callback is triggered when the form changes&nbsp;&mdash; e.g., when any 
+ *  of its fields' values changes, when fields are added/removed, etc.; anything
+ *  that affects the serialized form of the form (see [[Form#serialize]]).
+ * 
+ *  ##### Example
+ *  
+ *  In this example an `observer` is used to change the appearance of the form 
+ *  if any of the values had been changed. It returns to its initial state when 
+ *  the data is submitted (saved).
+ *  
+ *      <form id="example" action="#">
+ *        <fieldset>
+ *          <legend>Login Preferences</legend>
+ *          <p id="msg" class="message">Current settings:</p>
+ *          <p>
+ *            <label for="greeting">Greeting message</label>
+ *            <input id="greeting" type="text" name="greeting" value="Hello world!" />
+ *          </p>
+ *          <h4>Login options</h4>
+ *          <p>
+ *              <input id="login-visible" type="checkbox" name="login-visible" checked="checked" />
+ *              <label for="login-visible">allow others to see my last login date</label>
+ *          </p>
+ *          <p>
+ *              <input id="land-recent" type="checkbox" name="land-recent" />
+ *              <label for="land-recent">land on recent changes overview instead of the Dashboard</label>
+ *          </p>
+ *          <input type="submit" value="save" />
+ *        </fieldset>
+ *      </form>
+ *    
+ *      <script type="text/javascript">
+ *        new Form.Observer('example', 0.3, function(form, value){
+ *          $('msg').update('Your preferences have changed. Resubmit to save').style.color = 'red'
+ *          form.down().setStyle({ background:'lemonchiffon', borderColor:'red' })
+ *        })
+ *      
+ *        $('example').onsubmit = function() {
+ *          $('msg').update('Preferences saved!').style.color = 'green'
+ *          this.down().setStyle({ background:null, borderColor:null })
+ *          return false
+ *        }
+ *      </script>
 **/
 Form.Observer = Class.create(Abstract.TimedObserver, {
   /**
