@@ -168,6 +168,14 @@ Form.Methods = {
    *
    *  Disables the form as a whole. Form controls will be visible but
    *  uneditable.
+   *  
+   *  Disabling the form is done by iterating over form elements and calling
+   *  [[Form.Element.disable]] on them.
+   *  
+   *  ##### Note
+   *  
+   *  Keep in mind that *disabled elements are skipped* by serialization
+   *  methods! You cannot serialize a disabled form.
   **/
   disable: function(form) {
     form = $(form);
@@ -179,6 +187,14 @@ Form.Methods = {
    *  Form.enable(@form) -> Element
    *
    *  Enables a fully- or partially-disabled form.
+   *  
+   *  Enabling the form is done by iterating over form elements and calling
+   *  [[Form.Element.enable]] on them.
+   *  
+   *  ##### Note
+   *  
+   *  This will enable all form controls regardless of how they were disabled
+   *  (by scripting or by HTML attributes).
   **/
   enable: function(form) {
     form = $(form);
