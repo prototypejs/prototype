@@ -423,10 +423,13 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#camelize() -> String
    *
-   *  Converts a string separated by dashes into a camelCase equivalent.
-   *  For instance, 'foo-bar' would be converted to 'fooBar'.
+   *  Converts a string separated by dashes into a camelCase equivalent. For
+   *  instance, `'foo-bar'` would be converted to `'fooBar'`.
+   *  
+   *  Prototype uses this internally for translating CSS properties into their
+   *  DOM `style` property equivalents.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      'background-color'.camelize();
    *      // -> 'backgroundColor'
@@ -444,6 +447,14 @@ Object.extend(String.prototype, (function() {
    *  String#capitalize() -> String
    *
    *  Capitalizes the first letter of a string and downcases all the others.
+   *  
+   *  ##### Examples
+   *  
+   *      'hello'.capitalize();
+   *      // -> 'Hello'
+   *      
+   *      'HELLO WORLD!'.capitalize();
+   *      // -> 'Hello world!'
   **/
   function capitalize() {
     return this.charAt(0).toUpperCase() + this.substring(1).toLowerCase();
@@ -454,6 +465,19 @@ Object.extend(String.prototype, (function() {
    *
    *  Converts a camelized string into a series of words separated by an
    *  underscore (`_`).
+   *
+   *  ##### Example
+   *  
+   *      'borderBottomWidth'.underscore();
+   *      // -> 'border_bottom_width'
+   *  
+   *  ##### Note
+   *  
+   *  Used in conjunction with [[String#dasherize]], [[String#underscore]]
+   *  converts a DOM style into its CSS equivalent.
+   *  
+   *      'borderBottomWidth'.underscore().dasherize();
+   *      // -> 'border-bottom-width'
   **/
   function underscore() {
     return this.replace(/::/g, '/')
@@ -466,7 +490,20 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#dasherize() -> String
    *
-   *  Replaces every instance of the underscore character ("_") by a dash ("-").
+   *  Replaces every instance of the underscore character `"_"` by a dash `"-"`.
+   *
+   *  ##### Example
+   *  
+   *      'border_bottom_width'.dasherize();
+   *      // -> 'border-bottom-width'
+   *  
+   *  ##### Note
+   *  
+   *  Used in conjunction with [[String#underscore]], [[String#dasherize]]
+   *  converts a DOM style into its CSS equivalent.
+   *  
+   *      'borderBottomWidth'.underscore().dasherize();
+   *      // -> 'border-bottom-width'
   **/
   function dasherize() {
     return this.replace(/_/g, '-');
