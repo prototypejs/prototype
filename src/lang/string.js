@@ -359,6 +359,40 @@ Object.extend(String.prototype, (function() {
    *
    *  Parses a URI-like query string and returns an object composed of
    *  parameter/value pairs.
+   *  
+   *  This method is realy targeted at parsing query strings (hence the default 
+   *  value of`"&"` for the `separator` argument).
+   *  
+   *  For this reason, it does _not_ consider anything that is either before a 
+   *  question  mark (which signals the beginning of a query string) or beyond 
+   *  the hash symbol (`"#"`), and runs `decodeURIComponent()` on each 
+   *  parameter/value pair.
+   *  
+   *  `String#toQueryParams` also aggregates the values of identical keys into 
+   *  an array of values.
+   *  
+   *  Note that parameters which do not have a specified value will be set to 
+   *  `undefined`.
+   *  
+   *  ##### Examples
+   *  
+   *      'section=blog&id=45'.toQueryParams();
+   *      // -> {section: 'blog', id: '45'}
+   *      
+   *      'section=blog;id=45'.toQueryParams();
+   *      // -> {section: 'blog', id: '45'}
+   *      
+   *      'http://www.example.com?section=blog&id=45#comments'.toQueryParams();
+   *      // -> {section: 'blog', id: '45'}
+   *      
+   *      'section=blog&tag=javascript&tag=prototype&tag=doc'.toQueryParams();
+   *      // -> {section: 'blog', tag: ['javascript', 'prototype', 'doc']}
+   *      
+   *      'tag=ruby%20on%20rails'.toQueryParams();
+   *      // -> {tag: 'ruby on rails'}
+   *      
+   *      'id=45&raw'.toQueryParams();
+   *      // -> {id: '45', raw: undefined}
   **/
   function toQueryParams(separator) {
     var match = this.strip().match(/([^?#]*)(#.*)?$/);
