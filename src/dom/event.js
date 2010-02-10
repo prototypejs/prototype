@@ -114,9 +114,38 @@
 
   /** deprecated
    *  Event.element(@event) -> Element
+   *  - event (Event): An Event object
    *
    *  Returns the DOM element on which the event occurred. This method
-   *  is deprecated, use [[Event.findElement findElement]] instead.
+   *  is deprecated, use [[Event.findElement]] instead.
+   *  
+   *  ##### Example
+   *  
+   *  Here's a simple bit of code which hides any paragraph when directly clicked.
+   *  
+   *      document.observe('click', function(event) {
+   *        var element = Event.element(event);
+   *        if ('P' == element.tagName)
+   *          element.hide();
+   *      });
+   *  
+   *  ##### See also
+   *  
+   *  There is a subtle distinction between this function and 
+   *  [[Event.findElement]].
+   *  
+   *  ##### Note for Prototype 1.5.0
+   *  
+   *  Note that prior to version 1.5.1, if the browser does not support *native DOM extensions*
+   *  (see the [[Element]] section for further details), the element returned by
+   *  [[Event.element]] might very well *not be extended*. If you intend to use
+   *  methods from [[Element.Methods]] on it, you need to wrap the call in the
+   *  [[$]] function like so:
+   *  
+   *      document.observe('click', function(event) {
+   *        var element = $(Event.element(event));
+   *        // ...
+   *      });
   **/
   function element(event) {
     event = Event.extend(event);
@@ -143,11 +172,28 @@
   }
 
   /**
-   *  Event.findElement(@event, expression) -> Element
+   *  Event.findElement(@event[, expression]) -> Element
+   *  - event (Event): An Event object
+   *  - expression (String): An optional CSS selector
    *
    *  Returns the first DOM element that matches a given CSS selector &mdash;
    *  starting with the element on which the event occurred, then moving up
-   *  its ancestor chain.
+   *  its ancestor chain. If `expression` is not given, the element which fired
+   *  the event is returned.
+   *  
+   *  *If no matching element is found, the document itself (`HTMLDocument` node)
+   *  is returned.*
+   *  
+   *  ##### Example
+   *  
+   *  Here's a simple code that lets you click everywhere on the page and hides
+   *  the closest-fitting paragraph around your click (if any).
+   *  
+   *      document.observe('click', function(event) {
+   *        var element = Event.findElement(event, 'p');
+   *        if (element != document)
+   *          $(element).hide();
+   *      });
   **/
   function findElement(event, expression) {
     var element = Event.element(event);
