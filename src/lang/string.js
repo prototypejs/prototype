@@ -260,16 +260,17 @@ Object.extend(String.prototype, (function() {
    *
    *  Strips a string of things that look like an HTML script blocks.
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      "<p>This is a test.<script>alert("Look, a test!");</script>End of test</p>".stripScripts();
    *      // => "<p>This is a test.End of test</p>"
    *
-   *  <h5>Caveat User</h5>
+   *  ##### Caveat User
    *
    *  Note that the processing `stripScripts` does is good enough for most purposes,
-   *  but you cannot rely on it for security purposes. If you're processing end-user-supplied
-   *  content, `stripScripts` is probably not sufficiently robust to prevent hack attacks.
+   *  but you cannot rely on it for security purposes. If you're processing 
+   *  end-user-supplied content, `stripScripts` is probably not sufficiently robust
+   *  to prevent hack attacks.
   **/
   function stripScripts() {
     return this.replace(new RegExp(Prototype.ScriptFragment, 'img'), '');
@@ -278,8 +279,33 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#extractScripts() -> Array
    *
-   *  Extracts the content of any script blocks present in the string and
+   *  Extracts the content of any `script` blocks present in the string and
    *  returns them as an array of strings.
+   *  
+   *  This method is used internally by [[String#evalScripts]].
+   *  It does _not_ evaluate the scripts (use [[String#evalScripts]]
+   *  to do that), but can be usefull if you need to evaluate the scripts at a 
+   *  later date.
+   *  
+   *  ##### Examples
+   *  
+   *      'lorem... <script>2 + 2</script>'.extractScripts();
+   *      // -> ['2 + 2']
+   *      
+   *      '<script>2 + 2</script><script>alert("hello world!")</script>'.extractScripts();
+   *      // -> ['2 + 2', 'alert("hello world!")']
+   *  
+   *  ##### Notes
+   *  
+   *  To evaluate the scripts later on, you can use the following:
+   *  
+   *      var myScripts = '<script>2 + 2</script><script>alert("hello world!")</script>'.extractScripts();
+   *      // -> ['2 + 2', 'alert("hello world!")']
+   *      
+   *      var myReturnedValues = myScripts.map(function(script) {
+   *        return eval(script);
+   *      });
+   *      // -> [4, undefined] (and displays 'hello world!' in the alert dialog)
   **/
   function extractScripts() {
     var matchAll = new RegExp(Prototype.ScriptFragment, 'img'),
@@ -297,8 +323,16 @@ Object.extend(String.prototype, (function() {
    *  `<script>`  blocks referencing external files will be treated as though
    *  they were empty (the result for that position in the array will be `undefined`);
    *  external files are _not_ loaded and processed by `evalScripts`.
+   *  
+   *  ##### Examples
+   *  
+   *      'lorem... <script>2 + 2</script>'.evalScripts();
+   *      // -> [4]
+   *      
+   *      '<script>2 + 2<script><script>alert("hello world!")</script>'.evalScripts();
+   *      // -> [4, undefined] (and displays 'hello world!' in the alert dialog)
    *
-   *  <h5>About `evalScripts`, `var`s, and defining functions</h5>
+   *  ##### About `evalScripts`, `var`s, and defining functions
    *
    *  `evalScripts` evaluates script blocks, but this **does not** mean they are
    *  evaluated in the global scope. They aren't, they're evaluated in the scope of
@@ -324,7 +358,9 @@ Object.extend(String.prototype, (function() {
    *        // Amazing stuff!
    *      }
    *
-   *  (You can leave off the `window.` part of that, but it's bad form.)
+   *  (You can leave off the `window.` part of that, but it's bad form.)   
+   *  Evaluates the content of any `script` block present in the string. Returns an array
+   *  containing the value returned by each script.
   **/
   function evalScripts() {
     return this.extractScripts().map(function(script) { return eval(script) });
