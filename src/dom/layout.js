@@ -1,5 +1,4 @@
 
-
 (function() {
   
   // Converts a CSS percentage value to a decimal.
@@ -23,7 +22,7 @@
       return null;
     }
 
-    // Non-IE browsers will always return pixels.
+    // Non-IE browsers will always return pixels if possible.
     if ((/^\d+(px)?$/i).test(value)) {
       return window.parseInt(value, 10);      
     }
@@ -60,6 +59,7 @@
     return 0;
   }
   
+  // Turns plain numbers into pixel measurements.
   function toCSSPixels(number) {
     if (Object.isString(number) && number.endsWith('px')) {
       return number;
@@ -75,12 +75,11 @@
         return false;
       }
       element = $(element.parentNode);
-    }    
+    }
     return true;
   }
   
-  var hasLayout = Prototype.K;
-  
+  var hasLayout = Prototype.K;  
   if ('currentStyle' in document.documentElement) {
     hasLayout = function(element) {
       if (!element.currentStyle.hasLayout) {
@@ -96,7 +95,6 @@
     if (key.includes('border')) return key + '-width';
     return key;
   }
-  
   
   /**
    *  class Element.Layout < Hash
@@ -237,8 +235,7 @@
     
     _set: function(property, value) {
       return Hash.prototype.set.call(this, property, value);
-    },
-    
+    },    
     
     // TODO: Investigate.
     set: function(property, value) {
@@ -315,7 +312,6 @@
         // its parent.
         var parent = element.parentNode, pLayout = $(parent).getLayout();
         
-        
         newWidth = pLayout.get('width') -
          this.get('margin-left') -
          this.get('border-left') -
@@ -352,21 +348,24 @@
     
     /**
      *  Element.Layout#toCSS([keys...]) -> Object
-     *  
+     *  - keys (String): A space-separated list of keys to include.
+     *
      *  Converts the layout hash to a plain object of CSS property/value
      *  pairs, optionally including only the given keys.
+     *
+     *  Keys can be passed into this method as individual arguments _or_
+     *  separated by spaces within a string.
+     *
+     *    // Equivalent statements:
+     *    someLayout.toCSS('top', 'bottom', 'left', 'right');
+     *    someLayout.toCSS('top bottom left right');
      *  
      *  Useful for passing layout properties to [[Element.setStyle]].
     **/
     toCSS: function() {
-      var keys = [];
-      for (var i = 0, j, argKeys, l = arguments.length; i < l; i++) {
-        argKeys = arguments[i].split(' ');
-        for (j = 0; j < argKeys.length; j++) {
-          keys.push(argKeys[j]);
-        } 
-      }
-      if (keys.length === 0) keys = Element.Layout.PROPERTIES;
+      var args = $A(arguments);
+      var keys = (args.length === 0) ? Element.Layout.PROPERTIES :
+       args.join(' ').split(' ');
       var css = {};
       keys.each( function(key) {
         // Key needs to be a valid Element.Layout property...
@@ -380,11 +379,14 @@
         if (value) css[cssNameFor(key)] = value + 'px';
       });
       return css;
+    },
+    
+    inspect: function() {
+      return "#<Element.Layout>";
     }
   });
   
   Object.extend(Element.Layout, {
-    // All measurable properties.
     /**
      *  Element.Layout.PROPERTIES = Array
      *  
@@ -594,6 +596,9 @@
    *  
    *  A representation of the top- and left-offsets of an element relative to
    *  another.
+   *  
+   *  All methods that compute offsets return an instance of `Element.Offset`.
+   *  
   **/
   Element.Offset = Class.create({
     /**
@@ -689,8 +694,8 @@
   function getDimensions(element) {
     var layout = $(element).getLayout();    
     return {
-      width:  layout.measure('width'),
-      height: layout.measure('height')
+      width:  layout.get('width'),
+      height: layout.get('height')
     };    
   }
   
