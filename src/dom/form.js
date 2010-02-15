@@ -280,15 +280,75 @@ Form.Methods = {
 
   /**
    *  Form.request(@form[, options]) -> Ajax.Request
-   *  - options (Object): Options to pass along to the `Ajax.Request`
+   *  - options (Object): Options to pass along to the [[Ajax.Request]]
    *    constructor.
    *
    *  A convenience method for serializing and submitting the form via an
    *  [[Ajax.Request]] to the URL of the form's `action` attribute.
    *
-   *  The `options` parameter is passed to the `Ajax.Request` instance,
+   *  The `options` parameter is passed to the [[Ajax.Request]] instance,
    *  allowing one to override the HTTP method and/or specify additional
-   *  parameters and callbacks.
+   *  parameters and callbacks.   
+   *  
+   *  - If the form has a method attribute, its value is used for the 
+   *  [[Ajax.Request]] `method` option. If a method option is passed to 
+   *  `request()`, it takes precedence over the form's method attribute. If 
+   *  neither is specified, method defaults to "POST".
+   *  
+   *  - Key-value pairs specified in the `parameters` option (either as a hash 
+   *  or a query string) will be merged with (and *take precedence* over) the 
+   *  serialized form parameters.
+   *  
+   *  ##### Example
+   *  
+   *  Suppose you have this HTML form:
+   *  
+   *      <form id="person-example" method="POST" action="/user/info">
+   *        <fieldset><legend>User info</legend>
+   *          <ul>
+   *            <li>
+   *              <label for="username">Username:</label>
+   *              <input type="text" name="username" id="username" value="" />
+   *            </li>
+   *            <li>
+   *              <label for="age">Age:</label>
+   *              <input type="text" name="age" id="age" value="" size="3" />
+   *            </li>
+   *            <li>
+   *              <label for="hobbies">Your hobbies are:</label>
+   *              <select name="hobbies[]" id="hobbies" multiple="multiple">
+   *                <option>coding</option>
+   *                <option>swimming</option>
+   *                <option>biking</option>
+   *                <option>hiking</option>
+   *                <option>drawing</option>
+   *              </select>
+   *            </li>
+   *          </ul>
+   *          <input type="submit" value="serialize!" />
+   *        </fieldset>
+   *      </form>
+   *  
+   *  You can easily post it with Ajax like this:
+   *  
+   *      $('person-example').request(); //done - it's posted
+   *      
+   *      // do the same with a callback:
+   *      $('person-example').request({
+   *        onComplete: function(){ alert('Form data saved!') }
+   *      })
+   *  
+   *  To override the HTTP method and add some parameters, simply use `method` 
+   *  and `parameters` in the options. In this example we set the method to GET 
+   *  and set two fixed parameters:
+   *  `interests` and `hobbies`. The latter already exists in the form but this 
+   *  value will take precedence.
+   *  
+   *      $('person-example').request({
+   *        method: 'get',
+   *        parameters: { interests:'JavaScript', 'hobbies[]':['programming', 'music'] },
+   *        onComplete: function(){ alert('Form data saved!') }
+   *      })
   **/
   request: function(form, options) {
     form = $(form), options = Object.clone(options || { });
