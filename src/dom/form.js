@@ -218,6 +218,15 @@ Form.Methods = {
    *  Form.findFirstElement(@form) -> Element
    *
    *  Finds the first non-hidden, non-disabled control within the form.
+   *  
+   *  The returned object is either an INPUT, SELECT or TEXTAREA element. This
+   *  method is used by the [[Form.focusFirstElement]] method.
+   *  
+   *  ##### Note
+   *  
+   *  The result of this method is the element that comes first in the
+   *  *document* order, not the
+   *  [tabindex order](http://www.w3.org/TR/html4/interact/forms.html#h-17.11.1).
   **/
   findFirstElement: function(form) {
     var elements = $(form).getElements().findAll(function(element) {
@@ -236,6 +245,11 @@ Form.Methods = {
    *  Form.focusFirstElement(@form) -> Element
    *
    *  Gives keyboard focus to the first element of the form. Returns the form.
+   *  
+   *  Uses [[Form.findFirstElement]] to get the first element and calls
+   *  [[Form.Element.activate]] on it. This is useful for enhancing usability on
+   *  your site by bringing focus on page load to forms such as search forms or
+   *  contact forms where a user is ready to start typing right away.
   **/
   focusFirstElement: function(form) {
     form = $(form);
