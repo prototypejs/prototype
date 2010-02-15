@@ -28,6 +28,7 @@
 
 //= require "dom/dom"
 //= require <selector_engine>
+//= require "dom/layout"
 //= require "dom/selector"
 //= require "dom/form"
 //= require "dom/event"

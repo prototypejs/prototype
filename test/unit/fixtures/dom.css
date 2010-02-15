@@ -39,6 +39,10 @@ div.style-test { margin-left: 1px }
     width: 20em;
 }
 
+#dimensions-visible {
+  padding-top: 0.1em;
+}
+
 #dimensions-visible-pos-abs,
 #dimensions-display-none-pos-abs {
   position: absolute;

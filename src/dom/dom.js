@@ -1062,36 +1062,6 @@ Element.Methods = {
   },
 
   /**
-   *  Element.getDimensions(@element) -> Object
-   *
-   *  Finds the computed width and height of `element` and returns them as
-   *  key/value pairs of an object.
-  **/
-  getDimensions: function(element) {
-    element = $(element);
-    var display = Element.getStyle(element, 'display');
-    if (display != 'none' && display != null) // Safari bug
-      return {width: element.offsetWidth, height: element.offsetHeight};
-
-    // All *Width and *Height properties give 0 on elements with display none,
-    // so enable the element temporarily
-    var els = element.style,
-        originalVisibility = els.visibility,
-        originalPosition = els.position,
-        originalDisplay = els.display;
-    els.visibility = 'hidden';
-    if (originalPosition != 'fixed') // Switching fixed to absolute causes issues in Safari
-      els.position = 'absolute';
-    els.display = 'block';
-    var originalWidth = element.clientWidth,
-        originalHeight = element.clientHeight;
-    els.display = originalDisplay;
-    els.position = originalPosition;
-    els.visibility = originalVisibility;
-    return {width: originalWidth, height: originalHeight};
-  },
-
-  /**
    *  Element.makePositioned(@element) -> Element
    *
    *  Allows for the easy creation of a CSS containing block by setting
