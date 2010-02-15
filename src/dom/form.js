@@ -129,6 +129,11 @@ Form.Methods = {
    *  Form.getElements(@form) -> [Element...]
    *
    *  Returns a collection of all controls within a form.
+   *  
+   *  ##### Note
+   *  
+   *  OPTION elements are not included in the result; only their parent
+   *  SELECT control is.
   **/
   getElements: function(form) {
     var elements = $(form).getElementsByTagName('*'),
@@ -149,15 +154,31 @@ Form.Methods = {
 
   /**
    *  Form.getInputs(@form [, type [, name]]) -> [Element...]
-   *  - type (String): A value for the `type` attribute against which to
-   *    filter.
-   *  - name (String): A value for the `name` attribute against which to
-   *    filter.
+   *  - type (String): A value for the `type` attribute against which to filter.
+   *  - name (String): A value for the `name` attribute against which to filter.
    *
-   *  Returns a collection of all `INPUT` elements in a form.
+   *  Returns a collection of all INPUT elements in a form.
    *
    *  Use optional `type` and `name` arguments to restrict the search on
    *  these attributes.
+   *  
+   *  ##### Example
+   *  
+   *      var form = $('myform')
+   *      
+   *      form.getInputs()       // -> all INPUT elements
+   *      form.getInputs('text') // -> only text inputs
+   *      
+   *      var buttons = form.getInputs('radio', 'education')
+   *      // -> only radio buttons of name "education"
+   *      
+   *      // now disable these radio buttons:
+   *      buttons.invoke('disable')
+   *  
+   *  ##### Note
+   *  
+   *  Elements are returned in the *document* order, not the
+   *  [tabindex order](http://www.w3.org/TR/html4/interact/forms.html#h-17.11.1).
   **/
   getInputs: function(form, typeName, name) {
     form = $(form);
