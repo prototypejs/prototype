@@ -311,7 +311,7 @@
         // If not, that means the element's width depends upon the width of
         // its parent.
         var parent = element.parentNode, pLayout = $(parent).getLayout();
-        
+
         newWidth = pLayout.get('width') -
          this.get('margin-left') -
          this.get('border-left') -
