@@ -67,7 +67,7 @@
  *  <h5>Common callbacks</h5>
  *
  *  When used on individual instances, all callbacks (except `onException`) are
- *  invoked with two parameters: the `XMLHttpRequest` object and the result of
+ *  invoked with two parameters: the [[Ajax.Response]] object and the result of
  *  evaluating the `X-JSON` response header, if any (can be `null`).
  *
  *  For another way of describing their chronological order and which callbacks
