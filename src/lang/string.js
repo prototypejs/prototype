@@ -600,6 +600,11 @@ Object.extend(String.prototype, (function() {
    *  String#toJSON() -> String
    *
    *  Returns a JSON string.
+   *  
+   *  ##### Example
+   *  
+   *      'The "Quoted" chronicles'.toJSON();
+   *      //-> '"The \"Quoted\" chronicles"'
   **/
   function toJSON() {
     return this.inspect(true);
@@ -610,6 +615,11 @@ Object.extend(String.prototype, (function() {
    *
    *  Strips comment delimiters around Ajax JSON or JavaScript responses.
    *  This security method is called internally.
+   *  
+   *  ##### Example
+   *  
+   *      '/*-secure-\n{"name": "Violet", "occupation": "character", "age": 25}\n*\/'.unfilterJSON()
+   *      // -> '{"name": "Violet", "occupation": "character", "age": 25}'
   **/
   function unfilterJSON(filter) {
     return this.replace(filter || Prototype.JSONFilter, '$1');
@@ -620,6 +630,17 @@ Object.extend(String.prototype, (function() {
    *
    *  Check if the string is valid JSON by the use of regular expressions.
    *  This security method is called internally.
+   *  
+   *  ##### Examples
+   *  
+   *      "something".isJSON();
+   *      // -> false
+   *      "\"something\"".isJSON();
+   *      // -> true
+   *      "{ foo: 42 }".isJSON();
+   *      // -> false
+   *      "{ \"foo\": 42 }".isJSON();
+   *      // -> true
   **/
   function isJSON() {
     var str = this;
@@ -636,6 +657,33 @@ Object.extend(String.prototype, (function() {
    *  If the optional `sanitize` parameter is set to `true`, the string is
    *  checked for possible malicious attempts; if one is detected, `eval`
    *  is _not called_.
+   *  
+   *  ##### Warning
+   *  
+   *  If the JSON string is not well formated or if a malicious attempt is
+   *  detected a `SyntaxError` is thrown.
+   *  
+   *  ##### Examples
+   *  
+   *      var person = '{ "name": "Violet", "occupation": "character" }'.evalJSON();
+   *      person.name;
+   *      //-> "Violet"
+   *      
+   *      person = 'grabUserPassword()'.evalJSON(true);
+   *      //-> SyntaxError: Badly formed JSON string: 'grabUserPassword()'
+   *      
+   *      person = '/*-secure-\n{"name": "Violet", "occupation": "character"}\n*\/'.evalJSON()
+   *      person.name;
+   *      //-> "Violet"
+   *  
+   *  ##### Note
+   *  
+   *  Always set the `sanitize` parameter to `true` for data coming from
+   *  externals sources to prevent XSS attacks.
+   *  
+   *  As [[String#evalJSON]] internally calls [[String#unfilterJSON]], optional
+   *  security comment delimiters (defined in [[Prototype.JSONFilter]]) are
+   *  automatically removed.
   **/
   function evalJSON(sanitize) {
     var json = this.unfilterJSON();
