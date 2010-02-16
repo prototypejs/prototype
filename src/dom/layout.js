@@ -118,15 +118,15 @@
    *  Instantiate an `Element.Layout` class by passing an element into the
    *  constructor:
    *  
-   *    var layout = new Element.Layout(someElement);
+   *      var layout = new Element.Layout(someElement);
    *  
    *  You can also use [[Element.getLayout]], if you prefer.
    *  
    *  Once you have a layout object, retrieve properties using [[Hash]]'s
    *  familiar `get` and `set` syntax.
    *  
-   *    layout.get('width');  //-> 400
-   *    layout.get('top');    //-> 180
+   *      layout.get('width');  //-> 400
+   *      layout.get('top');    //-> 180
    *  
    *  The following are the CSS-related properties that can be retrieved.
    *  Nearly all of them map directly to their property names in CSS. (The
@@ -184,7 +184,7 @@
    *  becomes stale when the element's dimensions change**. When this
    *  happens, obtain a new instance.
    *  
-   *  <h4>Hidden elements<h4>
+   *  <h4>Hidden elements</h4>
    *  
    *  Because it's a common case to want the dimensions of a hidden element
    *  (e.g., for animations), it's possible to measure elements that are
@@ -842,7 +842,9 @@
       left:   offset.left + 'px',
       width:  layout.get('width') + 'px',
       height: layout.get('height') + 'px'
-    });    
+    });
+    
+    return element;
   }
   
   /**
