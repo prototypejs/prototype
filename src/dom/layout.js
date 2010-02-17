@@ -213,6 +213,12 @@
     initialize: function($super, element, preCompute) {
       $super();      
       this.element = $(element);
+      
+      // nullify all properties keys
+      Element.Layout.PROPERTIES.each( function(property) {
+        this._set(property, null);
+      }, this);
+      
       // The 'preCompute' boolean tells us whether we should fetch all values
       // at once. If so, we should do setup/teardown only once. We set a flag
       // so that we can ignore calls to `_begin` and `_end` elsewhere.
@@ -222,10 +228,6 @@
         Element.Layout.PROPERTIES.each( this._compute, this );
         this._end();
         this._preComputing = false;
-      } else {
-        Element.Layout.PROPERTIES.each( function(property) {
-          this._set(property, null);
-        }, this);
       }
     },
     
