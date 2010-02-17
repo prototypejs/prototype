@@ -73,9 +73,18 @@
    *  `undefined` and `function` types have no JSON representation. `boolean`
    *  and `null` are coerced to strings.
    *
-   *  For other types, `Object.toJSON` looks for a `toJSON` method on `object`.
+   *  For other types, [[Object.toJSON]] looks for a `toJSON` method on `object`.
    *  If there is one, it is used; otherwise the object is treated like a
-   *  generic `Object`.
+   *  generic [[Object]].
+   *  
+   *  For more information on Prototype's JSON encoder, hop to our
+   *  [tutorial](http://prototypejs.org/learn/json).
+   *  
+   *  ##### Example
+   *  
+   *      var data = {name: 'Violet', occupation: 'character', age: 25, pets: ['frog', 'rabbit']};
+   *      Object.toJSON(data);
+   *      //-> '{"name": "Violet", "occupation": "character", "age": 25, "pets": ["frog","rabbit"]}'
   **/
   function toJSON(object) {
     var type = typeof object;
@@ -102,12 +111,12 @@
 
   /**
    *  Object.toQueryString(object) -> String
-   *  object (Object): The object whose property/value pairs will be converted.
+   *  - object (Object): The object whose property/value pairs will be converted.
    *
    *  Turns an object into its URL-encoded query string representation.
    *
    *  This is a form of serialization, and is mostly useful to provide complex
-   *  parameter sets for stuff such as objects in the Ajax namespace (e.g.
+   *  parameter sets for stuff such as objects in the [[Ajax]] namespace (e.g.
    *  [[Ajax.Request]]).
    *
    *  Undefined-value pairs will be serialized as if empty-valued. Array-valued
@@ -118,6 +127,11 @@
    *  The order of pairs in the serialized form is not guaranteed (and mostly
    *  irrelevant anyway) &mdash; except for array-based parts, which are serialized
    *  in array order.
+   *  
+   *  ##### Examples
+   *  
+   *      Object.toQueryString({ action: 'ship', order_id: 123, fees: ['f1', 'f2'], 'label': 'a demo' })
+   *      // -> 'action=ship&order_id=123&fees=f1&fees=f2&label=a%20demo'
   **/
   function toQueryString(object) {
     return $H(object).toQueryString();
@@ -131,6 +145,45 @@
    *
    *  Returns the return value of `object`'s `toHTML` method if it exists; else
    *  runs `object` through [[String.interpret]].
+   *  
+   *  ##### Examples
+   *  
+   *      var Bookmark = Class.create({
+   *        initialize: function(name, url) {
+   *          this.name = name;
+   *          this.url = url;
+   *        },
+   *        
+   *        toHTML: function() {
+   *          return '<a href="#{url}">#{name}</a>'.interpolate(this);
+   *        }
+   *      });
+   *      
+   *      var api = new Bookmark('Prototype API', 'http://prototypejs.org/api');
+   *      
+   *      Object.toHTML(api);
+   *      //-> '<a href="http://prototypejs.org/api">Prototype API</a>'
+   *      
+   *      Object.toHTML("Hello world!");
+   *      //-> "Hello world!"
+   *      
+   *      Object.toHTML();
+   *      //-> ""
+   *      
+   *      Object.toHTML(null);
+   *      //-> ""
+   *      
+   *      Object.toHTML(undefined);
+   *      //-> ""
+   *      
+   *      Object.toHTML(true);
+   *      //-> "true"
+   *      
+   *      Object.toHTML(false);
+   *      //-> "false"
+   *      
+   *      Object.toHTML(123);
+   *      //-> "123"
   **/
   function toHTML(object) {
     return object && object.toHTML ? object.toHTML() : String.interpret(object);
