@@ -340,10 +340,7 @@
       if (!(property in COMPUTATIONS)) {
         throw "Property not found.";
       }
-      
-      var value = COMPUTATIONS[property].call(this, this.element);
-      this._set(property, value);
-      return value;
+      return this._set(property, COMPUTATIONS[property].call(this, this.element));
     },
     
     /**
