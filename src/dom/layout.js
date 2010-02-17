@@ -219,17 +219,13 @@
       if (preCompute) {
         this._preComputing = true;
         this._begin();
-      }
-      Element.Layout.PROPERTIES.each( function(property) {
-        if (preCompute) {
-          this._compute(property);
-        } else {
-          this._set(property, null);
-        }
-      }, this);
-      if (preCompute) {
+        Element.Layout.PROPERTIES.each( this._compute, this );
         this._end();
         this._preComputing = false;
+      } else {
+        Element.Layout.PROPERTIES.each( function(property) {
+          this._set(property, null);
+        }, this);
       }
     },
     
