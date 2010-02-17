@@ -7,7 +7,7 @@
  *  ranging from the trivial to the complex. Tired of stripping trailing
  *  whitespace? Try [[String#strip]]. Want to replace `replace`? Have a look at
  *  [[String#sub]] and [[String#gsub]]. Need to parse a query string? We have
- *  [[String#toQueryParams]].
+ *  [[String#toQueryParams what you need]].
 **/
 Object.extend(String, {
   /**
@@ -584,6 +584,18 @@ Object.extend(String.prototype, (function() {
    *
    *  Returns a debug-oriented version of the string (i.e. wrapped in single or
    *  double quotes, with backslashes and quotes escaped).
+   *  
+   *  For more information on `inspect` methods, see [[Object.inspect]].
+   *  
+   *  #### Examples
+   *  
+   *      'I\'m so happy.'.inspect();
+   *      // -> '\'I\\\'m so happy.\''
+   *      // (displayed as 'I\'m so happy.' in an alert dialog or the console)
+   *      
+   *      'I\'m so happy.'.inspect(true);
+   *      // -> '"I'm so happy."'
+   *      // (displayed as "I'm so happy." in an alert dialog or the console)
   **/
   function inspect(useDoubleQuotes) {
     var escapedString = this.replace(/[\x00-\x1f\\]/g, function(character) {
@@ -697,6 +709,13 @@ Object.extend(String.prototype, (function() {
    *  String#include(substring) -> Boolean
    *
    *  Checks if the string contains `substring`.
+   *  
+   *  ##### Example
+   *  
+   *      'Prototype framework'.include('frame');
+   *      //-> true
+   *      'Prototype framework'.include('frameset');
+   *      //-> false
   **/
   function include(pattern) {
     return this.indexOf(pattern) > -1;
@@ -706,6 +725,11 @@ Object.extend(String.prototype, (function() {
    *  String#startsWith(substring) -> Boolean
    *
    *  Checks if the string starts with `substring`.
+   *  
+   *  ##### Example
+   *  
+   *      'Prototype JavaScript'.startsWith('Pro');
+   *      //-> true
   **/
   function startsWith(pattern) {
     // We use `lastIndexOf` instead of `indexOf` to avoid tying execution
@@ -717,6 +741,11 @@ Object.extend(String.prototype, (function() {
    *  String#endsWith(substring) -> Boolean
    *
    *  Checks if the string ends with `substring`.
+   *  
+   *  ##### Example
+   *  
+   *      'slaughter'.endsWith('laughter')
+   *      // -> true
   **/
   function endsWith(pattern) {
     var d = this.length - pattern.length;
@@ -729,6 +758,14 @@ Object.extend(String.prototype, (function() {
    *  String#empty() -> Boolean
    *
    *  Checks if the string is empty.
+   *  
+   *  ##### Example
+   *  
+   *      ''.empty();
+   *      //-> true
+   *      
+   *      '  '.empty();
+   *      //-> false  
   **/
   function empty() {
     return this == '';
@@ -739,6 +776,17 @@ Object.extend(String.prototype, (function() {
    *
    *  Check if the string is "blank" &mdash; either empty (length of `0`) or containing
    *  only whitespace.
+   *
+   *  ##### Example
+   *  
+   *      ''.blank();
+   *      //-> true
+   *      
+   *      '  '.blank();
+   *      //-> true
+   *      
+   *      ' a '.blank();
+   *      //-> false
   **/
   function blank() {
     return /^\s*$/.test(this);
