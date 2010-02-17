@@ -283,6 +283,20 @@
    *  - object (Object): The object to test.
    *
    *  Returns `true` if `object` is a DOM node of type 1; `false` otherwise.
+   *  
+   *  ##### Examples
+   *  
+   *      Object.isElement(new Element('div'));
+   *      //-> true
+   *      
+   *      Object.isElement(document.createElement('div'));
+   *      //-> true
+   *      
+   *      Object.isElement($('id_of_an_exiting_element'));
+   *      //-> true
+   *      
+   *      Object.isElement(document.createTextNode('foo'));
+   *      //-> false
   **/
   function isElement(object) {
     return !!(object && object.nodeType == 1);
@@ -292,7 +306,18 @@
    *  Object.isArray(object) -> Boolean
    *  - object (Object): The object to test.
    *
-   *  Returns `true` if `object` is an array; false otherwise.
+   *  Returns `true` if `object` is an [[Array]]; `false` otherwise.
+   *  
+   *  ##### Examples
+   *  
+   *      Object.isArray([]);
+   *      //-> true
+   *      
+   *      Object.isArray($w());
+   *      //-> true
+   *      
+   *      Object.isArray({ });
+   *      //-> false
   **/
   function isArray(object) {
     return _toString.call(object) == "[object Array]";
@@ -311,6 +336,17 @@
    *
    *  Returns `true` if `object` is an instance of the [[Hash]] class; `false`
    *  otherwise.
+   *  
+   *  ##### Examples
+   *  
+   *      Object.isHash(new Hash({ }));
+   *      //-> true
+   *      
+   *      Object.isHash($H({ }));
+   *      //-> true
+   *      
+   *      Object.isHash({ });
+   *      //-> false
   **/
   function isHash(object) {
     return object instanceof Hash;
@@ -320,7 +356,15 @@
    *  Object.isFunction(object) -> Boolean
    *  - object (Object): The object to test.
    *
-   *  Returns `true` if `object` is of type `function`; `false` otherwise.
+   *  Returns `true` if `object` is of type [[Function]]; `false` otherwise.
+   *  
+   *  ##### Examples
+   *  
+   *      Object.isFunction($);
+   *      //-> true
+   *      
+   *      Object.isFunction(123);
+   *      //-> false
   **/
   function isFunction(object) {
     return typeof object === "function";
@@ -330,7 +374,18 @@
    *  Object.isString(object) -> Boolean
    *  - object (Object): The object to test.
    *
-   *  Returns `true` if `object` is of type `string`; `false` otherwise.
+   *  Returns `true` if `object` is of type [[String]]; `false` otherwise.
+   *  
+   *  ##### Examples
+   *  
+   *      Object.isString("foo");
+   *      //-> true
+   *      
+   *      Object.isString("");
+   *      //-> true
+   *      
+   *      Object.isString(123);
+   *      //-> false
   **/
   function isString(object) {
     return _toString.call(object) == "[object String]";
@@ -340,7 +395,18 @@
    *  Object.isNumber(object) -> Boolean
    *  - object (Object): The object to test.
    *
-   *  Returns `true` if `object` is of type `number`; `false` otherwise.
+   *  Returns `true` if `object` is of type [[Number]]; `false` otherwise.
+   *  
+   *  ##### Examples
+   *  
+   *      Object.isNumber(0);
+   *      //-> true
+   *      
+   *      Object.isNumber(1.2);
+   *      //-> true
+   *      
+   *      Object.isNumber("foo");
+   *      //-> false
   **/
   function isNumber(object) {
     return _toString.call(object) == "[object Number]";
@@ -350,7 +416,24 @@
    *  Object.isUndefined(object) -> Boolean
    *  - object (Object): The object to test.
    *
-   *  Returns `true` if `object` is of type `string`; `false` otherwise.
+   *  Returns `true` if `object` is of type `undefined`; `false` otherwise.
+   *  
+   *  ##### Examples
+   *  
+   *      Object.isUndefined();
+   *      //-> true
+   *      
+   *      Object.isUndefined(undefined);
+   *      //-> true
+   *      
+   *      Object.isUndefined(null);
+   *      //-> false
+   *      
+   *      Object.isUndefined(0);
+   *      //-> false
+   *      
+   *      Object.isUndefined("");
+   *      //-> false
   **/
   function isUndefined(object) {
     return typeof object === "undefined";
