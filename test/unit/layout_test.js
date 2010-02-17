@@ -14,7 +14,17 @@ function isDisplayed(element) {
 new Test.Unit.Runner({
   setup: function() {
   },
-  
+  'test preCompute argument of layout': function() {
+    var preComputedLayout = $('box1').getLayout(true),
+        normalLayout = $('box1').getLayout();
+    
+    // restore normal get method from Hash object
+    preComputedLayout.get = Hash.prototype.get;
+    
+    Element.Layout.PROPERTIES.each(function(key) {
+      this.assertEqual(normalLayout.get(key), preComputedLayout.get(key), key);
+    }, this);
+  },
   'test layout on absolutely-positioned elements': function() {
     var layout = $('box1').getLayout();
     
