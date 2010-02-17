@@ -202,6 +202,20 @@ Object.extend(String.prototype, (function() {
    *
    *  Truncates a string to given `length` and appends `suffix` to it (indicating
    *  that it is only an excerpt).
+   *  
+   *  ##### Examples
+   *  
+   *      'A random sentence whose length exceeds 30 characters.'.truncate();
+   *      // -> 'A random sentence whose len...'
+   *      
+   *      'Some random text'.truncate();
+   *      // -> 'Some random text.'
+   *      
+   *      'Some random text'.truncate(10);
+   *      // -> 'Some ra...'
+   *      
+   *      'Some random text'.truncate(10, ' [...]');
+   *      // -> 'Some [...]'
   **/
   function truncate(length, truncation) {
     length = length || 30;
@@ -214,6 +228,11 @@ Object.extend(String.prototype, (function() {
    *  String#strip() -> String
    *
    *  Strips all leading and trailing whitespace from a string.
+   *  
+   *  ##### Example
+   *  
+   *      '    hello world!    '.strip();
+   *      // -> 'hello world!'
   **/
   function strip() {
     return this.replace(/^\s+/, '').replace(/\s+$/, '');
@@ -366,10 +385,15 @@ Object.extend(String.prototype, (function() {
     return this.extractScripts().map(function(script) { return eval(script) });
   }
 
-  /**
+  /** related to: String#unescapeHTML
    *  String#escapeHTML() -> String
    *
    *  Converts HTML special characters to their entity equivalents.
+   *  
+   *  ##### Example
+   *  
+   *      '<div class="article">This is an article</div>'.escapeHTML();
+   *      // -> "&lt;div class="article"&gt;This is an article&lt;/div&gt;"
   **/
   function escapeHTML() {
     return this.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -380,6 +404,14 @@ Object.extend(String.prototype, (function() {
    *
    *  Strips tags and converts the entity forms of special HTML characters
    *  to their normal form.
+   *  
+   *  ##### Examples
+   *  
+   *      'x &gt; 10'.unescapeHTML()
+   *      // -> 'x > 10'
+   *      
+   *      '<h1>Pride &amp; Prejudice</h1>;'.unescapeHTML()
+   *      // -> '<h1>Pride & Prejudice</h1>'
   **/
   function unescapeHTML() {
     // Warning: In 1.7 String#unescapeHTML will no longer call String#stripTags.
@@ -475,6 +507,14 @@ Object.extend(String.prototype, (function() {
    *  Used internally by ObjectRange.
    *  Converts the last character of the string to the following character in
    *  the Unicode alphabet.
+   *  
+   *  ##### Examples
+   *  
+   *      'a'.succ();
+   *      // -> 'b'
+   *      
+   *      'aaaa'.succ();
+   *      // -> 'aaab'
   **/
   function succ() {
     return this.slice(0, this.length - 1) +
@@ -485,6 +525,11 @@ Object.extend(String.prototype, (function() {
    *  String#times(count) -> String
    *
    *  Concatenates the string `count` times.
+   *  
+   *  ##### Example
+   *  
+   *      "echo ".times(3);
+   *      // -> "echo echo echo "
   **/
   function times(count) {
     return count < 1 ? '' : new Array(count + 1).join(this);
