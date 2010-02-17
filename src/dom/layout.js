@@ -651,8 +651,8 @@
   });
   
   /**
-   *  Element.getLayout(@element) -> Element.Layout
-   *  
+   *  Element.getLayout(@element, preCompute) -> Element.Layout
+   *
    *  Returns an instance of [[Element.Layout]] for measuring an element's
    *  dimensions.
    *  
@@ -663,8 +663,8 @@
    *  `Element.getLayout` again only when the values in an existing 
    *  `Element.Layout` object have become outdated.
   **/
-  function getLayout(element) {
-    return new Element.Layout(element);
+  function getLayout(element, preCompute) {
+    return new Element.Layout(element, preCompute);
   }
     
   /**
