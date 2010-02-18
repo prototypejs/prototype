@@ -915,7 +915,34 @@ Element.Methods = {
    *  Element.previousSiblings(@element) -> [Element...]
    *
    *  Collects all of `element`'s previous siblings and returns them as an
-   *  array of elements.
+   *  [[Array]] of elements.
+   *  
+   *  Two elements are siblings if they have the same parent. So for example,
+   *  the `head` and `body` elements are siblings (their parent is the `html`
+   *  element). Previous-siblings are simply the ones which precede `element` in
+   *  the document.
+   *  
+   *  The returned [[Array]] reflects the siblings _inversed_ order in the document
+   *  (e.g. an index of 0 refers to the lowest sibling i.e., the one closest to
+   *  `element`).
+   *  
+   *  Note that all of Prototype's DOM traversal methods ignore text nodes and
+   *  return element nodes only.
+   *  
+   *  ##### Examples
+   *  
+   *      <ul>
+   *        <li id="golden-delicious">Golden Delicious</li>
+   *        <li id="mutsu">Mutsu</li>
+   *        <li id="mcintosh">McIntosh</li>
+   *        <li id="ida-red">Ida Red</li>
+   *      </ul>
+   *  
+   *      $('mcintosh').previousSiblings();
+   *      // -> [li#mutsu, li#golden-delicious]
+   *      
+   *      $('golden-delicious').previousSiblings();
+   *      // -> []
   **/
   previousSiblings: function(element, maximumLength) {
     return Element.recursivelyCollect(element, 'previousSibling');
@@ -924,8 +951,34 @@ Element.Methods = {
   /**
    *  Element.nextSiblings(@element) -> [Element...]
    *
-   *  Collects all of `element`'s next siblings and returns them as an array
+   *  Collects all of `element`'s next siblings and returns them as an [[Array]]
    *  of elements.
+   *  
+   *  Two elements are siblings if they have the same parent. So for example,
+   *  the `head` and `body` elements are siblings (their parent is the `html`
+   *  element). Next-siblings are simply the ones which follow `element` in the
+   *  document.
+   *  
+   *  The returned [[Array]] reflects the siblings order in the document
+   *  (e.g. an index of 0 refers to the sibling right below `element`).
+   *  
+   *  Note that all of Prototype's DOM traversal methods ignore text nodes and
+   *  return element nodes only.
+   *  
+   *  ##### Examples
+   *  
+   *      <ul>
+   *        <li id="golden-delicious">Golden Delicious</li>
+   *        <li id="mutsu">Mutsu</li>
+   *        <li id="mcintosh">McIntosh</li>
+   *        <li id="ida-red">Ida Red</li>
+   *      </ul>
+   *  
+   *      $('mutsu').nextSiblings();
+   *      // -> [li#mcintosh, li#ida-red]
+   *      
+   *      $('ida-red').nextSiblings();
+   *      // -> []
   **/
   nextSiblings: function(element) {
     return Element.recursivelyCollect(element, 'nextSibling');
@@ -933,17 +986,15 @@ Element.Methods = {
 
   /**
    *  Element.siblings(@element) -> [Element...]
-   *  Collects all of element's siblings and returns them as an array of
+   *  Collects all of element's siblings and returns them as an [[Array]] of
    *  elements.
-   *
-   *  ##### More information
    *
    *  Two elements are siblings if they have the same parent. So for example,
    *  the `head` and `body` elements are siblings (their parent is the `html`
    *  element).
    *  
-   *  The returned array reflects the siblings' order in the document (e.g. an
-   *  index of 0 refers to `element`'s topmost sibling).
+   *  The returned [[Array]] reflects the siblings' order in the document (e.g.
+   *  an index of 0 refers to `element`'s topmost sibling).
    *  
    *  Note that all of Prototype's DOM traversal methods ignore text nodes and
    *  return element nodes only.
