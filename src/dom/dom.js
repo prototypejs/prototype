@@ -236,7 +236,7 @@ Element.Methods = {
    *        }
    *      </style>
    *      
-   *      [&#8230;]
+   *      [...]
    *      
    *      <div id="hidden-by-css"></div>
    *
@@ -251,6 +251,46 @@ Element.Methods = {
    *  Element.toggle(@element) -> Element
    *
    *  Toggles the visibility of `element`. Returns `element`.
+   *  
+   *  ##### Examples
+   *  
+   *      <div id="welcome-message"></div>
+   *      <div id="error-message" style="display:none;"></div>
+   *  
+   *      $('welcome-message').toggle();
+   *      // -> Element (and hides div#welcome-message)
+   *      
+   *      $('error-message').toggle();
+   *      // -> Element (and displays div#error-message)
+   *  
+   *  Toggle multiple elements using [[Enumerable#each]]:
+   *  
+   *      ['error-message', 'welcome-message'].each(Element.toggle);
+   *      // -> ['error-message', 'welcome-message'] 
+   *  
+   *  Toggle multiple elements using [[Enumerable#invoke]]:
+   *  
+   *      $('error-message', 'welcome-message').invoke('toggle');
+   *      // -> [Element, Element]
+   *
+   *  ##### Notes
+   *  
+   *  [[Element.toggle]] _cannot_ display elements hidden via CSS stylesheets.
+   *  Note that this is not a Prototype limitation but a consequence of how the
+   *  CSS `display` property works.
+   *  
+   *      <style>
+   *        #hidden-by-css {
+   *          display: none;
+   *        }
+   *      </style>
+   *      
+   *      [...]
+   *      
+   *      <div id="hidden-by-css"></div>
+   *  
+   *      $('hidden-by-css').toggle(); // WONT' WORK!
+   *      // -> Element (div#hidden-by-css is still hidden!)
   **/
   toggle: function(element) {
     element = $(element);
@@ -258,11 +298,29 @@ Element.Methods = {
     return element;
   },
 
-
   /**
    *  Element.hide(@element) -> Element
    *
    *  Sets `display: none` on `element`. Returns `element`.
+   *  
+   *  ##### Examples
+   *
+   *  Hide a single element:
+   *  
+   *      <div id="error-message"></div>
+   *  
+   *      $('error-message').hide();
+   *      // -> Element (and hides div#error-message)
+   *
+   *  Hide multiple elements using [[Enumerable#each]]:
+   *  
+   *      ['content', 'navigation', 'footer'].each(Element.hide);
+   *      // -> ['content', 'navigation', 'footer'] 
+   *  
+   *  Hide multiple elements using [[Enumerable#invoke]]:
+   *  
+   *      $('content', 'navigation', 'footer').invoke('hide');
+   *      // -> [Element, Element, Element]
   **/
   hide: function(element) {
     element = $(element);
@@ -274,6 +332,44 @@ Element.Methods = {
    *  Element.show(@element) -> Element
    *
    *  Removes `display: none` on `element`. Returns `element`.
+   *  
+   *  ##### Examples
+   *
+   *  Show a single element:
+   *  
+   *      <div id="error-message" style="display:none;"></div>
+   *  
+   *      $('error-message').show();
+   *      // -> Element (and displays div#error-message)
+   *  
+   *  Show multiple elements using [[Enumerable#each]]:
+   *  
+   *      ['content', 'navigation', 'footer'].each(Element.show);
+   *      // -> ['content', 'navigation', 'footer'] 
+   *  
+   *  Show multiple elements using [[Enumerable#invoke]]:
+   *  
+   *      $('content', 'navigation', 'footer').invoke('show');
+   *      // -> [Element, Element, Element]
+   *  
+   *  ##### Notes
+   *  
+   *  [[Element.show]] _cannot_ display elements hidden via CSS stylesheets.
+   *  Note that this is not a Prototype limitation but a consequence of how the
+   *  CSS `display` property works.
+   *  
+   *      <style>
+   *        #hidden-by-css {
+   *          display: none;
+   *        }
+   *      </style>
+   *      
+   *      [...]
+   *      
+   *      <div id="hidden-by-css"></div>
+   *  
+   *      $('hidden-by-css').show(); // DOES NOT WORK!
+   *      // -> Element (div#error-message is still hidden!)
   **/
   show: function(element) {
     element = $(element);
@@ -1583,6 +1679,30 @@ Element.Methods = {
    *
    *  Returns `element`'s ID. If `element` does not have an ID, one is
    *  generated, assigned to `element`, and returned.
+   *  
+   *  ##### Examples
+   *  
+   *  Original HTML:
+   *  
+   *        <ul>
+   *          <li id="apple">apple</li>
+   *          <li>orange</li>
+   *        </ul>
+   *  
+   *  JavaScript:
+   *  
+   *        $('apple').identify();
+   *        // -> 'apple'
+   *      
+   *        $('apple').next().identify();
+   *        // -> 'anonymous_element_1'
+   *  
+   *  Resulting HTML:
+   *  
+   *        <ul>
+   *          <li id="apple">apple</li>
+   *          <li id="anonymous_element_1">orange</li>
+   *        </ul>
   **/
   identify: function(element) {
     element = $(element);
@@ -1877,6 +1997,17 @@ Element.Methods = {
    *  Element.empty(@element) -> Element
    *
    *  Tests whether `element` is empty (i.e., contains only whitespace).
+   *  
+   *  ##### Examples
+   *  
+   *      <div id="wallet">     </div>
+   *      <div id="cart">full!</div>
+   *  
+   *      $('wallet').empty();
+   *      // -> true
+   *
+   *      $('cart').empty();
+   *      // -> false
   **/
   empty: function(element) {
     return $(element).innerHTML.blank();
@@ -1926,6 +2057,15 @@ Element.Methods = {
    *  Element.scrollTo(@element) -> Element
    *
    *  Scrolls the window so that `element` appears at the top of the viewport.
+   *  
+   *  This has a similar effect than what would be achieved using
+   *  [HTML anchors](http://www.w3.org/TR/html401/struct/links.html#h-12.2.3)
+   *  (except the browser's history is not modified).
+   *  
+   *  ##### Example
+   *  
+   *      $(element).scrollTo();
+   *      // -> Element
   **/
   scrollTo: function(element) {
     element = $(element);
