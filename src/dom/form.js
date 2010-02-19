@@ -377,8 +377,9 @@ Form.Methods = {
  *  Utilities for dealing with form controls in the DOM.
  *
  *  This is a collection of methods that assist in dealing with form controls.
- *  They provide ways to focus, serialize, disable/enable or extract current
- *  value from a specific control.
+ *  They provide ways to [[Form.Element.focus focus]], [[Form.Element.serialize 
+ *  serialize]], [[Form.Element.disable disable]]/[[Form.Element.enable enable]]
+ *  or extract current value from a specific control.
  *
  *  Note that nearly all these methods are available directly on `input`,
  *  `select`, and `textarea` elements. Therefore, these are equivalent:
@@ -388,7 +389,7 @@ Form.Methods = {
  *
  *  Naturally, you should always prefer the shortest form suitable in a
  *  situation. Most of these methods also return the element itself (as
- *  indicated by the return type) for chainability.
+ *  indicated by the return type) for chainability. 
 **/
 
 Form.Element = {
