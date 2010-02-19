@@ -435,6 +435,13 @@ Form.Element = {
    *  Form.Element.focus(element) -> Element
    *
    *  Gives keyboard focus to an element. Returns the element.
+   *  
+   *  ##### Example
+   *  
+   *      Form.Element.focus('searchbox')
+   *      
+   *      // Almost equivalent, but does NOT return the form element (uses the native focus() method):
+   *      $('searchbox').focus()
   **/
   focus: function(element) {
     $(element).focus();
@@ -445,6 +452,22 @@ Form.Element = {
    *  Form.Element.select(element) -> Element
    *
    *  Selects the current text in a text input. Returns the element.
+   *  
+   *  ##### Example
+   *  
+   *  Some search boxes are set up so that they auto-select their content when they receive focus.
+   *  
+   *        $('searchbox').onfocus = function() {
+   *          Form.Element.select(this)
+   *          
+   *          // You can also rely on the native method, but this will NOT return the element!
+   *          this.select()
+   *        }
+   *  
+   *  ##### Focusing + selecting: use [[Form.Element.activate]]!
+   *  
+   *  The [[Form.Element.activate]] method is a nifty way to both focus a form
+   *  field and select its current text, all in one portable JavaScript call.
   **/
   select: function(element) {
     $(element).select();
@@ -544,6 +567,20 @@ Form.Element.Methods = {
    *  Form.Element.clear(@element) -> Element
    *
    *  Clears the contents of a text input. Returns the element.
+   *  
+   *  ##### Example
+   *  
+   *  This code sets up a text field in a way that it clears its contents the
+   *  first time it receives focus:
+   *  
+   *        $('some_field').onfocus = function() {
+   *          // if already cleared, do nothing
+   *          if (this._cleared) return
+   *        
+   *          // when this code is executed, "this" keyword will in fact be the field itself
+   *          this.clear()
+   *          this._cleared = true
+   *        }
   **/
   clear: function(element) {
     $(element).value = '';
@@ -604,6 +641,15 @@ Form.Element.Methods = {
    *
    *  Gives focus to a form control and selects its contents if it is a text
    *  input.
+   *  
+   *  This method is just a shortcut for focusing and selecting; therefore, 
+   *  these are equivalent (aside from the fact that the former one will __not__
+   *  return the field) :
+   *  
+   *      Form.Element.focus('myelement').select()
+   *      $('myelement').activate()
+   *  
+   *  Guess which call is the nicest? ;)
   **/
   activate: function(element) {
     element = $(element);
@@ -621,6 +667,19 @@ Form.Element.Methods = {
    *
    *  Disables a form control, effectively preventing its value from changing
    *  until it is enabled again.
+   *  
+   *  This method sets the native `disabled` property of an element to `true`.
+   *  You can use this property to check the state of a control.
+   *  
+   *  ##### Notes
+   *  
+   *  Disabled form controls are never serialized.
+   *  
+   *  Never disable a form control as a security measure without having 
+   *  validation for it server-side. A user with minimal experience of
+   *  JavaScript can enable these fields on your site easily using any browser.
+   *  Instead, use disabling as a usability enhancement - with it you can
+   *  indicate that a specific value should not be changed at the time being.
   **/
   disable: function(element) {
     element = $(element);
