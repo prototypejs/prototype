@@ -51,7 +51,13 @@ var Form = {
    *  the value for that key in the object will be an array of the field values
    *  in the order they appeared on the array of elements.
    *
-   *  <h5>The Options</h5>
+   *  The preferred method to serialize a form is [[Form.serialize]]. Refer to
+   *  it for further information and examples on the `hash` option. However,
+   *  with [[Form.serializeElements]] you can serialize *specific* input
+   *  elements of your choice, allowing you to specify a subset of form elements
+   *  that you want to serialize data from.
+   *
+   *  ##### The Options
    *
    *  The options allow you to control two things: What kind of return
    *  value you get (an object or a string), and whether and which `submit`
@@ -61,26 +67,35 @@ var Form = {
    *  `{ hash: false }` are used.
    *
    *  If you supply an `options` object, it may have the following options:
-   *  - `hash` ([[Boolean]]): `true` to return a plain object with keys and values
-   *    (not a [[Hash]]; see below), `false` to return a String in query string
-   *    format. If you supply an `options` object with no `hash` member, `hash`
-   *    defaults to `true`. Note that this is __not__ the same as leaving off the
-   *    `options` object entirely (see above).
-   *  - `submit` ([[Boolean]] | [[String]]): In essence: If you omit this option the
-   *    first submit button in the form is included; if you supply `false`,
+   *  - `hash` ([[Boolean]]): `true` to return a plain object with keys and
+   *    values (not a [[Hash]]; see below), `false` to return a String in query
+   *    string format. If you supply an `options` object with no `hash` member,
+   *    `hash` defaults to `true`. Note that this is __not__ the same as leaving
+   *    off the `options` object entirely (see above).
+   *  - `submit` ([[Boolean]] | [[String]]): In essence: If you omit this option
+   *    the first submit button in the form is included; if you supply `false`,
    *    no submit buttons are included; if you supply the name of a submit
-   *    button, the first button with that name is included. Note that the `false`
-   *    value __must__ really be `false`, not _falsey_; falsey-but-not-false is
-   *    like omitting the option.
+   *    button, the first button with that name is included. Note that the
+   *    `false` value __must__ really be `false`, not _falsey_;
+   *    falsey-but-not-false is like omitting the option.
    *
-   *  _(Deprecated)_ If you pass in a [[Boolean]] instead of an object for `options`, it
-   *  is used as the `hash` option and all other options are defaulted.
+   *  _(Deprecated)_ If you pass in a [[Boolean]] instead of an object for
+   *  `options`, it is used as the `hash` option and all other options are
+   *  defaulted.
    *
-   *  <h5>A <em>hash</em>, not a Hash</h5>
+   *  ##### A <em>hash</em>, not a Hash
    *
    *  If you opt to receive an object, it is a plain JavaScript object with keys
-   *  and values, __not__ a [[Hash]]. All JavaScript objects are hashes in the lower-case
-   *  sense of the word, which is why the option has that somewhat-confusing name.
+   *  and values, __not__ a [[Hash]]. All JavaScript objects are hashes in the
+   *  lower-case sense of the word, which is why the option has that
+   *  somewhat-confusing name.
+   *
+   *  ##### Examples
+   *  
+   *  To serialize all input elements of type "text":
+   *  
+   *      Form.serializeElements( $('myform').getInputs('text') )
+   *      // -> serialized data
   **/
   serializeElements: function(elements, options) {
     // An earlier version accepted a boolean second parameter (hash) where
@@ -117,9 +132,32 @@ Form.Methods = {
    *  - options (Object): A list of options that affect the return value
    *    of the method.
    *
-   *  Serialize form data to an object or string suitable for Ajax requests.
-   *
-   *  See [[Form.serializeElements]] for details on the options.
+   *  Serializes form data to a string suitable for [[Ajax]] requests (default
+   *  behavior) or, if the `hash` option evaluates to `true`, an object hash
+   *  where keys are form control names and values are data.
+   *  
+   *  Depending of whether or not the `hash` option evaluates to `true`, the
+   *  result is either an object of the form `{name: "johnny", color: "blue"}`
+   *  or a [[String]] of the form `"name=johnny&color=blue"`, suitable for
+   *  parameters in an [[Ajax]] request. This method mimics the way browsers
+   *  serialize forms natively so that form data can be sent without refreshing
+   *  the page.
+   *  
+   *  See [[Form.serializeElements]] for more details on the options.
+   *  
+   *  ##### Examples
+   *  
+   *      $('person-example').serialize()
+   *      // -> 'username=sulien&age=22&hobbies=coding&hobbies=hiking'
+   *      
+   *      $('person-example').serialize(true)
+   *      // -> {username: 'sulien', age: '22', hobbies: ['coding', 'hiking']}
+   *  
+   *  ##### Notes
+   *  
+   *  Disabled form elements are not serialized (as per W3C HTML recommendation).
+   *  Also, file inputs are skipped as they cannot be serialized and sent using
+   *  only JavaScript.
   **/
   serialize: function(form, options) {
     return Form.serializeElements(Form.getElements(form), options);
