@@ -5,7 +5,7 @@
    *
    *  The namespace for Prototype's event system.
    *
-   *  <h5>Events: a fine mess</h5>
+   *  ##### Events: a fine mess
    *
    *  Event management is one of the really sore spots of cross-browser
    *  scripting.
@@ -17,7 +17,7 @@
    *  Safari). Also, MSIE has a tendency to leak memory when it comes to
    *  discarding event handlers.
    *
-   *  <h5>Prototype to the rescue</h5>
+   *  ##### Prototype to the rescue
    *
    *  Of course, Prototype smooths it over so well you'll forget these
    *  troubles even exist. Enter the `Event` namespace. It is replete with
@@ -33,6 +33,35 @@
    *  The functions you're most likely to use a lot are [[Event.observe]],
    *  [[Event.element]] and [[Event.stop]]. If your web app uses custom events,
    *  you'll also get a lot of mileage out of [[Event.fire]].
+   *  
+   *  ##### Instance methods on event objects
+   *  As of Prototype 1.6, all methods on the `Event` object are now also 
+   *  available as instance methods on the event object itself:
+   *  
+   *  **Before**
+   *  
+   *      $('foo').observe('click', respondToClick);
+   *      
+   *      function respondToClick(event) {
+   *        var element = Event.element(event);
+   *        element.addClassName('active');
+   *      }
+   *  
+   *  **After**
+   *  
+   *      $('foo').observe('click', respondToClick);
+   *      
+   *      function respondToClick(event) {
+   *        var element = event.element();
+   *        element.addClassName('active');
+   *      }
+   *  
+   *  These methods are added to the event object through [[Event.extend]],
+   *  in the same way that `Element` methods are added to DOM nodes through 
+   *  [[Element.extend]]. Events are extended automatically when handlers are 
+   *  registered with Prototype's [[Event.observe]] method; if you're using a 
+   *  different method of event registration, for whatever reason,you'll need to
+   *  extend these events manually with [[Event.extend]].
   **/
   var Event = {
     KEY_BACKSPACE: 8,
@@ -351,6 +380,18 @@
       inspect: function() { return '[object Event]' }
     });
 
+    /**
+     *  Event.extend(@event) -> Event
+     *  
+     *  Extends `event` with all of the methods contained in `Event.Methods`.
+     *  
+     *  Note that all events inside handlers that were registered using 
+     *  [[Event.observe]] or [[Element.observe]] will be extended automatically.
+     *  
+     *  You need only call `Event.extend` manually if you register a handler a 
+     *  different way (e.g., the `onclick` attribute). We really can't encourage
+     *  that sort of thing, though.
+    **/
     // IE's method for extending events.
     Event.extend = function(event, element) {
       if (!event) return false;
