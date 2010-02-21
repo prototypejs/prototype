@@ -168,6 +168,14 @@ var Hash = Class.create(Enumerable, (function() {
     return Object.clone(this._object);
   }
 
+  /** related to: Object.toJSON, alias of: Hash#toObject
+   *  Hash#toJSON() -> Object
+  **/
+  
+  /** alias of: Hash#toObject
+   *  Hash#toTemplateReplacements() -> Object
+  **/
+  
   /**
    *  Hash#keys() -> [String...]
    *
@@ -331,22 +339,7 @@ var Hash = Class.create(Enumerable, (function() {
       return pair.map(Object.inspect).join(': ');
     }).join(', ') + '}>';
   }
-
-  /** related to: Object.toJSON
-   *  Hash#toJSON() -> String
-   *
-   *  Returns a JSON string containing the keys and values in this hash.
-   *
-   *  <h5>Example</h5>
-   *
-   *      var h = $H({'a': 'apple', 'b': 23, 'c': false});
-   *      h.toJSON();
-   *      // -> {"a": "apple", "b": 23, "c": false}
-  **/
-  function toJSON() {
-    return Object.toJSON(this.toObject());
-  }
-
+  
   /**
    *  Hash#clone() -> Hash
    *
@@ -371,7 +364,7 @@ var Hash = Class.create(Enumerable, (function() {
     update:                 update,
     toQueryString:          toQueryString,
     inspect:                inspect,
-    toJSON:                 toJSON,
+    toJSON:                 toObject,
     clone:                  clone
   };
 })());

@@ -10,8 +10,12 @@
 **/
 (function() {
 
-  var _toString = Object.prototype.toString;
-
+  var _toString = Object.prototype.toString,
+      NATIVE_JSON_STRINGIFY_SUPPORT = window.JSON &&
+        typeof JSON.stringify === 'function' &&
+        JSON.stringify(0) === '0' &&
+        typeof JSON.stringify(Prototype.K) === 'undefined';
+  
   /**
    *  Object.extend(destination, source) -> Object
    *  - destination (Object): The object to receive the new properties.
@@ -67,26 +71,55 @@
    *  generic `Object`.
   **/
   function toJSON(object) {
-    var type = typeof object;
+    var results, type = typeof object;
+    
     switch (type) {
       case 'undefined':
       case 'function':
       case 'unknown': return;
       case 'boolean': return object.toString();
+      case 'string':  return object.inspect(true);
+      case 'number':  return _numberToJSON(object);
     }
 
     if (object === null) return 'null';
-    if (object.toJSON) return object.toJSON();
+    
+    type = _toString.call(object);
+    
+    switch (type) {
+      case '[object Boolean]': return object.toString();
+      case '[object String]':  return object.inspect(true);
+      case '[object Number]':  return _numberToJSON(object);
+      case '[object Array]':
+        results = [];
+        object.each(function(item) {
+          item = toJSON(item);
+          if (isUndefined(item)) item = 'null';
+          results.push(item);
+        });
+        return '[' + results.join(',') + ']';
+    }
+    
+    if (typeof object.toJSON === 'function')
+      return toJSON(object.toJSON());
     if (isElement(object)) return;
 
-    var results = [];
+    results = [];
     for (var property in object) {
       var value = toJSON(object[property]);
       if (!isUndefined(value))
-        results.push(property.toJSON() + ': ' + value);
+        results.push(property.inspect(true) + ':' + value);
     }
 
-    return '{' + results.join(', ') + '}';
+    return '{' + results.join(',') + '}';
+  }
+  
+  function _numberToJSON(number) {
+    return isFinite(number) ? String(number) : 'null';
+  }
+  
+  function stringify(object) {
+    return JSON.stringify(object);
   }
 
   /**
@@ -279,7 +312,7 @@
   extend(Object, {
     extend:        extend,
     inspect:       inspect,
-    toJSON:        toJSON,
+    toJSON:        NATIVE_JSON_STRINGIFY_SUPPORT ? stringify : toJSON,
     toQueryString: toQueryString,
     toHTML:        toHTML,
     keys:          keys,

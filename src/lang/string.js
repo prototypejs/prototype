@@ -29,6 +29,9 @@ Object.extend(String, {
 });
 
 Object.extend(String.prototype, (function() {
+  var NATIVE_JSON_PARSE_SUPPORT = window.JSON &&
+    typeof JSON.parse === 'function' &&
+    JSON.parse('{"test": true}').test;
 
   function prepareReplacement(replacement) {
     if (Object.isFunction(replacement)) return replacement;
@@ -376,15 +379,6 @@ Object.extend(String.prototype, (function() {
     return "'" + escapedString.replace(/'/g, '\\\'') + "'";
   }
 
-  /** related to: Object.toJSON
-   *  String#toJSON() -> String
-   *
-   *  Returns a JSON string.
-  **/
-  function toJSON() {
-    return this.inspect(true);
-  }
-
   /**
    *  String#unfilterJSON([filter = Prototype.JSONFilter]) -> String
    *
@@ -404,8 +398,10 @@ Object.extend(String.prototype, (function() {
   function isJSON() {
     var str = this;
     if (str.blank()) return false;
-    str = this.replace(/\\./g, '@').replace(/"[^"\\\n\r]*"/g, '');
-    return (/^[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]*$/).test(str);
+    str = str.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@');
+    str = str.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']');
+    str = str.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
+    return (/^[\],:{}\s]*$/).test(str);
   }
 
   /**
@@ -418,11 +414,22 @@ Object.extend(String.prototype, (function() {
    *  is _not called_.
   **/
   function evalJSON(sanitize) {
-    var json = this.unfilterJSON();
+    var json = this.unfilterJSON(),
+        cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+    if (cx.test(json)) {
+      json = json.replace(cx, function (a) {
+        return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+      });
+    }
     try {
       if (!sanitize || json.isJSON()) return eval('(' + json + ')');
     } catch (e) { }
     throw new SyntaxError('Badly formed JSON string: ' + this.inspect());
+  }
+  
+  function parseJSON() {
+    var json = this.unfilterJSON();
+    return JSON.parse(json);
   }
 
   /**
@@ -510,10 +517,9 @@ Object.extend(String.prototype, (function() {
     underscore:     underscore,
     dasherize:      dasherize,
     inspect:        inspect,
-    toJSON:         toJSON,
     unfilterJSON:   unfilterJSON,
     isJSON:         isJSON,
-    evalJSON:       evalJSON,
+    evalJSON:       NATIVE_JSON_PARSE_SUPPORT ? parseJSON : evalJSON,
     include:        include,
     startsWith:     startsWith,
     endsWith:       endsWith,

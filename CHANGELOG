@@ -1,3 +1,5 @@
+* Make Prototype's JSON implementation EcmaScript 5 compliant. [#453 state:resolved] (Tobie Langel)
+
 * Also detect embedded (UIWebView) mobile Safari. (Thomas Fuchs)
 
 * Avoid object creation and an unnecessary function call in `Class#addMethods`, when working around JScript DontEnum bug. Replace with feature test and a simple boolean check at runtime. (kangax)

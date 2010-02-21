@@ -334,25 +334,6 @@ Array.from = $A;
     return '[' + this.map(Object.inspect).join(', ') + ']';
   }
 
-  /** related to: Object.toJSON
-   *  Array#toJSON() -> String
-   *
-   *  Returns a JSON string representation of the array.
-   *
-   *  <h5>Example</h5>
-   *
-   *      ['a', {b: null}].toJSON();
-   *      //-> '["a", {"b": null}]'
-  **/
-  function toJSON() {
-    var results = [];
-    this.each(function(object) {
-      var value = Object.toJSON(object);
-      if (!Object.isUndefined(value)) results.push(value);
-    });
-    return '[' + results.join(', ') + ']';
-  }
-
   /**
    *  Array#indexOf(item[, offset = 0]) -> Number
    *  - item (?): A value that may or may not be in the array.
@@ -432,8 +413,7 @@ Array.from = $A;
     clone:     clone,
     toArray:   clone,
     size:      size,
-    inspect:   inspect,
-    toJSON:    toJSON
+    inspect:   inspect
   });
 
   // fix for opera

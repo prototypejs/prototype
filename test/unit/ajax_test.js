@@ -2,7 +2,7 @@ var extendDefault = function(options) {
   return Object.extend({
     asynchronous: false,
     method: 'get',
-    onException: function(e) { throw e }
+    onException: function(r, e) { throw e; }
   }, options);
 };
 
@@ -274,8 +274,7 @@ new Test.Unit.Runner({
         sanitizeJSON: true,
         parameters: Fixtures.invalidJson,
         onException: function(request, error) {
-          this.assert(error.message.include('Badly formed JSON string'));
-          this.assertInstanceOf(Ajax.Request, request);
+          this.assertEqual('SyntaxError', error.name);
         }.bind(this)
       }));
     } else {
@@ -360,14 +359,14 @@ new Test.Unit.Runner({
       new Ajax.Request("/response", extendDefault({
         parameters: Fixtures.invalidJson,
         onException: function(request, error) {
-          this.assert(error.message.include('Badly formed JSON string'));
+          this.assertEqual('SyntaxError', error.name);
         }.bind(this)
       }));
 
       new Ajax.Request("/response", extendDefault({
         parameters: { 'X-JSON': '{});window.attacked = true;({}' },
         onException: function(request, error) {
-          this.assert(error.message.include('Badly formed JSON string'));
+          this.assertEqual('SyntaxError', error.name);
         }.bind(this)
       }));
 

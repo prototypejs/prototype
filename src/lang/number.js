@@ -103,15 +103,6 @@ Object.extend(Number.prototype, (function() {
     return '0'.times(length - string.length) + string;
   }
 
-  /** related to: Object.toJSON
-   *  Number#toJSON() -> String
-   *
-   *  Returns a JSON string representation of the number.
-  **/
-  function toJSON() {
-    return isFinite(this) ? this.toString() : 'null';
-  }
-
   /**
    *  Number#abs() -> Number
    *
@@ -159,7 +150,6 @@ Object.extend(Number.prototype, (function() {
     succ:           succ,
     times:          times,
     toPaddedString: toPaddedString,
-    toJSON:         toJSON,
     abs:            abs,
     round:          round,
     ceil:           ceil,
