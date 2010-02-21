@@ -13,7 +13,11 @@ module PrototypeHelper
   TEST_UNIT_DIR = File.join(TEST_DIR, 'unit')
   TMP_DIR       = File.join(TEST_UNIT_DIR, 'tmp')
   VERSION       = YAML.load(IO.read(File.join(SRC_DIR, 'constants.yml')))['PROTOTYPE_VERSION']
+  
   DEFAULT_SELECTOR_ENGINE = 'sizzle'
+  
+  # Possible options for PDoc syntax highlighting, in order of preference.
+  SYNTAX_HIGHLIGHTERS = [:pygments, :coderay, :none]
 
   %w[sprockets pdoc unittest_js caja_builder].each do |name|
     $:.unshift File.join(PrototypeHelper::ROOT_DIR, 'vendor', name, 'lib')
@@ -36,7 +40,7 @@ module PrototypeHelper
     puts "  http://book.git-scm.com/2_installing_git.html"
     exit
   end
-  
+    
   def self.sprocketize(options = {})
     options = {
       :destination    => File.join(DIST_DIR, options[:source]),
@@ -72,15 +76,61 @@ module PrototypeHelper
     )
     rm_rf DOC_DIR
     
+    highlighter = syntax_highlighter
+    puts "Using syntax highlighter: #{highlighter}\n"
+    
     PDoc.run({
       :source_files => [temp_path],
       :destination => DOC_DIR,
       :index_page => 'README.markdown',
-      :syntax_highlighter => :pygments,
+      :syntax_highlighter => highlighter,
       :markdown_parser => :bluecloth
     })
     
     rm_rf temp_path
+  end
+  
+  def self.syntax_highlighter
+    if ENV['SYNTAX_HIGHLIGHTER']
+      highlighter = ENV['SYNTAX_HIGHLIGHTER'].to_sym
+      require_highlighter(highlighter, true)
+      return highlighter
+    end
+    
+    SYNTAX_HIGHLIGHTERS.detect { |n| require_highlighter(n) }
+  end
+  
+  def self.require_highlighter(name, verbose=false)
+    case name
+    when :pygments
+      success = system("pygmentize -V")
+      if !success && verbose
+        puts "\nYou asked to use Pygments, but I can't find the 'pygmentize' binary."
+        puts "To install, visit:\n"
+        puts "  http://pygments.org/docs/installation/\n\n"
+        exit
+      end
+      return success # (we have pygments)
+    when :coderay
+      begin
+        require 'coderay'
+      rescue LoadError => e
+        if verbose
+          puts "\nYou asked to use CodeRay, but I can't find the 'coderay' gem. Just run:\n\n"
+          puts "  $ gem install coderay"
+          puts "\nand you should be all set.\n\n"
+          exit
+        end
+        return false
+      end
+      return true # (we have CodeRay)
+    when :none
+      return true
+    else
+      puts "\nYou asked to use a syntax highlighter I don't recognize."
+      puts "Valid options: #{SYNTAX_HIGHLIGHTERS.join(', ')}\n\n"
+      exit
+    end
   end
   
   def self.require_sprockets
@@ -161,7 +211,7 @@ namespace :doc do
   desc "Builds the documentation."
   task :build => [:require] do
     PrototypeHelper.build_doc_for(ENV['SECTION'] ? "#{ENV['SECTION']}.js" : 'prototype.js')
-  end  
+  end
   
   task :require do
     PrototypeHelper.require_pdoc
