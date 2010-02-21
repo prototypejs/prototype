@@ -351,9 +351,9 @@
      *  Keys can be passed into this method as individual arguments _or_
      *  separated by spaces within a string.
      *
-     *    // Equivalent statements:
-     *    someLayout.toCSS('top', 'bottom', 'left', 'right');
-     *    someLayout.toCSS('top bottom left right');
+     *      // Equivalent statements:
+     *      someLayout.toCSS('top', 'bottom', 'left', 'right');
+     *      someLayout.toCSS('top bottom left right');
      *  
      *  Useful for passing layout properties to [[Element.setStyle]].
     **/
