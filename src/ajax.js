@@ -15,7 +15,7 @@
  *
  *  * `X-Requested-With` is set to `XMLHttpRequest`.
  *  * `X-Prototype-Version` is set to Prototype's current version (e.g.,
- *    `1.6.0.3`).
+ *    `<%= PROTOTYPE_VERSION %>`).
  *  * `Accept` is set to `text/javascript, text/html, application/xml,
  *     text/xml, * / *`
  *  * `Content-type` is automatically determined based on the `contentType`
