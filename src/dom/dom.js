@@ -2286,6 +2286,9 @@ Element.Methods = {
    *  Allows for the easy creation of a CSS containing block by setting
    *  `element`'s CSS `position` to `relative` if its initial position is
    *  either `static` or `undefined`.
+   *  
+   *  To revert back to `element`'s original CSS position, use
+   *  [[Element.undoPositioned]].
   **/
   makePositioned: function(element) {
     element = $(element);
@@ -2308,6 +2311,10 @@ Element.Methods = {
    *
    *  Sets `element` back to the state it was in _before_
    *  [[Element.makePositioned]] was applied to it.
+   *  
+   *  `element`'s absolutely positioned children will now have their positions
+   *  set relatively to `element`'s nearest ancestor with a CSS `position` of
+   *  `'absolute'`, `'relative'` or `'fixed'`.
   **/
   undoPositioned: function(element) {
     element = $(element);
@@ -2467,6 +2474,13 @@ Element.Methods = {
    *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
+   *  
+   *  Calculates the cumulative `offsetLeft` and `offsetTop` of an element and
+   *  all its parents _until_ it reaches an element with a position other than
+   *  `static`.
+   *  
+   *  Note that all values are returned as _numbers only_ although they are
+   *  _expressed in pixels_.
   **/
   positionedOffset: function(element) {
     var valueT = 0, valueL = 0;
@@ -2573,6 +2587,9 @@ Element.Methods = {
    *
    *  Returns `element`'s closest _positioned_ ancestor. If none is found, the
    *  `body` element is returned.
+   *  
+   *  The returned element is `element`'s
+   *  [CSS containing block](http://www.w3.org/TR/CSS21/visudet.html#containing-block-details).
   **/
   getOffsetParent: function(element) {
     if (element.offsetParent) return $(element.offsetParent);
