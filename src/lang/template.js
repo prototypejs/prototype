@@ -11,12 +11,12 @@
  *
  *  There's nothing wrong with this approach, except that it is hard to
  *  visualize the output immediately just by glancing at the concatenation
- *  expression. The `Template` class provides a much nicer and clearer way of
+ *  expression. The [[Template]] class provides a much nicer and clearer way of
  *  achieving this formatting.
  *
  *  ##### Straightforward templates
  *
- *  The `Template` class uses a basic formatting syntax, similar to what is
+ *  The [[Template]] class uses a basic formatting syntax, similar to what is
  *  used in Ruby. The templates are created from strings that have embedded
  *  symbols in the form (e.g., `#{fieldName}`) that will be replaced by
  *  actual values when the template is applied (evaluated) to an object.
@@ -38,7 +38,7 @@
  *
  *  ##### Templates are meant to be reused
  *
- *  As the example illustrates, `Template` objects are not tied to specific
+ *  As the example illustrates, [[Template]] objects are not tied to specific
  *  data. The data is bound to the template only during the evaluation of the
  *  template, without affecting the template itself. The next example shows the
  *  same template being used with a handful of distinct objects.
@@ -64,7 +64,7 @@
  *
  *  There's always the chance that one day you'll need to have a literal in your
  *  template that looks like a symbol, but is not supposed to be replaced. For
- *  these situations there's an escape character: the backslash (<code>\\</code>).
+ *  these situations there's an escape character: the backslash (`\\`).
  *
  *      // NOTE: you're seeing two backslashes here because the backslash
  *      // is also an escape character in JavaScript strings, so a literal
@@ -79,7 +79,7 @@
  *
  *  The default syntax of the template strings will probably be enough for most
  *  scenarios. In the rare occasion where the default Ruby-like syntax is
- *  inadequate, there's a provision for customization. `Template`'s
+ *  inadequate, there's a provision for customization. [[Template]]'s
  *  constructor accepts an optional second argument that is a regular expression
  *  object to match the replaceable symbols in the template string. Let's put
  *  together a template that uses a syntax similar to the now ubiquitous `{{ }}`

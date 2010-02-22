@@ -3,7 +3,7 @@
  *
  *  Extensions to the built-in `String` class.
  *
- *  Prototype enhances the `String` object with a series of useful methods for
+ *  Prototype enhances the [[String]] object with a series of useful methods for
  *  ranging from the trivial to the complex. Tired of stripping trailing
  *  whitespace? Try [[String#strip]]. Want to replace `replace`? Have a look at
  *  [[String#sub]] and [[String#gsub]]. Need to parse a query string? We have
@@ -243,23 +243,24 @@ Object.extend(String.prototype, (function() {
    *
    *  Strips a string of any HTML tags.
    *
-   *  Note that `stripTags` will only strip HTML 4.01 tags &mdash; like `div`,
-   *  `span`, and `abbr`. It _will not_ strip namespace-prefixed tags such
-   *  as `h:table` or `xsl:template`.
+   *  Note that [[String#stripTags]] will only strip HTML 4.01 tags &mdash; like
+   *  `div`, `span`, and `abbr`. It _will not_ strip namespace-prefixed tags
+   *  such as `h:table` or `xsl:template`.
    *
-   *  Watch out for `<script>` tags in your string, as `String#stripTags` will _not_ remove
-   *  their content. Use [[String#stripScripts]] to do so.
+   *  Watch out for `<script>` tags in your string, as [[String#stripTags]] will
+   *  _not_ remove their content. Use [[String#stripScripts]] to do so.
    *
-   *  <h5>Caveat User</h5>
+   *  ##### Caveat User
    *
-   *  Note that the processing `stripTags` does is good enough for most purposes, but
-   *  you cannot rely on it for security purposes. If you're processing end-user-supplied
-   *  content, `stripTags` is _not_ sufficiently robust to ensure that the content
-   *  is completely devoid of HTML tags in the case of a user intentionally trying to circumvent
-   *  tag restrictions. But then, you'll be running them through [[String#escapeHTML]] anyway,
-   *  won't you?
+   *  Note that the processing [[String#stripTags]] does is good enough for most
+   *  purposes, but you cannot rely on it for security purposes. If you're
+   *  processing end-user-supplied content, [[String#stripTags]] is _not_
+   *  sufficiently robust to ensure that the content is completely devoid of
+   *  HTML tags in the case of a user intentionally trying to circumvent tag
+   *  restrictions. But then, you'll be running them through
+   *  [[String#escapeHTML]] anyway, won't you?
    *  
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *  
    *      'a <a href="#">link</a>'.stripTags();
    *       // -> 'a link'
@@ -286,10 +287,10 @@ Object.extend(String.prototype, (function() {
    *
    *  ##### Caveat User
    *
-   *  Note that the processing `stripScripts` does is good enough for most purposes,
-   *  but you cannot rely on it for security purposes. If you're processing 
-   *  end-user-supplied content, `stripScripts` is probably not sufficiently robust
-   *  to prevent hack attacks.
+   *  Note that the processing [[String#stripScripts]] does is good enough for
+   *  most purposes, but you cannot rely on it for security purposes. If you're
+   *  processing end-user-supplied content, [[String#stripScripts]] is probably
+   *  not sufficiently robust to prevent hack attacks.
   **/
   function stripScripts() {
     return this.replace(new RegExp(Prototype.ScriptFragment, 'img'), '');
@@ -298,13 +299,12 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#extractScripts() -> Array
    *
-   *  Extracts the content of any `script` blocks present in the string and
+   *  Extracts the content of any `<script>` blocks present in the string and
    *  returns them as an array of strings.
    *  
-   *  This method is used internally by [[String#evalScripts]].
-   *  It does _not_ evaluate the scripts (use [[String#evalScripts]]
-   *  to do that), but can be usefull if you need to evaluate the scripts at a 
-   *  later date.
+   *  This method is used internally by [[String#evalScripts]]. It does _not_
+   *  evaluate the scripts (use [[String#evalScripts]] to do that), but can be
+   *  usefull if you need to evaluate the scripts at a later date.
    *  
    *  ##### Examples
    *  
@@ -341,7 +341,7 @@ Object.extend(String.prototype, (function() {
    *  Returns an array containing the value returned by each script.
    *  `<script>`  blocks referencing external files will be treated as though
    *  they were empty (the result for that position in the array will be `undefined`);
-   *  external files are _not_ loaded and processed by `evalScripts`.
+   *  external files are _not_ loaded and processed by [[String#evalScripts]].
    *  
    *  ##### Examples
    *  
@@ -353,15 +353,16 @@ Object.extend(String.prototype, (function() {
    *
    *  ##### About `evalScripts`, `var`s, and defining functions
    *
-   *  `evalScripts` evaluates script blocks, but this **does not** mean they are
-   *  evaluated in the global scope. They aren't, they're evaluated in the scope of
-   *  the `evalScripts` method. This has important ramifications for your scripts:
+   *  [[String#evalScripts]] evaluates script blocks, but this **does not** mean
+   *  they are evaluated in the global scope. They aren't, they're evaluated in
+   *  the scope of the [[String#evalScripts]] method. This has important
+   *  ramifications for your scripts:
    *
    *  * Anything in your script declared with the `var` keyword will be
    *    discarded momentarily after evaluation, and will be invisible to any
    *    other scope.
-   *  * If any `<script>` blocks _define functions_, they will need to be assigned to
-   *    properties of the `window` object.
+   *  * If any `<script>` blocks _define functions_, they will need to be
+   *    assigned to properties of the `window` object.
    *
    *  For example, this won't work:
    *
@@ -378,8 +379,8 @@ Object.extend(String.prototype, (function() {
    *      }
    *
    *  (You can leave off the `window.` part of that, but it's bad form.)   
-   *  Evaluates the content of any `script` block present in the string. Returns an array
-   *  containing the value returned by each script.
+   *  Evaluates the content of any `script` block present in the string. Returns
+   *  an array containing the value returned by each script.
   **/
   function evalScripts() {
     return this.extractScripts().map(function(script) { return eval(script) });
@@ -436,7 +437,7 @@ Object.extend(String.prototype, (function() {
    *  the hash symbol (`"#"`), and runs `decodeURIComponent()` on each 
    *  parameter/value pair.
    *  
-   *  `String#toQueryParams` also aggregates the values of identical keys into 
+   *  [[String#toQueryParams]] also aggregates the values of identical keys into 
    *  an array of values.
    *  
    *  Note that parameters which do not have a specified value will be set to 
@@ -489,7 +490,7 @@ Object.extend(String.prototype, (function() {
    *  Splits the string character-by-character and returns an array with
    *  the result.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *  
    *      'a'.toArray();
    *      // -> ['a']
@@ -505,6 +506,7 @@ Object.extend(String.prototype, (function() {
    *  String#succ() -> String
    *
    *  Used internally by ObjectRange.
+   *
    *  Converts the last character of the string to the following character in
    *  the Unicode alphabet.
    *  
@@ -819,8 +821,8 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#blank() -> Boolean
    *
-   *  Check if the string is "blank" &mdash; either empty (length of `0`) or containing
-   *  only whitespace.
+   *  Check if the string is "blank" &mdash; either empty (length of `0`) or
+   *  containing only whitespace.
    *
    *  ##### Example
    *  
