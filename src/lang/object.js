@@ -17,6 +17,10 @@
       NUMBER_TYPE = 'Number',
       STRING_TYPE = 'String',
       OBJECT_TYPE = 'Object',
+      BOOLEAN_CLASS = '[object Boolean]',
+      NUMBER_CLASS = '[object Number]',
+      STRING_CLASS = '[object String]',
+      ARRAY_CLASS = '[object Array]',
       NATIVE_JSON_STRINGIFY_SUPPORT = window.JSON &&
         typeof JSON.stringify === 'function' &&
         JSON.stringify(0) === '0' &&
@@ -90,54 +94,69 @@
    *  If there is one, it is used; otherwise the object is treated like a
    *  generic `Object`.
   **/
-  function toJSON(object) {
-    var results, type = typeof object;
-    
-    switch (type) {
-      case 'undefined':
-      case 'function':
-      case 'unknown': return;
-      case 'boolean': return object.toString();
-      case 'string':  return object.inspect(true);
-      case 'number':  return _numberToJSON(object);
-    }
-
-    if (object === null) return 'null';
-    
-    type = _toString.call(object);
-    
-    switch (type) {
-      case '[object Boolean]': return object.toString();
-      case '[object String]':  return object.inspect(true);
-      case '[object Number]':  return _numberToJSON(object);
-      case '[object Array]':
-        results = [];
-        object.each(function(item) {
-          item = toJSON(item);
-          if (isUndefined(item)) item = 'null';
-          results.push(item);
-        });
-        return '[' + results.join(',') + ']';
-    }
-    
-    if (typeof object.toJSON === 'function')
-      return toJSON(object.toJSON());
-    if (isElement(object)) return;
-
-    results = [];
-    for (var property in object) {
-      var value = toJSON(object[property]);
-      if (!isUndefined(value))
-        results.push(property.inspect(true) + ':' + value);
-    }
-
-    return '{' + results.join(',') + '}';
-  }
   
-  function _numberToJSON(number) {
-    return isFinite(number) ? String(number) : 'null';
+  function toJSON(value) {
+    return Str('', { '': value }, []);
   }
-  
+
+  function Str(key, holder, stack) {
+    var value = holder[key],
+        type = typeof value;
+
+    if (Type(value) === OBJECT_TYPE && typeof value.toJSON === 'function') {
+      value = value.toJSON(key);
+    }
+
+    var _class = _toString.call(value);
+
+    switch (_class) {
+      case NUMBER_CLASS:
+      case BOOLEAN_CLASS:
+      case STRING_CLASS:
+        value = value.valueOf();
+    }
+
+    switch (value) {
+      case null: return 'null';
+      case true: return 'true';
+      case false: return 'false';
+    }
+
+    type = typeof value;
+    switch (type) {
+      case 'string':
+        return value.inspect(true);
+      case 'number':
+        return isFinite(value) ? String(value) : 'null';
+      case 'object':
+
+        for (var i = 0, length = stack.length; i < length; i++) {
+          if (stack[i] === value) { throw new TypeError(); }
+        }
+        stack.push(value);
+
+        var partial = [];
+        if (_class === ARRAY_CLASS) {
+          for (var i = 0, length = value.length; i < length; i++) {
+            var str = Str(i, value, stack);
+            partial.push(typeof str === 'undefined' ? 'null' : str);
+          }
+          partial = '[' + partial.join(',') + ']';
+        } else {
+          var keys = Object.keys(value);
+          for (var i = 0, length = keys.length; i < length; i++) {
+            var key = keys[i], str = Str(key, value, stack);
+            if (typeof str !== "undefined") {
+               partial.push(key.inspect(true)+ ':' + str);
+             }
+          }
+          partial = '{' + partial.join(',') + '}';
+        }
+        stack.pop();
+        return partial;
+    }
+  }
+
   function stringify(object) {
     return JSON.stringify(object);
   }
@@ -272,7 +291,7 @@
    *  Returns `true` if `object` is an array; false otherwise.
   **/
   function isArray(object) {
-    return _toString.call(object) == "[object Array]";
+    return _toString.call(object) === ARRAY_CLASS;
   }
   
   var hasNativeIsArray = (typeof Array.isArray == 'function') 
@@ -310,7 +329,7 @@
    *  Returns `true` if `object` is of type `string`; `false` otherwise.
   **/
   function isString(object) {
-    return _toString.call(object) == "[object String]";
+    return _toString.call(object) === STRING_CLASS;
   }
 
   /**
@@ -320,7 +339,7 @@
    *  Returns `true` if `object` is of type `number`; `false` otherwise.
   **/
   function isNumber(object) {
-    return _toString.call(object) == "[object Number]";
+    return _toString.call(object) === NUMBER_CLASS;
   }
 
   /**
