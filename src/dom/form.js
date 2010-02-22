@@ -3,7 +3,7 @@
  *
  *  Utilities for dealing with forms in the DOM.
  *
- *  `Form` is a namespace for all things form-related, packed with form
+ *  [[Form]] is a namespace for all things form-related, packed with form
  *  manipulation and serialization goodness. While it holds methods dealing
  *  with forms as a whole, its submodule [[Form.Element]] deals with specific
  *  form controls.
@@ -83,7 +83,7 @@ var Form = {
    *  `options`, it is used as the `hash` option and all other options are
    *  defaulted.
    *
-   *  ##### A <em>hash</em>, not a Hash
+   *  ##### A _hash_, not a [[Hash]]
    *
    *  If you opt to receive an object, it is a plain JavaScript object with keys
    *  and values, __not__ a [[Hash]]. All JavaScript objects are hashes in the
@@ -202,16 +202,16 @@ Form.Methods = {
    *  
    *  ##### Example
    *  
-   *      var form = $('myform')
+   *      var form = $('myform');
    *      
-   *      form.getInputs()       // -> all INPUT elements
-   *      form.getInputs('text') // -> only text inputs
+   *      form.getInputs();       // -> all INPUT elements
+   *      form.getInputs('text'); // -> only text inputs
    *      
-   *      var buttons = form.getInputs('radio', 'education')
+   *      var buttons = form.getInputs('radio', 'education');
    *      // -> only radio buttons of name "education"
    *      
    *      // now disable these radio buttons:
-   *      buttons.invoke('disable')
+   *      buttons.invoke('disable');
    *  
    *  ##### Note
    *  
@@ -816,7 +816,8 @@ Form.Element.Serializers = {
  *  The callback function is always called with 2 arguments: the element given 
  *  when the observer instance was made and the actual value that has changed 
  *  and caused the callback to be triggered in the first place.
- *  #####Creating Your Own TimedObserver Implementations
+ *
+ *  ##### Creating Your Own TimedObserver Implementations
  *
  *  It's easy to create your own `TimedObserver` implementations: Simply subclass 
  *  `TimedObserver` and provide the `getValue()` method. For example, this is the
@@ -831,12 +832,13 @@ Form.Element.Serializers = {
 Abstract.TimedObserver = Class.create(PeriodicalExecuter, {
   /**
    *  new Abstract.TimedObserver(element, frequency, callback)
-   *  - element (String | Element): The DOM element to watch. Can be an element instance or an ID.
-   *  - frequency (Number): The frequency, in seconds&nbsp;&mdash; e.g., 0.33 to check for changes every
-   *    third of a second.
+   *  - element (String | Element): The DOM element to watch. Can be an element
+   *    instance or an ID.
+   *  - frequency (Number): The frequency, in seconds&nbsp;&mdash; e.g., 0.33 to
+   *    check for changes every third of a second.
    *  - callback (Function): The callback to trigger when the value changes.
    *
-   *  Initializes an `Abstract.TimedObserver`; used by subclasses.
+   *  Initializes an [[Abstract.TimedObserver]]; used by subclasses.
   **/
   initialize: function($super, element, frequency, callback) {
     $super(callback, frequency);
@@ -875,7 +877,7 @@ Form.Element.Observer = Class.create(Abstract.TimedObserver, {
    *    third of a second.
    *  - callback (Function): The callback to trigger when the value changes.
    *
-   *  Creates a Form.Element.Observer.
+   *  Creates a [[Form.Element.Observer]].
   **/
   getValue: function() {
     return Form.Element.getValue(this.element);
@@ -939,7 +941,7 @@ Form.Observer = Class.create(Abstract.TimedObserver, {
    *    third of a second.
    *  - callback (Function): The callback to trigger when the form changes.
    *
-   *  Creates a Form.Observer.
+   *  Creates a [[Form.Observer]].
   **/
   getValue: function() {
     return Form.serialize(this.element);

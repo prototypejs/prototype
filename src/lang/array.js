@@ -1,18 +1,20 @@
 /** section: Language, related to: Array
  *  $A(iterable) -> actualArray
  *  
- *  Accepts an array-like collection (anything with numeric indices) and returns its equivalent
- *  as an actual `Array` object. This method is a convenience alias of [`Array.from`](/api/array/from),
- *  but is the preferred way of casting to an `Array`.
+ *  Accepts an array-like collection (anything with numeric indices) and returns
+ *  its equivalent as an actual [[Array]] object. This method is a convenience
+ *  alias of [[Array.from]], but is the preferred way of casting to an [[Array]].
  *  
- *  The primary use of `$A()` is to obtain an actual `Array` object based on anything
- *  that could pass as an array (e.g. the `NodeList` or `HTMLCollection` objects returned
- *  by numerous DOM methods, or the predefined `arguments` reference within your functions).
+ *  The primary use of [[$A]] is to obtain an actual [[Array]] object based on
+ *  anything that could pass as an array (e.g. the `NodeList` or
+ *  `HTMLCollection` objects returned by numerous DOM methods, or the predefined
+ *  `arguments` reference within your functions).
  *  
- *  The reason you would want an actual `Array` is simple: [Prototype extends `Array`](/api/array)
- *  to equip it with numerous extra methods, and also mixes in the [`Enumerable`](/api/enumerable)
- *  module, which brings in another boatload of nifty methods. Therefore, in Prototype,
- *  actual `Array`s trump any other collection type you might otherwise get.
+ *  The reason you would want an actual [[Array]] is simple:
+ *  [[Array Prototype extends Array]] to equip it with numerous extra methods,
+ *  and also mixes in the [[Enumerable]] module, which brings in another
+ *  boatload of nifty methods. Therefore, in Prototype, actual [[Array]]s trump
+ *  any other collection type you might otherwise get.
  *  
  *  The conversion performed is rather simple: `null`, `undefined` and `false` become
  *  an empty array; any object featuring an explicit `toArray` method (as many Prototype
@@ -20,27 +22,28 @@
  *  (e.g. features a `length` property and the `[]` operator), and iterate over its components
  *  in the usual way.
  *  
- *  When passed an array, `$A` _makes a copy_ of that array and returns it.
+ *  When passed an array, [[$A]] _makes a copy_ of that array and returns it.
  *  
  *  ##### Examples
  *  
  *  The well-known DOM method [`document.getElementsByTagName()`](http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-A6C9094)
- *  doesn't return an `Array`, but a `NodeList` object that implements the basic array
+ *  doesn't return an [[Array]], but a `NodeList` object that implements the basic array
  *  "interface." Internet Explorer does not allow us to extend `Enumerable` onto `NodeList.prototype`,
- *  so instead we cast the returned `NodeList` to an `Array`:
+ *  so instead we cast the returned `NodeList` to an [[Array]]:
  *  
  *      var paras = $A(document.getElementsByTagName('p'));
  *      paras.each(Element.hide);
  *      $(paras.last()).show();
  *  
- *  Notice we had to use `each` and `Element.hide` because `$A` doesn't perform DOM extensions,
- *  since the array could contain anything (not just DOM elements). To use the `hide`
- *  instance method we first must make sure all the target elements are extended:
+ *  Notice we had to use [[Enumerable#each each]] and [[Element.hide]] because
+ *  [[$A]] doesn't perform DOM extensions, since the array could contain
+ *  anything (not just DOM elements). To use the [[Element#hide]] instance
+ *  method we first must make sure all the target elements are extended:
  *  
  *      $A(document.getElementsByTagName('p')).map(Element.extend).invoke('hide');
  *  
- *  Want to display your arguments easily? `Array` features a `join` method, but the `arguments`
- *  value that exists in all functions *does not* inherit from `Array`. So, the tough
+ *  Want to display your arguments easily? [[Array]] features a `join` method, but the `arguments`
+ *  value that exists in all functions *does not* inherit from [[Array]]. So, the tough
  *  way, or the easy way?
  *  
  *      // The hard way...
@@ -67,7 +70,7 @@ function $A(iterable) {
 /** section: Language, related to: Array
  *  $w(String) -> Array
  *  
- *  Splits a string into an `Array`, treating all whitespace as delimiters. Equivalent
+ *  Splits a string into an [[Array]], treating all whitespace as delimiters. Equivalent
  *  to Ruby's `%w{foo bar}` or Perl's `qw(foo bar)`.
  *  
  *  This is one of those life-savers for people who just hate commas in literal arrays :-)
@@ -84,7 +87,7 @@ function $A(iterable) {
  *        // do something with the message
  *      })
  *  
- *  This also becomes sweet when combined with [`Element`](/api/element) functions:
+ *  This also becomes sweet when combined with [[Element]] functions:
  *  
  *      $w('ads navbar funkyLinks').each(Element.hide);
 **/
@@ -117,7 +120,7 @@ Array.from = $A;
  *  their `[]` indexing operator. They become very powerful objects that
  *  greatly simplify the code for 99% of the common use cases involving them.
  *
- *  <h5>Why you should stop using for...in to iterate</h5>
+ *  ##### Why you should stop using for...in to iterate
  *
  *  Many JavaScript authors have been misled into using the `for...in` JavaScript
  *  construct to loop over array elements. This kind of code just won't work
@@ -125,8 +128,8 @@ Array.from = $A;
  *
  *  The ECMA 262 standard, which defines ECMAScript 3rd edition, supposedly
  *  implemented by all major browsers including MSIE, defines ten methods
- *  on Array (&sect;15.4.4), including nice methods like `concat`, `join`, `pop`, and
- *  `push`.
+ *  on [[Array]] (&sect;15.4.4), including nice methods like `concat`, `join`,
+ *  `pop`, and `push`.
  *
  *  This same standard explicitly defines that the `for...in` construct (&sect;12.6.4)
  *  exists to enumerate the properties of the object appearing on the right side
@@ -140,9 +143,9 @@ Array.from = $A;
  *  `Array.prototype` as non-enumerable. Therefore, using `for...in` on arrays
  *  when using Prototype will enumerate all extended methods as well, such as
  *  those coming from the [[Enumerable]] module, and those Prototype puts in the
- *  Array namespace (listed further below).
+ *  [[Array]] namespace (listed further below).
  *
- *  <h5>What you should use instead</h5>
+ *  ##### What you should use instead
  *
  *  You can revert to vanilla loops:
  *
@@ -157,14 +160,12 @@ Array.from = $A;
  *        // Your code working on item here...
  *      });
  *
- *
  *  The inability to use `for...in` on arrays is not much of a burden: as you'll
  *  see, most of what you used to loop over arrays for can be concisely done
  *  using the new methods provided by Array or the mixed-in [[Enumerable]]
  *  module. So manual loops should be fairly rare.
  *
- *
- *  <h5>A note on performance</h5>
+ *  ##### A note on performance
  *
  *  Should you have a very large array, using iterators with lexical closures
  *  (anonymous functions that you pass to the iterators and that get invoked at
@@ -199,7 +200,7 @@ Array.from = $A;
    *
    *  Clears the array (makes it empty) and returns the array reference.
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      var guys = ['Sam', 'Justin', 'Andrew', 'Dan'];
    *      guys.clear();
@@ -235,7 +236,7 @@ Array.from = $A;
    *
    *  Returns a **copy** of the array without any `null` or `undefined` values.
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      var orig = [undefined, 'A', undefined, 'B', null, 'C'];
    *      var copy = orig.compact();
@@ -258,7 +259,7 @@ Array.from = $A;
    *  useful when handling the results of a recursive collection algorithm,
    *  for instance.
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      var a = ['frank', ['bob', 'lisa'], ['jill', ['tom', 'sally']]];
    *      var b = a.flatten();
@@ -281,7 +282,7 @@ Array.from = $A;
    *  Produces a new version of the array that does not contain any of the
    *  specified values, leaving the original array unchanged.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      [3, 5, 6].without(3)
    *      // -> [5, 6]
@@ -303,7 +304,7 @@ Array.from = $A;
    *
    *  Reverses the array's contents, optionally cloning it first.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      // Making a copy
    *      var nums = [3, 5, 6, 1, 20];
@@ -323,7 +324,7 @@ Array.from = $A;
   /**
    *  Array#uniq([sorted = false]) -> Array
    *  - sorted (Boolean): Whether the array has already been sorted. If `true`,
-   *      a less-costly algorithm will be used.
+   *    a less-costly algorithm will be used.
    *
    *  Produces a duplicate-free version of an array. If no duplicates are
    *  found, the original array is returned.
@@ -331,7 +332,7 @@ Array.from = $A;
    *  On large arrays when `sorted` is `false`, this method has a potentially
    *  large performance cost.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      [1, 3, 2, 1].uniq();
    *      // -> [1, 2, 3]
@@ -390,7 +391,7 @@ Array.from = $A;
    *
    *  Returns the debug-oriented string representation of an array.
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      ['Apples', {good: 'yes', bad: 'no'}, 3, 34].inspect()
    *      // -> "['Apples', [object Object], 3, 34]"
@@ -404,7 +405,7 @@ Array.from = $A;
    *
    *  Returns a JSON string representation of the array.
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      ['a', {b: null}].toJSON();
    *      //-> '["a", {"b": null}]'
@@ -428,7 +429,7 @@ Array.from = $A;
    *  or `-1` if `item` doesn't exist in the array. `Array#indexOf` compares
    *  items using *strict equality* (`===`).
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      [3, 5, 6, 1, 20].indexOf(1)
    *      // -> 3

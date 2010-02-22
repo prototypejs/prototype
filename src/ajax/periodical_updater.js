@@ -4,9 +4,9 @@
  *  Periodically performs an Ajax request and updates a container's contents
  *  based on the response text.
  *
- *  `Ajax.PeriodicalUpdater` behaves like [[Ajax.Updater]], but performs the
+ *  [[Ajax.PeriodicalUpdater]] behaves like [[Ajax.Updater]], but performs the
  *  update at a prescribed interval, rather than only once. (Note that it is
- *  _not_ a subclass of `Ajax.Updater`; it's a wrapper around it.)
+ *  _not_ a subclass of [[Ajax.Updater]]; it's a wrapper around it.)
  *
  *  This class addresses the common need of periodical update, as required by
  *  all sorts of "polling" mechanisms (e.g., an online chatroom or an online
@@ -16,10 +16,11 @@
  *  keeping track of the response text so it can (optionally) react to
  *  receiving the exact same response consecutively.
  *
- *  <h5>Additional options</h5>
+ *  ##### Additional options
  *
- *  `Ajax.PeriodicalUpdater` features all the common options and callbacks
- *  described in the [[Ajax section]] &mdash; _plus_ those added by `Ajax.Updater`.
+ *  [[Ajax.PeriodicalUpdater]] features all the common options and callbacks
+ *  described in the [[Ajax section]] &mdash; _plus_ those added by
+ *  [[Ajax.Updater]].
  *
  *  It also provides two new options:
  *
@@ -34,9 +35,9 @@
  *    is the same; when the result is different once again, `frequency` will
  *    revert to its original value.
  *
- *  <h5>Disabling and re-enabling a <code>PeriodicalUpdater</code></h5>
+ *  ##### Disabling and re-enabling a [[Ajax.PeriodicalUpdater]]
  *
- *  You can hit the brakes on a running `PeriodicalUpdater` by calling
+ *  You can hit the brakes on a running [[Ajax.PeriodicalUpdater]] by calling
  *  [[Ajax.PeriodicalUpdater#stop]]. If you wish to re-enable it later, call
  *  [[Ajax.PeriodicalUpdater#start]].
  *
@@ -55,7 +56,7 @@ Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
    *  - options (Object): Configuration for the request. See the
    *    [[Ajax section]] for more information.
    *
-   *  Creates a new `Ajax.PeriodicalUpdater`.
+   *  Creates a new [[Ajax.PeriodicalUpdater]].
    *  
    *  Periodically performs an AJAX request and updates a container's contents
    *  based on the response text. Offers a mechanism for "decay," which lets it   
@@ -71,7 +72,7 @@ Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
    *  
    *  ##### Additional options
    *  
-   *  `Ajax.PeriodicalUpdater` features all the common options and callbacks
+   *  [[Ajax.PeriodicalUpdater]] features all the common options and callbacks
    *  (see the [[Ajax section]] for more information), plus those added by
    *  [[Ajax.Updater]]. It also provides two new options that deal with the
    *  original period, and its decay rate (how Rocket Scientist does that make
@@ -111,7 +112,8 @@ Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
    *  </tbody>
    *  </table>
    *  
-   *  To better understand decay, here is a small sequence of calls from the following example:
+   *  To better understand decay, here is a small sequence of calls from the
+   *  following example:
    *  
    *      new Ajax.PeriodicalUpdater('items', '/items', {
    *        method: 'get', frequency: 3, decay: 2
@@ -188,17 +190,17 @@ Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
    *  </tbody>
    *  </table>
    *  
-   *  ##### Disabling and re-enabling a `PeriodicalUpdater`
+   *  ##### Disabling and re-enabling a [[Ajax.PeriodicalUpdater]]
    *  
-   *  You can pull the brake on a running `PeriodicalUpdater` by simply calling
-   *  its `stop` method. If you wish to re-enable it later, just call its `start`
-   *  method. Both take no argument.
+   *  You can pull the brake on a running [[Ajax.PeriodicalUpdater]] by simply
+   *  calling its `stop` method. If you wish to re-enable it later, just call
+   *  its `start` method. Both take no argument.
    *  
    *  ##### Beware!  Not a specialization!
    *  
-   *  `Ajax.PeriodicalUpdater` is not a specialization of [[Ajax.Updater]],
+   *  [[Ajax.PeriodicalUpdater]] is not a specialization of [[Ajax.Updater]],
    *  despite its name. When using it, do not expect to be able to use methods
-   *  normally provided by [[Ajax.Request]] and "inherited" by `Ajax.Updater`,
+   *  normally provided by [[Ajax.Request]] and "inherited" by [[Ajax.Updater]],
    *  such as `evalJSON` or `getHeader`. Also the `onComplete` callback is
    *  hijacked to be used for update management, so if you wish to be notified
    *  of every successful request, use `onSuccess` instead (beware: it will get

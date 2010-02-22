@@ -104,9 +104,9 @@ if (!Node.ELEMENT_NODE) {
 /** section: DOM
  *  class Element
  *
- *  The `Element` object provides a variety of powerful DOM methods for
+ *  The [[Element]] object provides a variety of powerful DOM methods for
  *  interacting with DOM elements&nbsp;&mdash; creating them, updating them,
- *  traversing them, etc. You can access these either as methods of `Element`
+ *  traversing them, etc. You can access these either as methods of [[Element]]
  *  itself, passing in the element to work with as the first argument, or as
  *  methods on extended element *instances*:
  *
@@ -116,10 +116,10 @@ if (!Node.ELEMENT_NODE) {
  *      // Using an extended element instance:
  *      $('target').addClassName('highlighted');
  *
- *  `Element` is also a constructor for building element instances from scratch,
+ *  [[Element]] is also a constructor for building element instances from scratch,
  *  see [`new Element`](#new-constructor) for details.
  *
- *  Most `Element` methods return the element instance, so that you can chain
+ *  Most [[Element]] methods return the element instance, so that you can chain
  *  them easily:
  *
  *      $('message').addClassName('read').update('I read this message!');
@@ -192,7 +192,7 @@ Element.cache = { };
 /**
  *  mixin Element.Methods
  *
- *  `Element.Methods` is a mixin for DOM elements. The methods of this object 
+ *  [[Element.Methods]] is a mixin for DOM elements. The methods of this object 
  *  are accessed through the [[$]] utility or through the [[Element]] object and
  *  shouldn't be accessed directly.
  *  
@@ -594,7 +594,7 @@ Element.Methods = {
    *  
    *  If `newContent` contains any `<script>` tags, these will be evaluated
    *  after `element` has been replaced ([[Element.replace]] internally calls
-   *  [[String.evalScripts]]).
+   *  [[String#evalScripts]]).
    *  
    *  Note that if no argument is provided, [[Element.replace]] will simply
    *  clear `element` of its content. However, using [[Element.remove]] to do so
@@ -872,11 +872,11 @@ Element.Methods = {
    *  [[Element.descendants]], [[Element.nextSiblings]],
    *  [[Element.previousSiblings]] and [[Element.siblings]] which offer really
    *  convenient way to grab elements, so directly accessing
-   *  `Element.recursivelyCollect` should seldom be needed. However, if you are
-   *  after something out of the ordinary, it is the way to go.
+   *  [[Element.recursivelyCollect]] should seldom be needed. However, if you
+   *  are after something out of the ordinary, it is the way to go.
    *  
-   *  Note that all of Prototype's DOM traversal methods ignore text nodes and return element
-   *  nodes only.
+   *  Note that all of Prototype's DOM traversal methods ignore text nodes and
+   *  return element nodes only.
    *  
    *  ##### Examples
    *  
@@ -917,9 +917,9 @@ Element.Methods = {
    *
    *  The returned array's first element is `element`'s direct ancestor (its
    *  `parentNode`), the second one is its grandparent, and so on until the
-   *  `html` element is reached. `html` will always be the last member of the
-   *  array. Calling `ancestors` on the `html` element will return an empty
-   *  array.
+   *  `<html>` element is reached. `<html>` will always be the last member of
+   *  the array. Calling `ancestors` on the `<html>` element will return an
+   *  empty array.
    *
    *  ##### Example
    *
@@ -950,7 +950,7 @@ Element.Methods = {
    *
    *  Collects all of the element's descendants (its children, their children,
    *  etc.) and returns them as an array of extended elements. As with all of
-   *  Prototype's DOM traversal methods, only Elements are returned, other
+   *  Prototype's DOM traversal methods, only [[Element]]s are returned, other
    *  nodes (text nodes, etc.) are skipped.
   **/
   descendants: function(element) {
@@ -967,6 +967,7 @@ Element.Methods = {
    *
    *  ##### Examples
    *  
+   *      language: html
    *      <div id="australopithecus">
    *        <div id="homo-erectus"><!-- Latin is super -->
    *          <div id="homo-neanderthalensis"></div>
@@ -1014,19 +1015,20 @@ Element.Methods = {
    *  [[Array]] of elements.
    *  
    *  Two elements are siblings if they have the same parent. So for example,
-   *  the `head` and `body` elements are siblings (their parent is the `html`
-   *  element). Previous-siblings are simply the ones which precede `element` in
-   *  the document.
+   *  the `<head>` and `<body>` elements are siblings (their parent is the
+   *  `<html>` element). Previous-siblings are simply the ones which precede
+   *  `element` in the document.
    *  
-   *  The returned [[Array]] reflects the siblings _inversed_ order in the document
-   *  (e.g. an index of 0 refers to the lowest sibling i.e., the one closest to
-   *  `element`).
+   *  The returned [[Array]] reflects the siblings _inversed_ order in the
+   *  document (e.g. an index of 0 refers to the lowest sibling i.e., the one
+   *  closest to `element`).
    *  
    *  Note that all of Prototype's DOM traversal methods ignore text nodes and
    *  return element nodes only.
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <ul>
    *        <li id="golden-delicious">Golden Delicious</li>
    *        <li id="mutsu">Mutsu</li>
@@ -1063,6 +1065,7 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <ul>
    *        <li id="golden-delicious">Golden Delicious</li>
    *        <li id="mutsu">Mutsu</li>
@@ -1097,6 +1100,7 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <ul>
    *        <li id="golden-delicious">Golden Delicious</li>
    *        <li id="mutsu">Mutsu</li>
@@ -1121,6 +1125,7 @@ Element.Methods = {
    *
    *  ##### Examples
    *  
+   *      language: html
    *      <ul id="fruits">
    *        <li id="apples">
    *          <ul>
@@ -1160,7 +1165,7 @@ Element.Methods = {
    *
    *  ##### More information
    *
-   *  The `Element.up` method is part of Prototype's ultimate DOM traversal
+   *  The [[Element.up]] method is part of Prototype's ultimate DOM traversal
    *  toolkit (check out [[Element.down]], [[Element.next]] and
    *  [[Element.previous]] for some more Prototypish niceness). It allows 
    *  precise index-based and/or CSS rule-based selection of any of `element`'s
@@ -1179,7 +1184,7 @@ Element.Methods = {
    *  ##### Arguments
    *  
    *  If no arguments are passed, `element`'s first ancestor is returned (this
-   *  is similar to calling `parentNode` except `Element.up` returns an already
+   *  is similar to calling `parentNode` except [[Element.up]] returns an already
    *  extended element.
    *  
    *  If `index` is defined, `element`'s corresponding ancestor is returned.
@@ -1187,10 +1192,10 @@ Element.Methods = {
    *  returned by the method [[Element.ancestors]]). Note that the first element
    *  has an index of 0.
    *  
-   *  If `expression` is defined, `Element.up` will return the first ancestor
+   *  If `expression` is defined, [[Element.up]] will return the first ancestor
    *  that matches it.
    *  
-   *  If both `expression` and `index` are defined, `Element.up` will collect
+   *  If both `expression` and `index` are defined, [[Element.up]] will collect
    *  all the ancestors matching the given CSS expression and will return the
    *  one at the specified index.
    *  
@@ -1199,6 +1204,7 @@ Element.Methods = {
    *  
    *  ### Examples
    *  
+   *      language: html
    *      <html>
    *        [...]
    *        <body>
@@ -1268,7 +1274,7 @@ Element.Methods = {
    *
    *  ##### More information
    *
-   *  The `Element.down` method is part of Prototype's ultimate DOM traversal
+   *  The [[Element.down]] method is part of Prototype's ultimate DOM traversal
    *  toolkit (check out [[Element.up]], [[Element.next]] and
    *  [[Element.previous]] for some more Prototypish niceness). It allows
    *  precise index-based and/or CSS rule-based selection of any of the 
@@ -1287,7 +1293,7 @@ Element.Methods = {
    *  ##### Arguments
    *  
    *  If no arguments are passed, `element`'s first descendant is returned (this
-   *  is similar to calling `firstChild` except `Element.down` returns an
+   *  is similar to calling `firstChild` except [[Element.down]] returns an
    *  extended element.
    *  
    *  If `index` is defined, `element`'s corresponding descendant is returned.
@@ -1295,11 +1301,11 @@ Element.Methods = {
    *  returned by the method [[Element.descendants]].) Note that the first
    *  element has an index of 0.
    *  
-   *  If `expression` is defined, `Element.down` will return the first
+   *  If `expression` is defined, [[Element.down]] will return the first
    *  descendant that matches it. This is a great way to grab the first item in
    *  a list for example (just pass in 'li' as the method's first argument).
    *  
-   *  If both `expression` and `index` are defined, `Element.down` will collect
+   *  If both `expression` and `index` are defined, [[Element.down]] will collect
    *  all the descendants matching the given CSS expression and will return the
    *  one at the specified index.
    *  
@@ -1308,6 +1314,7 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <ul id="fruits">
    *        <li id="apples">
    *          <ul>
@@ -1371,7 +1378,7 @@ Element.Methods = {
    *
    *  ##### More information
    *
-   *  The `Element.previous` method is part of Prototype's ultimate DOM
+   *  The [[Element.previous]] method is part of Prototype's ultimate DOM
    *  traversal toolkit (check out [[Element.up]], [[Element.down]] and
    *  [[Element.next]] for some more Prototypish niceness). It allows precise
    *  index-based and/or CSS expression-based selection of any of `element`'s
@@ -1392,7 +1399,7 @@ Element.Methods = {
    *  ##### Arguments
    *  
    *  If no arguments are passed, `element`'s previous sibling is returned
-   *  (this is similar as calling `previousSibling` except `Element.previous`
+   *  (this is similar as calling `previousSibling` except [[Element.previous]]
    *  returns an already extended element).
    *  
    *  If `index` is defined, `element`'s corresponding previous sibling is
@@ -1400,10 +1407,10 @@ Element.Methods = {
    *  elements returned by the method [[Element.previousSiblings]]). Note that
    *  the sibling _right above_ `element` has an index of 0.
    *  
-   *  If `expression` is defined, `Element.previous` will return the `element`
+   *  If `expression` is defined, [[Element.previous]] will return the `element`
    *  first previous sibling that matches it.
    *  
-   *  If both `expression` and `index` are defined, `Element.previous` will
+   *  If both `expression` and `index` are defined, [[Element.previous]] will
    *  collect all of `element`'s previous siblings matching the given CSS
    *  expression and will return the one at the specified index.
    *  
@@ -1412,6 +1419,7 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <ul id="fruits">
    *        <li id="apples">
    *          <h3>Apples</h3>
@@ -1481,7 +1489,7 @@ Element.Methods = {
    *
    *  ##### More information
    *
-   *  The `Element.next` method is part of Prototype's ultimate DOM traversal
+   *  The [[Element.next]] method is part of Prototype's ultimate DOM traversal
    *  toolkit (check out [[Element.up]], [[Element.down]] and
    *  [[Element.previous]] for some more Prototypish niceness). It allows
    *  precise index-based and/or CSS expression-based selection of any of
@@ -1502,7 +1510,7 @@ Element.Methods = {
    *  ##### Arguments
    *  
    *  If no arguments are passed, `element`'s following sibling is returned
-   *  (this is similar as calling `nextSibling` except `Element.next` returns an
+   *  (this is similar as calling `nextSibling` except [[Element.next]] returns an
    *  already extended element).
    *  
    *  If `index` is defined, `element`'s corresponding following sibling is
@@ -1510,10 +1518,10 @@ Element.Methods = {
    *  elements returned by the method [[Element.nextSiblings]]). Note that the
    *  sibling _right below_ `element` has an index of 0.
    *  
-   *  If `expression` is defined, `Element.next` will return the `element` first
+   *  If `expression` is defined, [[Element.next]] will return the `element` first
    *  following sibling that matches it.
    *  
-   *  If both `expression` and `index` are defined, `Element.next` will collect
+   *  If both `expression` and `index` are defined, [[Element.next]] will collect
    *  all of `element`'s following siblings matching the given CSS expression
    *  and will return the one at the specified index.
    *  
@@ -1522,6 +1530,7 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <ul id="fruits">
    *        <li id="apples">
    *          <h3 id="title">Apples</h3>
@@ -1594,6 +1603,7 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <ul id="fruits">
    *        <li id="apples">
    *          <h3 title="yummy!">Apples</h3>
@@ -1617,6 +1627,7 @@ Element.Methods = {
    *      // -> []
    *  
    *  ##### Tip
+   *
    *  [[Element.select]] can be used as a pleasant alternative to the native
    *  method `getElementsByTagName`:
    *  
@@ -1899,9 +1910,14 @@ Element.Methods = {
    *  Removes CSS class `className` from `element`.
    *
    *  ##### Examples
-   *  
+   *
+   *  Assuming this HTML:
+   *
+   *      language: html
    *      <div id="mutsu" class="apple fruit food"></div>
    *  
+   *  Then:
+   *
    *      $('mutsu').removeClassName('food');
    *      // -> Element
    *      
@@ -2081,11 +2097,13 @@ Element.Methods = {
    *  Returns the given CSS property value of `element`. The property can be
    *  specified in either its CSS form (`font-size`) or its camelized form
    *  (`fontSize`).
-   *  This method looks up the CSS property of an element whether it was applied inline
-   *  or in a stylesheet. It works around browser inconsistencies regarding `float`, `opacity`,
-   *  which returns a value between `0` (fully transparent) and `1` (fully opaque), position
-   *  properties (`left`, `top`, `right` and `bottom`) and when getting the dimensions (`width`
-   *  or `height`) of hidden elements.
+   *
+   *  This method looks up the CSS property of an element whether it was
+   *  applied inline or in a stylesheet. It works around browser inconsistencies
+   *  regarding `float`, `opacity`, which returns a value between `0`
+   *  (fully transparent) and `1` (fully opaque), position properties
+   *  (`left`, `top`, `right` and `bottom`) and when getting the dimensions
+   *  (`width` or `height`) of hidden elements.
    *  
    *  ##### Examples
    *  
@@ -2097,7 +2115,9 @@ Element.Methods = {
    *  
    *  ##### Notes
    *  
-   *  Internet Explorer returns literal values while other browsers return computed values.
+   *  Internet Explorer returns literal values while other browsers return
+   *  computed values.
+   *
    *  Consider the following HTML snippet:
    *  
    *      language: html
@@ -2114,13 +2134,13 @@ Element.Methods = {
    *      // -> '1em' in Internet Explorer,
    *      // -> '12px' elsewhere.
    *  
-   *  Safari returns `null` for *any* non-inline property if the element is hidden (has
-   *  `display` set to `'none'`).
+   *  Safari returns `null` for *any* non-inline property if the element is
+   *  hidden (has `display` set to `'none'`).
    *  
-   *  Not all CSS shorthand properties are supported. You may only use the CSS properties
-   *  described in the [Document Object Model (DOM) Level 2 Style Specification](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle).
+   *  Not all CSS shorthand properties are supported. You may only use the CSS
+   *  properties described in the
+   *  [Document Object Model (DOM) Level 2 Style Specification](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle).
    **/
-
   getStyle: function(element, style) {
     element = $(element);
     style = style == 'float' ? 'cssFloat' : style.camelize();
@@ -2145,8 +2165,9 @@ Element.Methods = {
   /** 
    *  Element.setStyle(@element, styles) -> Element
    *  
-   *  Modifies `element`'s CSS style properties. Styles are passed as a hash of property-value
-   *  pairs in which the properties are specified in their camelized form.
+   *  Modifies `element`'s CSS style properties. Styles are passed as a hash of
+   *  property-value pairs in which the properties are specified in their
+   *  camelized form.
    *  
    *  ##### Examples
    *  
@@ -2158,10 +2179,11 @@ Element.Methods = {
    *  
    *  ##### Notes
    *  
-   *  The method transparently deals with browser inconsistencies for `float` (however,
-   *  as `float` is a reserved keyword, you must either escape it or use `cssFloat` instead) and
-   *  `opacity` (which accepts values between `0` -fully transparent- and `1` -fully opaque-).
-   *  You can safely use either of the following across all browsers:
+   *  The method transparently deals with browser inconsistencies for `float`
+   *  (however, as `float` is a reserved keyword, you must either escape it or
+   *  use `cssFloat` instead) and `opacity` (which accepts values between `0`
+   *  -fully transparent- and `1` -fully opaque-). You can safely use either of
+   *  the following across all browsers:
    *  
    *      $(element).setStyle({
    *        cssFloat: 'left',
@@ -2175,11 +2197,10 @@ Element.Methods = {
    *      });
    *      // -> Element
    *  
-   *  Not all CSS shorthand properties are supported. You may only use the CSS properties
-   *  described in the [Document Object Model (DOM) Level 2 Style Specification](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle).
-   *  
+   *  Not all CSS shorthand properties are supported. You may only use the CSS
+   *  properties described in the
+   *  [Document Object Model (DOM) Level 2 Style Specification](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle).
   **/
-
   setStyle: function(element, styles) {
     element = $(element);
     var elementStyle = element.style, match;
@@ -2201,9 +2222,9 @@ Element.Methods = {
   /** 
    *  Element.setOpacity(@element, opacity) -> [Element...]
    *  
-   *  Sets the visual opacity of an element while working around inconsistencies in various
-   *  browsers. The `opacity` argument should be a floating point number, where the value
-   *  of `0` is fully transparent and `1` is fully opaque.
+   *  Sets the visual opacity of an element while working around inconsistencies
+   *  in various browsers. The `opacity` argument should be a floating point
+   *  number, where the value of `0` is fully transparent and `1` is fully opaque.
    *  
    *  [[Element.setStyle]] method uses [[Element.setOpacity]] internally when needed.
    *  
@@ -2217,8 +2238,7 @@ Element.Methods = {
    *      // one CSS property at once:
    *      element.setStyle({ opacity: 0.5 });
    *      element.setStyle("opacity: 0.5");
-   **/
-
+  **/
   setOpacity: function(element, value) {
     element = $(element);
     element.style.opacity = (value == 1 || value === '') ? '' :
@@ -2341,12 +2361,13 @@ Element.Methods = {
    *  
    *  ##### Example
    *  
+   *      language:html
    *      <div id="framer">
    *        <img src="/assets/2007/1/14/chairs.jpg" alt="example" />
    *      </div>
    *  
    *      $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
-   *      // -> HTMLElement
+   *      // -> Element
    *  
    *      <a id="clipper" href="#">Click me to try it out.</a>
    *  
@@ -2742,12 +2763,12 @@ Object.extend(Element.Methods, {
    *  Element.childElements(@element) -> [Element...]
    *
    *  Collects all of the element's children and returns them as an array of
-   *  [extended](http://prototypejs.org/api/element/extend) elements, in
-   *  document order. The first entry in the array is the topmost child of
-   *  `element`, the next is the child after that, etc.
+   *  [[Element.extended extended]] elements, in document order. The first
+   *  entry in the array is the topmost child of `element`, the next is the
+   *  child after that, etc.
    *
-   *  Like all of Prototype's DOM traversal methods, `childElements` ignores
-   *  text nodes and returns element nodes only.
+   *  Like all of Prototype's DOM traversal methods, [[Element.childElements]]
+   *  ignores text nodes and returns element nodes only.
    *
    *  ##### Example
    *
@@ -3248,7 +3269,7 @@ Object.extend(Element, Element.Methods);
  *  syntactic sugar, as well as any extensions added via [[Element.addMethods]].
  *  (If the element instance was already extended, this is a no-op.)
  *
- *  You only need to use `Element.extend` on element instances you've acquired
+ *  You only need to use [[Element.extend]] on element instances you've acquired
  *  directly from the DOM; **all** Prototype methods that return element
  *  instances (such as [[$]], [[Element.down]], etc.) will pre-extend the
  *  element before returning it.
@@ -3259,8 +3280,8 @@ Object.extend(Element, Element.Methods);
  *
  *  ##### Details
  *
- *  Specifically, `Element.extend` extends the given instance with the methods
- *  contained in `Element.Methods` and `Element.Methods.Simulated`. If `element`
+ *  Specifically, [[Element.extend]] extends the given instance with the methods
+ *  contained in [[Element.Methods]] and `Element.Methods.Simulated`. If `element`
  *  is an `input`, `textarea`, or `select` element, it will also be extended
  *  with the methods from `Form.Element.Methods`. If it is a `form` element, it
  *  will also be extended with the methods from `Form.Methods`.
@@ -3363,11 +3384,11 @@ else {
  *    the new methods.
  *  - methods (Object): A hash of methods to add.
  *
- *  `Element.addMethods` makes it possible to mix your *own* methods into the
- *  `Element` object and extended element instances (all of them, or only ones
+ *  [[Element.addMethods]] makes it possible to mix your *own* methods into the
+ *  [[Element]] object and extended element instances (all of them, or only ones
  *  with the given HTML tag if you specify `tagName`).
  *
- *  You define the methods in a hash that you provide to `Element.addMethods`.
+ *  You define the methods in a hash that you provide to [[Element.addMethods]].
  *  Here's an example adding two methods:
  *
  *      Element.addMethods({
@@ -3391,7 +3412,7 @@ else {
  *
  *      });
  *
- *  Once added, those can be used either via `Element`:
+ *  Once added, those can be used either via [[Element]]:
  *
  *      // Wrap the element with the ID 'foo' in a div
  *      Element.wrap('foo', 'div');
@@ -3402,7 +3423,7 @@ else {
  *      $('foo').wrap('div');
  *
  *  Note the following requirements and conventions for methods added to
- *  `Element`:
+ *  [[Element]]:
  *
  *  - The first argument is *always* an element or ID, by convention this
  *    argument is called `element`.
@@ -3417,20 +3438,20 @@ else {
  *
  *  ##### Extending only specific elements
  *
- *  If you call `Element.addMethods` with *two* arguments, it will apply the
+ *  If you call [[Element.addMethods]] with *two* arguments, it will apply the
  *  methods only to elements with the given HTML tag:
  *
  *      Element.addMethods('DIV', my_div_methods);
  *      // the given methods are now available on DIV elements, but not others
  *
- *  You can also pass an *array* of tag names as the first argument:
+ *  You can also pass an *[[Array]]* of tag names as the first argument:
  *
  *      Element.addMethods(['DIV', 'SPAN'], my_additional_methods);
  *      // DIV and SPAN now both have the given methods
  *
  *  (Tag names in the first argument are not case sensitive.)
  *
- *  Note: `Element.addMethods` has built-in security which prevents you from
+ *  Note: [[Element.addMethods]] has built-in security which prevents you from
  *  overriding native element methods or properties (like `getAttribute` or
  *  `innerHTML`), but nothing prevents you from overriding one of Prototype's
  *  methods. Prototype uses a lot of its methods internally; overriding its
@@ -3475,7 +3496,7 @@ else {
  *
  *      $('foo').ajaxUpdate('/new/content');
  *
- *  That will use Ajax.Updater to load new content into the 'foo' element,
+ *  That will use [[Ajax.Updater]] to load new content into the 'foo' element,
  *  showing a spinner while the call is in progress. It even applies a default
  *  failure handler (since we didn't supply one).
 **/
@@ -3741,7 +3762,7 @@ Element.addMethods({
    *
    *  Returns a duplicate of `element`.
    *
-   *  A wrapper around DOM Level 2 `Node#cloneNode`, `Element#clone` cleans up
+   *  A wrapper around DOM Level 2 `Node#cloneNode`, [[Element.clone]] cleans up
    *  any expando properties defined by Prototype.
   **/
   clone: function(element, deep) {

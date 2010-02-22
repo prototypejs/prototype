@@ -10,7 +10,7 @@
  *  Produces a string representation of the date in ISO 8601 format.
  *  The time zone is always UTC, as denoted by the suffix "Z".
  *
- *  <h5>Example</h5>
+ *  ##### Example
  *
  *      var d = new Date(1969, 11, 31, 19);
  *      d.getTimezoneOffset();

@@ -20,11 +20,11 @@
    *  ##### Prototype to the rescue
    *
    *  Of course, Prototype smooths it over so well you'll forget these
-   *  troubles even exist. Enter the `Event` namespace. It is replete with
+   *  troubles even exist. Enter the [[Event]] namespace. It is replete with
    *  methods that help to normalize the information reported by events across
    *  browsers.
    *
-   *  `Event` also provides a standardized list of key codes you can use with
+   *  [[Event]] also provides a standardized list of key codes you can use with
    *  keyboard-related events, including `KEY_BACKSPACE`, `KEY_TAB`,
    *  `KEY_RETURN`, `KEY_ESC`, `KEY_LEFT`, `KEY_UP`, `KEY_RIGHT`, `KEY_DOWN`,
    *  `KEY_DELETE`, `KEY_HOME`, `KEY_END`, `KEY_PAGEUP`, `KEY_PAGEDOWN` and
@@ -165,11 +165,11 @@
    *  
    *  ##### Note for Prototype 1.5.0
    *  
-   *  Note that prior to version 1.5.1, if the browser does not support *native DOM extensions*
-   *  (see the [[Element]] section for further details), the element returned by
-   *  [[Event.element]] might very well *not be extended*. If you intend to use
-   *  methods from [[Element.Methods]] on it, you need to wrap the call in the
-   *  [[$]] function like so:
+   *  Note that prior to version 1.5.1, if the browser does not support
+   *  *native DOM extensions* (see the [[Element]] section for further details),
+   *  the element returned by [[Event.element]] might very well
+   *  *not be extended*. If you intend to use methods from [[Element.Methods]]
+   *  on it, you need to wrap the call in the [[$]] function like so:
    *  
    *      document.observe('click', function(event) {
    *        var element = $(Event.element(event));
@@ -947,8 +947,8 @@
      *  Listens for the given event over the entire document. Can also be used
      *  for listening to `"dom:loaded"` event.
      *  
-     *  `document.observe` is the document-wide version of [[Element#observe]].
-     *  Using `document.observe` is equivalent to
+     *  [[document.observe]] is the document-wide version of [[Element#observe]].
+     *  Using [[document.observe]] is equivalent to
      *  `Event.observe(document, eventName, handler)`.
      *  
      *  ##### The `"dom:loaded"` event
@@ -977,7 +977,7 @@
      *
      *  Unregisters an event handler from the document.
      *  
-     *  `document.stopObserving` is the document-wide version of
+     *  [[document.stopObserving]] is the document-wide version of
      *  [[Element.stopObserving]].
     **/
     stopObserving: stopObserving.methodize(),

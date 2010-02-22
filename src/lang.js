@@ -21,21 +21,21 @@ var Abstract = { };
  *
  *  <h5>More information</h5>
  *
- *  `Try.these` provides a simple idiom for trying out blocks of code in 
+ *  [[Try.these]] provides a simple idiom for trying out blocks of code in 
  *  sequence. Such a sequence of attempts usually represents a downgrading 
  *  approach to obtaining a given feature.
  *
- *  In this example from Prototype's [[Ajax]] internals, we want to get an 
+ *  In this example from Prototype's [[Ajax section]] internals, we want to get an 
  *  `XMLHttpRequest` object. Internet Explorer 6 and earlier, however, does not 
  *  provide it as a vanilla JavaScript object, and will throw an error if we 
  *  attempt a simple instantiation. Also, over time, its proprietary way 
  *  evolved, changing COM interface names.
  *
- *  `Try.these` will try several ways in sequence, from the best (and, 
+ *  [[Try.these]] will try several ways in sequence, from the best (and, 
  *  theoretically, most widespread) one to the oldest and rarest way, returning 
  *  the result of the first successful function.
  *
- *  If none of the blocks succeeded, `Try.these` will return `undefined`, which
+ *  If none of the blocks succeeded, [[Try.these]] will return `undefined`, which
  *  will cause the `Ajax.getTransport` method in the example below to return
  *  `false`, provided as a fallback result value.
  *
