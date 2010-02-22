@@ -23,6 +23,15 @@ new Test.Unit.Runner({
     this.assertHashEqual({foo: 'foo'}, clone,
       "Optimizing Object.clone perf using prototyping doesn't allow properties to be deleted.");
   },
+  
+  testObjectKeys: function() {
+    this.assertEnumEqual([], Object.keys({}));
+    this.assertEnumEqual(['bar', 'foo'], Object.keys({foo: 'foo', bar: 'bar'}).sort());
+    function Foo() { this.bar = 'bar'; }
+    Foo.prototype.foo = 'foo';
+    this.assertEnumEqual(['bar'], Object.keys(new Foo()));
+    this.assertRaise('TypeError', function(){ Object.keys() });
+  },
 
   testObjectInspect: function() {
     this.assertEqual('undefined', Object.inspect());

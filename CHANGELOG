@@ -1,3 +1,5 @@
+* Make Object.keys ES5 compliant. (Tobie Langel)
+
 * Make Prototype's JSON implementation EcmaScript 5 compliant. [#453 state:resolved] (Tobie Langel)
 
 * Also detect embedded (UIWebView) mobile Safari. (Thomas Fuchs)

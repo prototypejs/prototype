@@ -11,10 +11,30 @@
 (function() {
 
   var _toString = Object.prototype.toString,
+      NULL_TYPE = 'Null',
+      UNDEFINED_TYPE = 'Undefined',
+      BOOLEAN_TYPE = 'Boolean',
+      NUMBER_TYPE = 'Number',
+      STRING_TYPE = 'String',
+      OBJECT_TYPE = 'Object',
       NATIVE_JSON_STRINGIFY_SUPPORT = window.JSON &&
         typeof JSON.stringify === 'function' &&
         JSON.stringify(0) === '0' &&
         typeof JSON.stringify(Prototype.K) === 'undefined';
+        
+  function Type(o) {
+    switch(o) {
+      case null: return NULL_TYPE;
+      case (void 0): return UNDEFINED_TYPE;
+    }
+    var type = typeof o;
+    switch(type) {
+      case 'boolean': return BOOLEAN_TYPE;
+      case 'number':  return NUMBER_TYPE;
+      case 'string':  return STRING_TYPE;
+    }
+    return OBJECT_TYPE;
+  }
   
   /**
    *  Object.extend(destination, source) -> Object
@@ -170,9 +190,13 @@
    *  normalize the order of the object keys.
   **/
   function keys(object) {
+    if (Type(object) !== OBJECT_TYPE) { throw new TypeError(); }
     var results = [];
-    for (var property in object)
-      results.push(property);
+    for (var property in object) {
+      if (object.hasOwnProperty(property)) {
+        results.push(property);
+      }
+    }
     return results;
   }
 
@@ -315,7 +339,7 @@
     toJSON:        NATIVE_JSON_STRINGIFY_SUPPORT ? stringify : toJSON,
     toQueryString: toQueryString,
     toHTML:        toHTML,
-    keys:          keys,
+    keys:          Object.keys || keys,
     values:        values,
     clone:         clone,
     isElement:     isElement,
