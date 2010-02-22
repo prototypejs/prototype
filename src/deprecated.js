@@ -241,7 +241,18 @@ Object.extend(Element.ClassNames.prototype, Enumerable);
      *
      *  The only nodes returned will be those that match the given CSS selector.
     **/
-    matchElements: Prototype.Selector.filter,
+    matchElements: function(elements, expression) {
+      var match = Prototype.Selector.match,
+          results = [];
+          
+      for (var i = 0, length = elements.length; i < length; i++) {
+        var element = elements[i];
+        if (match(element, expression)) {
+          results.push(Element.extend(element));
+        }
+      }
+      return results;
+    },
 
     /** deprecated
      *  Selector.findElement(elements, expression[, index = 0]) -> Element
