@@ -341,6 +341,7 @@ Form.Methods = {
    *  
    *  Suppose you have this HTML form:
    *  
+   *      language: html
    *      <form id="person-example" method="POST" action="/user/info">
    *        <fieldset><legend>User info</legend>
    *          <ul>
@@ -598,6 +599,7 @@ Form.Element.Methods = {
    *  On the following form's submit event, the presence of each text input is 
    *  checked and lets the user know if they left a text input blank. 
    *  
+   *      language: html
    *      <form id="example" class="example" action="#">
    *        <fieldset>
    *          <legend>User Details</legend>
@@ -898,6 +900,7 @@ Form.Element.Observer = Class.create(Abstract.TimedObserver, {
  *  if any of the values had been changed. It returns to its initial state when 
  *  the data is submitted (saved).
  *  
+ *      language: html
  *      <form id="example" action="#">
  *        <fieldset>
  *          <legend>Login Preferences</legend>

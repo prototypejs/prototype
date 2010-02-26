@@ -593,6 +593,7 @@
    *  individual elements within the container. This is sometimes called "event
    *  delegation". It's particularly handy for tables:
    *
+   *      language: html
    *      <table id='records'>
    *        <thead>
    *          <tr><th colspan='2'>No record clicked</th></tr>

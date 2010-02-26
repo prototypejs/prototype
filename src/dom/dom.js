@@ -216,8 +216,11 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <div id="visible"></div>
    *      <div id="hidden" style="display: none;"></div>
+   *
+   *  And the associated JavaScript:
    *
    *      $('visible').visible();
    *      // -> true
@@ -230,6 +233,7 @@ Element.Methods = {
    *  Styles applied via a CSS stylesheet are _not_ taken into consideration.
    *  Note that this is not a Prototype limitation, it is a CSS limitation.
    *  
+   *      language: html
    *      <style>
    *        #hidden-by-css {
    *          display: none;
@@ -239,6 +243,8 @@ Element.Methods = {
    *      [...]
    *      
    *      <div id="hidden-by-css"></div>
+   *
+   *  And the associated JavaScript:
    *
    *      $('hidden-by-css').visible();
    *      // -> true
@@ -387,6 +393,7 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      // Before:
    *      <ul>
    *        <li id="golden-delicious">Golden Delicious</li>
@@ -394,11 +401,15 @@ Element.Methods = {
    *        <li id="mcintosh">McIntosh</li>
    *        <li id="ida-red">Ida Red</li>
    *      </ul>
-   *  
+   *
+   *  And the associated JavaScript:
+   *
    *      $('mutsu').remove();
-   *      // -> HTMLElement (and removes li#mutsu)
+   *      // -> Element (and removes li#mutsu)
    *  
-   *      // After:
+   *  The resulting HTML:
+   *
+   *      language: html
    *      <ul>
    *        <li id="golden-delicious">Golden Delicious</li>
    *        <li id="mcintosh">McIntosh</li>
@@ -440,40 +451,41 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <div id="fruits">carrot, eggplant and cucumber</div>
    *  
    *  Passing a regular string:
    *  
    *      $('fruits').update('kiwi, banana and apple');
-   *      // -> HTMLElement
-   *      $('fruits').innerHTML
+   *      // -> Element
+   *      $('fruits').innerHTML;
    *      // -> 'kiwi, banana and apple'
    *  
    *  Clearing the element's content:
    *  
    *      $('fruits').update();
-   *      // -> HTMLElement
+   *      // -> Element
    *      $('fruits').innerHTML;
    *      // -> '' (an empty string)
    *  
    *  And now inserting an HTML snippet:
    *  
    *      $('fruits').update('<p>Kiwi, banana <em>and</em> apple.</p>');
-   *      // -> HTMLElement
+   *      // -> Element
    *      $('fruits').innerHTML;
    *      // -> '<p>Kiwi, banana <em>and</em> apple.</p>'
    *  
    *  ... with a `<script>` tag thrown in:
    *  
    *      $('fruits').update('<p>Kiwi, banana <em>and</em> apple.</p><script>alert("updated!")</script>');
-   *      // -> HTMLElement (and prints "updated!" in an alert dialog).
+   *      // -> Element (and prints "updated!" in an alert dialog).
    *      $('fruits').innerHTML;
    *      // -> '<p>Kiwi, banana <em>and</em> apple.</p>'
    *  
    *  Relying on the `toString()` method:
    *  
    *      $('fruits').update(123);
-   *      // -> HTMLElement
+   *      // -> Element
    *      $('fruits').innerHTML;
    *      // -> '123'
    *  
@@ -602,6 +614,7 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <div id="food">
    *        <div id="fruits">
    *          <p id="first">Kiwi, banana <em>and</em> apple.</p>
@@ -611,7 +624,7 @@ Element.Methods = {
    *  Passing an HTML snippet:
    *  
    *      $('first').replace('<ul id="favorite"><li>kiwi</li><li>banana</li><li>apple</li></ul>');
-   *      // -> HTMLElement (p#first)
+   *      // -> Element (p#first)
    *      
    *      $('fruits').innerHTML;
    *      // -> '<ul id="favorite"><li>kiwi</li><li>banana</li><li>apple</li></ul>'
@@ -619,23 +632,23 @@ Element.Methods = {
    *  Again, with a `<script>` tag thrown in:
    *  
    *      $('favorite').replace('<p id="still-first">Melon, oranges <em>and</em> grapes.</p><script>alert("removed!")</script>');
-   *      // -> HTMLElement (ul#favorite) and prints "removed!" in an alert dialog.
+   *      // -> Element (ul#favorite) and prints "removed!" in an alert dialog.
    *      
-   *      $('fruits').innerHTML
+   *      $('fruits').innerHTML;
    *      // -> '<p id="still-first">Melon, oranges <em>and</em> grapes.</p>'
    *  
    *  With plain text:
    *  
    *      $('still-first').replace('Melon, oranges and grapes.');
-   *      // -> HTMLElement (p#still-first)
+   *      // -> Element (p#still-first)
    *
-   *      $('fruits').innerHTML
+   *      $('fruits').innerHTML;
    *      // -> 'Melon, oranges and grapes.'
    *  
    *  Finally, relying on the `toString()` method:
    *  
    *      $('fruits').replace(123);
-   *      // -> HTMLElement
+   *      // -> Element
    *      
    *      $('food').innerHTML;
    *      // -> '123'
@@ -757,7 +770,7 @@ Element.Methods = {
    *  If the given element exists on the page, [[Element.wrap]] will wrap it in
    *  place — its position will remain the same.
    *  
-   *  The `wrapper` argument can be _either_ an existing `HTMLElement` _or_ a
+   *  The `wrapper` argument can be _either_ an existing [[Element]] _or_ a
    *  string representing the tag name of an element to be created. The optional
    *  `attributes` argument can contain a list of attribute/value pairs that
    *  will be set on the wrapper using [[Element.writeAttribute]].
@@ -766,6 +779,7 @@ Element.Methods = {
    *  
    *  Original HTML:
    *  
+   *      language: html
    *      <table id="data">
    *        <tr>
    *          <th>Foo</th>
@@ -790,6 +804,7 @@ Element.Methods = {
    *  
    *  Resulting HTML:
    *  
+   *      language: html
    *      <div class="table-wrapper">
    *        <table id="data">
    *          <tr>
@@ -830,13 +845,16 @@ Element.Methods = {
    *
    *  For more information on `inspect` methods, see [[Object.inspect]].
    *  
+   *      language: html
    *      <ul>
    *        <li id="golden-delicious">Golden Delicious</li>
    *        <li id="mutsu" class="yummy apple">Mutsu</li>
    *        <li id="mcintosh" class="yummy">McIntosh</li>
    *        <li></li>
    *      </ul>
-   *  
+   *
+   *  And the associated JavaScript:
+   *
    *      $('golden-delicious').inspect();
    *      // -> '<li id="golden-delicious">'
    *      
@@ -880,6 +898,7 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <ul id="fruits">
    *        <li id="apples">
    *          <ul id="list-of-apples">
@@ -890,7 +909,9 @@ Element.Methods = {
    *          </ul>
    *        </li>
    *      </ul>
-   *  
+   *
+   *  And the associated JavaScript:
+   *
    *      $('fruits').recursivelyCollect('firstChild');
    *      // -> [li#apples, ul#list-of-apples, li#golden-delicious, p]
   **/
@@ -975,6 +996,8 @@ Element.Methods = {
    *        </div>
    *      </div>
    *
+   *  Then:
+   *
    *      $('australopithecus').firstDescendant();
    *      // -> div#homo-herectus
    *      
@@ -1035,7 +1058,9 @@ Element.Methods = {
    *        <li id="mcintosh">McIntosh</li>
    *        <li id="ida-red">Ida Red</li>
    *      </ul>
-   *  
+   *
+   *  Then:
+   *
    *      $('mcintosh').previousSiblings();
    *      // -> [li#mutsu, li#golden-delicious]
    *      
@@ -1072,7 +1097,9 @@ Element.Methods = {
    *        <li id="mcintosh">McIntosh</li>
    *        <li id="ida-red">Ida Red</li>
    *      </ul>
-   *  
+   *
+   *  Then:
+   *
    *      $('mutsu').nextSiblings();
    *      // -> [li#mcintosh, li#ida-red]
    *      
@@ -1108,6 +1135,8 @@ Element.Methods = {
    *        <li id="ida-red">Ida Red</li>
    *      </ul>
    *
+   *  Then:
+   *
    *      $('mutsu').siblings();
    *      // -> [li#golden-delicious, li#mcintosh, li#ida-red]
   **/
@@ -1136,7 +1165,9 @@ Element.Methods = {
    *          </ul>
    *        </li>
    *      </ul>
-   *  
+   *
+   *  Then:
+   *
    *      $('fruits').match('ul');
    *      // -> true
    *      
@@ -1616,7 +1647,9 @@ Element.Methods = {
    *          <p id="saying">An apple a day keeps the doctor away.</p>  
    *        </li>
    *      </ul>
-   *  
+   *
+   *  Then:
+   *
    *      $('apples').select('[title="yummy!"]');
    *      // -> [h3, li#golden-delicious, li#mutsu]
    *      
@@ -1738,8 +1771,11 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <a id="tag" href="/tags/prototype" rel="tag" title="view related bookmarks." my_widget="some info.">Prototype</a>
-   *  
+   *
+   *  Then:
+   *
    *      $('tag').readAttribute('href');
    *      // -> '/tags/prototype'
    *      
@@ -1806,8 +1842,11 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <div id="rectangle" style="font-size: 10px; width: 20em; height: 10em"></div>
-   *  
+   *
+   *  Then:
+   *
    *      $('rectangle').getHeight();
    *      // -> 100
   **/
@@ -1831,8 +1870,11 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <div id="rectangle" style="font-size: 10px; width: 20em; height: 10em"></div>
-   *  
+   *
+   *  Then:
+   *
    *      $('rectangle').getWidth();
    *      // -> 200
   **/
@@ -1861,8 +1903,11 @@ Element.Methods = {
    *
    *  ##### Examples
    *  
+   *      language: html
    *      <div id="mutsu" class="apple fruit food"></div>
-   *  
+   *
+   *  Then:
+   *
    *      $('mutsu').hasClassName('fruit');
    *      // -> true
    *      
@@ -1938,8 +1983,11 @@ Element.Methods = {
    *
    *  ##### Examples
    *  
+   *      language: html
    *      <div id="mutsu" class="apple"></div>
-   *  
+   *
+   *  Then:
+   *
    *      $('mutsu').hasClassName('fruit');
    *      // -> false
    *      
@@ -2128,8 +2176,9 @@ Element.Methods = {
    *        }
    *      </style>
    *      <div id="test"></div>
-   *  
-   *  
+   *
+   *  Then:
+   *
    *      $('test').getStyle('margin-left');
    *      // -> '1em' in Internet Explorer,
    *      // -> '12px' elsewhere.
@@ -2265,8 +2314,11 @@ Element.Methods = {
    *  
    *  ##### Examples
    *  
+   *      language: html
    *      <div id="rectangle" style="font-size: 10px; width: 20em; height: 10em"></div>
-   *  
+   *
+   *  Then:
+   *
    *      var dimensions = $('rectangle').getDimensions();
    *      // -> {width: 200, height: 100}
    *      
@@ -2366,9 +2418,14 @@ Element.Methods = {
    *        <img src="/assets/2007/1/14/chairs.jpg" alt="example" />
    *      </div>
    *  
+   *  Then:
+   *
    *      $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
    *      // -> Element
    *  
+   *  Another example:
+   *
+   *      language: html
    *      <a id="clipper" href="#">Click me to try it out.</a>
    *  
    *      <div id="framer">
@@ -2411,15 +2468,21 @@ Element.Methods = {
    *
    *  ##### Example
    *  
+   *      language: html
    *      <div id="framer">
    *        <img src="/assets/2007/1/14/chairs.jpg" alt="example" />
    *      </div>
-   *  
+   *
+   *  Then:
+   *
    *      $('framer').undoClipping();
-   *      // -> HTMLElement (and sets the CSS overflow property to its original value).
+   *      // -> Element (and sets the CSS overflow property to its original value).
    *  
+   *  Another example:
+   *
+   *      language: html
    *      <a id="clipper" href="#">Click me to try it out.</a>
-   *  
+   *
    *      <div id="framer">
    *        <img src="/assets/2007/2/24/chairs_1.jpg" alt="example" />
    *      </div>
@@ -3234,8 +3297,11 @@ Element.Methods.Simulated = {
    *  
    *  ##### Example
    *  
+   *      language: html
    *      <a id="link" href="http://prototypejs.org">Prototype</a>
-   *  
+   *
+   *  Then:
+   *
    *      $('link').hasAttribute('href');
    *      // -> true
   **/  
@@ -3614,7 +3680,7 @@ document.viewport = {
    *  ##### Example
    *  
    *      document.viewport.getDimensions();
-   *        //-> { width: 776, height: 580 }
+   *      //-> { width: 776, height: 580 }
   **/
   getDimensions: function() {
     return { width: this.getWidth(), height: this.getHeight() };
@@ -3631,11 +3697,11 @@ document.viewport = {
    *  ##### Examples
    *  
    *      document.viewport.getScrollOffsets();
-   *       //-> { left: 0, top: 0 }
+   *      //-> { left: 0, top: 0 }
    *      
-   *       window.scrollTo(0, 120);
-   *       document.viewport.getScrollOffsets();
-   *       //-> { left: 0, top: 120 }
+   *      window.scrollTo(0, 120);
+   *      document.viewport.getScrollOffsets();
+   *      //-> { left: 0, top: 120 }
   **/
   getScrollOffsets: function() {
     return Element._returnOffset(
