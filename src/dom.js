@@ -19,13 +19,6 @@
  *
 **/
 
-/** section: DOM
- * Prototype
- * 
- * The Prototype namespace.
- *
-**/
-
 //= require "dom/dom"
 //= require <selector_engine>
 //= require "dom/selector"

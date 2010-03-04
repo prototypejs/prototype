@@ -1,7 +1,7 @@
 /* Based on Alex Arnell's inheritance implementation. */
 
 /** section: Language
- * Class
+ * class Class
  *
  *  Manages Prototype's class-based OOP system.
  *
