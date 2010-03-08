@@ -1,7 +1,7 @@
 /* Based on Alex Arnell's inheritance implementation. */
 
 /** section: Language
- * Class
+ * class Class
  *
  *  Manages Prototype's class-based OOP system.
  *
@@ -27,12 +27,12 @@ var Class = (function() {
    *        new class. Any number of mixins can be added; later mixins take
    *        precedence.
    *
-   *  `Class.create` creates a class and returns a constructor function for
+   *  [[Class.create]] creates a class and returns a constructor function for
    *  instances of the class. Calling the constructor function (typically as
    *  part of a `new` statement) will invoke the class's `initialize` method.
    *
-   *  `Class.create` accepts two kinds of arguments. If the first argument is
-   *  a `Class`, it's used as the new class's superclass, and all its methods
+   *  [[Class.create]] accepts two kinds of arguments. If the first argument is
+   *  a [[Class]], it's used as the new class's superclass, and all its methods
    *  are inherited. Otherwise, any arguments passed are treated as objects,
    *  and their methods are copied over ("mixed in") as instance methods of the
    *  new class. In cases of method name overlap, later arguments take
@@ -86,8 +86,8 @@ var Class = (function() {
    *
    *  Adds methods to an existing class.
    *
-   *  `Class#addMethods` is a method available on classes that have been
-   *  defined with `Class.create`. It can be used to add new instance methods
+   *  [[Class#addMethods]] is a method available on classes that have been
+   *  defined with [[Class.create]]. It can be used to add new instance methods
    *  to that class, or overwrite existing methods, after the class has been
    *  defined.
    *
@@ -97,7 +97,7 @@ var Class = (function() {
    *  of the class and of all its subclasses, even those that have already been
    *  instantiated.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      var Animal = Class.create({
    *        initialize: function(name, sound) {

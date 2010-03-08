@@ -7,11 +7,54 @@
  *  If provided with a string, returns the element in the document with
  *  matching ID; otherwise returns the passed element.
  *
- *  Takes in an arbitrary number of arguments. Returns one `Element` if given
- *  one argument; otherwise returns an array of `Element`s.
+ *  Takes in an arbitrary number of arguments. Returns one [[Element]] if
+ *  given one argument; otherwise returns an [[Array]] of [[Element]]s.
  *
- *  All elements returned by the function are "extended" with `Element`
+ *  All elements returned by the function are "extended" with [[Element]]
  *  instance methods.
+ *
+ *  ##### More Information
+ *
+ *  The [[$]] function is the cornerstone of Prototype. Not only does it
+ *  provide a handy alias for `document.getElementById`, it also lets you pass
+ *  indifferently IDs (strings) or DOM node references to your functions:
+ *  
+ *      function foo(element) {
+ *          element = $(element);
+ *          //  rest of the function...
+ *      }
+ *  
+ *  Code written this way is flexible — you can pass it the ID of the element
+ *  or the element itself without any type sniffing.
+ *  
+ *  Invoking it with only one argument returns the [[Element]], while invoking it
+ *  with multiple arguments returns an [[Array]] of [[Element]]s (and this
+ *  works recursively: if you're twisted, you could pass it an array
+ *  containing some arrays, and so forth). As this is dependent on
+ *  `getElementById`, [W3C specs](http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-getElBId)
+ *  apply: nonexistent IDs will yield `null` and IDs present multiple times in
+ *  the DOM will yield erratic results. *If you're assigning the same ID to
+ *  multiple elements, you're doing it wrong!*
+ *  
+ *  The function also *extends every returned element* with [[Element.extend]]
+ *  so you can use Prototype's DOM extensions on it. In the following code,
+ *  the two lines are equivalent. However, the second one feels significantly
+ *  more object-oriented:
+ *  
+ *      // Note quite OOP-like...
+ *      Element.hide('itemId');
+ *      // A cleaner feel, thanks to guaranted extension
+ *      $('itemId').hide();
+ *  
+ *  However, when using iterators, leveraging the [[$]] function makes for
+ *  more elegant, more concise, and also more efficient code:
+ *  
+ *      ['item1', 'item2', 'item3'].each(Element.hide);
+ *      // The better way:
+ *      $('item1', 'item2', 'item3').invoke('hide');
+ *  
+ *  See [How Prototype extends the DOM](http://prototypejs.org/learn/extensions)
+ *  for more info.
 **/
 
 function $(element) {
@@ -61,9 +104,9 @@ if (!Node.ELEMENT_NODE) {
 /** section: DOM
  *  class Element
  *
- *  The `Element` object provides a variety of powerful DOM methods for
+ *  The [[Element]] object provides a variety of powerful DOM methods for
  *  interacting with DOM elements&nbsp;&mdash; creating them, updating them,
- *  traversing them, etc. You can access these either as methods of `Element`
+ *  traversing them, etc. You can access these either as methods of [[Element]]
  *  itself, passing in the element to work with as the first argument, or as
  *  methods on extended element *instances*:
  *
@@ -73,10 +116,10 @@ if (!Node.ELEMENT_NODE) {
  *      // Using an extended element instance:
  *      $('target').addClassName('highlighted');
  *
- *  `Element` is also a constructor for building element instances from scratch,
+ *  [[Element]] is also a constructor for building element instances from scratch,
  *  see [`new Element`](#new-constructor) for details.
  *
- *  Most `Element` methods return the element instance, so that you can chain
+ *  Most [[Element]] methods return the element instance, so that you can chain
  *  them easily:
  *
  *      $('message').addClassName('read').update('I read this message!');
@@ -146,12 +189,65 @@ if (!Node.ELEMENT_NODE) {
 Element.idCounter = 1;
 Element.cache = { };
 
+/**
+ *  mixin Element.Methods
+ *
+ *  [[Element.Methods]] is a mixin for DOM elements. The methods of this object 
+ *  are accessed through the [[$]] utility or through the [[Element]] object and
+ *  shouldn't be accessed directly.
+ *  
+ *  ##### Examples
+ *  
+ *  Hide the element 
+ *  
+ *      $(element).hide(); 
+ *      
+ *  Return an [[Enumerable]] of all descendant nodes of the element with the id
+ *  "article"
+ *  
+ *      $('articles').descendants();
+**/
 Element.Methods = {
   /**
-   *  Element.visible(@element) -> boolean
+   *  Element.visible(@element) -> Boolean
    *
    *  Tells whether `element` is visible (i.e., whether its inline `display`
    *  CSS property is set to `none`.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <div id="visible"></div>
+   *      <div id="hidden" style="display: none;"></div>
+   *
+   *  And the associated JavaScript:
+   *
+   *      $('visible').visible();
+   *      // -> true
+   *      
+   *      $('hidden').visible();
+   *      // -> false
+   *  
+   *  ##### Notes
+   *  
+   *  Styles applied via a CSS stylesheet are _not_ taken into consideration.
+   *  Note that this is not a Prototype limitation, it is a CSS limitation.
+   *  
+   *      language: html
+   *      <style>
+   *        #hidden-by-css {
+   *          display: none;
+   *        }
+   *      </style>
+   *      
+   *      [...]
+   *      
+   *      <div id="hidden-by-css"></div>
+   *
+   *  And the associated JavaScript:
+   *
+   *      $('hidden-by-css').visible();
+   *      // -> true
   **/
   visible: function(element) {
     return $(element).style.display != 'none';
@@ -161,6 +257,46 @@ Element.Methods = {
    *  Element.toggle(@element) -> Element
    *
    *  Toggles the visibility of `element`. Returns `element`.
+   *  
+   *  ##### Examples
+   *  
+   *      <div id="welcome-message"></div>
+   *      <div id="error-message" style="display:none;"></div>
+   *  
+   *      $('welcome-message').toggle();
+   *      // -> Element (and hides div#welcome-message)
+   *      
+   *      $('error-message').toggle();
+   *      // -> Element (and displays div#error-message)
+   *  
+   *  Toggle multiple elements using [[Enumerable#each]]:
+   *  
+   *      ['error-message', 'welcome-message'].each(Element.toggle);
+   *      // -> ['error-message', 'welcome-message'] 
+   *  
+   *  Toggle multiple elements using [[Enumerable#invoke]]:
+   *  
+   *      $('error-message', 'welcome-message').invoke('toggle');
+   *      // -> [Element, Element]
+   *
+   *  ##### Notes
+   *  
+   *  [[Element.toggle]] _cannot_ display elements hidden via CSS stylesheets.
+   *  Note that this is not a Prototype limitation but a consequence of how the
+   *  CSS `display` property works.
+   *  
+   *      <style>
+   *        #hidden-by-css {
+   *          display: none;
+   *        }
+   *      </style>
+   *      
+   *      [...]
+   *      
+   *      <div id="hidden-by-css"></div>
+   *  
+   *      $('hidden-by-css').toggle(); // WONT' WORK!
+   *      // -> Element (div#hidden-by-css is still hidden!)
   **/
   toggle: function(element) {
     element = $(element);
@@ -168,11 +304,29 @@ Element.Methods = {
     return element;
   },
 
-
   /**
    *  Element.hide(@element) -> Element
    *
    *  Sets `display: none` on `element`. Returns `element`.
+   *  
+   *  ##### Examples
+   *
+   *  Hide a single element:
+   *  
+   *      <div id="error-message"></div>
+   *  
+   *      $('error-message').hide();
+   *      // -> Element (and hides div#error-message)
+   *
+   *  Hide multiple elements using [[Enumerable#each]]:
+   *  
+   *      ['content', 'navigation', 'footer'].each(Element.hide);
+   *      // -> ['content', 'navigation', 'footer'] 
+   *  
+   *  Hide multiple elements using [[Enumerable#invoke]]:
+   *  
+   *      $('content', 'navigation', 'footer').invoke('hide');
+   *      // -> [Element, Element, Element]
   **/
   hide: function(element) {
     element = $(element);
@@ -184,6 +338,44 @@ Element.Methods = {
    *  Element.show(@element) -> Element
    *
    *  Removes `display: none` on `element`. Returns `element`.
+   *  
+   *  ##### Examples
+   *
+   *  Show a single element:
+   *  
+   *      <div id="error-message" style="display:none;"></div>
+   *  
+   *      $('error-message').show();
+   *      // -> Element (and displays div#error-message)
+   *  
+   *  Show multiple elements using [[Enumerable#each]]:
+   *  
+   *      ['content', 'navigation', 'footer'].each(Element.show);
+   *      // -> ['content', 'navigation', 'footer'] 
+   *  
+   *  Show multiple elements using [[Enumerable#invoke]]:
+   *  
+   *      $('content', 'navigation', 'footer').invoke('show');
+   *      // -> [Element, Element, Element]
+   *  
+   *  ##### Notes
+   *  
+   *  [[Element.show]] _cannot_ display elements hidden via CSS stylesheets.
+   *  Note that this is not a Prototype limitation but a consequence of how the
+   *  CSS `display` property works.
+   *  
+   *      <style>
+   *        #hidden-by-css {
+   *          display: none;
+   *        }
+   *      </style>
+   *      
+   *      [...]
+   *      
+   *      <div id="hidden-by-css"></div>
+   *  
+   *      $('hidden-by-css').show(); // DOES NOT WORK!
+   *      // -> Element (div#error-message is still hidden!)
   **/
   show: function(element) {
     element = $(element);
@@ -195,6 +387,34 @@ Element.Methods = {
    *  Element.remove(@element) -> Element
    *
    *  Completely removes `element` from the document and returns it.
+   *
+   *  If you would rather just hide the element and keep it around for further
+   *  use, try [[Element.hide]] instead.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      // Before:
+   *      <ul>
+   *        <li id="golden-delicious">Golden Delicious</li>
+   *        <li id="mutsu">Mutsu</li>
+   *        <li id="mcintosh">McIntosh</li>
+   *        <li id="ida-red">Ida Red</li>
+   *      </ul>
+   *
+   *  And the associated JavaScript:
+   *
+   *      $('mutsu').remove();
+   *      // -> Element (and removes li#mutsu)
+   *  
+   *  The resulting HTML:
+   *
+   *      language: html
+   *      <ul>
+   *        <li id="golden-delicious">Golden Delicious</li>
+   *        <li id="mcintosh">McIntosh</li>
+   *        <li id="ida-red">Ida Red</li>
+   *      </ul>
   **/
   remove: function(element) {
     element = $(element);
@@ -218,11 +438,73 @@ Element.Methods = {
    *  If `newContent` is omitted, the element's content is blanked out (i.e.,
    *  replaced with an empty string).
    *
-   *  If `newContent` is a string and contains one or more inline `<script>` tags, the scripts
-   *  are scheduled to be evaluated after a very brief pause (using [[Function#defer]]) to allow
-   *  the browser to finish updating the DOM. Note that the scripts are evaluated
-   *  in the scope of [[String#evalScripts]], not in the global scope, which has important
-   *  ramifications for your `var`s and `function`s. See [[String#evalScripts]] for details.
+   *  If `newContent` is a string and contains one or more inline `<script>` 
+   *  tags, the scripts are scheduled to be evaluated after a very brief pause
+   *  (using [[Function#defer]]) to allow the browser to finish updating the 
+   *  DOM. Note that the scripts are evaluated in the scope of 
+   *  [[String#evalScripts]], not in the global scope, which has important
+   *  ramifications for your `var`s and `function`s.
+   *  See [[String#evalScripts]] for details.
+   *
+   *  Note that this method allows seamless content update of table related 
+   *  elements in Internet Explorer 6 and beyond.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <div id="fruits">carrot, eggplant and cucumber</div>
+   *  
+   *  Passing a regular string:
+   *  
+   *      $('fruits').update('kiwi, banana and apple');
+   *      // -> Element
+   *      $('fruits').innerHTML;
+   *      // -> 'kiwi, banana and apple'
+   *  
+   *  Clearing the element's content:
+   *  
+   *      $('fruits').update();
+   *      // -> Element
+   *      $('fruits').innerHTML;
+   *      // -> '' (an empty string)
+   *  
+   *  And now inserting an HTML snippet:
+   *  
+   *      $('fruits').update('<p>Kiwi, banana <em>and</em> apple.</p>');
+   *      // -> Element
+   *      $('fruits').innerHTML;
+   *      // -> '<p>Kiwi, banana <em>and</em> apple.</p>'
+   *  
+   *  ... with a `<script>` tag thrown in:
+   *  
+   *      $('fruits').update('<p>Kiwi, banana <em>and</em> apple.</p><script>alert("updated!")</script>');
+   *      // -> Element (and prints "updated!" in an alert dialog).
+   *      $('fruits').innerHTML;
+   *      // -> '<p>Kiwi, banana <em>and</em> apple.</p>'
+   *  
+   *  Relying on the `toString()` method:
+   *  
+   *      $('fruits').update(123);
+   *      // -> Element
+   *      $('fruits').innerHTML;
+   *      // -> '123'
+   *  
+   *  Finally, you can do some pretty funky stuff by defining your own
+   *  `toString()` method on your custom objects:
+   *  
+   *      var Fruit = Class.create({
+   *        initialize: function(fruit){
+   *          this.fruit = fruit;
+   *        },
+   *        toString: function(){
+   *          return 'I am a fruit and my name is "' + this.fruit + '".'; 
+   *        }
+   *      });
+   *      var apple = new Fruit('apple');
+   *      
+   *      $('fruits').update(apple);
+   *      $('fruits').innerHTML;
+   *      // -> 'I am a fruit and my name is "apple".'
   **/
   update: (function(){
 
@@ -318,6 +600,68 @@ Element.Methods = {
    *
    *  Keep in mind that this method returns the element that has just been
    *  removed &mdash; not the element that took its place.
+   *
+   *  `newContent` can be either plain text, an HTML snippet or any JavaScript
+   *  object which has a `toString()` method.
+   *  
+   *  If `newContent` contains any `<script>` tags, these will be evaluated
+   *  after `element` has been replaced ([[Element.replace]] internally calls
+   *  [[String#evalScripts]]).
+   *  
+   *  Note that if no argument is provided, [[Element.replace]] will simply
+   *  clear `element` of its content. However, using [[Element.remove]] to do so
+   *  is both faster and more standard compliant.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <div id="food">
+   *        <div id="fruits">
+   *          <p id="first">Kiwi, banana <em>and</em> apple.</p>
+   *        </div>
+   *      </div>
+   *  
+   *  Passing an HTML snippet:
+   *  
+   *      $('first').replace('<ul id="favorite"><li>kiwi</li><li>banana</li><li>apple</li></ul>');
+   *      // -> Element (p#first)
+   *      
+   *      $('fruits').innerHTML;
+   *      // -> '<ul id="favorite"><li>kiwi</li><li>banana</li><li>apple</li></ul>'
+   *  
+   *  Again, with a `<script>` tag thrown in:
+   *  
+   *      $('favorite').replace('<p id="still-first">Melon, oranges <em>and</em> grapes.</p><script>alert("removed!")</script>');
+   *      // -> Element (ul#favorite) and prints "removed!" in an alert dialog.
+   *      
+   *      $('fruits').innerHTML;
+   *      // -> '<p id="still-first">Melon, oranges <em>and</em> grapes.</p>'
+   *  
+   *  With plain text:
+   *  
+   *      $('still-first').replace('Melon, oranges and grapes.');
+   *      // -> Element (p#still-first)
+   *
+   *      $('fruits').innerHTML;
+   *      // -> 'Melon, oranges and grapes.'
+   *  
+   *  Finally, relying on the `toString()` method:
+   *  
+   *      $('fruits').replace(123);
+   *      // -> Element
+   *      
+   *      $('food').innerHTML;
+   *      // -> '123'
+   *
+   *  ##### Warning
+   *
+   *  Using [[Element.replace]] as an instance method (e.g.,
+   *  `$('foo').replace('<p>Bar</p>')`) causes errors in Opera 9 when used on
+   *  `input` elements. The `replace` property is reserved on `input` elements
+   *  as part of [Web Forms 2](http://www.whatwg.org/specs/web-forms/current-work/).
+   *  As a workaround, use the generic version instead
+   *  (`Element.replace('foo', '<p>Bar</p>')`).
+   *  
   **/
   replace: function(element, content) {
     element = $(element);
@@ -337,8 +681,8 @@ Element.Methods = {
    *  Element.insert(@element, content) -> Element
    *  - content (String | Element | Object): The content to insert.
    *
-   *  Inserts content `above`, `below`, at the `top`, and/or at the `bottom` of the
-   *  given element, depending on the option(s) given.
+   *  Inserts content `above`, `below`, at the `top`, and/or at the `bottom` of
+   *  the given element, depending on the option(s) given.
    *
    *  `insert` accepts content in any of these forms:
    *  - [[String]]: A string of HTML to be parsed and rendered
@@ -347,15 +691,19 @@ Element.Methods = {
    *  - ...any object with a `toHTML` method: The method is called and the resulting HTML string
    *    is parsed and rendered
    *
-   *  The `content` argument can be the content to insert, in which case the implied
-   *  insertion point is `bottom`, or an object that specifies one or more insertion
-   *  points (e.g., `{ bottom: "foo", top: "bar" }`).
+   *  The `content` argument can be the content to insert, in which case the
+   *  implied insertion point is `bottom`, or an object that specifies one or
+   *  more insertion points (e.g., `{ bottom: "foo", top: "bar" }`).
    *
    *  Accepted insertion points are:
    *  - `before` (as `element`'s previous sibling)
    *  - `after` (as `element's` next sibling)
    *  - `top` (as `element`'s first child)
    *  - `bottom` (as `element`'s last child)
+   *
+   *  Note that if the inserted HTML contains any `<script>` tag, these will be
+   *  automatically evaluated after the insertion (`insert` internally calls
+   *  [[String.evalScripts]] when inserting HTML).
    *
    *  <h5>Examples</h5>
    *
@@ -418,6 +766,65 @@ Element.Methods = {
    *    element. Refer to the [[Element]] constructor for usage.
    *
    *  Wraps an element inside another, then returns the wrapper.
+   *  
+   *  If the given element exists on the page, [[Element.wrap]] will wrap it in
+   *  place — its position will remain the same.
+   *  
+   *  The `wrapper` argument can be _either_ an existing [[Element]] _or_ a
+   *  string representing the tag name of an element to be created. The optional
+   *  `attributes` argument can contain a list of attribute/value pairs that
+   *  will be set on the wrapper using [[Element.writeAttribute]].
+   *  
+   *  ##### Examples
+   *  
+   *  Original HTML:
+   *  
+   *      language: html
+   *      <table id="data">
+   *        <tr>
+   *          <th>Foo</th>
+   *          <th>Bar</th>
+   *        </tr>
+   *        <tr>
+   *          <td>1</td>
+   *          <td>2</td>
+   *        </tr>
+   *      </table>
+   *  
+   *  JavaScript:
+   *  
+   *      // approach 1:
+   *      var div = new Element('div', { 'class': 'table-wrapper' });
+   *      $('data').wrap(div);
+   *      
+   *      // approach 2:
+   *      $('data').wrap('div', { 'class': 'table-wrapper' });
+   *      
+   *      // Both examples are equivalent &mdash; they return the DIV.
+   *  
+   *  Resulting HTML:
+   *  
+   *      language: html
+   *      <div class="table-wrapper">
+   *        <table id="data">
+   *          <tr>
+   *            <th>Foo</th>
+   *            <th>Bar</th>
+   *          </tr>
+   *          <tr>
+   *            <td>1</td>
+   *            <td>2</td>
+   *          </tr>
+   *        </table>
+   *      </div> 
+   *  
+   *  ##### Warning
+   *
+   *  Using [[Element.wrap]] as an instance method (e.g., `$('foo').wrap('p')`)
+   *  causes errors in Internet Explorer when used on `textarea` elements. The
+   *  `wrap` property is reserved on `textarea`'s as a proprietary extension to
+   *  HTML. As a workaround, use the generic version instead
+   *  (`Element.wrap('foo', 'p')`).
   **/
   wrap: function(element, wrapper, attributes) {
     element = $(element);
@@ -435,6 +842,27 @@ Element.Methods = {
    *  Element.inspect(@element) -> String
    *
    *  Returns the debug-oriented string representation of `element`.
+   *
+   *  For more information on `inspect` methods, see [[Object.inspect]].
+   *  
+   *      language: html
+   *      <ul>
+   *        <li id="golden-delicious">Golden Delicious</li>
+   *        <li id="mutsu" class="yummy apple">Mutsu</li>
+   *        <li id="mcintosh" class="yummy">McIntosh</li>
+   *        <li></li>
+   *      </ul>
+   *
+   *  And the associated JavaScript:
+   *
+   *      $('golden-delicious').inspect();
+   *      // -> '<li id="golden-delicious">'
+   *      
+   *      $('mutsu').inspect();
+   *      // -> '<li id="mutsu" class="yummy apple">'
+   *      
+   *      $('mutsu').next().inspect();
+   *      // -> '<li>'
   **/
   inspect: function(element) {
     element = $(element);
@@ -455,6 +883,37 @@ Element.Methods = {
    *  specified by `property`. `property` has to be a _property_ (a method
    *  won't do!) of `element` that points to a single DOM node (e.g.,
    *  `nextSibling` or `parentNode`).
+   *
+   *  ##### More information
+   *
+   *  This method is used internally by [[Element.ancestors]],
+   *  [[Element.descendants]], [[Element.nextSiblings]],
+   *  [[Element.previousSiblings]] and [[Element.siblings]] which offer really
+   *  convenient way to grab elements, so directly accessing
+   *  [[Element.recursivelyCollect]] should seldom be needed. However, if you
+   *  are after something out of the ordinary, it is the way to go.
+   *  
+   *  Note that all of Prototype's DOM traversal methods ignore text nodes and
+   *  return element nodes only.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <ul id="fruits">
+   *        <li id="apples">
+   *          <ul id="list-of-apples">
+   *            <li id="golden-delicious"><p>Golden Delicious</p></li>
+   *            <li id="mutsu">Mutsu</li>
+   *            <li id="mcintosh">McIntosh</li>
+   *            <li id="ida-red">Ida Red</li>
+   *          </ul>
+   *        </li>
+   *      </ul>
+   *
+   *  And the associated JavaScript:
+   *
+   *      $('fruits').recursivelyCollect('firstChild');
+   *      // -> [li#apples, ul#list-of-apples, li#golden-delicious, p]
   **/
   recursivelyCollect: function(element, property, maximumLength) {
     element = $(element);
@@ -479,9 +938,9 @@ Element.Methods = {
    *
    *  The returned array's first element is `element`'s direct ancestor (its
    *  `parentNode`), the second one is its grandparent, and so on until the
-   *  `html` element is reached. `html` will always be the last member of the
-   *  array. Calling `ancestors` on the `html` element will return an empty
-   *  array.
+   *  `<html>` element is reached. `<html>` will always be the last member of
+   *  the array. Calling `ancestors` on the `<html>` element will return an
+   *  empty array.
    *
    *  ##### Example
    *
@@ -512,7 +971,7 @@ Element.Methods = {
    *
    *  Collects all of the element's descendants (its children, their children,
    *  etc.) and returns them as an array of extended elements. As with all of
-   *  Prototype's DOM traversal methods, only Elements are returned, other
+   *  Prototype's DOM traversal methods, only [[Element]]s are returned, other
    *  nodes (text nodes, etc.) are skipped.
   **/
   descendants: function(element) {
@@ -525,7 +984,30 @@ Element.Methods = {
    *  Returns the first child that is an element.
    *
    *  This is opposed to the `firstChild` DOM property, which will return
-   *  any node, including text nodes.
+   *  any node, including text nodes and comment nodes.
+   *
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <div id="australopithecus">
+   *        <div id="homo-erectus"><!-- Latin is super -->
+   *          <div id="homo-neanderthalensis"></div>
+   *          <div id="homo-sapiens"></div>
+   *        </div>
+   *      </div>
+   *
+   *  Then:
+   *
+   *      $('australopithecus').firstDescendant();
+   *      // -> div#homo-herectus
+   *      
+   *      // the DOM property returns any first node
+   *      $('homo-herectus').firstChild;
+   *      // -> comment node "Latin is super"
+   *      
+   *      // this is what we want!
+   *      $('homo-herectus').firstDescendant();
+   *      // -> div#homo-neanderthalensis
   **/
   firstDescendant: function(element) {
     element = $(element).firstChild;
@@ -553,7 +1035,37 @@ Element.Methods = {
    *  Element.previousSiblings(@element) -> [Element...]
    *
    *  Collects all of `element`'s previous siblings and returns them as an
-   *  array of elements.
+   *  [[Array]] of elements.
+   *  
+   *  Two elements are siblings if they have the same parent. So for example,
+   *  the `<head>` and `<body>` elements are siblings (their parent is the
+   *  `<html>` element). Previous-siblings are simply the ones which precede
+   *  `element` in the document.
+   *  
+   *  The returned [[Array]] reflects the siblings _inversed_ order in the
+   *  document (e.g. an index of 0 refers to the lowest sibling i.e., the one
+   *  closest to `element`).
+   *  
+   *  Note that all of Prototype's DOM traversal methods ignore text nodes and
+   *  return element nodes only.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <ul>
+   *        <li id="golden-delicious">Golden Delicious</li>
+   *        <li id="mutsu">Mutsu</li>
+   *        <li id="mcintosh">McIntosh</li>
+   *        <li id="ida-red">Ida Red</li>
+   *      </ul>
+   *
+   *  Then:
+   *
+   *      $('mcintosh').previousSiblings();
+   *      // -> [li#mutsu, li#golden-delicious]
+   *      
+   *      $('golden-delicious').previousSiblings();
+   *      // -> []
   **/
   previousSiblings: function(element, maximumLength) {
     return Element.recursivelyCollect(element, 'previousSibling');
@@ -562,8 +1074,37 @@ Element.Methods = {
   /**
    *  Element.nextSiblings(@element) -> [Element...]
    *
-   *  Collects all of `element`'s next siblings and returns them as an array
+   *  Collects all of `element`'s next siblings and returns them as an [[Array]]
    *  of elements.
+   *  
+   *  Two elements are siblings if they have the same parent. So for example,
+   *  the `head` and `body` elements are siblings (their parent is the `html`
+   *  element). Next-siblings are simply the ones which follow `element` in the
+   *  document.
+   *  
+   *  The returned [[Array]] reflects the siblings order in the document
+   *  (e.g. an index of 0 refers to the sibling right below `element`).
+   *  
+   *  Note that all of Prototype's DOM traversal methods ignore text nodes and
+   *  return element nodes only.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <ul>
+   *        <li id="golden-delicious">Golden Delicious</li>
+   *        <li id="mutsu">Mutsu</li>
+   *        <li id="mcintosh">McIntosh</li>
+   *        <li id="ida-red">Ida Red</li>
+   *      </ul>
+   *
+   *  Then:
+   *
+   *      $('mutsu').nextSiblings();
+   *      // -> [li#mcintosh, li#ida-red]
+   *      
+   *      $('ida-red').nextSiblings();
+   *      // -> []
   **/
   nextSiblings: function(element) {
     return Element.recursivelyCollect(element, 'nextSibling');
@@ -571,8 +1112,33 @@ Element.Methods = {
 
   /**
    *  Element.siblings(@element) -> [Element...]
-   *  Collects all of element's siblings and returns them as an array of
+   *  Collects all of element's siblings and returns them as an [[Array]] of
    *  elements.
+   *
+   *  Two elements are siblings if they have the same parent. So for example,
+   *  the `head` and `body` elements are siblings (their parent is the `html`
+   *  element).
+   *  
+   *  The returned [[Array]] reflects the siblings' order in the document (e.g.
+   *  an index of 0 refers to `element`'s topmost sibling).
+   *  
+   *  Note that all of Prototype's DOM traversal methods ignore text nodes and
+   *  return element nodes only.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <ul>
+   *        <li id="golden-delicious">Golden Delicious</li>
+   *        <li id="mutsu">Mutsu</li>
+   *        <li id="mcintosh">McIntosh</li>
+   *        <li id="ida-red">Ida Red</li>
+   *      </ul>
+   *
+   *  Then:
+   *
+   *      $('mutsu').siblings();
+   *      // -> [li#golden-delicious, li#mcintosh, li#ida-red]
   **/
   siblings: function(element) {
     element = $(element);
@@ -585,6 +1151,31 @@ Element.Methods = {
    *  - selector (String): A CSS selector.
    *
    *  Checks if `element` matches the given CSS selector.
+   *
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <ul id="fruits">
+   *        <li id="apples">
+   *          <ul>
+   *            <li id="golden-delicious">Golden Delicious</li>
+   *            <li id="mutsu" class="yummy">Mutsu</li>
+   *            <li id="mcintosh" class="yummy">McIntosh</li>
+   *            <li id="ida-red">Ida Red</li>
+   *          </ul>
+   *        </li>
+   *      </ul>
+   *
+   *  Then:
+   *
+   *      $('fruits').match('ul');
+   *      // -> true
+   *      
+   *      $('mcintosh').match('li#mcintosh.yummy');
+   *      // -> true
+   *      
+   *      $('fruits').match('p');
+   *      // -> false
   **/
   match: function(element, selector) {
     element = $(element);
@@ -602,6 +1193,97 @@ Element.Methods = {
    *  is specified) that matches `expression`. If no `expression` is
    *  provided, all ancestors are considered. If no ancestor matches these
    *  criteria, `undefined` is returned.
+   *
+   *  ##### More information
+   *
+   *  The [[Element.up]] method is part of Prototype's ultimate DOM traversal
+   *  toolkit (check out [[Element.down]], [[Element.next]] and
+   *  [[Element.previous]] for some more Prototypish niceness). It allows 
+   *  precise index-based and/or CSS rule-based selection of any of `element`'s
+   *  **ancestors**.
+   *  
+   *  As it totally ignores text nodes (it only returns elements), you don't
+   *  have to worry about whitespace nodes.
+   *  
+   *  And as an added bonus, all elements returned are already extended
+   *  (see [[Element.extended]]) allowing chaining:
+   *  
+   *      $(element).up(1).next('li', 2).hide();
+   *  
+   *  Walking the DOM has never been that easy!
+   *  
+   *  ##### Arguments
+   *  
+   *  If no arguments are passed, `element`'s first ancestor is returned (this
+   *  is similar to calling `parentNode` except [[Element.up]] returns an already
+   *  extended element.
+   *  
+   *  If `index` is defined, `element`'s corresponding ancestor is returned.
+   *  (This is equivalent to selecting an element from the array of elements
+   *  returned by the method [[Element.ancestors]]). Note that the first element
+   *  has an index of 0.
+   *  
+   *  If `expression` is defined, [[Element.up]] will return the first ancestor
+   *  that matches it.
+   *  
+   *  If both `expression` and `index` are defined, [[Element.up]] will collect
+   *  all the ancestors matching the given CSS expression and will return the
+   *  one at the specified index.
+   *  
+   *  **In all of the above cases, if no descendant is found,** `undefined`
+   *  **will be returned.**
+   *  
+   *  ### Examples
+   *  
+   *      language: html
+   *      <html>
+   *        [...]
+   *        <body>
+   *          <ul id="fruits">
+   *            <li id="apples" class="keeps-the-doctor-away">
+   *              <ul>
+   *                <li id="golden-delicious">Golden Delicious</li>
+   *                <li id="mutsu" class="yummy">Mutsu</li>
+   *                <li id="mcintosh" class="yummy">McIntosh</li>
+   *                <li id="ida-red">Ida Red</li>
+   *              </ul>
+   *            </li>
+   *          </ul>
+   *        </body>
+   *      </html>
+   *
+   *  Get the first ancestor of "#fruites":
+   *
+   *      $('fruits').up();
+   *      // or:
+   *      $('fruits').up(0);
+   *      // -> body
+   *
+   *  Get the third ancestor of "#mutsu":
+   *      
+   *      $('mutsu').up(2);
+   *      // -> ul#fruits
+   *
+   *  Get the first ancestor of "#mutsu" with the node name "li":
+   *      
+   *      $('mutsu').up('li');
+   *      // -> li#apples
+   *
+   *  Get the first ancestor of "#mutsu" with the class name
+   *  "keeps-the-doctor-away":
+   *
+   *      $('mutsu').up('.keeps-the-doctor-away');
+   *      // -> li#apples
+   *
+   *  Get the second ancestor of "#mutsu" with the node name "ul":
+   *      
+   *      $('mutsu').up('ul', 1);
+   *      // -> ul#fruits
+   *
+   *  Try to get the first ancestor of "#mutsu" with the node name "div":
+   *      
+   *      $('mutsu').up('div');
+   *      // -> undefined
   **/
   up: function(element, expression, index) {
     element = $(element);
@@ -620,6 +1302,93 @@ Element.Methods = {
    *  is specified) that matches `expression`. If no `expression` is
    *  provided, all descendants are considered. If no descendant matches these
    *  criteria, `undefined` is returned.
+   *
+   *  ##### More information
+   *
+   *  The [[Element.down]] method is part of Prototype's ultimate DOM traversal
+   *  toolkit (check out [[Element.up]], [[Element.next]] and
+   *  [[Element.previous]] for some more Prototypish niceness). It allows
+   *  precise index-based and/or CSS rule-based selection of any of the 
+   *  element's **descendants**.
+   *  
+   *  As it totally ignores text nodes (it only returns elements), you don't
+   *  have to worry about whitespace nodes.
+   *  
+   *  And as an added bonus, all elements returned are already extended
+   *  (see [[Element.extend]]) allowing chaining:
+   *  
+   *      $(element).down(1).next('li', 2).hide();
+   *  
+   *  Walking the DOM has never been that easy!
+   *  
+   *  ##### Arguments
+   *  
+   *  If no arguments are passed, `element`'s first descendant is returned (this
+   *  is similar to calling `firstChild` except [[Element.down]] returns an
+   *  extended element.
+   *  
+   *  If `index` is defined, `element`'s corresponding descendant is returned.
+   *  (This is equivalent to selecting an element from the array of elements
+   *  returned by the method [[Element.descendants]].) Note that the first
+   *  element has an index of 0.
+   *  
+   *  If `expression` is defined, [[Element.down]] will return the first
+   *  descendant that matches it. This is a great way to grab the first item in
+   *  a list for example (just pass in 'li' as the method's first argument).
+   *  
+   *  If both `expression` and `index` are defined, [[Element.down]] will collect
+   *  all the descendants matching the given CSS expression and will return the
+   *  one at the specified index.
+   *  
+   *  **In all of the above cases, if no descendant is found,** `undefined`
+   *  **will be returned.**
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <ul id="fruits">
+   *        <li id="apples">
+   *          <ul>
+   *            <li id="golden-delicious">Golden Delicious</li>
+   *            <li id="mutsu" class="yummy">Mutsu</li>
+   *            <li id="mcintosh" class="yummy">McIntosh</li>
+   *            <li id="ida-red">Ida Red</li>
+   *          </ul>
+   *        </li>
+   *      </ul>
+   *      
+   *  Get the first descendant of "#fruites":
+   *
+   *      $('fruits').down();
+   *      // or:
+   *      $('fruits').down(0);
+   *      // -> li#apples
+   *
+   *  Get the third descendant of "#fruits":
+   *      
+   *      $('fruits').down(3);
+   *      // -> li#golden-delicious
+   *      
+   *  Get the first descendant of "#apples" with the node name "li":
+   *
+   *      $('apples').down('li');
+   *      // -> li#golden-delicious
+   *
+   *  Get the first descendant of "#apples" with the node name "li" and the
+   *  class name "yummy":
+   *
+   *      $('apples').down('li.yummy');
+   *      // -> li#mutsu
+   *
+   *  Get the second descendant of "#fruits" with the class name "yummy":
+   *
+   *      $('fruits').down('.yummy', 1);
+   *      // -> li#mcintosh
+   *
+   *  Try to get the ninety-ninth descendant of "#fruits":
+   *
+   *      $('fruits').down(99);
+   *      // -> undefined
   **/
   down: function(element, expression, index) {
     element = $(element);
@@ -637,6 +1406,95 @@ Element.Methods = {
    *  is specified) that matches `expression`. If no `expression` is
    *  provided, all previous siblings are considered. If none matches these
    *  criteria, `undefined` is returned.
+   *
+   *  ##### More information
+   *
+   *  The [[Element.previous]] method is part of Prototype's ultimate DOM
+   *  traversal toolkit (check out [[Element.up]], [[Element.down]] and
+   *  [[Element.next]] for some more Prototypish niceness). It allows precise
+   *  index-based and/or CSS expression-based selection of any of `element`'s
+   *  **previous siblings**. (Note that two elements are considered siblings if
+   *  they have the same parent, so for example, the `head` and `body` elements
+   *  are siblings&#8212;their parent is the `html` element.)
+   *  
+   *  As it totally ignores text nodes (it only returns elements), you don't
+   *  have to worry about whitespace nodes.
+   *  
+   *  And as an added bonus, all elements returned are already extended (see 
+   *  [[Element.extend]]) allowing chaining:
+   *  
+   *      $(element).down('p').previous('ul', 2).hide();
+   *  
+   *  Walking the DOM has never been that easy!
+   *  
+   *  ##### Arguments
+   *  
+   *  If no arguments are passed, `element`'s previous sibling is returned
+   *  (this is similar as calling `previousSibling` except [[Element.previous]]
+   *  returns an already extended element).
+   *  
+   *  If `index` is defined, `element`'s corresponding previous sibling is
+   *  returned. (This is equivalent to selecting an element from the array of
+   *  elements returned by the method [[Element.previousSiblings]]). Note that
+   *  the sibling _right above_ `element` has an index of 0.
+   *  
+   *  If `expression` is defined, [[Element.previous]] will return the `element`
+   *  first previous sibling that matches it.
+   *  
+   *  If both `expression` and `index` are defined, [[Element.previous]] will
+   *  collect all of `element`'s previous siblings matching the given CSS
+   *  expression and will return the one at the specified index.
+   *  
+   *  **In all of the above cases, if no previous sibling is found,**
+   *  `undefined` **will be returned.**
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <ul id="fruits">
+   *        <li id="apples">
+   *          <h3>Apples</h3>
+   *          <ul id="list-of-apples">
+   *            <li id="golden-delicious" class="yummy">Golden Delicious</li>
+   *            <li id="mutsu" class="yummy">Mutsu</li>
+   *            <li id="mcintosh">McIntosh</li>
+   *            <li id="ida-red">Ida Red</li>
+   *          </ul>
+   *          <p id="saying">An apple a day keeps the doctor away.</p>  
+   *        </li>
+   *      </ul>
+   *  
+   *  Get the first previous sibling of "#saying":
+   *  
+   *      $('saying').previous();
+   *      // or:
+   *      $('saying').previous(0);
+   *      // -> ul#list-of-apples
+   *
+   *  Get the second previous sibling of "#saying":
+   *
+   *      $('saying').previous(1);
+   *      // -> h3
+   *
+   *  Get the first previous sibling of "#saying" with node name "h3":
+   *
+   *      $('saying').previous('h3');
+   *      // -> h3
+   *
+   *  Get the first previous sibling of "#ida-red" with class name "yummy":
+   *
+   *      $('ida-red').previous('.yummy');
+   *      // -> li#mutsu
+   *
+   *  Get the second previous sibling of "#ida-red" with class name "yummy":
+   *
+   *      $('ida-red').previous('.yummy', 1);
+   *      // -> li#golden-delicious
+   *
+   *  Try to get the sixth previous sibling of "#ida-red":
+   *      
+   *      $('ida-red').previous(5);
+   *      // -> undefined
   **/
   previous: function(element, expression, index) {
     element = $(element);
@@ -659,6 +1517,95 @@ Element.Methods = {
    *  is specified) that matches `expression`. If no `expression` is
    *  provided, all following siblings are considered. If none matches these
    *  criteria, `undefined` is returned.
+   *
+   *  ##### More information
+   *
+   *  The [[Element.next]] method is part of Prototype's ultimate DOM traversal
+   *  toolkit (check out [[Element.up]], [[Element.down]] and
+   *  [[Element.previous]] for some more Prototypish niceness). It allows
+   *  precise index-based and/or CSS expression-based selection of any of
+   *  `element`'s **following siblings**. (Note that two elements are considered
+   *  siblings if they have the same parent, so for example, the `head` and
+   *  `body` elements are siblings&#8212;their parent is the `html` element.)
+   *  
+   *  As it totally ignores text nodes (it only returns elements), you don't
+   *  have to worry about whitespace nodes.
+   *  
+   *  And as an added bonus, all elements returned are already extended (see 
+   *  [[Element.extend]]) allowing chaining:
+   *  
+   *      $(element).down(1).next('li', 2).hide();
+   *  
+   *  Walking the DOM has never been that easy!
+   *  
+   *  ##### Arguments
+   *  
+   *  If no arguments are passed, `element`'s following sibling is returned
+   *  (this is similar as calling `nextSibling` except [[Element.next]] returns an
+   *  already extended element).
+   *  
+   *  If `index` is defined, `element`'s corresponding following sibling is
+   *  returned. (This is equivalent to selecting an element from the array of
+   *  elements returned by the method [[Element.nextSiblings]]). Note that the
+   *  sibling _right below_ `element` has an index of 0.
+   *  
+   *  If `expression` is defined, [[Element.next]] will return the `element` first
+   *  following sibling that matches it.
+   *  
+   *  If both `expression` and `index` are defined, [[Element.next]] will collect
+   *  all of `element`'s following siblings matching the given CSS expression
+   *  and will return the one at the specified index.
+   *  
+   *  **In all of the above cases, if no following sibling is found,**
+   *  `undefined` **will be returned.**
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <ul id="fruits">
+   *        <li id="apples">
+   *          <h3 id="title">Apples</h3>
+   *          <ul id="list-of-apples">
+   *            <li id="golden-delicious">Golden Delicious</li>
+   *            <li id="mutsu">Mutsu</li>
+   *            <li id="mcintosh" class="yummy">McIntosh</li>
+   *            <li id="ida-red" class="yummy">Ida Red</li>
+   *          </ul>
+   *          <p id="saying">An apple a day keeps the doctor away.</p>  
+   *        </li>
+   *      </ul>
+   *
+   *  Get the first sibling after "#title":
+   *  
+   *      $('title').next();
+   *      // or:
+   *      $('title').next(0);
+   *      // -> ul#list-of-apples
+   *
+   *  Get the second sibling after "#title":
+   *
+   *      $('title').next(1);
+   *      // -> p#saying
+   *
+   *  Get the first sibling after "#title" with node name "p":
+   *
+   *      $('title').next('p');
+   *      // -> p#sayings
+   *
+   *  Get the first sibling after "#golden-delicious" with class name "yummy":
+   *      
+   *      $('golden-delicious').next('.yummy');
+   *      // -> li#mcintosh
+   *
+   *  Get the second sibling after "#golden-delicious" with class name "yummy":
+   *
+   *      $('golden-delicious').next('.yummy', 1);
+   *      // -> li#ida-red
+   *
+   *  Try to get the first sibling after "#ida-red":
+   *
+   *      $('ida-red').next();
+   *      // -> undefined   
   **/
   next: function(element, expression, index) {
     element = $(element);
@@ -680,6 +1627,54 @@ Element.Methods = {
    *
    *  Takes an arbitrary number of CSS selectors and returns an array of
    *  descendants of `element` that match any of them.
+   *
+   *  This method is very similar to [[$$]] but can be used within the context 
+   *  of one element, rather than the whole document. The supported CSS syntax 
+   *  is identical, so please refer to the [[$$]] docs for details.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <ul id="fruits">
+   *        <li id="apples">
+   *          <h3 title="yummy!">Apples</h3>
+   *          <ul id="list-of-apples">
+   *            <li id="golden-delicious" title="yummy!" >Golden Delicious</li>
+   *            <li id="mutsu" title="yummy!">Mutsu</li>
+   *            <li id="mcintosh">McIntosh</li>
+   *            <li id="ida-red">Ida Red</li>
+   *          </ul>
+   *          <p id="saying">An apple a day keeps the doctor away.</p>  
+   *        </li>
+   *      </ul>
+   *
+   *  Then:
+   *
+   *      $('apples').select('[title="yummy!"]');
+   *      // -> [h3, li#golden-delicious, li#mutsu]
+   *      
+   *      $('apples').select( 'p#saying', 'li[title="yummy!"]');
+   *      // -> [li#golden-delicious, li#mutsu,  p#saying]
+   *      
+   *      $('apples').select('[title="disgusting!"]');
+   *      // -> []
+   *  
+   *  ##### Tip
+   *
+   *  [[Element.select]] can be used as a pleasant alternative to the native
+   *  method `getElementsByTagName`:
+   *  
+   *      var nodes  = $A(someUL.getElementsByTagName('li')).map(Element.extend);
+   *      var nodes2 = someUL.select('li');
+   *  
+   *  In the first example, you must explicitly convert the result set to an
+   *  [[Array]] (so that Prototype's [[Enumerable]] methods can be used) and
+   *  must manually call [[Element.extend]] on each node (so that custom 
+   *  instance methods can be used on the nodes). [[Element.select]] takes care 
+   *  of both concerns on its own.
+   *  
+   *  If you're using 1.6 or above (and the performance optimizations therein), 
+   *  the speed difference between these two examples is negligible.
   **/
   select: function(element) {
     element = $(element);
@@ -728,6 +1723,30 @@ Element.Methods = {
    *
    *  Returns `element`'s ID. If `element` does not have an ID, one is
    *  generated, assigned to `element`, and returned.
+   *  
+   *  ##### Examples
+   *  
+   *  Original HTML:
+   *  
+   *        <ul>
+   *          <li id="apple">apple</li>
+   *          <li>orange</li>
+   *        </ul>
+   *  
+   *  JavaScript:
+   *  
+   *        $('apple').identify();
+   *        // -> 'apple'
+   *      
+   *        $('apple').next().identify();
+   *        // -> 'anonymous_element_1'
+   *  
+   *  Resulting HTML:
+   *  
+   *        <ul>
+   *          <li id="apple">apple</li>
+   *          <li id="anonymous_element_1">orange</li>
+   *        </ul>
   **/
   identify: function(element) {
     element = $(element);
@@ -741,7 +1760,30 @@ Element.Methods = {
   /**
    *  Element.readAttribute(@element, attributeName) -> String | null
    *
-   *  Returns the value of `element`'s attribute with the given name.
+   *  Returns the value of `element`'s `attribute` or `null` if `attribute` has
+   *  not been specified.
+   *  
+   *  This method serves two purposes. First it acts as a simple wrapper around
+   *  `getAttribute` which isn't a "real" function in Safari and Internet
+   *  Explorer (it doesn't have `.apply` or `.call` for instance). Secondly, it
+   *  cleans up the horrible mess Internet Explorer makes when handling
+   *  attributes.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <a id="tag" href="/tags/prototype" rel="tag" title="view related bookmarks." my_widget="some info.">Prototype</a>
+   *
+   *  Then:
+   *
+   *      $('tag').readAttribute('href');
+   *      // -> '/tags/prototype'
+   *      
+   *      $('tag').readAttribute('title');
+   *      // -> 'view related bookmarks.'
+   *      
+   *      $('tag').readAttribute('my_widget');
+   *      // -> 'some info.'
   **/
   readAttribute: function(element, name) {
     element = $(element);
@@ -761,7 +1803,7 @@ Element.Methods = {
    *  Element.writeAttribute(@element, attribute[, value = true]) -> Element
    *  Element.writeAttribute(@element, attributes) -> Element
    *
-   *  Adds, changes, or removes attributes passed as either a hash or a
+   *  Adds, specifies or removes attributes passed as either a hash or a
    *  name/value pair.
   **/
   writeAttribute: function(element, name, value) {
@@ -788,6 +1830,25 @@ Element.Methods = {
    *  Element.getHeight(@element) -> Number
    *
    *  Returns the height of `element`.
+   *  
+   *  This method returns correct values on elements whose display is set to
+   *  `none` either in an inline style rule or in an CSS stylesheet.
+   *  
+   *  For performance reasons, if you need to query both width _and_ height of
+   *  `element`, you should consider using [[Element.getDimensions]] instead.
+   *  
+   *  Note that the value returned is a _number only_ although it is
+   *  _expressed in pixels_.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <div id="rectangle" style="font-size: 10px; width: 20em; height: 10em"></div>
+   *
+   *  Then:
+   *
+   *      $('rectangle').getHeight();
+   *      // -> 100
   **/
   getHeight: function(element) {
     return Element.getDimensions(element).height;
@@ -797,6 +1858,25 @@ Element.Methods = {
    *  Element.getWidth(@element) -> Number
    *
    *  Returns the width of `element`.
+   *  
+   *  This method returns correct values on elements whose display is set to
+   *  `none` either in an inline style rule or in an CSS stylesheet.
+   *  
+   *  For performance reasons, if you need to query both width _and_ height of
+   *  `element`, you should consider using [[Element.getDimensions]] instead.
+   *  
+   *  Note that the value returned is a _number only_ although it is
+   *  _expressed in pixels_.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <div id="rectangle" style="font-size: 10px; width: 20em; height: 10em"></div>
+   *
+   *  Then:
+   *
+   *      $('rectangle').getWidth();
+   *      // -> 200
   **/
   getWidth: function(element) {
     return Element.getDimensions(element).width;
@@ -819,7 +1899,20 @@ Element.Methods = {
   /**
    *  Element.hasClassName(@element, className) -> Boolean
    *
-   *  Checks whether `element` has the given CSS class name.
+   *  Checks for the presence of CSS class `className` on `element`.
+   *
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <div id="mutsu" class="apple fruit food"></div>
+   *
+   *  Then:
+   *
+   *      $('mutsu').hasClassName('fruit');
+   *      // -> true
+   *      
+   *      $('mutsu').hasClassName('vegetable');
+   *      // -> false
   **/
   hasClassName: function(element, className) {
     if (!(element = $(element))) return;
@@ -859,7 +1952,22 @@ Element.Methods = {
   /**
    *  Element.removeClassName(@element, className) -> Element
    *
-   *  Removes a CSS class from `element`.
+   *  Removes CSS class `className` from `element`.
+   *
+   *  ##### Examples
+   *
+   *  Assuming this HTML:
+   *
+   *      language: html
+   *      <div id="mutsu" class="apple fruit food"></div>
+   *  
+   *  Then:
+   *
+   *      $('mutsu').removeClassName('food');
+   *      // -> Element
+   *      
+   *      $('mutsu').classNames;
+   *      // -> 'apple fruit'
   **/
   removeClassName: function(element, className) {
     if (!(element = $(element))) return;
@@ -871,7 +1979,23 @@ Element.Methods = {
   /**
    *  Element.toggleClassName(@element, className) -> Element
    *
-   *  Toggles the presence of a CSS class on `element`.
+   *  Toggles the presence of CSS class `className` on `element`.
+   *
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <div id="mutsu" class="apple"></div>
+   *
+   *  Then:
+   *
+   *      $('mutsu').hasClassName('fruit');
+   *      // -> false
+   *      
+   *      $('mutsu').toggleClassName('fruit');
+   *      // -> element
+   *      
+   *      $('mutsu').hasClassName('fruit');
+   *      // -> true
   **/
   toggleClassName: function(element, className) {
     if (!(element = $(element))) return;
@@ -937,6 +2061,17 @@ Element.Methods = {
    *  Element.empty(@element) -> Element
    *
    *  Tests whether `element` is empty (i.e., contains only whitespace).
+   *  
+   *  ##### Examples
+   *  
+   *      <div id="wallet">     </div>
+   *      <div id="cart">full!</div>
+   *  
+   *      $('wallet').empty();
+   *      // -> true
+   *
+   *      $('cart').empty();
+   *      // -> false
   **/
   empty: function(element) {
     return $(element).innerHTML.blank();
@@ -986,6 +2121,15 @@ Element.Methods = {
    *  Element.scrollTo(@element) -> Element
    *
    *  Scrolls the window so that `element` appears at the top of the viewport.
+   *  
+   *  This has a similar effect than what would be achieved using
+   *  [HTML anchors](http://www.w3.org/TR/html401/struct/links.html#h-12.2.3)
+   *  (except the browser's history is not modified).
+   *  
+   *  ##### Example
+   *  
+   *      $(element).scrollTo();
+   *      // -> Element
   **/
   scrollTo: function(element) {
     element = $(element);
@@ -1001,7 +2145,51 @@ Element.Methods = {
    *  Returns the given CSS property value of `element`. The property can be
    *  specified in either its CSS form (`font-size`) or its camelized form
    *  (`fontSize`).
-  **/
+   *
+   *  This method looks up the CSS property of an element whether it was
+   *  applied inline or in a stylesheet. It works around browser inconsistencies
+   *  regarding `float`, `opacity`, which returns a value between `0`
+   *  (fully transparent) and `1` (fully opaque), position properties
+   *  (`left`, `top`, `right` and `bottom`) and when getting the dimensions
+   *  (`width` or `height`) of hidden elements.
+   *  
+   *  ##### Examples
+   *  
+   *      $(element).getStyle('font-size');
+   *      // equivalent:
+   *      
+   *      $(element).getStyle('fontSize');
+   *      // -> '12px'
+   *  
+   *  ##### Notes
+   *  
+   *  Internet Explorer returns literal values while other browsers return
+   *  computed values.
+   *
+   *  Consider the following HTML snippet:
+   *  
+   *      language: html
+   *      <style>
+   *        #test {
+   *          font-size: 12px;
+   *          margin-left: 1em;
+   *        }
+   *      </style>
+   *      <div id="test"></div>
+   *
+   *  Then:
+   *
+   *      $('test').getStyle('margin-left');
+   *      // -> '1em' in Internet Explorer,
+   *      // -> '12px' elsewhere.
+   *  
+   *  Safari returns `null` for *any* non-inline property if the element is
+   *  hidden (has `display` set to `'none'`).
+   *  
+   *  Not all CSS shorthand properties are supported. You may only use the CSS
+   *  properties described in the
+   *  [Document Object Model (DOM) Level 2 Style Specification](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle).
+   **/
   getStyle: function(element, style) {
     element = $(element);
     style = style == 'float' ? 'cssFloat' : style.camelize();
@@ -1023,13 +2211,44 @@ Element.Methods = {
     return $(element).getStyle('opacity');
   },
 
-  /**
+  /** 
    *  Element.setStyle(@element, styles) -> Element
-   *
-   *  Modifies `element`'s CSS style properties.
-   *
-   *  Styles are passed as an object of property-value pairs in which the
-   *  properties are specified in their camelized form (e.g., `fontSize`).
+   *  
+   *  Modifies `element`'s CSS style properties. Styles are passed as a hash of
+   *  property-value pairs in which the properties are specified in their
+   *  camelized form.
+   *  
+   *  ##### Examples
+   *  
+   *      $(element).setStyle({
+   *        backgroundColor: '#900',
+   *        fontSize: '12px'
+   *      });
+   *      // -> Element
+   *  
+   *  ##### Notes
+   *  
+   *  The method transparently deals with browser inconsistencies for `float`
+   *  (however, as `float` is a reserved keyword, you must either escape it or
+   *  use `cssFloat` instead) and `opacity` (which accepts values between `0`
+   *  -fully transparent- and `1` -fully opaque-). You can safely use either of
+   *  the following across all browsers:
+   *  
+   *      $(element).setStyle({
+   *        cssFloat: 'left',
+   *        opacity: 0.5
+   *      });
+   *      // -> Element
+   *      
+   *      $(element).setStyle({
+   *        'float': 'left', // notice how float is surrounded by single quotes
+   *        opacity: 0.5
+   *      });
+   *      // -> Element
+   *  
+   *  Not all CSS shorthand properties are supported. You may only use the CSS
+   *  properties described in the
+   *  [Document Object Model (DOM) Level 2 Style Specification](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle).
   **/
   setStyle: function(element, styles) {
     element = $(element);
@@ -1049,10 +2268,25 @@ Element.Methods = {
     return element;
   },
 
-  /**
-   *  Element.setOpacity(@element, value) -> Element
-   *
-   *  Sets the opacity of `element`.
+  /** 
+   *  Element.setOpacity(@element, opacity) -> [Element...]
+   *  
+   *  Sets the visual opacity of an element while working around inconsistencies
+   *  in various browsers. The `opacity` argument should be a floating point
+   *  number, where the value of `0` is fully transparent and `1` is fully opaque.
+   *  
+   *  [[Element.setStyle]] method uses [[Element.setOpacity]] internally when needed.
+   *  
+   *  ##### Examples
+   *  
+   *      var element = $('myelement');
+   *      // set to 50% transparency
+   *      element.setOpacity(0.5);
+   *      
+   *      // these are equivalent, but allow for setting more than
+   *      // one CSS property at once:
+   *      element.setStyle({ opacity: 0.5 });
+   *      element.setStyle("opacity: 0.5");
   **/
   setOpacity: function(element, value) {
     element = $(element);
@@ -1067,6 +2301,9 @@ Element.Methods = {
    *  Allows for the easy creation of a CSS containing block by setting
    *  `element`'s CSS `position` to `relative` if its initial position is
    *  either `static` or `undefined`.
+   *  
+   *  To revert back to `element`'s original CSS position, use
+   *  [[Element.undoPositioned]].
   **/
   makePositioned: function(element) {
     element = $(element);
@@ -1089,6 +2326,10 @@ Element.Methods = {
    *
    *  Sets `element` back to the state it was in _before_
    *  [[Element.makePositioned]] was applied to it.
+   *  
+   *  `element`'s absolutely positioned children will now have their positions
+   *  set relatively to `element`'s nearest ancestor with a CSS `position` of
+   *  `'absolute'`, `'relative'` or `'fixed'`.
   **/
   undoPositioned: function(element) {
     element = $(element);
@@ -1108,6 +2349,50 @@ Element.Methods = {
    *
    *  Simulates the poorly-supported CSS `clip` property by setting `element`'s
    *  `overflow` value to `hidden`.
+   *
+   *  To undo clipping, use [[Element.undoClipping]].
+   *  
+   *  The visible area is determined by `element`'s width and height.
+   *  
+   *  ##### Example
+   *  
+   *      language:html
+   *      <div id="framer">
+   *        <img src="/assets/2007/1/14/chairs.jpg" alt="example" />
+   *      </div>
+   *  
+   *  Then:
+   *
+   *      $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+   *      // -> Element
+   *  
+   *  Another example:
+   *
+   *      language: html
+   *      <a id="clipper" href="#">Click me to try it out.</a>
+   *  
+   *      <div id="framer">
+   *        <img src="/assets/2007/2/24/chairs.jpg" alt="example" />
+   *      </div>
+   *  
+   *      <script type="text/javascript" charset="utf-8">
+   *        var Example = {
+   *          clip: function(){
+   *            $('clipper').update('undo clipping!');
+   *            $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+   *          },
+   *          unClip: function(){
+   *            $('clipper').update('clip!');
+   *            $('framer').undoClipping();
+   *          },
+   *          toggleClip: function(event){
+   *            if($('clipper').innerHTML == 'undo clipping!') Example.unClip();
+   *            else Example.clip();
+   *            Event.stop(event);
+   *          }
+   *        };
+   *        Event.observe('clipper', 'click', Example.toggleClip);
+   *      </script>
   **/
   makeClipping: function(element) {
     element = $(element);
@@ -1123,6 +2408,47 @@ Element.Methods = {
    *
    *  Sets `element`'s CSS `overflow` property back to the value it had
    *  _before_ [[Element.makeClipping]] was applied.
+   *
+   *  ##### Example
+   *  
+   *      language: html
+   *      <div id="framer">
+   *        <img src="/assets/2007/1/14/chairs.jpg" alt="example" />
+   *      </div>
+   *
+   *  Then:
+   *
+   *      $('framer').undoClipping();
+   *      // -> Element (and sets the CSS overflow property to its original value).
+   *  
+   *  Another example:
+   *
+   *      language: html
+   *      <a id="clipper" href="#">Click me to try it out.</a>
+   *
+   *      <div id="framer">
+   *        <img src="/assets/2007/2/24/chairs_1.jpg" alt="example" />
+   *      </div>
+   *  
+   *      <script type="text/javascript" charset="utf-8">
+   *        var Example = {
+   *          clip: function(){
+   *            $('clipper').update('undo clipping!');
+   *            $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+   *          },
+   *          unClip: function(){
+   *            $('clipper').update('clip!');
+   *            $('framer').undoClipping();
+   *          },
+   *          toggleClip: function(event){
+   *            if($('clipper').innerHTML == 'clip!') Example.clip();
+   *            else Example.unClip();
+   *            Event.stop(event);
+   *          }
+   *        };
+   *        $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+   *        Event.observe('clipper', 'click', Example.toggleClip);
+   *      </script>
   **/
   undoClipping: function(element) {
     element = $(element);
@@ -1175,6 +2501,13 @@ Element.Methods = {
    *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
+   *  
+   *  Calculates the cumulative `offsetLeft` and `offsetTop` of an element and
+   *  all its parents _until_ it reaches an element with a position other than
+   *  `static`.
+   *  
+   *  Note that all values are returned as _numbers only_ although they are
+   *  _expressed in pixels_.
   **/
   positionedOffset: function(element) {
     var valueT = 0, valueL = 0;
@@ -1281,6 +2614,9 @@ Element.Methods = {
    *
    *  Returns `element`'s closest _positioned_ ancestor. If none is found, the
    *  `body` element is returned.
+   *  
+   *  The returned element is `element`'s
+   *  [CSS containing block](http://www.w3.org/TR/CSS21/visudet.html#containing-block-details).
   **/
   getOffsetParent: function(element) {
     if (element.offsetParent) return $(element.offsetParent);
@@ -1433,12 +2769,12 @@ Object.extend(Element.Methods, {
    *  Element.childElements(@element) -> [Element...]
    *
    *  Collects all of the element's children and returns them as an array of
-   *  [extended](http://prototypejs.org/api/element/extend) elements, in
-   *  document order. The first entry in the array is the topmost child of
-   *  `element`, the next is the child after that, etc.
+   *  [[Element.extended extended]] elements, in document order. The first
+   *  entry in the array is the topmost child of `element`, the next is the
+   *  child after that, etc.
    *
-   *  Like all of Prototype's DOM traversal methods, `childElements` ignores
-   *  text nodes and returns element nodes only.
+   *  Like all of Prototype's DOM traversal methods, [[Element.childElements]]
+   *  ignores text nodes and returns element nodes only.
    *
    *  ##### Example
    *
@@ -1895,6 +3231,23 @@ Element._insertionTranslations = {
 })();
 
 Element.Methods.Simulated = {
+  /**
+   *  Element.hasAttribute(@element, attribute) -> Boolean
+   *  
+   *  Simulates the standard compliant DOM method
+   *  [`hasAttribute`](http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-ElHasAttr)
+   *  for browsers missing it (Internet Explorer 6 and 7).
+   *  
+   *  ##### Example
+   *  
+   *      language: html
+   *      <a id="link" href="http://prototypejs.org">Prototype</a>
+   *
+   *  Then:
+   *
+   *      $('link').hasAttribute('href');
+   *      // -> true
+  **/  
   hasAttribute: function(element, attribute) {
     attribute = Element._attributeTranslations.has[attribute] || attribute;
     var node = $(element).getAttributeNode(attribute);
@@ -1925,7 +3278,7 @@ Object.extend(Element, Element.Methods);
  *  syntactic sugar, as well as any extensions added via [[Element.addMethods]].
  *  (If the element instance was already extended, this is a no-op.)
  *
- *  You only need to use `Element.extend` on element instances you've acquired
+ *  You only need to use [[Element.extend]] on element instances you've acquired
  *  directly from the DOM; **all** Prototype methods that return element
  *  instances (such as [[$]], [[Element.down]], etc.) will pre-extend the
  *  element before returning it.
@@ -1936,8 +3289,8 @@ Object.extend(Element, Element.Methods);
  *
  *  ##### Details
  *
- *  Specifically, `Element.extend` extends the given instance with the methods
- *  contained in `Element.Methods` and `Element.Methods.Simulated`. If `element`
+ *  Specifically, [[Element.extend]] extends the given instance with the methods
+ *  contained in [[Element.Methods]] and `Element.Methods.Simulated`. If `element`
  *  is an `input`, `textarea`, or `select` element, it will also be extended
  *  with the methods from `Form.Element.Methods`. If it is a `form` element, it
  *  will also be extended with the methods from `Form.Methods`.
@@ -2040,11 +3393,11 @@ else {
  *    the new methods.
  *  - methods (Object): A hash of methods to add.
  *
- *  `Element.addMethods` makes it possible to mix your *own* methods into the
- *  `Element` object and extended element instances (all of them, or only ones
+ *  [[Element.addMethods]] makes it possible to mix your *own* methods into the
+ *  [[Element]] object and extended element instances (all of them, or only ones
  *  with the given HTML tag if you specify `tagName`).
  *
- *  You define the methods in a hash that you provide to `Element.addMethods`.
+ *  You define the methods in a hash that you provide to [[Element.addMethods]].
  *  Here's an example adding two methods:
  *
  *      Element.addMethods({
@@ -2068,7 +3421,7 @@ else {
  *
  *      });
  *
- *  Once added, those can be used either via `Element`:
+ *  Once added, those can be used either via [[Element]]:
  *
  *      // Wrap the element with the ID 'foo' in a div
  *      Element.wrap('foo', 'div');
@@ -2079,7 +3432,7 @@ else {
  *      $('foo').wrap('div');
  *
  *  Note the following requirements and conventions for methods added to
- *  `Element`:
+ *  [[Element]]:
  *
  *  - The first argument is *always* an element or ID, by convention this
  *    argument is called `element`.
@@ -2094,20 +3447,20 @@ else {
  *
  *  ##### Extending only specific elements
  *
- *  If you call `Element.addMethods` with *two* arguments, it will apply the
+ *  If you call [[Element.addMethods]] with *two* arguments, it will apply the
  *  methods only to elements with the given HTML tag:
  *
  *      Element.addMethods('DIV', my_div_methods);
  *      // the given methods are now available on DIV elements, but not others
  *
- *  You can also pass an *array* of tag names as the first argument:
+ *  You can also pass an *[[Array]]* of tag names as the first argument:
  *
  *      Element.addMethods(['DIV', 'SPAN'], my_additional_methods);
  *      // DIV and SPAN now both have the given methods
  *
  *  (Tag names in the first argument are not case sensitive.)
  *
- *  Note: `Element.addMethods` has built-in security which prevents you from
+ *  Note: [[Element.addMethods]] has built-in security which prevents you from
  *  overriding native element methods or properties (like `getAttribute` or
  *  `innerHTML`), but nothing prevents you from overriding one of Prototype's
  *  methods. Prototype uses a lot of its methods internally; overriding its
@@ -2152,7 +3505,7 @@ else {
  *
  *      $('foo').ajaxUpdate('/new/content');
  *
- *  That will use Ajax.Updater to load new content into the 'foo' element,
+ *  That will use [[Ajax.Updater]] to load new content into the 'foo' element,
  *  showing a spinner while the call is in progress. It even applies a default
  *  failure handler (since we didn't supply one).
 **/
@@ -2261,9 +3614,16 @@ document.viewport = {
   /**
    *  document.viewport.getDimensions() -> Object
    *
-   *  Returns the size of the viewport.
+   *  Returns an object containing viewport dimensions in the form
+   *  `{ width: Number, height: Number }`.
    *
-   *  Returns an object of the form `{ width: Number, height: Number }`.
+   *  The _viewport_ is the subset of the browser window that a page occupies
+   *  &mdash; the "usable" space in a browser window.
+   *  
+   *  ##### Example
+   *  
+   *      document.viewport.getDimensions();
+   *      //-> { width: 776, height: 580 }
   **/
   getDimensions: function() {
     return { width: this.getWidth(), height: this.getHeight() };
@@ -2276,6 +3636,15 @@ document.viewport = {
    *
    *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
    *  as properties: `{ left: leftValue, top: topValue }`.
+   *
+   *  ##### Examples
+   *  
+   *      document.viewport.getScrollOffsets();
+   *      //-> { left: 0, top: 0 }
+   *      
+   *      window.scrollTo(0, 120);
+   *      document.viewport.getScrollOffsets();
+   *      //-> { left: 0, top: 120 }
   **/
   getScrollOffsets: function() {
     return Element._returnOffset(
@@ -2312,6 +3681,8 @@ document.viewport = {
    *  document.viewport.getWidth() -> Number
    *
    *  Returns the width of the viewport.
+   *
+   *  Equivalent to calling `document.viewport.getDimensions().width`.
   **/
   viewport.getWidth  = define.curry('Width');
 
@@ -2319,6 +3690,8 @@ document.viewport = {
    *  document.viewport.getHeight() -> Number
    *
    *  Returns the height of the viewport.
+   *
+   *  Equivalent to `document.viewport.getDimensions().height`.
   **/
   viewport.getHeight = define.curry('Height');
 })(document.viewport);
@@ -2398,7 +3771,7 @@ Element.addMethods({
    *
    *  Returns a duplicate of `element`.
    *
-   *  A wrapper around DOM Level 2 `Node#cloneNode`, `Element#clone` cleans up
+   *  A wrapper around DOM Level 2 `Node#cloneNode`, [[Element.clone]] cleans up
    *  any expando properties defined by Prototype.
   **/
   clone: function(element, deep) {

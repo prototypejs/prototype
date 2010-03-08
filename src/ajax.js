@@ -3,31 +3,31 @@
  *
  *  Prototype's APIs around the `XmlHttpRequest` object.
  *
- *  The Prototype framework enables you to deal with Ajax calls in a manner that is
- *  both easy and compatible with all modern browsers.
+ *  The Prototype framework enables you to deal with Ajax calls in a manner that
+ *  is both easy and compatible with all modern browsers.
  *
  *  Actual requests are made by creating instances of [[Ajax.Request]].
  *
- *  <h5>Request headers</h5>
+ *  ##### Request headers
  *
  *  The following headers are sent with all Ajax requests (and can be
  *  overridden with the `requestHeaders` option described below):
  *
  *  * `X-Requested-With` is set to `XMLHttpRequest`.
  *  * `X-Prototype-Version` is set to Prototype's current version (e.g.,
- *    `1.6.0.3`).
+ *    `<%= PROTOTYPE_VERSION %>`).
  *  * `Accept` is set to `text/javascript, text/html, application/xml,
  *     text/xml, * / *`
  *  * `Content-type` is automatically determined based on the `contentType`
  *    and `encoding` options.
  *
- *  <h5>Ajax options</h5>
+ *  ##### Ajax options
  *
  *  All Ajax classes share a common set of _options_ and _callbacks_.
  *  Callbacks are called at various points in the life-cycle of a request, and
  *  always feature the same list of arguments.
  *
- *  <h5>Common options</h5>
+ *  ##### Common options
  *
  *  * `asynchronous` ([[Boolean]]; default `true`): Determines whether
  *    `XMLHttpRequest` is used asynchronously or not. Synchronous usage is
@@ -64,10 +64,10 @@
  *    `true` otherwise): Sanitizes the contents of
  *    [[Ajax.Response#responseText]] before evaluating it.
  *
- *  <h5>Common callbacks</h5>
+ *  ##### Common callbacks
  *
  *  When used on individual instances, all callbacks (except `onException`) are
- *  invoked with two parameters: the `XMLHttpRequest` object and the result of
+ *  invoked with two parameters: the [[Ajax.Response]] object and the result of
  *  evaluating the `X-JSON` response header, if any (can be `null`).
  *
  *  For another way of describing their chronological order and which callbacks

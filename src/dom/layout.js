@@ -685,6 +685,33 @@
    *
    *  Finds the computed width and height of `element` and returns them as
    *  key/value pairs of an object.
+   *  
+   *  This method returns correct values on elements whose display is set to
+   *  `none` either in an inline style rule or in an CSS stylesheet.
+   *  
+   *  In order to avoid calling the method twice, you should consider caching
+   *  the values returned in a variable as shown below. If you only need
+   *  `element`'s width or height, consider using [[Element.getWidth]] or
+   *  [[Element.getHeight]] instead.
+   *  
+   *  Note that all values are returned as _numbers only_ although they are
+   *  _expressed in pixels_.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <div id="rectangle" style="font-size: 10px; width: 20em; height: 10em"></div>
+   *
+   *  Then:
+   *
+   *      var dimensions = $('rectangle').getDimensions();
+   *      // -> {width: 200, height: 100}
+   *      
+   *      dimensions.width;
+   *      // -> 200
+   *      
+   *      dimensions.height;
+   *      // -> 100
   **/
   function getDimensions(element) {
     var layout = $(element).getLayout();    

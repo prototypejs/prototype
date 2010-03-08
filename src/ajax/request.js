@@ -3,9 +3,92 @@
  *
  *  Initiates and processes an Ajax request.
  *
- *  `Ajax.Request` is a general-purpose class for making HTTP requests.
+ *  [[Ajax.Request]] is a general-purpose class for making HTTP requests which
+ *  handles the life-cycle of the request, handles the boilerplate, and lets
+ *  you plug in callback functions for your custom needs.
  *
- *  <h5>Automatic JavaScript response evaluation</h5>
+ *  In the optional `options` hash, you usually provide an `onComplete` and/or
+ *  `onSuccess` callback, unless you're in the edge case where you're getting a
+ *  JavaScript-typed response, that will automatically be `eval`'d.
+ *  
+ *  For a full list of common options and callbacks, see "Ajax options" heading
+ *  of the [[Ajax section]].
+ *
+ *  ##### A basic example
+ *
+ *      new Ajax.Request('/your/url', {
+ *        onSuccess: function(response) {
+ *          // Handle the response content...
+ *        }
+ *      });
+ *
+ *  ##### Request life-cycle
+ *  
+ *  Underneath our nice requester objects lies, of course, `XMLHttpRequest`. The
+ *  defined life-cycle is as follows:
+ *  
+ *  1. Created
+ *  2. Initialized
+ *  3. Request sent
+ *  4. Response being received (can occur many times, as packets come in)
+ *  5. Response received, request complete
+ *  
+ *  As you can see under the "Ajax options" heading of the [[Ajax section]],
+ *  Prototype's AJAX objects define a whole slew of callbacks, which are
+ *  triggered in the following order:
+ *  
+ *  1. `onCreate` (this is actually a callback reserved to [[Ajax.Responders]])
+ *  2. `onUninitialized` (maps on Created)
+ *  3. `onLoading` (maps on Initialized)
+ *  4. `onLoaded` (maps on Request sent)
+ *  5. `onInteractive` (maps on Response being received)
+ *  6. `on`*XYZ* (numerical response status code), onSuccess or onFailure (see below)
+ *  7. `onComplete`
+ *  
+ *  The two last steps both map on *Response received*, in that order. If a
+ *  status-specific callback is defined, it gets invoked. Otherwise, if
+ *  `onSuccess` is defined and the response is deemed a success (see below), it
+ *  is invoked. Otherwise, if `onFailure` is defined and the response is *not*
+ *  deemed a sucess, it is invoked. Only after that potential first callback is
+ *  `onComplete` called.
+ *  
+ *  ##### A note on portability
+ *  
+ *  Depending on how your browser implements `XMLHttpRequest`, one or more
+ *  callbacks may never be invoked. In particular, `onLoaded` and
+ *  `onInteractive` are not a 100% safe bet so far. However, the global
+ *  `onCreate`, `onUninitialized` and the two final steps are very much
+ *  guaranteed.
+ *  
+ *  ##### `onSuccess` and `onFailure`, the under-used callbacks
+ *  
+ *  Way too many people use [[Ajax.Request]] in a similar manner to raw XHR,
+ *  defining only an `onComplete` callback even when they're only interested in
+ *  "successful" responses, thereby testing it by hand:
+ *  
+ *      // This is too bad, there's better!
+ *      new Ajax.Request('/your/url', {
+ *        onComplete: function(response) {
+ *          if (200 == response.status)
+ *            // yada yada yada
+ *        }
+ *      });
+ *  
+ *  First, as described below, you could use better "success" detection: success
+ *  is generally defined, HTTP-wise, as either no response status or a "2xy"
+ *  response status (e.g., 201 is a success, too). See the example below.
+ *  
+ *  Second, you could dispense with status testing altogether! Prototype adds
+ *  callbacks specific to success and failure, which we listed above. Here's
+ *  what you could do if you're only interested in success, for instance:
+ *  
+ *      new Ajax.Request('/your/url', {
+ *        onSuccess: function(response) {
+ *            // yada yada yada
+ *        }
+ *      });
+ *  
+ *  ##### Automatic JavaScript response evaluation
  *
  *  If an Ajax request follows the _same-origin policy_ **and** its response
  *  has a JavaScript-related `Content-type`, the content of the `responseText`
@@ -28,12 +111,12 @@
  *
  *  The MIME-type string is examined in a case-insensitive manner.
  *
- *  <h5>Methods you may find useful</h5>
+ *  ##### Methods you may find useful
  *
- *  Instances of the `Request` object provide several methods that can come in
- *  handy in your callback functions, especially once the request is complete.
+ *  Instances of the [[Ajax.Request]] object provide several methods that come
+ *  in handy in your callback functions, especially once the request is complete.
  *
- *  <h5>Is the response a successful one?</h5>
+ *  ###### Is the response a successful one?
  *
  *  The [[Ajax.Request#success]] method examines the XHR object's `status`
  *  property and follows general HTTP guidelines: unknown status is deemed
@@ -41,7 +124,7 @@
  *  better way of testing your response than the usual
  *  `200 == transport.status`.
  *
- *  <h5>Getting HTTP response headers</h5>
+ *  ###### Getting HTTP response headers
  *
  *  While you can obtain response headers from the XHR object using its
  *  `getResponseHeader` method, this makes for verbose code, and several
@@ -58,14 +141,14 @@
  *        }
  *      });
  *
- *  <h5>Evaluating JSON headers</h5>
+ *  ##### Evaluating JSON headers
  *
  *  Some backends will return JSON not as response text, but in the `X-JSON`
  *  header. In this case, you don't even need to evaluate the returned JSON
  *  yourself, as Prototype automatically does so. It passes the result as the
  *  `headerJSON` property of the [[Ajax.Response]] object. Note that if there
- *  is no such header &mdash; or its contents are invalid &mdash; `headerJSON` will be set
- *  to `null`.
+ *  is no such header &mdash; or its contents are invalid &mdash; `headerJSON`
+ *  will be set to `null`.
  *
  *      new Ajax.Request('/your/url', {
  *        onSuccess: function(transport) {
