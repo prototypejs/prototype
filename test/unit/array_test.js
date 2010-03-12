@@ -182,7 +182,35 @@ new Test.Unit.Runner({
     this.assertEnumEqual(['a', 'b', 'c', 'd'], $w(' a   b\nc\t\nd\n'));
   },
   
-  testConcat: function(){
+  testConcat: function() {
+    var x = {};
+
+    this.assertIdentical(1, Array.prototype.concat.length);
+
+    this.assertEnumEqual([0, 1], [0, 1].concat());
+    this.assertIdentical(2, [0, 1].concat().length);
+    
+    this.assertEnumEqual([0, 1, 2, 3, 4], [].concat([0, 1], [2, 3, 4]));
+    this.assertIdentical(5, [].concat([0, 1], [2, 3, 4]).length);
+
+    this.assertEnumEqual([0, x, 1, 2, true, "NaN"], [0].concat(x, [1, 2], true, "NaN"));
+    this.assertIdentical(6, [0].concat(x, [1, 2], true, "NaN").length);
+    
+    this.assertEnumEqual([undefined, 1, undefined], [,1].concat([], [,]));
+    this.assertIdentical(3, [,1].concat([], [,]).length);
+    this.assertEnumEqual([1], Object.keys([,1].concat([], [,])));
+
+    // Check that Array.prototype.concat can be used in a generic way
+    x.concat = Array.prototype.concat;
+    this.assertEnumEqual([x], x.concat());
+    this.assertIdentical(1, x.concat().length);
+    
+    // Checking an edge case
+    var arr = []; arr[2] = true;
+    this.assertEnumEqual([undefined, undefined, true], [].concat(arr));
+    this.assertIdentical(3, [].concat(arr).length);
+    this.assertEnumEqual([2], Object.keys([].concat(arr)));
+
     var args = (function() { return [].concat(arguments) })(1, 2);
     this.assertIdentical(1, args[0][0]);
   }

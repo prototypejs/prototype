@@ -446,17 +446,21 @@ Array.from = $A;
   }
 
   // Replaces a built-in function. No PDoc needed.
-  function concat() {
-    var array = slice.call(this, 0), item;
-    for (var i = 0, length = arguments.length; i < length; i++) {
-      item = arguments[i];
+  function concat(_) {
+    var array = [], items = slice.call(arguments, 0), item, n = 0;
+    items.unshift(this);
+    for (var i = 0, length = items.length; i < length; i++) {
+      item = items[i];
       if (Object.isArray(item) && !('callee' in item)) {
-        for (var j = 0, arrayLength = item.length; j < arrayLength; j++)
-          array.push(item[j]);
+        for (var j = 0, arrayLength = item.length; j < arrayLength; j++) {
+          if (j in item) array[n] = item[j];
+          n++;
+        }
       } else {
-        array.push(item);
+        array[n++] = item;
       }
     }
+    array.length = n;
     return array;
   }
 
