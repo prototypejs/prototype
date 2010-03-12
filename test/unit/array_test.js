@@ -213,5 +213,99 @@ new Test.Unit.Runner({
 
     var args = (function() { return [].concat(arguments) })(1, 2);
     this.assertIdentical(1, args[0][0]);
-  }
+  },
+  
+  testMapGeneric: function() {
+    var result = Array.prototype.map.call({0:0, 1:1, length:2});
+    this.assertEnumEqual([0, 1], result);
+  },
+  
+  testMap: function() {
+    this.assertEnumEqual([1,2,3], [1,2,3].map());
+    this.assertEnumEqual([2,4,6], [1,2,3].map(function(x) { return x * 2; }));
+    
+    var x = [1,2,3,4];
+    delete x[1];
+    delete x[3];
+    this.assertEnumEqual([1, undefined, 3, undefined], x.map());
+    this.assertIdentical(4, x.map().length);
+    
+    var traversed = [];
+    x.map(function(val) {
+      traversed.push(val);
+    });
+    this.assertEnumEqual([1, 3], traversed);
+    this.assertIdentical(2, traversed.length);
+  },
+  
+  testFindAllGeneric: function() {
+    var result = Array.prototype.findAll.call({0:0, 1:1, length:2}, function(x) {
+      return x === 1;
+    });
+    this.assertEnumEqual([1], result);
+  },
+  
+  testFindAll: function() {
+    this.assertEnumEqual([2, 4, 6], [1, 2, 3, 4, 5, 6].findAll(function(x) {
+      return (x % 2) == 0;
+    }));
+    
+    var x = [1,2,3], traversed = [];
+    delete x[1];
+    x.findAll(function(val) { traversed.push(val); });
+    this.assertEnumEqual([1, 3], traversed);
+    this.assertIdentical(2, traversed.length);
+  },
+
+  testAnyGeneric: function() {
+    this.assert(Array.prototype.any.call({ 0:false, 1:true, length:2 }));
+    this.assert(!Array.prototype.any.call({ 0:false, 1:false, length:2 }));
+  },
+  
+  testAny: function() {
+    this.assert(!([].any()));
+    
+    this.assert([true, true, true].any());
+    this.assert([true, false, false].any());
+    this.assert(![false, false, false].any());
+    
+    this.assert([1,2,3,4,5].any(function(value) {
+      return value > 2;
+    }));
+    this.assert(![1,2,3,4,5].any(function(value) {
+      return value > 5;
+    }));
+    
+    var x = [1,2,3], traversed = [];
+    delete x[1];
+    x.any(function(val) { traversed.push(val); });
+    this.assertEnumEqual([1, 3], traversed);
+    this.assertIdentical(2, traversed.length);
+  },
+  
+  testAllGeneric: function() {
+    this.assert(Array.prototype.all.call({ 0:true, 1:true, length:2 }));
+    this.assert(!Array.prototype.all.call({ 0:false, 1:true, length:2 }));
+  },
+  
+  testAll: function() {
+    this.assert([].all());
+    
+    this.assert([true, true, true].all());
+    this.assert(![true, false, false].all());
+    this.assert(![false, false, false].all());
+
+    this.assert([1,2,3,4,5].all(function(value) {
+      return value > 0;
+    }));
+    this.assert(![1,2,3,4,5].all(function(value) {
+      return value > 1;
+    }));
+    
+    var x = [1,2,3], traversed = [];
+    delete x[1];
+    x.all(function(val) { traversed.push(val); return true; });
+    this.assertEnumEqual([1, 3], traversed);
+    this.assertIdentical(2, traversed.length);
+  },
 });

@@ -463,6 +463,91 @@ Array.from = $A;
     array.length = n;
     return array;
   }
+  
+  function wrapNative(method) {
+    return function() {
+      if (arguments.length === 0) {
+        return method.call(this, Prototype.K);
+      } else if (arguments[0] === undefined) {
+        var args = slice.call(arguments, 1);
+        args.unshift(Prototype.K)
+        return method.apply(this, args);
+      } else {
+        return method.apply(this, arguments);
+      }
+    };
+  }
+  
+  if (arrayProto.map) {
+    var map = wrapNative(Array.prototype.map);
+  } else {
+    function map(iterator) {
+      iterator = iterator || Prototype.K;
+      var results = [], context = arguments[1], n = 0;
+
+      for (var i = 0, length = this.length; i < length; i++) {
+        if (i in this) {
+          results[n] = iterator.call(context, this[i], i, this);
+        }
+        n++;
+      }
+      results.length = n;
+      return results;
+    }
+  }
+  
+  if (arrayProto.filter) {
+    var filter = wrapNative(Array.prototype.filter);
+  } else {
+    function filter(iterator) {
+      iterator = iterator || Prototype.K;
+      var results = [], context = arguments[1], value;
+
+      for (var i = 0, length = this.length; i < length; i++) {
+        if (i in this) {
+          value = this[i];
+          if (iterator.call(context, value, i, this)) {
+            results.push(value);
+          }
+        }
+      }
+      return results;
+    }
+  }
+  
+  if (arrayProto.some) {
+    var some = wrapNative(Array.prototype.some);
+  } else {
+    function some(iterator) {
+      iterator = iterator || Prototype.K;
+      var context = arguments[1];
+
+      for (var i = 0, length = this.length; i < length; i++) {
+        if (i in this && iterator.call(context, this[i], i, this)) {
+          return true;
+        }
+      }
+      
+      return false;
+    }
+  }
+  
+  if (arrayProto.every) {
+    var every = wrapNative(Array.prototype.every);
+  } else {
+    function every(iterator) {
+      iterator = iterator || Prototype.K;
+      var context = arguments[1];
+
+      for (var i = 0, length = this.length; i < length; i++) {
+        if (i in this && !iterator.call(context, this[i], i, this)) {
+          return false;
+        }
+      }
+      
+      return true;
+    }
+  }
 
   Object.extend(arrayProto, Enumerable);
 
@@ -471,6 +556,16 @@ Array.from = $A;
 
   Object.extend(arrayProto, {
     _each:     _each,
+    
+    map:       map,
+    collect:   map,
+    filter:    filter,
+    findAll:   filter,
+    some:      some,
+    any:       some,
+    every:     every,
+    all:       every,
+    
     clear:     clear,
     first:     first,
     last:      last,
