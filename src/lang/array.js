@@ -497,10 +497,10 @@ Array.from = $A;
   }
   
   if (arrayProto.filter) {
-    var filter = wrapNative(Array.prototype.filter);
+    var filter = Array.prototype.filter;
   } else {
     function filter(iterator) {
-      iterator = iterator || Prototype.K;
+      if (!Object.isFunction(iterator)) { throw new TypeError(); }
       var results = [], context = arguments[1], value;
 
       for (var i = 0, length = this.length; i < length; i++) {
