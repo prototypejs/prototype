@@ -559,6 +559,7 @@ Array.from = $A;
     
     map:       map,
     collect:   map,
+    select:    filter,
     filter:    filter,
     findAll:   filter,
     some:      some,
