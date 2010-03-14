@@ -548,6 +548,20 @@ Array.from = $A;
       return true;
     }
   }
+  
+  if (arrayProto.reduce) {
+    // Keep a copy of the native reduce
+    var _reduce = arrayProto.reduce;
+    function inject(memo, iterator) {
+      iterator = iterator || Prototype.K;
+      var context = arguments[2];
+      // The iterator has to be bound, as Array.prototype.reduce
+      // always executes the iterator in the global context.
+      return _reduce.call(this, iterator.bind(context), memo, context);
+    }
+  } else {
+    var inject = Enumerable.inject;
+  }
 
   Object.extend(arrayProto, Enumerable);
 
@@ -566,6 +580,7 @@ Array.from = $A;
     any:       some,
     every:     every,
     all:       every,
+    inject:    inject,
     
     clear:     clear,
     first:     first,
