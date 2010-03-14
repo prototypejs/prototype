@@ -107,12 +107,8 @@ var Enumerable = (function() {
    *  has a method to do that for you.
   **/
   function each(iterator, context) {
-    var index = 0;
     try {
-      var collection = this;
-      this._each(function(value) {
-        iterator.call(context, value, index++, collection);
-      });
+      this._each(iterator, context);
     } catch (e) {
       if (e != $break) throw e;
     }

@@ -93,12 +93,12 @@ var Hash = Class.create(Enumerable, (function() {
   **/
 
   // Our _internal_ each
-  function _each(iterator) {
+  function _each(iterator, context) {
     for (var key in this._object) {
       var value = this._object[key], pair = [key, value];
       pair.key = key;
       pair.value = value;
-      iterator(pair);
+      iterator.call(context, pair);
     }
   }
 

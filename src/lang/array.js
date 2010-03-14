@@ -189,9 +189,9 @@ Array.from = $A;
       slice = arrayProto.slice,
       _each = arrayProto.forEach; // use native browser JS 1.6 implementation if available
 
-  function each(iterator) {
+  function each(iterator, context) {
     for (var i = 0, length = this.length; i < length; i++)
-      iterator(this[i]);
+      iterator.call(context, this[i], i, this);
   }
   if (!_each) _each = each;
 
