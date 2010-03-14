@@ -24,6 +24,16 @@ new Test.Unit.Runner({
     this.assertEqual('1, 3', results.join(', '));
   },
   
+  "test #each passes value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.each(function(value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+    }, this);
+  },
+  
   testEachChaining: function() {
     this.assertEqual(Fixtures.Primes, Fixtures.Primes.each(Prototype.emptyFunction));
     this.assertEqual(3, Fixtures.Basic.each(Prototype.emptyFunction).length);
@@ -63,6 +73,19 @@ new Test.Unit.Runner({
     }));
   },
   
+  "test #any passes value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.any(function(value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+      
+      // Iterate over all values
+      return value > 5;
+    }, this);
+  },
+  
   testAll: function() {
     this.assert([].all());
     
@@ -78,6 +101,19 @@ new Test.Unit.Runner({
     }));
   },
   
+  "test #all passes value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.all(function(value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+      
+      // Iterate over all values
+      return value > 0;
+    }, this);
+  },
+  
   testCollect: function() {
     this.assertEqual(Fixtures.Nicknames.join(', '), 
       Fixtures.People.collect(function(person) {
@@ -87,11 +123,35 @@ new Test.Unit.Runner({
     this.assertEqual(26,  Fixtures.Primes.map().length);
   },
   
+  "test #collect passes value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.collect(function(value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+      return value;
+    }, this);
+  },
+  
   testDetect: function() {
     this.assertEqual('Marcel Molina Jr.', 
       Fixtures.People.detect(function(person) {
         return person.nickname.match(/no/);
       }).name);
+  },
+  
+  "test #detect passes value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.detect(function(value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+      
+      // Iterate over all values
+      return value > 5;
+    }, this);
   },
   
   testEachSlice: function() {
@@ -125,6 +185,17 @@ new Test.Unit.Runner({
       Fixtures.Z.findAll(prime).join(', '));
   },
   
+  "test #findAll passes value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.findAll(function(value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+      return value > 5;
+    }, this);
+  },
+  
   testGrep: function() {
     this.assertEqual('noradio, htonl', 
       Fixtures.Nicknames.grep(/o/).join(", "));
@@ -144,6 +215,17 @@ new Test.Unit.Runner({
     this.assertEnumEqual(['{1}a', 'c{1}'], ['{1}a','b','c{1}'].grep('{1}'));
     this.assertEnumEqual(['(a', 'c('], ['(a','b','c('].grep('('));
     this.assertEnumEqual(['|a', 'c|'], ['|a','b','c|'].grep('|'));
+  },
+  
+  "test #grep passes value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.grep(/\d/, function(value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+      return value;
+    }, this);
   },
   
   testInclude: function() {
@@ -191,6 +273,18 @@ new Test.Unit.Runner({
       }));
   },
   
+  "test #inject passes memo, value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.inject(0, function(memo, value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+
+      return memo + value;
+    }, this);
+  },
+  
   testInvoke: function() {
     var result = [[2, 1, 3], [6, 5, 4]].invoke('sort');
     this.assertEqual(2, result.length);
@@ -209,10 +303,32 @@ new Test.Unit.Runner({
     this.assertEqual('sam-', Fixtures.Nicknames.max()); // ?s > ?U
   },
   
+  "test #max passes value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.max(function(value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+      return value;
+    }, this);
+  },
+  
   testMin: function() {
     this.assertEqual(1, Fixtures.Z.min());
     this.assertEqual(0, [  1, 2, 3, 4, 5, 6, 7, 8, 0, 9 ].min());
     this.assertEqual('Ulysses', Fixtures.Nicknames.min()); // ?U < ?h
+  },
+  
+  "test #min passes value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.min(function(value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+      return value;
+    }, this);
   },
   
   testPartition: function() {
@@ -223,6 +339,17 @@ new Test.Unit.Runner({
     this.assertEqual(2, result.length);
     this.assertEqual('sam-, htonl', result[0].join(', '));
     this.assertEqual('noradio, Ulysses', result[1].join(', '));
+  },
+  
+  "test #partition passes value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.partition(function(value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+      return value < 2;
+    }, this);
   },
   
   testPluck: function() {
@@ -240,11 +367,33 @@ new Test.Unit.Runner({
       }).join(', '));
   },
   
+  "test #reject passes value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.reject(function(value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+      return value < 2;
+    }, this);
+  },
+  
   testSortBy: function() {
     this.assertEqual('htonl, noradio, sam-, Ulysses',
       Fixtures.People.sortBy(function(value) {
         return value.nickname.toLowerCase();
       }).pluck('nickname').join(', '));
+  },
+  
+  "test #sortBy passes value, index and collection to the iterator": function() {
+    var i = 0;
+    Fixtures.Basic.sortBy(function(value, index, collection) {
+      this.assertIdentical(Fixtures.Basic[i], value);
+      this.assertIdentical(i, index);
+      this.assertIdentical(Fixtures.Basic, collection);
+      i++;
+      return value;
+    }, this);
   },
   
   testToArray: function() {
