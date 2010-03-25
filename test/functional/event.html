@@ -8,19 +8,32 @@
   
   <style type="text/css" media="screen">
   /* <![CDATA[ */
-    body { margin:1em 2em; padding:0; font-size:0.8em }
+    body {
+      margin:1em 2em; padding:0; font-size:0.8em;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
     hr { width:31.2em; margin:1em 0; text-align:left }
-    p { width:30em; margin:0.5em 0; padding:0.3em 0.6em; color:#222; background:#eee; border:1px solid silver; }
-    .subtest { margin-top:-0.5em }
+/*    p { width:30em; margin:0.5em 0; padding:0.3em 0.6em; color:#222; background:#eee; border:1px solid silver; }
+*/    .subtest { margin-top:-0.5em }
     .passed { color:green; border-color:olive }
     .failed { color:firebrick; border-color:firebrick }
     .button { padding:0.2em 0.4em; background:#ccc; border:1px solid #aaa }
-    #log { position:absolute; left:35em; top:5em; width:20em; font-size:13px !important }
+    fieldset { position:absolute; left:35em; top:5em; width:400px; font-size:13px !important }
     h2 { font:normal 1.1em Verdana,Arial,sans-serif; font-style:italic; color:gray; margin-top:-1.2em }
     h2 *, h2 a:visited { color:#444 }
     h2 a:hover { color:blue }
     a:visited { color:blue }
     a:hover { color:red }
+    
+    .test {
+      
+    }
+    
+      .test span {
+        border: 2px solid #999;
+        background-color: #ddd;
+        padding: 2px;
+      }
   /* ]]> */
   </style>
   
@@ -53,7 +66,10 @@
 <body>
   <h1>Prototype functional tests for the Event module</h1>
   
-  <div id="log">log empty</div>
+  <fieldset>
+    <legend>Log</legend>
+    <div id="log"></div>
+  </fieldset>
   
   <p id="basic">A basic event test - <strong>click here</strong></p>
   <p id="basic_remove" class="subtest"><strong>click</strong> to stop observing the first test</p>
@@ -63,13 +79,13 @@
   <script type="text/javascript">
     var basic_callback = function(e){
       $('basic').passed();
-      if ($('basic_remove')) $('basic_remove').show()
-      else $('basic').failed()
+      if ($('basic_remove')) $('basic_remove').show();
+      else $('basic').failed();
       log(e);
     }
     $('basic').observe('click', basic_callback)
-    $('basic_remove').observe('click', function(e){
-      el = $('basic')
+    $('basic_remove').observe('click', function(e) {
+      var el = $('basic');
       el.passed('This test should now be inactive (try clicking)')
       el.stopObserving('click')
       $('basic_remove').remove()
@@ -263,5 +279,62 @@
       log(e);
     })
   </script>
+  
+  <div id="delegation_container">
+    Event delegation
+    <ul>
+      <li>
+        <span class="delegation-child-1">Child 1 (click)</span>
+      </li>
+      <li>
+        <span class="delegation-child-2">Child 2 (mouseover)</span>
+      </li>
+      <li class="delegation-child-3">
+        <span>Child 3 (mouseup)</span>
+      </li>
+    </ul>
+    
+    Results: 
+
+    <ul id="delegation_results">
+      <li id="delegation_result_1">Test 1</li>
+      <li id="delegation_result_2">Test 2</li>
+      <li id="delegation_result_3">Test 3</li>
+    </ul>
+  </div>
+  <script type="text/javascript">
+      var msg = "Passed. Click to unregister.";
+      var clickMsg = "Now try original event again to ensure observation was stopped."
+      var observer1 = $('delegation_container').on('click', '.delegation-child-1', function() {
+        var result = $('delegation_results').down('li', 0);
+        result.passed(msg + " (" + ((new Date).toString())) + ")";
+        result.observe('click', function() {
+          this.update(clickMsg);
+          observer1.stop();
+        });
+      });
+      
+      var observer2 = $(document).on('mouseover', '.delegation-child-2', function() {
+        var result = $('delegation_results').down('li', 1);
+        result.passed(msg + " (" + ((new Date).toString())) + ")";
+        result.observe('click', function() {
+          this.update(clickMsg);
+          observer2.stop();
+        });
+      })
+      
+      var observer3 = $('delegation_container').on('mouseup', '.delegation-child-3', function() {
+        var result = $('delegation_results').down('li', 2);
+        result.passed(msg + " (" + ((new Date).toString())) + ")";
+        result.observe('click', function() {
+          this.update(clickMsg);
+          observer3.stop();
+        });
+      });
+      
+      
+  </script>
+  
+  
 </body>
 </html>
