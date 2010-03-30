@@ -1005,7 +1005,7 @@
     stopObserving: stopObserving,
     
     /**
-     *  Element.on(@element, evnetName[, selector], callback) -> Element
+     *  Element.on(@element, eventName[, selector], callback) -> Element
      *  See [[Event.on]].
     **/
     on:            on
