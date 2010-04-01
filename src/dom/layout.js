@@ -240,11 +240,6 @@
     // TODO: Investigate.
     set: function(property, value) {
       throw "Properties of Element.Layout are read-only.";
-      // if (Element.Layout.COMPOSITE_PROPERTIES.include(property)) {
-      //   throw "Cannot set a composite property.";
-      // }
-      // 
-      // return this._set(property, toCSSPixels(value));
     },
     
     /**
