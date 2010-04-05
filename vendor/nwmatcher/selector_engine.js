@@ -3,7 +3,7 @@ Prototype._original_property = window.NW;
 
 Prototype.Selector = (function(engine) {
   function select(selector, scope) {
-    return engine.select(selector, scope || document, null, Element.extend);
+    return engine.select(selector, scope || document, Element.extend);
   }
 
   return {
