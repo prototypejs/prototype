@@ -1,3 +1,9 @@
+*1.7_rc1* (April 1, 2010)
+
+* Add an `Event.Handler` class, plus `Event.on` and `Element#on` methods, for simplified event delegation. (sam, Tobie Langel, Andrew Dupont)
+
+* Make `Element.Layout` properly interpret computed non-integer pixel values. (e.g., Firefox can report "12.5px" as a computed style value.) (henrymazza)
+
 * Fix deprecated Selector.matchElements. (Tobie Langel)
 
 * Make Object.keys ES5 compliant. (Tobie Langel)

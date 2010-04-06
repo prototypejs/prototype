@@ -21,10 +21,12 @@
     if (value === null) {
       return null;
     }
-
+    
     // Non-IE browsers will always return pixels if possible.
-    if ((/^\d+(px)?$/i).test(value)) {
-      return window.parseInt(value, 10);      
+    // (We use parseFloat instead of parseInt because Firefox can return
+    // non-integer pixel values.)
+    if ((/^\d+(\.\d+)?(px)?$/i).test(value)) {
+      return window.parseFloat(value);
     }
     
     // When IE gives us something other than a pixel value, this technique
@@ -36,7 +38,7 @@
       value = element.style.pixelLeft;
       element.style.left = style;
       element.runtimeStyle.left = rStyle;
-      
+
       return value;
     }
     
@@ -238,11 +240,6 @@
     // TODO: Investigate.
     set: function(property, value) {
       throw "Properties of Element.Layout are read-only.";
-      // if (Element.Layout.COMPOSITE_PROPERTIES.include(property)) {
-      //   throw "Cannot set a composite property.";
-      // }
-      // 
-      // return this._set(property, toCSSPixels(value));
     },
     
     /**
@@ -302,9 +299,9 @@
         //  (b) it has an explicitly-set width, instead of width: auto.
         // Either way, it means the element is the width it needs to be
         // in order to report an accurate height.
-        newWidth = window.parseInt(width, 10);
+        newWidth = getPixelValue(width);
       } else if (width && (position === 'absolute' || position === 'fixed')) {
-        newWidth = window.parseInt(width, 10);
+        newWidth = getPixelValue(width);
       } else {
         // If not, that means the element's width depends upon the width of
         // its parent.
@@ -714,7 +711,7 @@
    *      // -> 100
   **/
   function getDimensions(element) {
-    var layout = $(element).getLayout();    
+    var layout = $(element).getLayout();
     return {
       width:  layout.get('width'),
       height: layout.get('height')
@@ -728,7 +725,11 @@
    *  `body` element is returned.
   **/
   function getOffsetParent(element) {
-    if (element.offsetParent) return $(element.offsetParent);
+    if (isDetached(element)) return $(document.body);
+
+    // IE reports offset parent incorrectly for inline elements.
+    var isInline = (Element.getStyle(element, 'display') === 'inline');
+    if (!isInline && element.offsetParent) return $(element.offsetParent);
     if (element === document.body) return $(element);
     
     while ((element = element.parentNode) && element !== document.body) {
@@ -908,13 +909,20 @@
     return element.nodeName.toUpperCase() === 'BODY';
   }
   
+  function isDetached(element) {
+    return element !== document.body &&
+     !Element.descendantOf(element, document.body);
+  }
+  
   // If the browser supports the nonstandard `getBoundingClientRect`
   // (currently only IE and Firefox), it becomes far easier to obtain
   // true offsets.
   if ('getBoundingClientRect' in document.documentElement) {
     Element.addMethods({
       viewportOffset: function(element) {
-        element = $(element);
+        element = $(element);        
+        if (isDetached(element)) return new Element.Offset(0, 0);
+
         var rect  = element.getBoundingClientRect(),
          docEl = document.documentElement;
         // The HTML element on IE < 8 has a 2px border by default, giving
@@ -926,6 +934,8 @@
       
       cumulativeOffset: function(element) {
         element = $(element);
+        if (isDetached(element)) return new Element.Offset(0, 0);
+
         var docOffset = $(document.documentElement).viewportOffset(),
           elementOffset = element.viewportOffset();
         return elementOffset.relativeTo(docOffset);
@@ -933,7 +943,8 @@
             
       positionedOffset: function(element) {
         element = $(element);
-        var parent = element.getOffsetParent();
+        var parent = element.getOffsetParent();        
+        if (isDetached(element)) return new Element.Offset(0, 0);
         
         // When the BODY is the offsetParent, IE6 mistakenly reports the
         // parent as HTML. Use that as the litmus test to fix another

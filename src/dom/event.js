@@ -852,14 +852,98 @@
 
     return Event.extend(event);
   }
+  
+  /**
+   *  class Event.Handler
+   *  
+   *  Creates an observer on an element that listens for a particular event on
+   *  that element's descendants, optionally filtering by a CSS selector.
+   *  
+   *  This class simplifies the common "event delegation" pattern, in which one
+   *  avoids adding an observer to a number of individual elements and instead
+   *  listens on a _common ancestor_ element.
+   *  
+  **/
+  Event.Handler = Class.create({
+    /**
+     *  new Event.Handler(element, eventName[, selector], callback)
+     *  - element (Element): The element to listen on.
+     *  - eventName (String): An event to listen for. Can be a standard browser
+     *    event or a custom event.
+     *  - selector (String): A CSS selector. If specified, will call `callback`
+     *    _only_ when it can find an element that matches `selector` somewhere
+     *    in the ancestor chain between the event's target element and the
+     *    given `element`.
+     *  - callback (Function): The event handler function. Should expect two
+     *    arguments: the event object _and_ the element that received the
+     *    event. (If `selector` was given, this element will be the one that
+     *    satisfies the criteria described just above; if not, it will be the
+     *    one specified in the `element` argument).
+     *  
+     *  Instantiates an `Event.Handler`. **Will not** begin observing until
+     *  [[Event.Handler#start]] is called.
+    **/
+    initialize: function(element, eventName, selector, callback) {
+      this.element   = $(element);
+      this.eventName = eventName;
+      this.selector  = selector;
+      this.callback  = callback;
+      this.handler   = this.handleEvent.bind(this);
+    },
 
+    /**
+     *  Event.Handler#start -> Event.Handler
+     *  
+     *  Starts listening for events. Returns itself.
+    **/
+    start: function() {
+      Event.observe(this.element, this.eventName, this.handler);
+      return this;
+    },
+
+    /**
+     *  Event.Handler#stop -> Event.Handler
+     *  
+     *  Stops listening for events. Returns itself.
+    **/
+    stop: function() {
+      Event.stopObserving(this.element, this.eventName, this.handler);
+      return this;
+    },
+
+    handleEvent: function(event) {
+      var element = this.selector ? event.findElement(this.selector) :
+       this.element;
+      if (element) this.callback.call(element, event, element);
+    }
+  });
+  
+  /**
+   *  Event.on(element, eventName, selector, callback) -> Event.Handler
+   *  
+   *  Listens for events on an element's descendants, optionally filtering
+   *  to match a given CSS selector.
+   *  
+   *  Creates an instance of [[Event.Handler]], calls [[Event.Handler#start]],
+   *  then returns that instance. Keep a reference to this returned instance if
+   *  you later want to unregister the observer.
+  **/
+  function on(element, eventName, selector, callback) {
+    element = $(element);
+    if (Object.isFunction(selector) && Object.isUndefined(callback)) {
+      callback = selector, selector = null;
+    }
+    
+    return new Event.Handler(element, eventName, selector, callback).start();
+  }
 
   Object.extend(Event, Event.Methods);
 
   Object.extend(Event, {
     fire:          fire,
     observe:       observe,
-    stopObserving: stopObserving
+    stopObserving: stopObserving,
+    on:            on
   });
 
   Element.addMethods({
@@ -918,7 +1002,13 @@
      *  Element.stopObserving(@element[, eventName[, handler]]) -> Element
      *  See [[Event.stopObserving]].
     **/
-    stopObserving: stopObserving
+    stopObserving: stopObserving,
+    
+    /**
+     *  Element.on(@element, eventName[, selector], callback) -> Element
+     *  See [[Event.on]].
+    **/
+    on:            on
   });
 
   /** section: DOM
@@ -982,6 +1072,8 @@
      *  [[Element.stopObserving]].
     **/
     stopObserving: stopObserving.methodize(),
+    
+    on:            on.methodize(),
 
     /**
      *  document.loaded -> Boolean
