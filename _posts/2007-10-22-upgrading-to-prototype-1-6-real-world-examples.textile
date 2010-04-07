@@ -1,0 +1,12 @@
+---
+layout: blog_archive
+author: Sam Stephenson
+author_url: http://conio.net/
+sections: blog
+title: "Upgrading to Prototype 1.6: real world examples"
+---
+
+Prototype core developer Mislav Marohnić recently patched the open-source CMS "Radiant":http://www.radiantcms.org/ to take advantage of the many code-saving features in Prototype 1.6.0, and he's written an informative description of the process on his new blog, "<em>No Strings Attached</em>":http://mislav.caboo.se/.  Mislav's writeup covers the migration from Prototype 1.5.0 to 1.6.0, with examples of how to use the improved DOM and event APIs and upgrade to the new Hash API.  The final release of 1.6.0 is just around the corner, so be sure to "check out these nuggets of wisdom":http://mislav.caboo.se/js/upgrading-to-prototype-1-6-real-world-examples/ as you upgrade.
+
+
+

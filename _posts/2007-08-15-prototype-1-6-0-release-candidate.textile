@@ -1,0 +1,300 @@
+---
+layout: blog_archive
+author: Sam Stephenson
+author_url: http://conio.net/
+sections: Featured, Releases, blog
+title: "Prototype 1.6.0 release candidate"
+---
+
+The first release candidate of Prototype 1.6.0 has arrived!  The core team is continuing its tradition of bringing thoughtful incremental upgrades to the core APIs in addition to performance improvements and bug fixes.  Keep reading for some of the highlights of this major release, or [download it now](/assets/2007/8/15/prototype.js) for instant gratification.
+
+
+
+h3. Event API Enhancements
+
+We dubbed 1.6.0 the "event overhaul" release internally, and it shows -- one of our worst APIs has become one of our best, overnight.  Here's what's changed:
+
+* <strong>Event handlers registered with <tt>Event.observe</tt> or <tt>Element#observe</tt> are now automatically bound to the event's target element in all browsers.</strong>  This means that by default, <tt>this</tt> in an event handler refers to the element that fired the event.  You can override this behavior by passing a bound function to <tt>observe</tt>.
+* <strong>Event objects are now extended with a collection of instance methods.</strong>  This means you can now write <tt>event.stop()</tt> instead of <tt>Event.stop(event)</tt>.  Furthermore, the event object is normalized with W3C-standard property names in all browsers, so you can now write <tt>event.target</tt> instead of <tt>Event.element(event)</tt>.
+* <strong>The event name and handler arguments to <tt>Event.stopObserving</tt> and <tt>Element#stopObserving</tt> are now optional</strong>, so for a given element, you can now quickly unregister all its handlers, or unregister all handlers for a single event.
+* References to observed elements are no longer stored in an internal cache, to prevent leaks.
+* <strong>Prototype now has support for custom events</strong>.  Fire them on DOM elements by calling <tt>Element#fire</tt> with an event name and optional memo object.  Internally, Prototype piggybacks your custom events on real DOM events, so they bubble up the document just like <tt>click</tt> events.  This means custom event observers can respond to events fired from child elements.  You can observe and fire on the <tt>document</tt> object for global events.
+
+    language: html
+    &lt;div id="container"&gt;
+      &lt;h1&gt;&lt;span id="title"&gt;Release notes&lt;/span&gt;&lt;/h1&gt;
+      ...
+    &lt;/div&gt;
+
+
+
+    $("container").observe("titleChanged", function(event) {
+      this.highlight({ duration: 0.5 });
+    });
+    
+    $("title").fire("titleChanged");
+
+* <strong>We've built in cross-browser support for the <tt>DOMContentLoaded</tt> event</strong> using our custom event system, so you can now be notified as soon as the document is fully loaded:
+
+    document.observe("contentloaded", function() { ... })
+
+h3. Function API Enhancements
+
+We've added several methods on <tt>Function.prototype</tt> to better support functional and aspect-oriented programming techniques.
+
+* <strong><tt>Function#wrap</tt> distills the essence of aspect-oriented programming into a single method</strong>, letting you easily build on existing functions by specifying before and after behavior, transforming the return value, or even preventing the original function from being called.  Here's an example of using <tt>wrap</tt> to add behavior to an existing Prototype String method:
+
+    String.prototype.capitalize = String.prototype.capitalize.wrap( 
+      function(proceed, eachWord) { 
+        if (eachWord && this.include(" ")) {
+          // capitalize each word in the string
+          return this.split(" ").invoke("capitalize").join(" ");
+        } else {
+          // proceed using the original function
+          return proceed(); 
+        }
+      }); 
+      
+    "hello world".capitalize()     // "Hello world"
+    "hello world".capitalize(true) // "Hello World"
+
+For a less-contrived example, see how you can <a href="http://pastie.caboo.se/87940">add jQuery-style element collection methods</a> (<tt>$$("div.widget").show().highlight()</tt>) in under 40 lines of code by wrapping <tt>$$</tt> and <tt>Element.addMethods</tt>.
+  
+* <strong><tt>Function#curry</tt> allows for partial function application</strong>, like <tt>Function#bind</tt>, but leaves the function's scope unmodified.
+
+    function sum(a, b) {
+      return a + b;
+    }
+    
+    sum(10, 5) // 15
+    var addTen = sum.curry(10);
+    addTen(5)  // 15
+
+  
+* <strong><tt>Function#methodize</tt> encapsulates the pattern of converting a function's first argument into its <tt>this</tt> value.</strong>
+
+    function addBorder(element, color) {
+      return $(element).setStyle({ 
+        border: "3px solid " + (color || "red")
+      });
+    }
+    
+    addBorder("sidebar", "#ddd");
+    $("sidebar").addBorder = addBorder.methodize();
+    $("sidebar").addBorder("#888");
+
+Prototype makes heavy use of <tt>methodize</tt> internally; for example, many <tt>Math</tt> methods are added to <tt>Number</tt> instances:
+
+    $w("abs round ceil floor").each(function(method) { 
+      Number.prototype[method] = Math[method].methodize();
+    }); 
+
+  
+* <strong><tt>Function#argumentNames</tt> returns an array of strings representing the function's named arguments</strong>, as extracted from the function's <tt>toString()</tt> value.
+* <strong><tt>Function#delay</tt> provides a convenient wrapper around <tt>window.setTimeout</tt></strong>, and <tt>Function#defer</tt> is <tt>delay</tt> with a 10ms timeout.
+
+    // add class "busy" after one second
+    (function() { $("form").addClassName("busy") }).delay(1);
+    // fire the "requestSent" event asynchronously
+    (function() { $("form").fire("requestSent") }).defer();
+
+h3. Class API Enhancements
+
+This release marks the first change to Prototype's class API since version 1.0, and adds true support for inheritance and superclass methods.  It's backwards-compatible with the existing API.
+
+* <strong><tt>Class.create</tt> now supports three alternate forms of invocation</strong>: you can now pass a class to inherit from, an anonymous object to mix into the new class's prototype, or both. 
+* <strong>The new <tt>Class.extend</tt> method works like <tt>Object.extend</tt></strong>, but mixes the source object into the destination class's prototype.
+* <strong>If you're overriding a method from a parent class, you can now access the superclass method by naming the overriding function's first argument <tt>$super</tt>.</strong>  It works just like <tt>Function#wrap</tt> (in fact, it _uses_ <tt>Function#wrap</tt> internally).
+
+    var Animal = Class.create({
+      initialize: function(name) {
+        this.name = name;
+      },
+      eat: function() {
+        return this.say("Yum!");
+      },
+      say: function(message) {
+        return this.name + ": " + message;
+      }
+    });
+    
+    // subclass that augments a method
+    var Cat = Class.create(Animal, {
+      eat: function($super, food) {
+        if (food instanceof Mouse) return $super();
+        else return this.say("Yuk! I only eat mice.");
+      }
+    });
+
+* <strong>Classes now have <tt>constructor</tt>, <tt>superclass</tt>, and <tt>subclasses</tt> properties</strong> for powerful introspection of the inheritance hierarchy.
+
+
+h3. Ajax API Enhancements
+
+Ajax.Request JSON support has been considerably improved in Prototype 1.6.0:
+
+* <strong>You can now access JSON response bodies as JavaScript objects</strong> using the transport object's responseJSON property.  (JSON responses must have a <tt>Content-type</tt> header of <tt>application/json</tt>.)
+
+    new Ajax.Request("/people/5.json", {        // >> GET /people/5.json HTTP/1.1
+      onSuccess: function(transport) {          // << Content-type: application/json
+        var person = transport.responseJSON;    // << { id: 5, name: "Tobie Langel", 
+        person.city  // "Geneva"                // <<   city: "Geneva", ... }
+        ...
+      }, method: "get"
+    });
+
+* <strong>The transport object itself is now wrapped by Prototype</strong> in an <tt>Ajax.Response</tt> instance so it can be extended with properties like <tt>responseJSON</tt> in all browsers.  <tt>Ajax.Response</tt> also features two new, error-proof methods to access headers, <tt>getHeader</tt> and <tt>getAllHeaders</tt>; easy access to the transport and request object themselves, with the <tt>request</tt> and <tt>transport</tt> properties; and direct access to all the other properties and methods of the transport object for full compatibility.
+
+The following new options are available to <tt>Ajax.Request</tt>:
+* <tt>sanitizeJSON</tt> (true by default) checks the string for possible malicious fragments and prevents evaluation if any are detected.
+* <tt>evalJSON</tt> (true by default) auto-evaluates JSON data if the response's <tt>Content-type</tt> is <tt>application/json</tt> and makes it available as the <tt>responseJSON</tt> property of the response object.
+* <tt>evalJS</tt> (true by default) auto-evaluates JavaScript if the response's <tt>Content-type</tt> is <tt>text/javascript</tt> or equivalent.
+
+
+h3. DOM API Enhancements
+
+* <strong>Prototype now boasts a [new cross-browser DOM Builder](http://prototypejs.org/2007/5/12/dom-builder)
+</strong>:
+
+    new Element("input", { name: "user", disabled: true });
+    //-&gt; &lt;input name="user" disabled="disabled" /&gt;
+
+Internally the DOM builder uses <tt>Element#writeAttribute</tt>, another new addition to the DOM API which facilitates setting element attribute values in a cross-browser fashion.
+
+* <strong>We've deprecated the <tt>Insertion</tt> object and <tt>Position</tt> namespace</strong> in this release, and replaced them with methods on <tt>Element</tt> instead. <tt>Element#insert</tt> accepts multiple forms of content (DOM elements, HTML, simple text, or any object):
+
+    $("items").insert({ after: new Element("p") });
+    $("items").insert({ top: "&lt;li&gt;an item&lt;/li&gt;" });
+    $("items").insert("&lt;li&gt;another item&lt;/li&gt;"); // defaults to bottom
+
+If an object passed to <tt>insert</tt> contains a <tt>toHTML</tt> or a <tt>toElement</tt> method, that method will be used to produce an HTML string or DOM element for insertion.
+
+    var Calendar = Class.create({
+      // ...,
+      toElement: function() {
+        var container = new Element("div");
+        // ...
+        return container;
+      }
+    });
+    
+    $("sidebar").insert(new Calendar());
+    // same as $("sidebar").insert({ bottom: new Calendar() }) or
+    //         $("sidebar").insert({ bottom: new Calendar().toElement() })
+
+* <strong><tt>Element#update</tt> and <tt>Element#replace</tt> also both now accept DOM elements
+</strong> or objects with a <tt>toHTML</tt> or a<tt>toElement</tt> defined.  We've also smoothed over issues with <tt>&lt;table&gt;</tt>- and <tt>&lt;select&gt;</tt>-related elements in IE and Opera 9.
+
+* <strong><tt>Element#setStyle</tt> now accepts either a string of CSS rules</strong> (new in this version) or a hash of style/value pairs.
+
+    $("header").setStyle("font-size: 12px; float: left; opacity: 0.5");
+
+Note that for performance reasons, we've deprecated the use of _uncamelized_ style property names when setting styles using a hash. So If you have code that looks like this:
+
+    $("header").setStyle({ "font-size": "12px" });
+
+You need to replace it with either of the following:
+
+    $("header").setStyle({ fontSize: "12px" });
+    $("header").setStyle("font-size: 12px");
+
+* <strong><tt>Element#identify</tt> is a new method</strong> which returns the element's ID if one exists, or sets and returns a unique, auto-generated ID (of the form "anonymous_element_" + auto-incremented digit) otherwise:
+
+    language: html
+    &lt;div id="my_div"&gt;
+      &lt;p&gt;some content&lt;/p&gt;
+    &lt;/div&gt;
+
+
+
+    $("my_div").identify();
+    // -&gt; "my_div"
+    $("my_div").down().identify();
+    // -&gt; "anonymous_element_1"
+
+
+
+    language: html
+    &lt;div id="my_div"&gt;
+      &lt;p id="anonymous_element_1"&gt;some content&lt;/p&gt;
+    &lt;/div&gt;
+
+* <tt>Element#wrap</tt> is a convenient and flexible way to <strong>wrap DOM elements</strong>:
+
+    language: html
+    &lt;img id="my_img" /&gt;
+    &lt;span id="my_span"&gt;a picture&lt;/span&gt;
+
+
+
+    $("my_img").wrap();
+    $("my_span").wrap('p', { className: "caption" });
+
+
+
+    language: html
+    &lt;div&gt;&lt;img id="my_img" /&gt;&lt;/div&gt;
+    &lt;p class="caption"&gt;&lt;span id="my_span"&gt;a picture&lt;/span&gt;&lt;/p&gt;
+
+The new <tt>document.viewport</tt> object lets you calculate the <strong>dimensions and position of the browser's viewport</strong>:
+
+    document.viewport.getDimensions()     // { width: 1149, height: 923 }
+    document.viewport.getWidth()          // 1149
+    document.viewport.getHeight()         // 923
+    document.viewport.getScrollOffsets()  // { left: 0, top: 1592 }
+
+h3. Template API Enhancements
+
+* You can now perform one-off template replacements with <tt>String#interpolate</tt>, instead of having to first create a <tt>Template</tt> object and then call <tt>evaluate</tt>.
+
+    "#{last}, #{first}".interpolate({ first: "Andrew", last: "Dupont" })
+    // "Dupont, Andrew"
+
+* If you pass <tt>String#interpolate</tt> or <tt>Template#evaluate</tt> an object with a <tt>toTemplateReplacements</tt> method, the return value of that method will be used as the replacement object.
+* You can now substitute properties of template replacement values in template strings, using dot or bracket notation (or both).
+
+    "#{name.last}, #{name.first[0]}. (#{location})".interpolate({
+      name: { first: "Christophe", last: "Porteneuve" }, location: "Paris"
+    }) // "Porteneuve, C. (Paris)"
+
+h3. Extended <tt>grep</tt> semantics
+
+Prototype 1.6.0 introduces a new convention for the first argument to <tt>Enumerable#grep</tt>: the argument must be an object with a method named <tt>match</tt>, which method grep will call for each element in the <tt>Enumerable</tt>; if the method returns <tt>true</tt>, the element will be present in the array returned by <tt>grep</tt>.  What this means is that you can now filter arrays with <tt>grep</tt> by passing it any object that has a <tt>match</tt> method.  For example, you can now easily pare down an array of DOM elements to only those elements matching a particular CSS selector:
+
+    elements.grep(new Selector("div.widget:first-child"))
+
+Prototype aliases <tt>RegExp#test</tt> to <tt>RegExp#match</tt>, so existing code that e.g. greps string arrays using a regular expression will still work as expected.  The match method convention is inspired by Ruby's triple-equal (<tt>===</tt>) operator.
+
+
+h3. Improved support for JavaScript 1.6 and WHATWG 1.0 standards
+
+We've emphasized our commitment to web standards in this release with improved support for JavaScript 1.6 and the WHATWG Web Applications 1.0 specification.  
+
+* <tt>Array#indexOf</tt> no longer overrides the native method if present.
+* <tt>Enumerable</tt> now uses the native <tt>Array#forEach</tt> instead of <tt>Array#_each</tt> when possible.
+* Enumerable now has aliases for the JavaScript 1.6 Array methods <tt>filter</tt>, <tt>entries</tt>, <tt>every</tt>, and <tt>some</tt>, which map to <tt>findAll</tt>, <tt>toArray</tt>, <tt>all</tt>, and <tt>any</tt>, respectively.
+* All <tt>Enumerable</tt> methods now have an additional parameter, <tt>context</tt>, which, if present, specifies the object to which the iterators' <tt>this</tt> is bound, for compatibility with JavaScript 1.6 Array methods.
+* <tt>Element#getElementsByClassName</tt> now supports multiple class names given as a whitespace-separated string, as specified by WHATWG and implemented by Firefox 3.  The native version of <tt>getElementsByClassName</tt> is used in browsers that support it.
+
+
+h3. ...And a whole lot more
+
+These are just the highlights; see the "CHANGELOG":http://dev.rubyonrails.org/browser/spinoffs/prototype/tags/rel_1-6-0_rc0/CHANGELOG for the full story.  We think the numerous small improvements to Prototype in this release have resulted in a supremely cohesive and intuitive API.  So please give it a shot, let us know what you think on the mailing lists, and report any bugs you encounter (preferably with tested patches).
+
+
+h3. A note about this release candidate
+
+We intend for Prototype 1.6.0_rc0 to be feature-complete, but we reserve the right to make adjustments to our new APIs and add or remove features before the final version is released.
+
+
+h3. Download
+
+* <strong>[Download Prototype 1.6.0_rc0](/assets/2007/8/15/prototype.js)</strong>
+* [Get Prototype help](/discuss) on the rails-spinoffs mailing list or #prototype IRC channel
+* [Interact with the Core Team](http://groups.google.com/group/prototype-core) on the prototype-core mailing list
+* [Submit bug reports](http://dev.rubyonrails.org/) to Rails Trac
+
+Thanks to the many contributors who made this release possible!
+
+
+

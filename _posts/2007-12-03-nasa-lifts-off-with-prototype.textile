@@ -1,0 +1,12 @@
+---
+layout: blog_archive
+author: Sam Stephenson
+author_url: http://conio.net/
+sections: blog
+title: "NASA lifts off with Prototype"
+---
+
+<img src="http://prototypejs.org/assets/2007/12/1/nasa.jpg" width="80" height="69" style="float: right; margin-left: 10px" />"NASA":http://www.nasa.gov/ celebrates its 50th anniversary with a "new web site":http://www.nasa.gov/externalflash/NASA50/nosound/1.html powered by Prototype and script.aculo.us.  The new site's features include a calendar, image gallery, redesigned navigation, and fancy transitions and effects.  Congratulations to NASA and the team at "Critical Mass":http://www.criticalmass.com/ on a job well done.
+
+
+

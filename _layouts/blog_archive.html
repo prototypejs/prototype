@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>Prototype Blog: {{ page.title }}</title>
+	<link rel="stylesheet" href="/stylesheets/main.css" type="text/css" media="screen" charset="utf-8">
+</head>
+<body>
+	<div id="wrapper">
+
+		<div id="navigation"></div>
+
+		<div id="header">
+			<h1><a href="/"><img src="/images/header-logo-small.png" alt="Prototype JavaScript Framework" /></a></h1>
+		</div>
+
+		<div id="main">
+			<div id="content">
+				<h1><a href="{{ page.url }}">{{ page.title }}</a></h1>
+				<p>By <a href="{{ page.author_url }}">{{ page.author }}</a> on {{ page.date | date: '%B %e, %Y') }}.</p>
+				{{ content }}
+			</div>
+
+			<div id="disqus_thread"></div>
+			<script type="text/javascript" charset="utf-8">
+			var disqus_developer = "1";
+			var disqus_url = "http://prototypejs.org{{ page.url }}/";
+			</script>
+			<script type="text/javascript" src="http://disqus.com/forums/prototype/embed.js"></script>
+			<noscript><a href="http://disqus.com/forums/prototype/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+		</div>
+
+		<div id="sidebar">
+		</div>
+
+		<div id="footer">
+		</div>
+
+	</div>
+</body>
+</html>

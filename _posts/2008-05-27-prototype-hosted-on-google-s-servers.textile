@@ -1,0 +1,36 @@
+---
+layout: blog_archive
+author: Sam Stephenson
+author_url: http://conio.net/
+sections: blog
+title: "Prototype hosted on Google's servers"
+---
+
+Good news!  Google now offers a cached, compressed copy of Prototype on its high-speed content distribution network via the "AJAX Libraries API":http://code.google.com/apis/ajaxlibs/.  
+
+
+
+You can either link to the source code directly:
+
+<pre>
+  <script type="text/javascript"
+    src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js"></script>
+</pre>
+
+Or you can use Google's API:
+
+<pre>
+  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+  <script type="text/javascript">google.load("prototype", "1.6.0.2");</script>
+</pre>
+
+More information is available from "Google's documentation":http://code.google.com/apis/ajaxlibs/documentation/index.html#prototype.
+
+When a specific version of Prototype is delivered to your browser, it will be cached for one year and served with the proper compression headers.  That means that most users of sites which link to Google's copy of Prototype will incur a ~30 KB download only once.
+
+We typically encourage developers building applications with Prototype to concatenate all their JavaScript into a single file, and serve that file with the proper content expiration and compression settings.  In cases where this is unfeasible, Google's hosted version is an excellent alternative.
+
+Special thanks to Dion Almaer and the team at Google for making this possible.
+
+
+

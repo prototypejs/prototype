@@ -1,0 +1,105 @@
+---
+layout: blog_archive
+author: Sam Stephenson
+author_url: http://conio.net/
+sections: Featured, Releases, blog
+title: "Prototype 1.6.0 RC1: Changes to the Class and Event APIs, Hash rewrite, and bug fixes"
+---
+
+Two months after putting "1.6.0 RC0":http://prototypejs.org/2007/8/15/prototype-1-6-0-release-candidate out in the wild, we've fixed a handful of bugs and made some changes to the Class and Event APIs in response to your feedback.  We've also addressed a long-standing issue with the Hash class.  These changes are now available for download in our second release candidate, <a href="/assets/2007/10/16/prototype.js" onmouseup="if(urchinTracker) urchinTracker('download/prototype-1.6.0_rc1');">Prototype 1.6.0 RC1</a>.  Keep reading for a detailed description of the changes, some of which are incompatible with previous versions of Prototype.
+
+
+h3. Changes to the Class API
+
+The changes to the class API introduced in "[7833]":http://dev.rubyonrails.org/changeset/7833 are a result of feedback we've gotten from 1.6.0_rc0, and of numerous lengthy internal debates.  Our goal was to improve the clarity of the API as well as pave the way for features that may make their way into future versions of Prototype.
+
+To that end, we've eliminated the Class.extend and Class.mixin methods, improved the Class.create syntax, and changed the way you add methods to existing classes.  The API is still backwards-compatible with all pre-1.6 versions of Prototype.  We haven't changed the way inheritance works, and you still access superclass methods using the special $super argument.
+
+The biggest change is that all classes (as in the objects returned by Class.create(), not instances of those objects) now have a method named "addMethods."  This method takes a single argument, an object whose properties become instance methods and properties for all instances of the class.
+
+For example, in 1.6.0_rc0, where you'd write:
+
+    var Foo = Class.create();
+    Class.extend(Foo, { /* instance methods */ });
+
+We've changed this so you now write:
+
+    var Foo = Class.create();
+    Foo.addMethods({ /* instance methods */ });
+
+As in 1.6.0_rc0, you can still add instance methods directly from Class.create:
+
+    var Foo = Class.create({ /* instance methods */ });
+
+Also unchanged from 1.6.0_rc0, you can inherit from a superclass by passing the class as the first argument to Class.create (and you can optionally specify instance methods afterwards):
+
+    var Bar = Class.create(Foo);
+    var Baz = Class.create(Foo, { /* instance methods */ });
+
+Internally, Prototype calls addMethods on the newly created class to add instance methods passed to Class.create.
+
+Finally, we've modified Class.create to take a variable number of arguments, so you can now specify multiple collections of instance methods to add to the class, in order.  This is useful for adding mixins to the class before defining your own methods:
+
+    var Bar = Class.create(Foo, Enumerable, SomeMixin, { /* instance methods */ });
+    var Baz = Class.create(Enumerable, { /* instance methods */ });
+
+Hop to our "Learn" section for "a full-length tutorial on classes and inheritance":/learn/class-inheritance in Prototype.
+
+h3. Changes to the Event API
+
+A small but important change was made to custom events in "[7835]":http://dev.rubyonrails.org/changeset/7835: all custom event names must now include a namespace.  This is our solution to the problem of custom event names conflicting with non-standard native DOM events, such as "mousewheel" and "DOMMouseScroll."
+
+Prior to this change, Prototype treated only the event names present in the Event.DOMEvents array as native DOM events.  Now, Prototype looks for the presence of the namespace delimiter—a single colon—to determine whether you're observing a custom event or a native event.
+
+*You'll need to update any code that uses 1.6.0_rc0's "contentloaded" event to use its new name, "dom:loaded."  You'll also need to give namespaces to any other custom events you may be firing or observing.*  We suggest using singular nouns for namespaces, and past-tense verbs for the event names (e.g. "effect:queued", "widget:activated", and so on).
+
+We also fixed a minor annoyance for users still using inline event handling in their code: they were unable to stop event propagation with Event.stop(e) in IE because the event object was not extended. Now, Event.stop and Event.element extend the given event object automatically and work as expected even with inline event handling. *Note that inline event handlers are still strongly discouraged*; you should upgrade your code to use Event.observe or Element#observe methods, where possible.
+
+
+h3. Complete rewrite of the Hash class
+
+p(notice). *Backwards compatibility change* - Although it serves the same purpose as before, the new version of Hash is *not* compatible with the Hash class in previous versions of Prototype.
+
+Hash properties are now hidden away in a private store to prevent the risk of collision with Hash's instance and mixed-in methods. This means that properties of the hash can no longer be set, accessed or deleted directly; you must use the Hash#get(key), Hash#set(key, value) and Hash#unset(key) instance methods instead. To illustrate:
+
+    var myhash = new Hash();
+    
+    // old API  -->  new API
+    myhash.name = "Bob";  -->  myhash.set('name', 'Bob');
+    myhash.name;          -->  myhash.get('name');
+    delete myhash.name;   -->  myhash.unset('name');
+
+You should also be aware of other changes to the Hash API:
+
+* The $H(object) shortcut is now completely equivalent to new Hash(object). Both always return a new object, regardless of whether the argument was an Object or another Hash.
+* Hash#merge returns a new Hash instead of modifying the Hash it's called on.
+* Hash#update is a destructive version of Hash#merge that modifies the Hash it's called on.
+* Hash#clone returns a new, cloned instance of Hash.
+* Hash#toObject that returns a copy of the Hash's inner Object.
+* Hash.toQueryString is now an alias of Object.toQueryString.  (Hash.toQueryString is deprecated and will be removed in a future version of Prototype.)
+* Hash#remove has been removed in favor of Hash#unset.
+* Hash.toJSON has been removed in favor of Object.toJSON or the Hash#toJSON instance method.
+
+
+h3. Other changes and deprecations in this release
+
+* Element#wrap now returns the newly created wrapper element instead of the element being wrapped.
+* document.getElementsByClassName and Element#getElementsByClassName are now deprecated, since native implementations of these methods return a live NodeList, while we can only return a static Array.  Please use $$ or Element#select instead.  Example:
+
+    document.getElementsByClassName('foo')  -->  $$('.foo')
+    element.getElementsByClassName('foo')   -->  element.select('.foo')
+
+We've fixed 19 bugs since 1.6.0_rc0; see the "CHANGELOG":http://dev.rubyonrails.org/browser/spinoffs/prototype/tags/rel_1-6-0_rc1/CHANGELOG for full details.
+
+
+h3. Download, Report Bugs, and Get Help
+
+* <a href="http://cloud.github.com/downloads/sstephenson/prototype/prototype_1-6-0_rc1.js" onmouseup="if(urchinTracker) urchinTracker('download/prototype-1.6.0_rc1');">Download Prototype 1.6.0_rc1</a>
+* "Submit bug reports":http://dev.rubyonrails.org/ to Rails Trac
+* "Get Prototype help":http://prototypejs.org/discuss on the rails-spinoffs mailing list or #prototype IRC channel
+* "Interact with the Core Team":http://groups.google.com/group/prototype-core on the prototype-core mailing list
+
+Thanks to the many contributors who made this release possible!  Barring any heinous bugs, RC1 will be our last release candidate, and you can expect the final version of 1.6.0 to land in early November.
+
+
+

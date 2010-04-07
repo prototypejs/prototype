@@ -1,0 +1,14 @@
+---
+layout: blog_archive
+author: Sam Stephenson
+author_url: http://conio.net/
+sections: Releases, blog
+title: "Release candidate 2"
+---
+
+"Prototype 1.5.1_rc2 is out":http://prototypejs.org/assets/2007/3/12/prototype.js. This release fixes several bugs in IE and Safari (see the "CHANGELOG":http://dev.rubyonrails.org/browser/spinoffs/prototype/tags/rel_1-5-1_rc2/CHANGELOG?format=raw). Upgrade and keep those bug reports coming!
+
+And don't miss the "script.aculo.us 1.7.1 beta":http://mir.aculo.us/2007/3/12/script-aculo-us-1-7-1-beta.
+
+
+

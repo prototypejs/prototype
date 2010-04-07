@@ -1,0 +1,49 @@
+---
+layout: blog_archive
+author: Sam Stephenson
+author_url: http://conio.net/
+sections: Releases, blog
+title: "Prototype 1.5.1 release candidate"
+---
+
+The first release candidate for Prototype 1.5.1 is now "available for download":http://prototypejs.org/assets/2007/3/9/prototype.js.  Prototype 1.5.1_rc1 contains bug fixes, performance improvements, and a few new features.  If you're using Prototype 1.5.0 in your application, we urge you to upgrade to this release candidate and "report any bugs you may encounter":http://prototypejs.org/contribute.  Assuming no heinous bugs are found, you can expect the final version to be released sometime within the next couple of weeks.
+
+Keep reading for an overview of what's changed (or see the full "CHANGELOG":http://dev.rubyonrails.org/browser/spinoffs/prototype/tags/rel_1-5-1_rc1/CHANGELOG?format=raw for more details).
+
+h3. Bug fixes
+
+* $$ no longer returns duplicates for certain selectors. "[#7568]":http://dev.rubyonrails.org/ticket/7568
+* Hash#toQueryString no longer doubly encodes certain parameters. "[#7421]":http://dev.rubyonrails.org/ticket/7421
+* $H no longer iterates over shadowed properties in Safari. "[#7421]":http://dev.rubyonrails.org/ticket/7421
+* Form.Element#disable will now call blur(), removed blur() call from Form.Element#enable. "[#6034]":http://dev.rubyonrails.org/ticket/6034
+* Fixed an issue with serializing empty array inputs. "[#7516]":http://dev.rubyonrails.org/ticket/7516
+* Fixed a bug in the simulated hasAttribute for IE due to getAttributeNode sometimes returning null.
+* Fixed that Form.Methods and Form.Element.Methods weren't being applied correctly to forms and form elements in Safari. "[#7358]":http://dev.rubyonrails.org/ticket/7358
+* Fixed setStyle with opacity: 0 to work correctly in IE.
+* Fixed that Form.Element#activate shouldn't raise an exception when the form or field is hidden.
+
+h3. New features and changes
+
+* "$$ now supports virtually all of CSS3":http://prototypejs.org/api/utility/dollar-dollar, with the exception of some pseudo-elements (like ::first-letter) and some pseudo-classes (like :hover).
+* Prototype now has support for JSON encoding and decoding built in. If you've had issues with the official json.js library extending Object.prototype, you can now "use our implementation instead":http://prototypejs.org/learn/json.  Thanks "Tobie":http://tobielangel.com/!
+* Element.extend can now take a tag name or array of tag names as its first argument to apply the given methods to specific tags.
+* Added "String#empty":http://prototypejs.org/api/string/empty, "String#blank":http://prototypejs.org/api/string/blank, "String#startsWith":http://prototypejs.org/api/string/startsWith, "String#endsWith":http://prototypejs.org/api/string/endsWith, "String#include":http://prototypejs.org/api/string/include, and "String#times":http://prototypejs.org/api/string/times.
+* Added "Number#toPaddedString":http://prototypejs.org/api/number/toPaddedString.
+* Added "Form#request":http://prototypejs.org/api/form/request, which uses the form's action and method attributes, along with its serialized parameters, to create an Ajax.Request.
+* Removed support for "throw $continue" in Enumerable iterators.  If you were using this in your scripts, please replace it with "return" instead.
+
+h3. Performance improvements
+
+* $$ is now blazing fast.  "Seriously -- try it out.":http://andrewdupont.net/test/double-dollar/  If you're using $$ at all, you owe it to yourself to upgrade!  Element#down, Element#up, Element#previous and Element#next received performance boosts too (along with everything else that uses Selector).
+* Element#getStyle and Element#setStyle are now faster.
+* Array#uniq is faster. "[#7417]":http://dev.rubyonrails.org/ticket/7417
+* String#escapeHTML now uses a cached div and text node, making it much faster. "[#6937]":http://dev.rubyonrails.org/ticket/6937
+* Enumerable iteration is faster now that it incurs only one try/catch block instead of two (as a result of removing support for $continue).
+
+The $$/Selector improvements come from "Andrew":http://andrewdupont.net/ and "Christophe's":http://tddsworld.com/en/ many hours of work, and were inspired by "Jack Slocum's":http://www.jackslocum.com/ "DomQuery":http://www.jackslocum.com/blog/2007/01/11/domquery-css-selector-basic-xpath-implementation-with-benchmarks/ and "Joe Hewitt's":http://www.joehewitt.com/ "CSS selector-to-XPath translation":http://www.joehewitt.com/blog/ive_noticed_tha.php.  Selector is now backed by XPath where available (Firefox and Opera 9), and is optimized to be 5x faster on average than the previous version in browsers without XPath.
+
+Thanks to everyone who contributed to this release!
+
+"Download Prototype 1.5.1_rc1":http://prototypejs.org/assets/2007/3/9/prototype.js
+
+

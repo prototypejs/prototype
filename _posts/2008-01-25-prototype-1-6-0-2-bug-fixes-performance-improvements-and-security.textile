@@ -1,0 +1,28 @@
+---
+layout: blog_archive
+author: Sam Stephenson
+author_url: http://conio.net/
+sections: Featured, blog
+title: "Prototype 1.6.0.2: Bug fixes, performance improvements, and security"
+---
+
+Today we're releasing "Prototype 1.6.0.2":http://prototypejs.org/download to address several compatibility and performance issues and to protect against a potential security issue for developers using Prototype outside of a web browser environment.
+
+
+Prototype 1.6.0.2 is a backwards-compatible, drop-in replacement recommended for all 1.6.0 users.  We've fixed 28 bugs and made over a dozen improvements to the code base, including performance improvements for CSS selectors in Safari 3 and for the @Element#up/#down/#next/#previous@ and @Event#findElement@ methods in all browsers.  We're also now officially supporting the Opera browser, version 9.25 and higher.  You can get the full scoop on all the changes in the "1.6.0.2 CHANGELOG":http://dev.rubyonrails.org/browser/spinoffs/prototype/tags/rel_1-6-0-2/CHANGELOG.
+
+Among the numerous bug fixes is a change to the way @Ajax.Request@ handles automatic JavaScript response evaluation.  Previous versions of Prototype relied on the browser's @XMLHttpRequest@ same-origin policy to ensure that response bodies with a content type of @text/javascript@ were safe to evaluate. "Alexey Feldgendler":http://my.opera.com/feldgendler/ from Opera kindly alerted us to the possibility that certain non-browser environments (like Opera's widget system) do not enforce the same-origin policy and as such may be subject to cross-domain script exploits.  To combat this we've added an @Ajax.Request#isSameOrigin@ method which returns true when a request is being made to the same domain, port, and protocol as the document.  Furthermore, Prototype will no longer automatically evaulate JavaScript response bodies when this method returns false.
+
+We've also backported the aforementioned security fix for those of you still using Prototype 1.5.  "Prototype 1.5.1.2":http://prototypejs.org/assets/2008/1/25/prototype-1.5.1.2.js is a backwards-compatible, drop-in replacement recommended for all 1.5.1 and 1.5.1.1 users.
+
+h3. Download, report bugs, and get help
+
+* "Download Prototype 1.6.0.2":http://prototypejs.org/assets/2008/1/25/prototype-1.6.0.2.js
+* "Submit bug reports":http://dev.rubyonrails.org/ to Rails Trac
+* "Get Prototype help":http://prototypejs.org/discuss on the rails-spinoffs mailing list or #prototype IRC channel
+* "Interact with the Core Team":http://groups.google.com/group/prototype-core on the prototype-core mailing list
+
+As always, thanks to the core team and the many users who contributed bug reports and well-tested patches for this release.
+
+
+

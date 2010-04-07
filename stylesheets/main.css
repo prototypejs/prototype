@@ -1,0 +1,177 @@
+/* The "section" class implicitly needs a clearfix; adding it here for convenience. */
+
+.section:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+
+.section {
+  zoom: 1;
+}
+
+body {
+  font-family: Verdana, sans-serif;
+  font-size: 82.5%;
+  line-height: 1.5em;
+  margin: 0;
+  padding: 0;
+}
+
+body * {
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+pre {
+ white-space: pre-wrap;       /* CSS 3                  */
+ white-space: -moz-pre-wrap;  /* Mozilla, since 1999    */
+ white-space: -pre-wrap;      /* Opera 4-6              */
+ white-space: -o-pre-wrap;    /* Opera 7                */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+a img {
+  border: 0;
+}
+
+ul, li {
+  list-style-type: none;
+}
+
+ol, ul {
+  margin: 0 0 15px;
+}
+
+code {
+  font-family: "Panic Sans", "Bitstream Vera Sans Mono", Monaco, Consolas, Andale Mono, monospace;
+  font-size: 12px;
+}
+
+#main a.img,
+#main a.img:link,
+#main a.img:visited {
+  border: 0;
+}
+
+#wrapper .dsq-comment-body blockquote {
+  font-style: italic;
+  border: 1px solid red;
+  margin: 0;
+  padding: 0;
+}
+
+/* MASTHEAD */
+
+#header {
+  padding: 1px 0px 1px 120px;
+  margin-top: 50px;
+  height: 75px;
+  background: url(../images/header-stripe-small.png) repeat-x;
+}
+
+#header h1 a {
+  text-decoration: none;
+}
+
+/* PAGE CONTENT */
+
+#main {
+  width: 595px;
+  margin: 30px 0 30px 120px;
+}
+
+#content a,
+#content a:link {
+  color: #036;
+  border-bottom: 1px solid #036;
+  text-decoration: none;
+}
+  
+#content a:visited {
+  border-bottom: 1px solid #bbb;
+}
+    
+#content ul,
+#content ol {
+  margin: 10px 0;
+}
+  
+#content li {
+}
+
+#content ul li {
+  list-style-type: disc;
+  margin: 5px 0 8px 20px;
+}
+
+#content p {
+  margin: 0 0 0.8em;
+}
+
+#content code {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  padding: 0 3px;
+}
+
+#content pre {
+  color: #333;
+  background-color: #f0f0ff;
+  border: 1px solid #dde;
+  padding: 3px 5px;
+  margin: 0 0 1em;
+}
+  
+#content pre code {
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+  line-height: 100%;
+}
+
+#content h1 {
+  font-size: 27px;
+  color: #000;
+  margin: 1.0em 0 0.6em;
+}
+
+#content h2 {
+  font-size: 23px;
+  color: #000;
+  margin: 1.0em 0 0.6em;
+}
+  
+#content h3 {
+  font-size: 20px;
+  color: #000;
+  margin: 1.0em 0 0.6em;
+}
+  
+#content h4 {
+  font-size: 17px;
+  color: #555;
+  margin: 1.0em 0 0.6em;
+}
+
+#content h5 {
+  font-size: 15px;
+  color: #2a2a2a;
+  margin: 1.0em 0 0.6em;
+}
+
+#content h6 {
+  font-size: 14px;
+  color: #000;
+  margin: 1.0em 0 0.6em;
+}

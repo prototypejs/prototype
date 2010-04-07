@@ -1,0 +1,65 @@
+---
+layout: blog_archive
+author: Sam Stephenson
+author_url: http://conio.net/
+sections: Featured, Releases, blog
+title: "Prototype 1.6.0, script.aculo.us 1.8.0, and the Bungee book now available"
+---
+
+The final versions of Prototype 1.6.0, script.aculo.us 1.8.0, and the _Prototype & script.aculo.us_ book are now available.  Prototype 1.6.0 is the most significant update to the framework since its inception over two years ago.  We're very excited about the changes in this release, and what better way to celebrate than with an update to script.aculo.us and a book covering all the new goodness?
+
+
+
+h3. Prototype 1.6.0 released
+
+This version of Prototype brings a number of major enhancements to the core APIs as well as the usual slew of bug fixes and performance optimizations.  For the full story, see the "CHANGELOG":http://dev.rubyonrails.org/browser/spinoffs/prototype/tags/rel_1-6-0/CHANGELOG and the release notes for "1.6.0_rc0":http://prototypejs.org/2007/8/15/prototype-1-6-0-release-candidate and "1.6.0_rc1":http://prototypejs.org/2007/10/16/prototype-1-6-0-rc1-changes-to-the-class-and-event-apis-hash-rewrite-and-bug-fixes.  API highlights include:
+
+* Ajax transport objects are now automatically wrapped in an <tt>Ajax.Response</tt> object.
+* <tt>Ajax.Response</tt> includes support for accessing JSON response bodies as JavaScript objects  via the <tt>responseJSON</tt> property.
+* The class API now includes full support for inheritance and superclass method calls. (See "Mislav's tutorial":http://prototypejs.org/learn/class-inheritance for more info.)
+* Class objects now have an <tt>addMethods</tt> method for adding instance methods after creation.
+* Elements can be created easily with the <tt>new Element(...)</tt> syntax.
+* <tt>Element#insert</tt> provides a unified API to DOM element and HTML fragment insertion.
+* <tt>Element#select</tt> is an alias for <tt>getElementsBySelector</tt> and is now the preferred way to find elements by class name.
+* <tt>Element#wrap</tt> lets you easily wrap an element inside another element in place.
+* <tt>Enumerable</tt> methods on <tt>Array</tt> are now backed by native <tt>Array#forEach</tt> implementations when possible.
+* <tt>Enumerable</tt> now has aliases for equivalent JavaScript 1.6 <tt>Array</tt> methods, and support for JavaScript 1.6's context parameter for automatic callback binding.
+* <tt>Enumerable#grep</tt> now calls the </tt>match</tt> method on its first argument, so you can use it to e.g. filter an array of DOM nodes by CSS selector.
+* Event objects are now automatically extended with instance methods, so you can write e.g. <tt>event.stop()</tt> instead of <tt>Event.stop(event)</tt>.
+* Prototype's event API now supports firing DOM-based custom events with <tt>Element#fire</tt>.
+* The new <tt>dom:loaded</tt> custom event fires when the entire document has loaded and is ready for manipulation.
+* <tt>Function#curry</tt> allows for partial application of function arguments.
+* <tt>Function#wrap</tt> facilitates simple aspect-oriented programming and provides the basis for Prototype's superclass method call mechanism.
+* <tt>Function#delay</tt> delays invocation of the function by the given number of seconds.
+* <tt>Function#defer</tt> schedules the function to run as soon as the interpreter is idle.
+* The <tt>Hash</tt> API has changed, and you must now use <tt>Hash#get</tt> and <tt>Hash#set</tt> instead of directly accessing properties on <tt>Hash</tt> instances.
+* <tt>String#interpolate</tt> is a shortcut for instantiating a <tt>Template</tt> from the string and calling <tt>evaluate</tt> on it.
+* Object properties can now be used in template replacement strings.
+
+h3. script.aculo.us 1.8.0 released
+
+script.aculo.us 1.8.0 is fully compatible with Prototype 1.6.0 and includes several improvements since the last version; see the "announcement on Thomas' blog":http://mir.aculo.us/2007/11/7/script-aculo-us-1-8-prototype-1-6-and-the-book-released for more details.  Here's what's new:
+
+* Complete rewrite of the in-place editing controls.
+* Full CSS inheritance support for <tt>Effect.Morph</tt>.
+* Support for tweening between two values of an element property or method call with <tt>Effect.Tween</tt>.
+* A new sound API for playing interface sound effect MP3s.
+* Numerous bug fixes and performance improvements.
+
+h3. _Prototype & script.aculo.us_ available in PDF
+
+Core contributor Christophe Porteneuve's book _Prototype & script.aculo.us_ is now "available for purchase from the Pragmatic Programmers":http://pragprog.com/titles/cppsu.  The "Bungee book" covers the final versions Prototype 1.6.0 and script.aculo.us 1.8.0, which is no small feat, considering many of the documented features were added in the five months since the book first went beta!  You can get the final PDF instantly for $22; paper copies are $34.95 and will be shipping in the next few weeks.  Every developer using Prototype and script.aculo.us will want to read this book.
+
+h3. One more thing...
+
+I'm pleased to announce that "Andrew Dupont":http://andrewdupont.net/ and "Tobie Langel":http://tobielangel.com/ now have commit privileges for Prototype trunk.  They've contributed an abundance of good judgment in the form of patches and community interaction since the core team was formed in January, and I know they'll be good keepers of the code.  Welcome, Andrew and Tobie!
+
+h3. Download, report bugs, and get help
+
+* "Download Prototype 1.6.0":http://prototypejs.org/assets/2007/11/6/prototype.js
+* "Submit bug reports":http://dev.rubyonrails.org/ to Rails Trac
+* "Get Prototype help":http://prototypejs.org/discuss on the rails-spinoffs mailing list or #prototype IRC channel
+* "Interact with the Core Team":http://groups.google.com/group/prototype-core on the prototype-core mailing list
+
+As always, thanks to the core team and the many contributors responsible for making this release possible.
+
