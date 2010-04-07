@@ -76,7 +76,13 @@ module PrototypeHelper
       :markdown_parser => :bluecloth,
       :repository_url => "http://github.com/sstephenson/prototype/blob/#{current_head}/",
       :pretty_urls => true,
-      :bust_cache => false
+      :bust_cache => false,
+      :name => 'Prototype JavaScript Framework',
+      :short_name => 'Prototype',
+      :home_url => 'http://prototypejs.org',
+      :doc_url => 'http://prototypejs.org/doc',
+      :version => PrototypeHelper::VERSION,
+      :copyright_notice => 'This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>.' 
     })
   end
   
