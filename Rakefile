@@ -74,7 +74,7 @@ module PrototypeHelper
       :index_page => 'README.markdown',
       :syntax_highlighter => syntax_highlighter,
       :markdown_parser => :bluecloth,
-      :repository_url => "http://github.com/sstephenson/prototype/tree/#{current_head}/",
+      :repository_url => "http://github.com/sstephenson/prototype/blob/#{current_head}/",
       :pretty_urls => true,
       :bust_cache => false
     })
@@ -186,7 +186,7 @@ module PrototypeHelper
   end
   
   def self.current_head
-    `git show-ref --hash HEAD`.chomp
+    `git show-ref --hash HEAD`.chomp[0..6]
   end
 end
 
