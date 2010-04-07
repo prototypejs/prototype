@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Prototype API documentation | $R</title>
+  <meta name="generator" content="PDoc" />
+  
+  <script type="text/javascript" src="../../javascripts/prototype.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../javascripts/application.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../javascripts/tabs.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../javascripts/item_index.js" charset="utf-8"></script>
+  
+  <link type="text/css" rel="stylesheet" href="../../stylesheets/api.css" charset="utf-8" media="screen, projection" />
+<link type="text/css" rel="stylesheet" href="../../stylesheets/pygments.css" charset="utf-8" media="screen, projection" />
+  
+  <script type="text/javascript">
+    PDoc.pathPrefix = '../../';
+  </script>
+</head>
+  <body>
+
+    <div id="sidebar">
+      <ul id="sidebar_tabs" class="sidebar-tabs">
+        <li>
+          <a href="#menu_pane">Menu</a>
+        </li>
+        <li>
+          <a href="#search_pane">Search</a>
+        </li>
+      </ul> <!-- .sidebar-tabs -->
+
+      <form class="search-ribbon">
+        <label>
+          <span class="hidden">Search</span>
+          <input type="text" id="search" size="20" title="Search" />
+        </label>
+      </form>
+      
+      <div class="sidebar-pane scrollable" id="menu_pane">
+        <ul id="api_menu" class="menu-items">
+            <li><div class="menu-item"><a class="section" href="../../ajax/index.html" title="Ajax section">Ajax section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="namespace" href="../../ajax/ajax/index.html" title="Ajax (namespace)">Ajax</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../ajax/ajax/periodicalupdater/index.html" title="Ajax.PeriodicalUpdater (class)">Ajax.PeriodicalUpdater</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../ajax/ajax/request/index.html" title="Ajax.Request (class)">Ajax.Request</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../ajax/ajax/responders/index.html" title="Ajax.Responders (namespace)">Ajax.Responders</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../ajax/ajax/response/index.html" title="Ajax.Response (class)">Ajax.Response</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../ajax/ajax/updater/index.html" title="Ajax.Updater (class)">Ajax.Updater</a></div><ul class=""></ul></li></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section" href="../../dom/index.html" title="DOM section">DOM section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../dom/dollar/index.html" title="$ (utility)">$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../dom/dollardollar/index.html" title="$$ (utility)">$$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../dom/dollarf/index.html" title="$F (utility)">$F</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../dom/abstract/index.html" title="Abstract (namespace)">Abstract</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../dom/abstract/eventobserver/index.html" title="Abstract.EventObserver (class)">Abstract.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/abstract/timedobserver/index.html" title="Abstract.TimedObserver (class)">Abstract.TimedObserver</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../dom/document/index.html" title="document (namespace)">document</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../dom/document/viewport/index.html" title="document.viewport (namespace)">document.viewport</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/element/index.html" title="Element (class)">Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../dom/element/layout/index.html" title="Element.Layout (class)">Element.Layout</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../dom/element/methods/index.html" title="Element.Methods (mixin)">Element.Methods</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/element/offset/index.html" title="Element.Offset (class)">Element.Offset</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/event/index.html" title="Event (class)">Event</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../dom/event/handler/index.html" title="Event.Handler (class)">Event.Handler</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../dom/form/index.html" title="Form (namespace)">Form</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../dom/form/element/index.html" title="Form.Element (namespace)">Form.Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../dom/form/element/eventobserver/index.html" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/form/element/observer/index.html" title="Form.Element.Observer (class)">Form.Element.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/form/eventobserver/index.html" title="Form.EventObserver (class)">Form.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/form/observer/index.html" title="Form.Observer (class)">Form.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class deprecated" href="../../dom/selector/index.html" title="Selector (class)">Selector</a></div><ul class=""></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section current-parent" href="../../language/index.html" title="Language section">Language section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../language/dollara/index.html" title="$A (utility)">$A</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../language/dollarh/index.html" title="$H (utility)">$H</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility current" href="../../language/dollarr/index.html" title="$R (utility)">$R</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../language/dollarw/index.html" title="$w (utility)">$w</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/array/index.html" title="Array (class)">Array</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/class/index.html" title="Class (class)">Class</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/date/index.html" title="Date (class)">Date</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../language/enumerable/index.html" title="Enumerable (mixin)">Enumerable</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/function/index.html" title="Function (class)">Function</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/hash/index.html" title="Hash (class)">Hash</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/number/index.html" title="Number (class)">Number</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/object/index.html" title="Object (class)">Object</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/objectrange/index.html" title="ObjectRange (class)">ObjectRange</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/periodicalexecuter/index.html" title="PeriodicalExecuter (class)">PeriodicalExecuter</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../language/prototype/index.html" title="Prototype (namespace)">Prototype</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../language/prototype/browser/index.html" title="Prototype.Browser (namespace)">Prototype.Browser</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../language/prototype/browserfeatures/index.html" title="Prototype.BrowserFeatures (namespace)">Prototype.BrowserFeatures</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../language/prototype/selector/index.html" title="Prototype.Selector (namespace)">Prototype.Selector</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/regexp/index.html" title="RegExp (class)">RegExp</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/string/index.html" title="String (class)">String</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/template/index.html" title="Template (class)">Template</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../language/try/index.html" title="Try (namespace)">Try</a></div><ul class=""></ul></li></ul><ul></ul></li>
+        </ul> <!--- #api_menu =-->
+      </div> <!-- .sidebar-pane -->
+      <div class="sidebar-pane" id="search_pane">
+        <ul id="search_results" class="search-results menu-items scrollable"></ul>
+      </div> <!-- .sidebar-pane -->
+    </div> <!-- #sidebar -->
+
+    <div id="page">
+
+      <div id="main" class="page-content">
+        
+
+
+<ul class="breadcrumbs clearfix">
+  <li><a href="../../">Home</a></li>
+    <li>&rarr; <a href="../../language/index.html" title="Language section">Language section</a></li>
+    <li>&rarr; <a href="../../language/dollarr/index.html" title="$R (utility)">$R</a></li>
+</ul>
+
+  <p id="src_code_href"><a href="http://github.com/sstephenson/prototype/tree/2f9bde3ad5a2e3dd104c812b6c81f4077fe0aa1e/#LID81">src code</a></p>
+
+<h2 class="page-title">
+  <span class="type">utility</span> $R
+</h2>
+
+
+
+
+<div class="section">
+  <div class="section-title">
+  </div> <!-- .section-title -->
+  <div class="section-content">
+    <div class="method-description">
+        <pre class="syntax"><code class="ebnf">$R(start, end[, exclusive = false]) &rarr; <a href="../../language/objectrange/index.html" title="ObjectRange (class)">ObjectRange</a></code></pre>
+
+
+      <p>Creates a new <code><a href="../../language/objectrange/index.html" title="ObjectRange (class)">ObjectRange</a></code> object. This method is a convenience wrapper
+around the <code><a href="../../language/objectrange/index.html" title="ObjectRange (class)">ObjectRange</a></code> constructor, but <code><a href="../../language/dollarr/index.html" title="$R (utility)">$R</a></code> is the preferred alias.</p>
+
+<p><code><a href="../../language/objectrange/index.html" title="ObjectRange (class)">ObjectRange</a></code> instances represent a range of consecutive values, be they
+numerical, textual, or of another type that semantically supports value
+ranges. See the type's documentation for further details, and to discover
+how your own objects can support value ranges.</p>
+
+<p>The <code><a href="../../language/dollarr/index.html" title="$R (utility)">$R</a></code> function takes exactly the same arguments as the original
+constructor: the <strong>lower and upper bounds</strong> (value of the same, proper
+type), and <strong>whether the upper bound is exclusive</strong> or not. By default, the
+upper bound is inclusive.</p>
+
+<h5>Examples</h5>
+
+<div class="highlight"><pre><span class="nx">$R</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">10</span><span class="p">).</span><span class="nx">include</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="c">// -&gt; true</span>
+ <span class="nx">$A</span><span class="p">(</span><span class="nx">$R</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">5</span><span class="p">)).</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span>
+<span class="c">// -&gt; &#39;0, 1, 2, 3, 4, 5&#39;</span>
+ <span class="nx">$A</span><span class="p">(</span><span class="nx">$R</span><span class="p">(</span><span class="s1">&#39;aa&#39;</span><span class="o">,</span> <span class="s1">&#39;ah&#39;</span><span class="p">)).</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span>
+<span class="c">// -&gt; &#39;aa, ab, ac, ad, ae, af, ag, ah&#39;</span>
+ <span class="nx">$R</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">10</span><span class="o">,</span> <span class="kc">true</span><span class="p">).</span><span class="nx">include</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="c">// -&gt; false</span>
+ <span class="nx">$R</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">10</span><span class="o">,</span> <span class="kc">true</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c">// invoked 10 times for value = 0 to 9</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+<p>Note that <code><a href="../../language/objectrange/index.html" title="ObjectRange (class)">ObjectRange</a></code> mixes in the <code><a href="../../language/enumerable/index.html" title="Enumerable (mixin)">Enumerable</a></code> module: this makes it
+easy to convert a range to an <code><a href="../../language/array/index.html" title="Array (class)">Array</a></code> (<code><a href="../../language/enumerable/index.html" title="Enumerable (mixin)">Enumerable</a></code> provides the
+<code><a href="../../language/enumerable/prototype/toarray/index.html" title="Enumerable#toArray (instance method)">Enumerable#toArray</a></code> method, which makes the <code><a href="../../language/dollara/index.html" title="$A (utility)">$A</a></code> conversion
+straightforward), or to iterate through values. (Note, however, that getting
+the bounds back will be more efficiently done using the
+<code><a href="../../language/objectrange/prototype/start/index.html" title="ObjectRange#start (instance property)">ObjectRange#start</a></code> and <code><a href="../../language/objectrange/prototype/end/index.html" title="ObjectRange#end (instance property)">ObjectRange#end</a></code> properties than calling the
+<code><a href="../../language/enumerable/prototype/min/index.html" title="Enumerable#min (instance method)">Enumerable#min</a></code> and <code><a href="../../language/enumerable/prototype/max/index.html" title="Enumerable#max (instance method)">Enumerable#max</a></code> methods).</p>
+
+<h5>Warning</h5>
+
+<p><strong>Be careful with <code><a href="../../language/string/index.html" title="String (class)">String</a></code> ranges</strong>: as described in its <code><a href="../../language/string/prototype/succ/index.html" title="String#succ (instance method)">String#succ</a></code>
+method, it does not use alphabetical boundaries, but goes all the way
+through the character table:</p>
+
+<div class="highlight"><pre><span class="nx">$A</span><span class="p">(</span><span class="nx">$R</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="o">,</span> <span class="s1">&#39;e&#39;</span><span class="p">))</span>
+<span class="c">// -&gt; [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;], no surprise there</span>
+ <span class="nx">$A</span><span class="p">(</span><span class="nx">$R</span><span class="p">(</span><span class="s1">&#39;ax&#39;</span><span class="o">,</span> <span class="s1">&#39;ba&#39;</span><span class="p">))</span>
+<span class="c">// -&gt; Ouch! Humongous array, starting as [&#39;ax&#39;, &#39;ay&#39;, &#39;az&#39;, &#39;a{&#39;, &#39;a|&#39;, &#39;a}&#39;, &#39;a~&#39;...]</span>
+</pre>
+</div>
+
+<p>See <code><a href="../../language/objectrange/index.html" title="ObjectRange (class)">ObjectRange</a></code> for more information.</p>
+      
+      
+
+
+      
+    </div>
+  </div> <!-- .section-content -->
+</div> <!-- .section -->
+
+      </div> <!-- #main -->
+      
+      <div id="footer">
+        <p><a href="http://prototypejs.org">Prototype JavaScript Framework</a> API documentation.</p>
+        <p>Last updated on April 07, 2010 at 03:39 UTC. Generated by <a href="http://pdoc.org">PDoc</a>. Uses <a href="http://famfamfam.com/lab/icons/silk/" title="famfamfam.com: Silk Icons">Silk Icons</a> and portions of <a href="http://github.com/280north/aristo/tree/master" title="280north's aristo at master - GitHub">Aristo</a>. Licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>.</p>
+      </div> <!-- #footer -->
+
+    </div> <!-- #page -->
+  </body>
+</html>
