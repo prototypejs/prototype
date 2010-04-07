@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Prototype  v1.6.1 API documentation | Event#isLeftClick</title>
+  <meta name="generator" content="PDoc" />
+  
+  <script type="text/javascript" src="../../../../javascripts/prototype.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../../javascripts/application.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../../javascripts/tabs.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../../javascripts/item_index.js" charset="utf-8"></script>
+  
+  <link type="text/css" rel="stylesheet" href="../../../../stylesheets/api.css" charset="utf-8" media="screen, projection" />
+<link type="text/css" rel="stylesheet" href="../../../../stylesheets/pygments.css" charset="utf-8" media="screen, projection" />
+  
+  <script type="text/javascript">
+    PDoc.pathPrefix = '../../../../';
+  </script>
+</head>
+  <body>
+
+    <div id="sidebar">
+      <ul id="sidebar_tabs" class="sidebar-tabs">
+        <li>
+          <a href="#menu_pane">Menu</a>
+        </li>
+        <li>
+          <a href="#search_pane">Search</a>
+        </li>
+      </ul> <!-- .sidebar-tabs -->
+
+      <form class="search-ribbon">
+        <label>
+          <span class="hidden">Search</span>
+          <input type="text" id="search" size="20" title="Search" />
+        </label>
+      </form>
+      
+      <div class="sidebar-pane scrollable" id="menu_pane">
+        <ul id="api_menu" class="menu-items">
+            <li><div class="menu-item"><a class="section" href="../../../../ajax" title="Ajax section">Ajax section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="namespace" href="../../../../ajax/ajax" title="Ajax (namespace)">Ajax</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../ajax/ajax/periodicalupdater" title="Ajax.PeriodicalUpdater (class)">Ajax.PeriodicalUpdater</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../ajax/ajax/request" title="Ajax.Request (class)">Ajax.Request</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../ajax/ajax/responders" title="Ajax.Responders (namespace)">Ajax.Responders</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../ajax/ajax/response" title="Ajax.Response (class)">Ajax.Response</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../ajax/ajax/updater" title="Ajax.Updater (class)">Ajax.Updater</a></div><ul class=""></ul></li></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section current-parent" href="../../../../dom" title="DOM section">DOM section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../../dom/dollar" title="$ (utility)">$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../dom/dollarf" title="$F (utility)">$F</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../dom/abstract" title="Abstract (namespace)">Abstract</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../dom/abstract/eventobserver" title="Abstract.EventObserver (class)">Abstract.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/abstract/timedobserver" title="Abstract.TimedObserver (class)">Abstract.TimedObserver</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../dom/document" title="document (namespace)">document</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../../dom/document/viewport" title="document.viewport (namespace)">document.viewport</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/element" title="Element (class)">Element</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class current-parent" href="../../../../dom/event" title="Event (class)">Event</a></div><ul class=""></ul><ul><li><div class="menu-item"><a class="class-method deprecated" href="../../../../dom/event/element" title="Event.element (class method)">element</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/event/findelement" title="Event.findElement (class method)">findElement</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/event/fire" title="Event.fire (class method)">fire</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/event/isleftclick" title="Event.isLeftClick (class method)">isLeftClick</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/event/ismiddleclick" title="Event.isMiddleClick (class method)">isMiddleClick</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/event/isrightclick" title="Event.isRightClick (class method)">isRightClick</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/event/observe" title="Event.observe (class method)">observe</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/event/pointer" title="Event.pointer (class method)">pointer</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/event/pointerx" title="Event.pointerX (class method)">pointerX</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/event/pointery" title="Event.pointerY (class method)">pointerY</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/event/stop" title="Event.stop (class method)">stop</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/event/stopobserving" title="Event.stopObserving (class method)">stopObserving</a></div></li>
+<li><div class="menu-item"><a class="instance-method deprecated" href="../../../../dom/event/prototype/element" title="Event#element (instance method)">element</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/event/prototype/findelement" title="Event#findElement (instance method)">findElement</a></div></li>
+<li><div class="menu-item"><a class="instance-method current" href="../../../../dom/event/prototype/isleftclick" title="Event#isLeftClick (instance method)">isLeftClick</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/event/prototype/ismiddleclick" title="Event#isMiddleClick (instance method)">isMiddleClick</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/event/prototype/isrightclick" title="Event#isRightClick (instance method)">isRightClick</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/event/prototype/pointer" title="Event#pointer (instance method)">pointer</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/event/prototype/pointerx" title="Event#pointerX (instance method)">pointerX</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/event/prototype/pointery" title="Event#pointerY (instance method)">pointerY</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/event/prototype/stop" title="Event#stop (instance method)">stop</a></div></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../dom/form" title="Form (namespace)">Form</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../../dom/form/element" title="Form.Element (namespace)">Form.Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../dom/form/element/eventobserver" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/form/element/eventobserver" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/form/element/observer" title="Form.Element.Observer (class)">Form.Element.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/form/observer" title="Form.Observer (class)">Form.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/selector" title="Selector (class)">Selector</a></div><ul class=""></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section" href="../../../../language" title="Language section">Language section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../../language/dollara" title="$A (utility)">$A</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../language/dollarh" title="$H (utility)">$H</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../language/dollarr" title="$R (utility)">$R</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../language/dollarw" title="$w (utility)">$w</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/array" title="Array (class)">Array</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../language/class" title="Class (namespace)">Class</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/date" title="Date (class)">Date</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../../../language/enumerable" title="Enumerable (mixin)">Enumerable</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/function" title="Function (class)">Function</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/hash" title="Hash (class)">Hash</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/number" title="Number (class)">Number</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/object" title="Object (class)">Object</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/objectrange" title="ObjectRange (class)">ObjectRange</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/periodicalexecuter" title="PeriodicalExecuter (class)">PeriodicalExecuter</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/regexp" title="RegExp (class)">RegExp</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/string" title="String (class)">String</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/template" title="Template (class)">Template</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../language/try" title="Try (namespace)">Try</a></div><ul class=""></ul></li></ul></li>
+        </ul> <!--- #api_menu =-->
+      </div> <!-- .sidebar-pane -->
+      <div class="sidebar-pane" id="search_pane">
+        <ul id="search_results" class="search-results menu-items scrollable"></ul>
+      </div> <!-- .sidebar-pane -->
+    </div> <!-- #sidebar -->
+
+    <div id="page">
+
+      <div id="main" class="page-content">
+        
+
+
+<ul class="breadcrumbs clearfix">
+  <li><a href="../../../../">Home</a></li>
+    <li>&rarr; <a href="../../../../dom" title="DOM section">DOM section</a></li>
+    <li>&rarr; <a href="../../../../dom/event" title="Event (class)">Event</a></li>
+    <li>&rarr; <a href="../../../../dom/event/prototype/isleftclick" title="Event#isLeftClick (instance method)">isLeftClick</a></li>
+</ul>
+
+  <p id="src_code_href"><a href="http://github.com/sstephenson/prototype/blob/f405b2c/prototype/src/dom/event.js#LID90">src code</a></p>
+
+<h2 class="page-title">
+  <span class="type">instance method</span> Event#isLeftClick
+</h2>
+
+
+
+
+<div class="section">
+  <div class="section-title">
+  </div> <!-- .section-title -->
+  <div class="section-content">
+    <div class="method-description">
+        <pre class="syntax"><code class="ebnf">Event#isLeftClick() &rarr; Boolean</code></pre>
+
+
+      <p>Determines whether a button-related mouse event involved the left
+mouse button.</p>
+
+<p>Keep in mind that the "left" mouse button is actually the "primary" mouse
+button. When a mouse is in left-handed mode, the browser will report
+clicks of the <em>right</em> button as "left-clicks."</p>
+      
+      
+
+
+        <p class="note">
+    This method can be called <em>either</em> as an instance method <em>or</em> as a <a href="../../../../dom/event/isleftclick">generic method</a>.
+  If calling as a generic, pass the instance in as the first argument.<p>
+
+    </div>
+  </div> <!-- .section-content -->
+</div> <!-- .section -->
+
+      </div> <!-- #main -->
+      
+      <div id="footer">
+        <p><a href="http://prototypejs.org">Prototype JavaScript Framework  v1.6.1</a> API documentation.</p>
+        <p>Last updated on April 07, 2010 at 16:01 UTC. Generated by <a href="http://pdoc.org">PDoc</a>. Uses <a href="http://famfamfam.com/lab/icons/silk/" title="famfamfam.com: Silk Icons">Silk Icons</a> and portions of <a href="http://github.com/280north/aristo/tree/master" title="280north's aristo at master - GitHub">Aristo</a>.</p>
+        <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>.</p>
+      </div> <!-- #footer -->
+
+    </div> <!-- #page -->
+  </body>
+</html>

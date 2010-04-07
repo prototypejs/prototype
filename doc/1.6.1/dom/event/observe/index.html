@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Prototype  v1.6.1 API documentation | Event.observe</title>
+  <meta name="generator" content="PDoc" />
+  
+  <script type="text/javascript" src="../../../javascripts/prototype.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../javascripts/application.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../javascripts/tabs.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../javascripts/item_index.js" charset="utf-8"></script>
+  
+  <link type="text/css" rel="stylesheet" href="../../../stylesheets/api.css" charset="utf-8" media="screen, projection" />
+<link type="text/css" rel="stylesheet" href="../../../stylesheets/pygments.css" charset="utf-8" media="screen, projection" />
+  
+  <script type="text/javascript">
+    PDoc.pathPrefix = '../../../';
+  </script>
+</head>
+  <body>
+
+    <div id="sidebar">
+      <ul id="sidebar_tabs" class="sidebar-tabs">
+        <li>
+          <a href="#menu_pane">Menu</a>
+        </li>
+        <li>
+          <a href="#search_pane">Search</a>
+        </li>
+      </ul> <!-- .sidebar-tabs -->
+
+      <form class="search-ribbon">
+        <label>
+          <span class="hidden">Search</span>
+          <input type="text" id="search" size="20" title="Search" />
+        </label>
+      </form>
+      
+      <div class="sidebar-pane scrollable" id="menu_pane">
+        <ul id="api_menu" class="menu-items">
+            <li><div class="menu-item"><a class="section" href="../../../ajax" title="Ajax section">Ajax section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="namespace" href="../../../ajax/ajax" title="Ajax (namespace)">Ajax</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../ajax/ajax/periodicalupdater" title="Ajax.PeriodicalUpdater (class)">Ajax.PeriodicalUpdater</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../ajax/ajax/request" title="Ajax.Request (class)">Ajax.Request</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../ajax/ajax/responders" title="Ajax.Responders (namespace)">Ajax.Responders</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../ajax/ajax/response" title="Ajax.Response (class)">Ajax.Response</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../ajax/ajax/updater" title="Ajax.Updater (class)">Ajax.Updater</a></div><ul class=""></ul></li></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section current-parent" href="../../../dom" title="DOM section">DOM section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../dom/dollar" title="$ (utility)">$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../dom/dollarf" title="$F (utility)">$F</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../dom/abstract" title="Abstract (namespace)">Abstract</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../dom/abstract/eventobserver" title="Abstract.EventObserver (class)">Abstract.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/abstract/timedobserver" title="Abstract.TimedObserver (class)">Abstract.TimedObserver</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../dom/document" title="document (namespace)">document</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../dom/document/viewport" title="document.viewport (namespace)">document.viewport</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/element" title="Element (class)">Element</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class current-parent" href="../../../dom/event" title="Event (class)">Event</a></div><ul class=""></ul><ul><li><div class="menu-item"><a class="class-method deprecated" href="../../../dom/event/element" title="Event.element (class method)">element</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../dom/event/findelement" title="Event.findElement (class method)">findElement</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../dom/event/fire" title="Event.fire (class method)">fire</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../dom/event/isleftclick" title="Event.isLeftClick (class method)">isLeftClick</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../dom/event/ismiddleclick" title="Event.isMiddleClick (class method)">isMiddleClick</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../dom/event/isrightclick" title="Event.isRightClick (class method)">isRightClick</a></div></li>
+<li><div class="menu-item"><a class="class-method current" href="../../../dom/event/observe" title="Event.observe (class method)">observe</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../dom/event/pointer" title="Event.pointer (class method)">pointer</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../dom/event/pointerx" title="Event.pointerX (class method)">pointerX</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../dom/event/pointery" title="Event.pointerY (class method)">pointerY</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../dom/event/stop" title="Event.stop (class method)">stop</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../dom/event/stopobserving" title="Event.stopObserving (class method)">stopObserving</a></div></li>
+<li><div class="menu-item"><a class="instance-method deprecated" href="../../../dom/event/prototype/element" title="Event#element (instance method)">element</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../dom/event/prototype/findelement" title="Event#findElement (instance method)">findElement</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../dom/event/prototype/isleftclick" title="Event#isLeftClick (instance method)">isLeftClick</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../dom/event/prototype/ismiddleclick" title="Event#isMiddleClick (instance method)">isMiddleClick</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../dom/event/prototype/isrightclick" title="Event#isRightClick (instance method)">isRightClick</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../dom/event/prototype/pointer" title="Event#pointer (instance method)">pointer</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../dom/event/prototype/pointerx" title="Event#pointerX (instance method)">pointerX</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../dom/event/prototype/pointery" title="Event#pointerY (instance method)">pointerY</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../dom/event/prototype/stop" title="Event#stop (instance method)">stop</a></div></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../dom/form" title="Form (namespace)">Form</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../dom/form/element" title="Form.Element (namespace)">Form.Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../dom/form/element/eventobserver" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/form/element/eventobserver" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/form/element/observer" title="Form.Element.Observer (class)">Form.Element.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/form/observer" title="Form.Observer (class)">Form.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/selector" title="Selector (class)">Selector</a></div><ul class=""></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section" href="../../../language" title="Language section">Language section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../language/dollara" title="$A (utility)">$A</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../language/dollarh" title="$H (utility)">$H</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../language/dollarr" title="$R (utility)">$R</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../language/dollarw" title="$w (utility)">$w</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/array" title="Array (class)">Array</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../language/class" title="Class (namespace)">Class</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/date" title="Date (class)">Date</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../../language/enumerable" title="Enumerable (mixin)">Enumerable</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/function" title="Function (class)">Function</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/hash" title="Hash (class)">Hash</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/number" title="Number (class)">Number</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/object" title="Object (class)">Object</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/objectrange" title="ObjectRange (class)">ObjectRange</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/periodicalexecuter" title="PeriodicalExecuter (class)">PeriodicalExecuter</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/regexp" title="RegExp (class)">RegExp</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/string" title="String (class)">String</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/template" title="Template (class)">Template</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../language/try" title="Try (namespace)">Try</a></div><ul class=""></ul></li></ul></li>
+        </ul> <!--- #api_menu =-->
+      </div> <!-- .sidebar-pane -->
+      <div class="sidebar-pane" id="search_pane">
+        <ul id="search_results" class="search-results menu-items scrollable"></ul>
+      </div> <!-- .sidebar-pane -->
+    </div> <!-- #sidebar -->
+
+    <div id="page">
+
+      <div id="main" class="page-content">
+        
+
+
+<ul class="breadcrumbs clearfix">
+  <li><a href="../../../">Home</a></li>
+    <li>&rarr; <a href="../../../dom" title="DOM section">DOM section</a></li>
+    <li>&rarr; <a href="../../../dom/event" title="Event (class)">Event</a></li>
+    <li>&rarr; <a href="../../../dom/event/observe" title="Event.observe (class method)">observe</a></li>
+</ul>
+
+  <p id="src_code_href"><a href="http://github.com/sstephenson/prototype/blob/f405b2c/prototype/src/dom/event.js#LID531">src code</a></p>
+
+<h2 class="page-title">
+  <span class="type">class method</span> Event.observe
+</h2>
+
+
+
+
+<div class="section">
+  <div class="section-title">
+  </div> <!-- .section-title -->
+  <div class="section-content">
+    <div class="method-description">
+        <pre class="syntax"><code class="ebnf">Event.observe(element, eventName, handler) &rarr; <a href="../../../dom/element" title="Element (class)">Element</a></code></pre>
+  <ul class="argument-list">
+      <li>
+        <code class="argument-name">element</code>
+          <span class="argument-types">(<code><a href="../../../dom/element" title="Element (class)">Element</a></code> | <code><a href="../../../language/string" title="String (class)">String</a></code>)</span>
+         &ndash; The DOM element to observe, or its ID.
+      </li>
+      <li>
+        <code class="argument-name">eventName</code>
+          <span class="argument-types">(<code><a href="../../../language/string" title="String (class)">String</a></code>)</span>
+         &ndash; The name of the event, in all lower case, without the "on" prefix&nbsp;&mdash; e.g., "click" (not "onclick").
+      </li>
+      <li>
+        <code class="argument-name">handler</code>
+          <span class="argument-types">(<code><a href="../../../language/function" title="Function (class)">Function</a></code>)</span>
+         &ndash; The function to call when the event occurs.
+      </li>
+  </ul> <!-- .argument-list -->
+
+
+      <p>Registers an event handler on a DOM element. Aliased as <code><a href="../../../dom/element/prototype/observe" title="Element#observe (instance method)">Element#observe</a></code>.</p>
+
+<p><code>Event.observe</code> smooths out a variety of differences between browsers and provides
+some handy additional features as well. Key features in brief:</p>
+
+<ul>
+<li>Several handlers can be registered for the same event on the same element.</li>
+<li>Prototype figures out whether to use <code>addEventListener</code> (W3C standard) or
+<code>attachEvent</code> (MSIE); you don't have to worry about it.</li>
+<li>The handler is passed an <em>extended</em> <code><a href="../../../dom/event" title="Event (class)">Event</a></code> object (even on MSIE).</li>
+<li>The handler's context (<code>this</code> value) is set to the extended element being observed
+(even if the event actually occurred on a descendent element and bubbled up).</li>
+<li>Prototype handles cleaning up the handler when leaving the page (important for MSIE memory
+leak prevention).</li>
+<li><code>observe</code> makes it possible to stop observing the event easily via <code><a href="../../../dom/event/stopobserving" title="Event.stopObserving (class method)">Event.stopObserving</a></code>.</li>
+</ul>
+
+<p>Although you can use <code>Event.observe</code> directly and there are times when that's the most
+convenient or direct way, it's more common to use its alias <code><a href="../../../dom/element/prototype/observe" title="Element#observe (instance method)">Element#observe</a></code>. These two
+statements have the same effect:</p>
+
+<div class="highlight"><pre><span class="nx">Event</span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="o">,</span> <span class="s1">&#39;click&#39;</span><span class="o">,</span> <span class="nx">myHandler</span><span class="p">);</span>
+<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">).</span><span class="nx">observe</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="o">,</span> <span class="nx">myHandler</span><span class="p">);</span>
+</pre>
+</div>
+
+<p>The examples in this documentation use the <code><a href="../../../dom/element/prototype/observe" title="Element#observe (instance method)">Element#observe</a></code> form.</p>
+
+<h4>The Handler</h4>
+
+<p>Signature:</p>
+
+<div class="highlight"><pre><span class="kd">function</span> <span class="nx">handler</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c">// `this` = the element being observed</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+<p>So for example, this will turn the background of the element 'foo' blue when it's clicked:</p>
+
+<div class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">).</span><span class="nx">observe</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="o">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">setStyle</span><span class="p">({</span><span class="nx">backgroundColor</span><span class="o">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">});</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+<p>Note that we used <code>this</code> to refer to the element, and that we received the <code>event</code> object
+as a parameter (even on MSIE).</p>
+
+<h4>It's All About Timing</h4>
+
+<p>One of the most common errors trying to observe events is trying to do it before the element
+exists in the DOM. Don't try to observe elements until after the
+<a href="../../../dom/document/observe">dom:loaded</a> event or <code>window</code> <code>load</code> event has been fired.</p>
+
+<h4>Preventing the Default Event Action and Bubbling</h4>
+
+<p>If we want to stop the event (e.g., prevent its default action and stop it bubbling), we can
+do so with the extended event object's <code><a href="../../../dom/event/prototype/stop" title="Event#stop (instance method)">Event#stop</a></code> method:</p>
+
+<div class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">).</span><span class="nx">observe</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="o">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">event</span><span class="p">.</span><span class="nx">stop</span><span class="p">();</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+<h4>Finding the Element Where the Event Occurred</h4>
+
+<p>Since most events bubble from descendant elements up through the hierarchy until they're
+handled, we can observe an event on a container rather than individual elements within the
+container. This is sometimes called "event delegation". It's particularly handy for tables:</p>
+
+<div class="highlight"><pre><span class="o">&lt;</span><span class="nx">table</span> <span class="nx">id</span><span class="o">=</span><span class="s1">&#39;records&#39;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="nx">thead</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">tr</span><span class="o">&gt;&lt;</span><span class="nx">th</span> <span class="nx">colspan</span><span class="o">=</span><span class="s1">&#39;2&#39;</span><span class="o">&gt;</span><span class="nx">No</span> <span class="nx">record</span> <span class="nx">clicked</span><span class="o">&lt;/</span><span class="nx">th</span><span class="o">&gt;&lt;/</span><span class="nx">tr</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="nx">thead</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="nx">tbody</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">tr</span> <span class="nx">data</span><span class="o">-</span><span class="nx">recnum</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="o">&gt;&lt;</span><span class="nx">td</span><span class="o">&gt;</span><span class="mi">1</span><span class="o">&lt;/</span><span class="nx">td</span><span class="o">&gt;&lt;</span><span class="nx">td</span><span class="o">&gt;</span><span class="nx">First</span> <span class="nx">record</span><span class="o">&lt;/</span><span class="nx">td</span><span class="o">&gt;&lt;/</span><span class="nx">tr</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">tr</span> <span class="nx">data</span><span class="o">-</span><span class="nx">recnum</span><span class="o">=</span><span class="s1">&#39;2&#39;</span><span class="o">&gt;&lt;</span><span class="nx">td</span><span class="o">&gt;</span><span class="mi">2</span><span class="o">&lt;/</span><span class="nx">td</span><span class="o">&gt;&lt;</span><span class="nx">td</span><span class="o">&gt;</span><span class="nx">Second</span> <span class="nx">record</span><span class="o">&lt;/</span><span class="nx">td</span><span class="o">&gt;&lt;/</span><span class="nx">tr</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">tr</span> <span class="nx">data</span><span class="o">-</span><span class="nx">recnum</span><span class="o">=</span><span class="s1">&#39;3&#39;</span><span class="o">&gt;&lt;</span><span class="nx">td</span><span class="o">&gt;</span><span class="mi">3</span><span class="o">&lt;/</span><span class="nx">td</span><span class="o">&gt;&lt;</span><span class="nx">td</span><span class="o">&gt;</span><span class="nx">Third</span> <span class="nx">record</span><span class="o">&lt;/</span><span class="nx">td</span><span class="o">&gt;&lt;/</span><span class="nx">tr</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="nx">tbody</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="nx">table</span><span class="o">&gt;</span>
+</pre>
+</div>
+
+<p>Instead of observing each cell or row, we can simply observe the table:</p>
+
+<div class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;records&#39;</span><span class="p">).</span><span class="nx">observe</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="o">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">clickedRow</span><span class="o">;</span>
+  <span class="nx">clickedRow</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">findElement</span><span class="p">(</span><span class="s1">&#39;tr&#39;</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">clickedRow</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;th&#39;</span><span class="p">).</span><span class="nx">update</span><span class="p">(</span><span class="s2">&quot;You clicked record #&quot;</span> <span class="o">+</span> <span class="nx">clickedRow</span><span class="p">.</span><span class="nx">readAttribute</span><span class="p">(</span><span class="s2">&quot;data-recnum&quot;</span><span class="p">));</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+<p>When any row in the table is clicked, we update the table's first header cell saying which
+record was clicked. <code><a href="../../../dom/event/prototype/findelement" title="Event#findElement (instance method)">Event#findElement</a></code> finds the row that was clicked, and <code>this</code> refers
+to the table we were observing.</p>
+
+<h4>Stopping Observing the Event</h4>
+
+<p>If we don't need to observe the event anymore, we can stop observing it with
+<code><a href="../../../dom/event/stopobserving" title="Event.stopObserving (class method)">Event.stopObserving</a></code> (aka <code><a href="../../../dom/element/prototype/stopobserving" title="Element#stopObserving (instance method)">Element#stopObserving</a></code>).</p>
+
+<h4>Using an Instance Method as a Handler</h4>
+
+<p>If we want to use an instance method as a handler, we will probably want to use
+<code><a href="../../../language/function/prototype/bind" title="Function#bind (instance method)">Function#bind</a></code> to set the handler's context; otherwise, the context will be lost and
+<code>this</code> won't mean what we expect it to mean within the handler function. E.g.:</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">MyClass</span> <span class="o">=</span> <span class="nx">Class</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="o">,</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="o">;</span>
+    <span class="nx">element</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">element</span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">handleClick</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+    <span class="p">}</span>
+  <span class="p">}</span><span class="o">,</span>
+  <span class="nx">handleClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;My name is &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+  <span class="p">}</span><span class="o">,</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+<p>Without the <code>bind</code>, when <code>handleClick</code> was triggered by the event, <code>this</code> wouldn't
+refer to the instance and so the alert wouldn't show the name. Because we used <code>bind</code>, it
+works correctly. See <code><a href="../../../language/function/prototype/bind" title="Function#bind (instance method)">Function#bind</a></code> for
+details. There's also <code><a href="../../../language/function/prototype/bindaseventlistener" title="Function#bindAsEventListener (instance method)">Function#bindAsEventListener</a></code>, which is handy for certain very
+specific situations. (Normally, <code>bind</code> is all you need.)</p>
+
+<h4>Side Notes</h4>
+
+<p>Although Prototype smooths out most of the differences between browsers, the fundamental
+behavior of a browser implementation isn't changed. For example, the timing of the <code>change</code>
+or <code>blur</code> events varies a bit from browser to browser.</p>
+
+<h4>Changes in 1.6.x</h4>
+
+<p>Prior to Prototype 1.6, <code>observe</code> supported a fourth argument (<code>useCapture</code>), a boolean that
+indicated whether to use the browser's capturing phase or its bubbling phase. Since MSIE does
+not support the capturing phase, we removed this argument from 1.6, lest it give users the
+false impression that they can use the capturing phase in all browsers.</p>
+
+<p>1.6 also introduced setting the <code>this</code> context to the element being observed, automatically
+extending the <code><a href="../../../dom/event" title="Event (class)">Event</a></code> object, and the <code><a href="../../../dom/event/prototype/findelement" title="Event#findElement (instance method)">Event#findElement</a></code> method.</p>
+      
+      
+
+
+      
+    </div>
+  </div> <!-- .section-content -->
+</div> <!-- .section -->
+
+      </div> <!-- #main -->
+      
+      <div id="footer">
+        <p><a href="http://prototypejs.org">Prototype JavaScript Framework  v1.6.1</a> API documentation.</p>
+        <p>Last updated on April 07, 2010 at 16:01 UTC. Generated by <a href="http://pdoc.org">PDoc</a>. Uses <a href="http://famfamfam.com/lab/icons/silk/" title="famfamfam.com: Silk Icons">Silk Icons</a> and portions of <a href="http://github.com/280north/aristo/tree/master" title="280north's aristo at master - GitHub">Aristo</a>.</p>
+        <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>.</p>
+      </div> <!-- #footer -->
+
+    </div> <!-- #page -->
+  </body>
+</html>

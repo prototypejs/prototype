@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Prototype  v1.6.1 API documentation | Enumerable</title>
+  <meta name="generator" content="PDoc" />
+  
+  <script type="text/javascript" src="../../javascripts/prototype.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../javascripts/application.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../javascripts/tabs.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../javascripts/item_index.js" charset="utf-8"></script>
+  
+  <link type="text/css" rel="stylesheet" href="../../stylesheets/api.css" charset="utf-8" media="screen, projection" />
+<link type="text/css" rel="stylesheet" href="../../stylesheets/pygments.css" charset="utf-8" media="screen, projection" />
+  
+  <script type="text/javascript">
+    PDoc.pathPrefix = '../../';
+  </script>
+</head>
+  <body>
+
+    <div id="sidebar">
+      <ul id="sidebar_tabs" class="sidebar-tabs">
+        <li>
+          <a href="#menu_pane">Menu</a>
+        </li>
+        <li>
+          <a href="#search_pane">Search</a>
+        </li>
+      </ul> <!-- .sidebar-tabs -->
+
+      <form class="search-ribbon">
+        <label>
+          <span class="hidden">Search</span>
+          <input type="text" id="search" size="20" title="Search" />
+        </label>
+      </form>
+      
+      <div class="sidebar-pane scrollable" id="menu_pane">
+        <ul id="api_menu" class="menu-items">
+            <li><div class="menu-item"><a class="section" href="../../ajax" title="Ajax section">Ajax section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="namespace" href="../../ajax/ajax" title="Ajax (namespace)">Ajax</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../ajax/ajax/periodicalupdater" title="Ajax.PeriodicalUpdater (class)">Ajax.PeriodicalUpdater</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../ajax/ajax/request" title="Ajax.Request (class)">Ajax.Request</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../ajax/ajax/responders" title="Ajax.Responders (namespace)">Ajax.Responders</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../ajax/ajax/response" title="Ajax.Response (class)">Ajax.Response</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../ajax/ajax/updater" title="Ajax.Updater (class)">Ajax.Updater</a></div><ul class=""></ul></li></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section" href="../../dom" title="DOM section">DOM section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../dom/dollar" title="$ (utility)">$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../dom/dollarf" title="$F (utility)">$F</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../dom/abstract" title="Abstract (namespace)">Abstract</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../dom/abstract/eventobserver" title="Abstract.EventObserver (class)">Abstract.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/abstract/timedobserver" title="Abstract.TimedObserver (class)">Abstract.TimedObserver</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../dom/document" title="document (namespace)">document</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../dom/document/viewport" title="document.viewport (namespace)">document.viewport</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/element" title="Element (class)">Element</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/event" title="Event (class)">Event</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../dom/form" title="Form (namespace)">Form</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../dom/form/element" title="Form.Element (namespace)">Form.Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../dom/form/element/eventobserver" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/form/element/eventobserver" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/form/element/observer" title="Form.Element.Observer (class)">Form.Element.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/form/observer" title="Form.Observer (class)">Form.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../dom/selector" title="Selector (class)">Selector</a></div><ul class=""></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section current-parent" href="../../language" title="Language section">Language section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../language/dollara" title="$A (utility)">$A</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../language/dollarh" title="$H (utility)">$H</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../language/dollarr" title="$R (utility)">$R</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../language/dollarw" title="$w (utility)">$w</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/array" title="Array (class)">Array</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../language/class" title="Class (namespace)">Class</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/date" title="Date (class)">Date</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin current" href="../../language/enumerable" title="Enumerable (mixin)">Enumerable</a></div><ul class=""></ul><ul><li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/all" title="Enumerable#all (instance method)">all</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/any" title="Enumerable#any (instance method)">any</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/collect" title="Enumerable#collect (instance method)">collect</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/detect" title="Enumerable#detect (instance method)">detect</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/each" title="Enumerable#each (instance method)">each</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/eachslice" title="Enumerable#eachSlice (instance method)">eachSlice</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/entries" title="Enumerable#entries (instance method)">entries</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/every" title="Enumerable#every (instance method)">every</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/filter" title="Enumerable#filter (instance method)">filter</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/find" title="Enumerable#find (instance method)">find</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/findall" title="Enumerable#findAll (instance method)">findAll</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/grep" title="Enumerable#grep (instance method)">grep</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/include" title="Enumerable#include (instance method)">include</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/ingroupsof" title="Enumerable#inGroupsOf (instance method)">inGroupsOf</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/inject" title="Enumerable#inject (instance method)">inject</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/inspect" title="Enumerable#inspect (instance method)">inspect</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/invoke" title="Enumerable#invoke (instance method)">invoke</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/map" title="Enumerable#map (instance method)">map</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/max" title="Enumerable#max (instance method)">max</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/member" title="Enumerable#member (instance method)">member</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/min" title="Enumerable#min (instance method)">min</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/partition" title="Enumerable#partition (instance method)">partition</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/pluck" title="Enumerable#pluck (instance method)">pluck</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/reject" title="Enumerable#reject (instance method)">reject</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/select" title="Enumerable#select (instance method)">select</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/size" title="Enumerable#size (instance method)">size</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/some" title="Enumerable#some (instance method)">some</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/sortby" title="Enumerable#sortBy (instance method)">sortBy</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/toarray" title="Enumerable#toArray (instance method)">toArray</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../language/enumerable/prototype/zip" title="Enumerable#zip (instance method)">zip</a></div></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/function" title="Function (class)">Function</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/hash" title="Hash (class)">Hash</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/number" title="Number (class)">Number</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/object" title="Object (class)">Object</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/objectrange" title="ObjectRange (class)">ObjectRange</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/periodicalexecuter" title="PeriodicalExecuter (class)">PeriodicalExecuter</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/regexp" title="RegExp (class)">RegExp</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/string" title="String (class)">String</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../language/template" title="Template (class)">Template</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../language/try" title="Try (namespace)">Try</a></div><ul class=""></ul></li></ul><ul></ul></li>
+        </ul> <!--- #api_menu =-->
+      </div> <!-- .sidebar-pane -->
+      <div class="sidebar-pane" id="search_pane">
+        <ul id="search_results" class="search-results menu-items scrollable"></ul>
+      </div> <!-- .sidebar-pane -->
+    </div> <!-- #sidebar -->
+
+    <div id="page">
+
+      <div id="main" class="page-content">
+        
+
+
+<ul class="breadcrumbs clearfix">
+  <li><a href="../../">Home</a></li>
+    <li>&rarr; <a href="../../language" title="Language section">Language section</a></li>
+    <li>&rarr; <a href="../../language/enumerable" title="Enumerable (mixin)">Enumerable</a></li>
+</ul>
+
+  <p id="src_code_href"><a href="http://github.com/sstephenson/prototype/blob/f405b2c/prototype/src/lang/enumerable.js#LID83">src code</a></p>
+
+<h2 class="page-title">
+  <span class="type">mixin</span> Enumerable
+</h2>
+
+
+
+
+                <div class="section section-description">
+                <div class="section-title">
+                  <h3>Description</h3>
+                </div> <!-- .section-title -->
+                <div class="section-content">
+
+    <p><code>Enumerable</code> provides a large set of useful methods for enumerations &mdash;
+objects that act as collections of values. It is a cornerstone of
+Prototype.</p>
+
+<p><code>Enumerable</code> is a <em>mixin</em>: a set of methods intended not for standaone
+use, but for incorporation into other objects.</p>
+
+<p>Prototype mixes <code>Enumerable</code> into several classes. The most visible cases
+are <code><a href="../../language/array" title="Array (class)">Array</a></code> and <code><a href="../../language/hash" title="Hash (class)">Hash</a></code>, but you'll find it in less obvious spots as
+well, such as in <code><a href="../../language/objectrange" title="ObjectRange (class)">ObjectRange</a></code> and various DOM- or Ajax-related objects.</p>
+
+<h4>The <code>context</code> parameter</h4>
+
+<p>Every method of <code>Enumerable</code> that takes an iterator also takes the "context
+object" as the next (optional) parameter. The context object is what the
+iterator will be <em>bound</em> to &mdash; what the keyword <code>this</code> will refer to inside
+the iterator.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">myObject</span> <span class="o">=</span> <span class="p">{};</span>
+ <span class="p">[</span><span class="s1">&#39;foo&#39;</span><span class="o">,</span> <span class="s1">&#39;bar&#39;</span><span class="o">,</span> <span class="s1">&#39;baz&#39;</span><span class="p">].</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="o">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">index</span><span class="o">;</span>
+<span class="p">}</span><span class="o">,</span> <span class="nx">myObject</span><span class="p">);</span> <span class="c">// we have specified the context</span>
+ <span class="nx">myObject</span>
+<span class="c">//-&gt; { foo: 0, bar: 1, baz: 2}</span>
+</pre>
+</div>
+
+<p>If there is no <code>context</code> argument, the iterator function will execute in
+the scope from which the <code>Enumerable</code> method itself was called.</p>
+
+<h4>Mixing <code>Enumerable</code> into your own objects</h4>
+
+<p>So, let's say you've created your very own collection-like object (say,
+some sort of Set, or perhaps something that dynamically fetches data
+ranges from the server side, lazy-loading style). You want to be able to
+mix <code>Enumerable</code> in (and we commend you for it). How do you go about this?</p>
+
+<p>The Enumerable module basically makes only one requirement on your object:
+it must provide a method named <code>_each</code> (note the leading underscore) that
+will accept a function as its unique argument, and will contain the actual
+"raw iteration" algorithm, invoking its argument with each element in turn.</p>
+
+<p>As detailed in the documentation for <code><a href="../../language/enumerable/prototype/each" title="Enumerable#each (instance method)">Enumerable#each</a></code>, <code>Enumerable</code>
+provides all the extra layers (handling iteration short-circuits, passing
+numeric indices, etc.). You just need to implement the actual iteration,
+as fits your internal structure.</p>
+
+<p>If you're still confused, just have a look at the Prototype source code for
+<code><a href="../../language/array" title="Array (class)">Array</a></code>, <code><a href="../../language/hash" title="Hash (class)">Hash</a></code>, or <code><a href="../../language/objectrange" title="ObjectRange (class)">ObjectRange</a></code>. They all begin with their own
+<code>_each</code> method, which should help you grasp the idea.</p>
+
+<p>Once you're done with this, you just need to mix <code>Enumerable</code> in, which
+you'll usually do before defining your methods, so as to make sure whatever
+overrides you provide for <code>Enumerable</code> methods will indeed prevail. In
+short, your code will probably end up looking like this:</p>
+
+<div class="highlight"><pre> <span class="kd">var</span> <span class="nx">YourObject</span> <span class="o">=</span> <span class="nx">Class</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">Enumerable</span><span class="o">,</span> <span class="p">{</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="c">// with whatever constructor arguments you need</span>
+    <span class="c">// Your construction code</span>
+  <span class="p">}</span><span class="o">,</span>
+   <span class="nx">_each</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">iterator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c">// Your iteration code, invoking iterator at every turn</span>
+  <span class="p">}</span><span class="o">,</span>
+   <span class="c">// Your other methods here, including Enumerable overrides</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+<p>Then, obviously, your object can be used like this:</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">YourObject</span><span class="p">();</span>
+<span class="c">// Populate the collection somehow</span>
+<span class="nx">obj</span><span class="p">.</span><span class="nx">pluck</span><span class="p">(</span><span class="s1">&#39;somePropName&#39;</span><span class="p">);</span>
+<span class="nx">obj</span><span class="p">.</span><span class="nx">invoke</span><span class="p">(</span><span class="s1">&#39;someMethodName&#39;</span><span class="p">);</span>
+<span class="nx">obj</span><span class="p">.</span><span class="nx">size</span><span class="p">();</span>
+<span class="c">// etc.</span>
+</pre>
+</div>
+                </div> <!-- .section-content -->
+            </div> <!-- .section -->
+
+
+
+
+
+
+
+
+
+
+                  <div class="section section-instance_methods">
+                <div class="section-title">
+                  <h3>Instance methods</h3>
+                </div> <!-- .section-title -->
+                <div class="section-content">
+
+      <ul class="method-list">
+        <li><code><a class="instance-method" href="../../language/enumerable/prototype/all" title="Enumerable#all (instance method)">all</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/any" title="Enumerable#any (instance method)">any</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/collect" title="Enumerable#collect (instance method)">collect</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/detect" title="Enumerable#detect (instance method)">detect</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/each" title="Enumerable#each (instance method)">each</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/eachslice" title="Enumerable#eachSlice (instance method)">eachSlice</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/entries" title="Enumerable#entries (instance method)">entries</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/every" title="Enumerable#every (instance method)">every</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/filter" title="Enumerable#filter (instance method)">filter</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/find" title="Enumerable#find (instance method)">find</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/findall" title="Enumerable#findAll (instance method)">findAll</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/grep" title="Enumerable#grep (instance method)">grep</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/include" title="Enumerable#include (instance method)">include</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/ingroupsof" title="Enumerable#inGroupsOf (instance method)">inGroupsOf</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/inject" title="Enumerable#inject (instance method)">inject</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/inspect" title="Enumerable#inspect (instance method)">inspect</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/invoke" title="Enumerable#invoke (instance method)">invoke</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/map" title="Enumerable#map (instance method)">map</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/max" title="Enumerable#max (instance method)">max</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/member" title="Enumerable#member (instance method)">member</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/min" title="Enumerable#min (instance method)">min</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/partition" title="Enumerable#partition (instance method)">partition</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/pluck" title="Enumerable#pluck (instance method)">pluck</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/reject" title="Enumerable#reject (instance method)">reject</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/select" title="Enumerable#select (instance method)">select</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/size" title="Enumerable#size (instance method)">size</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/some" title="Enumerable#some (instance method)">some</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/sortby" title="Enumerable#sortBy (instance method)">sortBy</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/toarray" title="Enumerable#toArray (instance method)">toArray</a></code></li>
+
+<li><code><a class="instance-method" href="../../language/enumerable/prototype/zip" title="Enumerable#zip (instance method)">zip</a></code></li>
+
+      </ul>
+                  </div> <!-- .section-content -->
+            </div> <!-- .section -->
+
+
+      </div> <!-- #main -->
+      
+      <div id="footer">
+        <p><a href="http://prototypejs.org">Prototype JavaScript Framework  v1.6.1</a> API documentation.</p>
+        <p>Last updated on April 07, 2010 at 16:01 UTC. Generated by <a href="http://pdoc.org">PDoc</a>. Uses <a href="http://famfamfam.com/lab/icons/silk/" title="famfamfam.com: Silk Icons">Silk Icons</a> and portions of <a href="http://github.com/280north/aristo/tree/master" title="280north's aristo at master - GitHub">Aristo</a>.</p>
+        <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>.</p>
+      </div> <!-- #footer -->
+
+    </div> <!-- #page -->
+  </body>
+</html>

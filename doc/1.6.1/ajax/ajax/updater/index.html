@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Prototype  v1.6.1 API documentation | Ajax.Updater</title>
+  <meta name="generator" content="PDoc" />
+  
+  <script type="text/javascript" src="../../../javascripts/prototype.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../javascripts/application.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../javascripts/tabs.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../javascripts/item_index.js" charset="utf-8"></script>
+  
+  <link type="text/css" rel="stylesheet" href="../../../stylesheets/api.css" charset="utf-8" media="screen, projection" />
+<link type="text/css" rel="stylesheet" href="../../../stylesheets/pygments.css" charset="utf-8" media="screen, projection" />
+  
+  <script type="text/javascript">
+    PDoc.pathPrefix = '../../../';
+  </script>
+</head>
+  <body>
+
+    <div id="sidebar">
+      <ul id="sidebar_tabs" class="sidebar-tabs">
+        <li>
+          <a href="#menu_pane">Menu</a>
+        </li>
+        <li>
+          <a href="#search_pane">Search</a>
+        </li>
+      </ul> <!-- .sidebar-tabs -->
+
+      <form class="search-ribbon">
+        <label>
+          <span class="hidden">Search</span>
+          <input type="text" id="search" size="20" title="Search" />
+        </label>
+      </form>
+      
+      <div class="sidebar-pane scrollable" id="menu_pane">
+        <ul id="api_menu" class="menu-items">
+            <li><div class="menu-item"><a class="section current-parent" href="../../../ajax" title="Ajax section">Ajax section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="namespace current-parent" href="../../../ajax/ajax" title="Ajax (namespace)">Ajax</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../ajax/ajax/periodicalupdater" title="Ajax.PeriodicalUpdater (class)">Ajax.PeriodicalUpdater</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../ajax/ajax/request" title="Ajax.Request (class)">Ajax.Request</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../ajax/ajax/responders" title="Ajax.Responders (namespace)">Ajax.Responders</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../ajax/ajax/response" title="Ajax.Response (class)">Ajax.Response</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class current" href="../../../ajax/ajax/updater" title="Ajax.Updater (class)">Ajax.Updater</a></div><ul class=""></ul><ul><li><div class="menu-item"><a class="constructor" href="../../../ajax/ajax/updater/new" title="new Ajax.Updater (constructor)">new</a></div></li></ul></li></ul><ul><li><div class="menu-item"><a class="class-property" href="../../../ajax/ajax/activerequestcount" title="Ajax.activeRequestCount (class property)">activeRequestCount</a></div></li></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section" href="../../../dom" title="DOM section">DOM section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../dom/dollar" title="$ (utility)">$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../dom/dollarf" title="$F (utility)">$F</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../dom/abstract" title="Abstract (namespace)">Abstract</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../dom/abstract/eventobserver" title="Abstract.EventObserver (class)">Abstract.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/abstract/timedobserver" title="Abstract.TimedObserver (class)">Abstract.TimedObserver</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../dom/document" title="document (namespace)">document</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../dom/document/viewport" title="document.viewport (namespace)">document.viewport</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/element" title="Element (class)">Element</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/event" title="Event (class)">Event</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../dom/form" title="Form (namespace)">Form</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../dom/form/element" title="Form.Element (namespace)">Form.Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../dom/form/element/eventobserver" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/form/element/eventobserver" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/form/element/observer" title="Form.Element.Observer (class)">Form.Element.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/form/observer" title="Form.Observer (class)">Form.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/selector" title="Selector (class)">Selector</a></div><ul class=""></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section" href="../../../language" title="Language section">Language section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../language/dollara" title="$A (utility)">$A</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../language/dollarh" title="$H (utility)">$H</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../language/dollarr" title="$R (utility)">$R</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../language/dollarw" title="$w (utility)">$w</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/array" title="Array (class)">Array</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../language/class" title="Class (namespace)">Class</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/date" title="Date (class)">Date</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../../language/enumerable" title="Enumerable (mixin)">Enumerable</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/function" title="Function (class)">Function</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/hash" title="Hash (class)">Hash</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/number" title="Number (class)">Number</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/object" title="Object (class)">Object</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/objectrange" title="ObjectRange (class)">ObjectRange</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/periodicalexecuter" title="PeriodicalExecuter (class)">PeriodicalExecuter</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/regexp" title="RegExp (class)">RegExp</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/string" title="String (class)">String</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/template" title="Template (class)">Template</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../language/try" title="Try (namespace)">Try</a></div><ul class=""></ul></li></ul></li>
+        </ul> <!--- #api_menu =-->
+      </div> <!-- .sidebar-pane -->
+      <div class="sidebar-pane" id="search_pane">
+        <ul id="search_results" class="search-results menu-items scrollable"></ul>
+      </div> <!-- .sidebar-pane -->
+    </div> <!-- #sidebar -->
+
+    <div id="page">
+
+      <div id="main" class="page-content">
+        
+
+
+<ul class="breadcrumbs clearfix">
+  <li><a href="../../../">Home</a></li>
+    <li>&rarr; <a href="../../../ajax" title="Ajax section">Ajax section</a></li>
+    <li>&rarr; <a href="../../../ajax/ajax" title="Ajax (namespace)">Ajax</a></li>
+    <li>&rarr; <a href="../../../ajax/ajax/updater" title="Ajax.Updater (class)">Updater</a></li>
+</ul>
+
+  <p id="src_code_href"><a href="http://github.com/sstephenson/prototype/blob/f405b2c/prototype/src/ajax/updater.js#LID78">src code</a></p>
+
+<h2 class="page-title">
+  <span class="type">class</span> Ajax.Updater
+</h2>
+
+
+
+
+                <div class="section section-description">
+                <div class="section-title">
+                  <h3>Description</h3>
+                </div> <!-- .section-title -->
+                <div class="section-content">
+
+    <p>A class that performs an Ajax request and updates a container's contents
+with the contents of the response.</p>
+
+<p><code>Ajax.Updater</code> is a subclass of <code><a href="../../../ajax/ajax/request" title="Ajax.Request (class)">Ajax.Request</a></code> built for a common
+use-case.</p>
+
+<h4>Example</h4>
+
+<div class="highlight"><pre><span class="k">new</span> <span class="nx">Ajax</span><span class="p">.</span><span class="nx">Updater</span><span class="p">(</span><span class="s1">&#39;items&#39;</span><span class="o">,</span> <span class="s1">&#39;/items&#39;</span><span class="o">,</span> <span class="p">{</span>
+  <span class="nx">parameters</span><span class="o">:</span> <span class="p">{</span> <span class="nx">text</span><span class="o">:</span> <span class="nx">$F</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+<p>This example will make a request to the URL <code>/items</code> (with the given
+parameters); it will then replace the contents of the element with the ID
+of <code>items</code> with whatever response it receives.</p>
+
+<h4>Callbacks</h4>
+
+<p><code>Ajax.Updater</code> supports all the callbacks listed in the <a href="../../../ajax/ajax" title="Ajax (namespace)">Ajax</a>.
+Note that the <code>onComplete</code> callback will be invoked <strong>after</strong> the element
+is updated.</p>
+
+<h4>Additional options</h4>
+
+<p><code>Ajax.Updater</code> has some options of its own apart from the common options
+described in the <a href="../../../ajax/ajax" title="Ajax (namespace)">Ajax</a>:</p>
+
+<ul>
+<li><code>evalScripts</code> (Boolean; defaults to <code>false</code>): Whether <code>&lt;script&gt;</code>
+elements in the response text should be evaluated.</li>
+<li><code>insertion</code> (<code><a href="../../../language/string" title="String (class)">String</a></code>): By default, <code>Element.update</code> is used, meaning
+the contents of the response will replace the entire contents of the
+container. You may <em>instead</em> insert the response text without disrupting
+existing contents. The <code>insertion</code> option takes one of four strings &mdash;
+<code>top</code>, <code>bottom</code>, <code>before</code>, or <code>after</code> &mdash; and <em>inserts</em> the contents of the
+response in the manner described by <code><a href="../../../dom/element/prototype/insert" title="Element#insert (instance method)">Element#insert</a></code>.</li>
+</ul>
+
+<h4>More About `evalScripts`</h4>
+
+<p>If you use <code>evalScripts: true</code>, any <em>inline</em> <code>&lt;script&gt;</code> block will be evaluated.
+This <strong>does not</strong> mean it will be evaluated in the global scope; it won't, and that
+has important ramifications for your <code>var</code> and <code>function</code> statements.  Also note
+that only inline <code>&lt;script&gt;</code> blocks are supported; external scripts are ignored.
+See <code><a href="../../../language/string/prototype/evalscripts" title="String#evalScripts (instance method)">String#evalScripts</a></code> for the details.</p>
+
+<h4>Single container, or success/failure split?</h4>
+
+<p>The examples above all assume you're going to update the same container
+whether your request succeeds or fails. Instead, you may want to update
+<em>only</em> for successful requests, or update a <em>different container</em> on failed
+requests.</p>
+
+<p>To achieve this, you can pass an object instead of a DOM element for the
+<code>container</code> parameter. This object <em>must</em> have a <code>success</code> property whose
+value identifies the container to be updated on successful requests.</p>
+
+<p>If you also provide it with a <code>failure</code> property, its value will be used as
+the container for failed requests.</p>
+
+<p>In the following code, only successful requests get an update:</p>
+
+<div class="highlight"><pre><span class="k">new</span> <span class="nx">Ajax</span><span class="p">.</span><span class="nx">Updater</span><span class="p">({</span> <span class="nx">success</span><span class="o">:</span> <span class="s1">&#39;items&#39;</span> <span class="p">}</span><span class="o">,</span> <span class="s1">&#39;/items&#39;</span><span class="o">,</span> <span class="p">{</span>
+  <span class="nx">parameters</span><span class="o">:</span> <span class="p">{</span> <span class="nx">text</span><span class="o">:</span> <span class="nx">$F</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span> <span class="p">}</span><span class="o">,</span>
+  <span class="nx">insertion</span><span class="o">:</span> <span class="s1">&#39;bottom&#39;</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+<p>This next example assumes failed requests will deliver an error message as
+response text &mdash; one that should be shown to the user in another area:</p>
+
+<div class="highlight"><pre><span class="k">new</span> <span class="nx">Ajax</span><span class="p">.</span><span class="nx">Updater</span><span class="p">({</span> <span class="nx">success</span><span class="o">:</span> <span class="s1">&#39;items&#39;</span><span class="o">,</span> <span class="nx">failure</span><span class="o">:</span> <span class="s1">&#39;notice&#39;</span> <span class="p">}</span><span class="o">,</span> <span class="s1">&#39;/items&#39;</span><span class="o">,</span>
+  <span class="nx">parameters</span><span class="o">:</span> <span class="p">{</span> <span class="nx">text</span><span class="o">:</span> <span class="nx">$F</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span> <span class="p">}</span><span class="o">,</span>
+  <span class="nx">insertion</span><span class="o">:</span> <span class="s1">&#39;bottom&#39;</span>
+<span class="p">});</span>
+</pre>
+</div>
+                </div> <!-- .section-content -->
+            </div> <!-- .section -->
+
+
+
+
+
+
+
+
+                <div class="section section-constructor">
+                <div class="section-title">
+                  <h3>Constructor</h3>
+                </div> <!-- .section-title -->
+                <div class="section-content">
+
+    <p><code><a href="../../../ajax/ajax/updater/new" title="new Ajax.Updater (constructor)">new Ajax.Updater</a></code></p>
+                </div> <!-- .section-content -->
+            </div> <!-- .section -->
+
+
+
+
+      </div> <!-- #main -->
+      
+      <div id="footer">
+        <p><a href="http://prototypejs.org">Prototype JavaScript Framework  v1.6.1</a> API documentation.</p>
+        <p>Last updated on April 07, 2010 at 16:00 UTC. Generated by <a href="http://pdoc.org">PDoc</a>. Uses <a href="http://famfamfam.com/lab/icons/silk/" title="famfamfam.com: Silk Icons">Silk Icons</a> and portions of <a href="http://github.com/280north/aristo/tree/master" title="280north's aristo at master - GitHub">Aristo</a>.</p>
+        <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>.</p>
+      </div> <!-- #footer -->
+
+    </div> <!-- #page -->
+  </body>
+</html>
