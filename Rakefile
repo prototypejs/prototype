@@ -65,29 +65,19 @@ module PrototypeHelper
   end
   
   def self.build_doc_for(file)
-    mkdir_p TMP_DIR
-    temp_path = File.join(TMP_DIR, "prototype.temp.js")
-    sprocketize(
-      :path => 'src',
-      :source => file,
-      :destination => temp_path,
-      :selector_engine => ENV['SELECTOR_ENGINE'] || DEFAULT_SELECTOR_ENGINE,
-      :strip_comments => false
-    )
-    rm_rf DOC_DIR
-    
-    highlighter = syntax_highlighter
-    puts "Using syntax highlighter: #{highlighter}\n"
+    rm_rf(DOC_DIR)
+    mkdir_p(DOC_DIR)
     
     PDoc.run({
-      :source_files => [temp_path],
+      :source_files => Dir[File.join('src', '**', '*.js')],
       :destination => DOC_DIR,
       :index_page => 'README.markdown',
-      :syntax_highlighter => highlighter,
-      :markdown_parser => :bluecloth
+      :syntax_highlighter => syntax_highlighter,
+      :markdown_parser => :bluecloth,
+      :repository_url => "http://github.com/sstephenson/prototype/tree/#{current_head}/",
+      :pretty_urls => true,
+      :bust_cache => false
     })
-    
-    rm_rf temp_path
   end
   
   def self.syntax_highlighter
@@ -103,7 +93,7 @@ module PrototypeHelper
   def self.require_highlighter(name, verbose=false)
     case name
     when :pygments
-      success = system("pygmentize -V")
+      success = system("pygmentize -V > /dev/null")
       if !success && verbose
         puts "\nYou asked to use Pygments, but I can't find the 'pygmentize' binary."
         puts "To install, visit:\n"
@@ -193,6 +183,10 @@ module PrototypeHelper
       end
       exit
     end
+  end
+  
+  def self.current_head
+    `git show-ref --hash HEAD`.chomp
   end
 end
 

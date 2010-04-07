@@ -3,3 +3,4 @@ pkg
 test/unit/tmp/*
 doc
 tmp
+*.pdoc.yaml
