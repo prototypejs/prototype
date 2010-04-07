@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Prototype API documentation | String#scan</title>
+  <meta name="generator" content="PDoc" />
+  
+  <script type="text/javascript" src="../../../../javascripts/prototype.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../../javascripts/application.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../../javascripts/tabs.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../../javascripts/item_index.js" charset="utf-8"></script>
+  
+  <link type="text/css" rel="stylesheet" href="../../../../stylesheets/api.css" charset="utf-8" media="screen, projection" />
+<link type="text/css" rel="stylesheet" href="../../../../stylesheets/pygments.css" charset="utf-8" media="screen, projection" />
+  
+  <script type="text/javascript">
+    PDoc.pathPrefix = '../../../../';
+  </script>
+</head>
+  <body>
+
+    <div id="sidebar">
+      <ul id="sidebar_tabs" class="sidebar-tabs">
+        <li>
+          <a href="#menu_pane">Menu</a>
+        </li>
+        <li>
+          <a href="#search_pane">Search</a>
+        </li>
+      </ul> <!-- .sidebar-tabs -->
+
+      <form class="search-ribbon">
+        <label>
+          <span class="hidden">Search</span>
+          <input type="text" id="search" size="20" title="Search" />
+        </label>
+      </form>
+      
+      <div class="sidebar-pane scrollable" id="menu_pane">
+        <ul id="api_menu" class="menu-items">
+            <li><div class="menu-item"><a class="section" href="../../../../ajax" title="Ajax section">Ajax section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="namespace" href="../../../../ajax/ajax" title="Ajax (namespace)">Ajax</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../ajax/ajax/periodicalupdater" title="Ajax.PeriodicalUpdater (class)">Ajax.PeriodicalUpdater</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../ajax/ajax/request" title="Ajax.Request (class)">Ajax.Request</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../ajax/ajax/responders" title="Ajax.Responders (namespace)">Ajax.Responders</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../ajax/ajax/response" title="Ajax.Response (class)">Ajax.Response</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../ajax/ajax/updater" title="Ajax.Updater (class)">Ajax.Updater</a></div><ul class=""></ul></li></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section" href="../../../../dom" title="DOM section">DOM section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../../dom/dollar" title="$ (utility)">$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../dom/dollardollar" title="$$ (utility)">$$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../dom/dollarf" title="$F (utility)">$F</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../dom/abstract" title="Abstract (namespace)">Abstract</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../dom/abstract/eventobserver" title="Abstract.EventObserver (class)">Abstract.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/abstract/timedobserver" title="Abstract.TimedObserver (class)">Abstract.TimedObserver</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../dom/document" title="document (namespace)">document</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../../dom/document/viewport" title="document.viewport (namespace)">document.viewport</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/element" title="Element (class)">Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../dom/element/layout" title="Element.Layout (class)">Element.Layout</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../../../dom/element/methods" title="Element.Methods (mixin)">Element.Methods</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/element/offset" title="Element.Offset (class)">Element.Offset</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/event" title="Event (class)">Event</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../dom/event/handler" title="Event.Handler (class)">Event.Handler</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../dom/form" title="Form (namespace)">Form</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../../dom/form/element" title="Form.Element (namespace)">Form.Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../dom/form/element/eventobserver" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/form/element/observer" title="Form.Element.Observer (class)">Form.Element.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/form/eventobserver" title="Form.EventObserver (class)">Form.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/form/observer" title="Form.Observer (class)">Form.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class deprecated" href="../../../../dom/selector" title="Selector (class)">Selector</a></div><ul class=""></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section current-parent" href="../../../../language" title="Language section">Language section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../../language/dollara" title="$A (utility)">$A</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../language/dollarh" title="$H (utility)">$H</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../language/dollarr" title="$R (utility)">$R</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../language/dollarw" title="$w (utility)">$w</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/array" title="Array (class)">Array</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/class" title="Class (class)">Class</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/date" title="Date (class)">Date</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../../../language/enumerable" title="Enumerable (mixin)">Enumerable</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/function" title="Function (class)">Function</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/hash" title="Hash (class)">Hash</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/number" title="Number (class)">Number</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/object" title="Object (class)">Object</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/objectrange" title="ObjectRange (class)">ObjectRange</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/periodicalexecuter" title="PeriodicalExecuter (class)">PeriodicalExecuter</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../language/prototype" title="Prototype (namespace)">Prototype</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../../language/prototype/browser" title="Prototype.Browser (namespace)">Prototype.Browser</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../language/prototype/browserfeatures" title="Prototype.BrowserFeatures (namespace)">Prototype.BrowserFeatures</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../language/prototype/selector" title="Prototype.Selector (namespace)">Prototype.Selector</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/regexp" title="RegExp (class)">RegExp</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class current-parent" href="../../../../language/string" title="String (class)">String</a></div><ul class=""></ul><ul><li><div class="menu-item"><a class="class-method" href="../../../../language/string/interpret" title="String.interpret (class method)">interpret</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/blank" title="String#blank (instance method)">blank</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/camelize" title="String#camelize (instance method)">camelize</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/capitalize" title="String#capitalize (instance method)">capitalize</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/dasherize" title="String#dasherize (instance method)">dasherize</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/empty" title="String#empty (instance method)">empty</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/endswith" title="String#endsWith (instance method)">endsWith</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/escapehtml" title="String#escapeHTML (instance method)">escapeHTML</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/evaljson" title="String#evalJSON (instance method)">evalJSON</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/evalscripts" title="String#evalScripts (instance method)">evalScripts</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/extractscripts" title="String#extractScripts (instance method)">extractScripts</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/gsub" title="String#gsub (instance method)">gsub</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/include" title="String#include (instance method)">include</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/inspect" title="String#inspect (instance method)">inspect</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/interpolate" title="String#interpolate (instance method)">interpolate</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/isjson" title="String#isJSON (instance method)">isJSON</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/parsequery" title="String#parseQuery (instance method)">parseQuery</a></div></li>
+<li><div class="menu-item"><a class="instance-method current" href="../../../../language/string/prototype/scan" title="String#scan (instance method)">scan</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/startswith" title="String#startsWith (instance method)">startsWith</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/strip" title="String#strip (instance method)">strip</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/stripscripts" title="String#stripScripts (instance method)">stripScripts</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/striptags" title="String#stripTags (instance method)">stripTags</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/sub" title="String#sub (instance method)">sub</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/succ" title="String#succ (instance method)">succ</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/times" title="String#times (instance method)">times</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/toarray" title="String#toArray (instance method)">toArray</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/toqueryparams" title="String#toQueryParams (instance method)">toQueryParams</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/truncate" title="String#truncate (instance method)">truncate</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/underscore" title="String#underscore (instance method)">underscore</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/unescapehtml" title="String#unescapeHTML (instance method)">unescapeHTML</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../language/string/prototype/unfilterjson" title="String#unfilterJSON (instance method)">unfilterJSON</a></div></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/template" title="Template (class)">Template</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../language/try" title="Try (namespace)">Try</a></div><ul class=""></ul></li></ul></li>
+        </ul> <!--- #api_menu =-->
+      </div> <!-- .sidebar-pane -->
+      <div class="sidebar-pane" id="search_pane">
+        <ul id="search_results" class="search-results menu-items scrollable"></ul>
+      </div> <!-- .sidebar-pane -->
+    </div> <!-- #sidebar -->
+
+    <div id="page">
+
+      <div id="main" class="page-content">
+        
+
+
+<ul class="breadcrumbs clearfix">
+  <li><a href="../../../../">Home</a></li>
+    <li>&rarr; <a href="../../../../language" title="Language section">Language section</a></li>
+    <li>&rarr; <a href="../../../../language/string" title="String (class)">String</a></li>
+    <li>&rarr; <a href="../../../../language/string/prototype/scan" title="String#scan (instance method)">scan</a></li>
+</ul>
+
+  <p id="src_code_href"><a href="http://github.com/sstephenson/prototype/blob/d11f317/src/lang/string.js#LID198">src code</a></p>
+
+<h2 class="page-title">
+  <span class="type">instance method</span> String#scan
+</h2>
+
+
+
+
+<div class="section">
+  <div class="section-title">
+  </div> <!-- .section-title -->
+  <div class="section-content">
+    <div class="method-description">
+        <pre class="syntax"><code class="ebnf">String#scan(pattern, iterator) &rarr; <a href="../../../../language/string" title="String (class)">String</a></code></pre>
+
+
+      <p>Allows iterating over every occurrence of the given pattern (which can be a
+string or a regular expression).
+Returns the original string.</p>
+
+<p>Internally just calls <code><a href="../../../../language/string/prototype/gsub" title="String#gsub (instance method)">String#gsub</a></code> passing it <code>pattern</code> and <code>iterator</code> as arguments.</p>
+
+<h5>Examples</h5>
+
+<div class="highlight"><pre><span class="s1">&#39;apple, pear &amp; orange&#39;</span><span class="p">.</span><span class="nx">scan</span><span class="p">(</span><span class="sr">/\w+/</span><span class="o">,</span> <span class="nx">alert</span><span class="p">);</span>
+<span class="c">// -&gt; &#39;apple pear orange&#39; (and displays &#39;apple&#39;, &#39;pear&#39; and &#39;orange&#39; in three successive alert dialogs)</span>
+</pre>
+</div>
+
+<p>Can be used to populate an array:</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">fruits</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="s1">&#39;apple, pear &amp; orange&#39;</span><span class="p">.</span><span class="nx">scan</span><span class="p">(</span><span class="sr">/\w+/</span><span class="o">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span> <span class="p">{</span> <span class="nx">fruits</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">});</span>
+<span class="nx">fruits</span><span class="p">.</span><span class="nx">inspect</span><span class="p">()</span>
+<span class="c">// -&gt; [&#39;apple&#39;, &#39;pear&#39;, &#39;orange&#39;]</span>
+</pre>
+</div>
+
+<p>or even to work on the DOM:</p>
+
+<div class="highlight"><pre><span class="s1">&#39;failure-message, success-message &amp; spinner&#39;</span><span class="p">.</span><span class="nx">scan</span><span class="p">(</span><span class="sr">/(\w|-)+/</span><span class="o">,</span> <span class="nx">Element</span><span class="p">.</span><span class="nx">toggle</span><span class="p">)</span>
+<span class="c">// -&gt; &#39;failure-message, success-message &amp; spinner&#39; (and toggles the visibility of each DOM element)</span>
+</pre>
+</div>
+
+<h5>Note</h5>
+
+<p>Do <em>not</em> use the <code>"g"</code> flag on the regex as this will create an infinite loop.</p>
+      
+      
+
+
+      
+    </div>
+  </div> <!-- .section-content -->
+</div> <!-- .section -->
+
+      </div> <!-- #main -->
+      
+      <div id="footer">
+        <p><a href="http://prototypejs.org">Prototype JavaScript Framework</a> API documentation.</p>
+        <p>Last updated on April 07, 2010 at 04:33 UTC. Generated by <a href="http://pdoc.org">PDoc</a>. Uses <a href="http://famfamfam.com/lab/icons/silk/" title="famfamfam.com: Silk Icons">Silk Icons</a> and portions of <a href="http://github.com/280north/aristo/tree/master" title="280north's aristo at master - GitHub">Aristo</a>. Licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>.</p>
+      </div> <!-- #footer -->
+
+    </div> <!-- #page -->
+  </body>
+</html>

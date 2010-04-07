@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Prototype API documentation | Element#absolutize</title>
+  <meta name="generator" content="PDoc" />
+  
+  <script type="text/javascript" src="../../../../javascripts/prototype.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../../javascripts/application.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../../javascripts/tabs.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../../javascripts/item_index.js" charset="utf-8"></script>
+  
+  <link type="text/css" rel="stylesheet" href="../../../../stylesheets/api.css" charset="utf-8" media="screen, projection" />
+<link type="text/css" rel="stylesheet" href="../../../../stylesheets/pygments.css" charset="utf-8" media="screen, projection" />
+  
+  <script type="text/javascript">
+    PDoc.pathPrefix = '../../../../';
+  </script>
+</head>
+  <body>
+
+    <div id="sidebar">
+      <ul id="sidebar_tabs" class="sidebar-tabs">
+        <li>
+          <a href="#menu_pane">Menu</a>
+        </li>
+        <li>
+          <a href="#search_pane">Search</a>
+        </li>
+      </ul> <!-- .sidebar-tabs -->
+
+      <form class="search-ribbon">
+        <label>
+          <span class="hidden">Search</span>
+          <input type="text" id="search" size="20" title="Search" />
+        </label>
+      </form>
+      
+      <div class="sidebar-pane scrollable" id="menu_pane">
+        <ul id="api_menu" class="menu-items">
+            <li><div class="menu-item"><a class="section" href="../../../../ajax" title="Ajax section">Ajax section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="namespace" href="../../../../ajax/ajax" title="Ajax (namespace)">Ajax</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../ajax/ajax/periodicalupdater" title="Ajax.PeriodicalUpdater (class)">Ajax.PeriodicalUpdater</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../ajax/ajax/request" title="Ajax.Request (class)">Ajax.Request</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../ajax/ajax/responders" title="Ajax.Responders (namespace)">Ajax.Responders</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../ajax/ajax/response" title="Ajax.Response (class)">Ajax.Response</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../ajax/ajax/updater" title="Ajax.Updater (class)">Ajax.Updater</a></div><ul class=""></ul></li></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section current-parent" href="../../../../dom" title="DOM section">DOM section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../../dom/dollar" title="$ (utility)">$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../dom/dollardollar" title="$$ (utility)">$$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../dom/dollarf" title="$F (utility)">$F</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../dom/abstract" title="Abstract (namespace)">Abstract</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../dom/abstract/eventobserver" title="Abstract.EventObserver (class)">Abstract.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/abstract/timedobserver" title="Abstract.TimedObserver (class)">Abstract.TimedObserver</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../dom/document" title="document (namespace)">document</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../../dom/document/viewport" title="document.viewport (namespace)">document.viewport</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class current-parent" href="../../../../dom/element" title="Element (class)">Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../dom/element/layout" title="Element.Layout (class)">Element.Layout</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../../../dom/element/methods" title="Element.Methods (mixin)">Element.Methods</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/element/offset" title="Element.Offset (class)">Element.Offset</a></div><ul class=""></ul></li></ul><ul><li><div class="menu-item"><a class="constructor" href="../../../../dom/element/new" title="new Element (constructor)">new</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/absolutize" title="Element.absolutize (class method)">absolutize</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/absolutize" title="Element.absolutize (class method)">absolutize</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/addclassname" title="Element.addClassName (class method)">addClassName</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/addmethods" title="Element.addMethods (class method)">addMethods</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/adjacent" title="Element.adjacent (class method)">adjacent</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/ancestors" title="Element.ancestors (class method)">ancestors</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/childelements" title="Element.childElements (class method)">childElements</a></div></li>
+<li><div class="menu-item"><a class="class-method deprecated" href="../../../../dom/element/classnames" title="Element.classNames (class method)">classNames</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/cleanwhitespace" title="Element.cleanWhitespace (class method)">cleanWhitespace</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/clone" title="Element.clone (class method)">clone</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/cloneposition" title="Element.clonePosition (class method)">clonePosition</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/cumulativeoffset" title="Element.cumulativeOffset (class method)">cumulativeOffset</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/cumulativeoffset" title="Element.cumulativeOffset (class method)">cumulativeOffset</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/cumulativescrolloffset" title="Element.cumulativeScrollOffset (class method)">cumulativeScrollOffset</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/cumulativescrolloffset" title="Element.cumulativeScrollOffset (class method)">cumulativeScrollOffset</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/descendantof" title="Element.descendantOf (class method)">descendantOf</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/descendants" title="Element.descendants (class method)">descendants</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/down" title="Element.down (class method)">down</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/empty" title="Element.empty (class method)">empty</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/extend" title="Element.extend (class method)">extend</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/fire" title="Element.fire (class method)">fire</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/firstdescendant" title="Element.firstDescendant (class method)">firstDescendant</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/getdimensions" title="Element.getDimensions (class method)">getDimensions</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/getelementsbyselector" title="Element.getElementsBySelector (class method)">getElementsBySelector</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/getheight" title="Element.getHeight (class method)">getHeight</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/getlayout" title="Element.getLayout (class method)">getLayout</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/getoffsetparent" title="Element.getOffsetParent (class method)">getOffsetParent</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/getoffsetparent" title="Element.getOffsetParent (class method)">getOffsetParent</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/getopacity" title="Element.getOpacity (class method)">getOpacity</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/getstorage" title="Element.getStorage (class method)">getStorage</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/getstyle" title="Element.getStyle (class method)">getStyle</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/getwidth" title="Element.getWidth (class method)">getWidth</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/hasattribute" title="Element.hasAttribute (class method)">hasAttribute</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/hasclassname" title="Element.hasClassName (class method)">hasClassName</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/hide" title="Element.hide (class method)">hide</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/identify" title="Element.identify (class method)">identify</a></div></li>
+<li><div class="menu-item"><a class="class-method deprecated" href="../../../../dom/element/immediatedescendants" title="Element.immediateDescendants (class method)">immediateDescendants</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/insert" title="Element.insert (class method)">insert</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/inspect" title="Element.inspect (class method)">inspect</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/makeclipping" title="Element.makeClipping (class method)">makeClipping</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/makepositioned" title="Element.makePositioned (class method)">makePositioned</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/match" title="Element.match (class method)">match</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/measure" title="Element.measure (class method)">measure</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/next" title="Element.next (class method)">next</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/nextsiblings" title="Element.nextSiblings (class method)">nextSiblings</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/observe" title="Element.observe (class method)">observe</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/on" title="Element.on (class method)">on</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/positionedoffset" title="Element.positionedOffset (class method)">positionedOffset</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/positionedoffset" title="Element.positionedOffset (class method)">positionedOffset</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/previous" title="Element.previous (class method)">previous</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/previoussiblings" title="Element.previousSiblings (class method)">previousSiblings</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/readattribute" title="Element.readAttribute (class method)">readAttribute</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/recursivelycollect" title="Element.recursivelyCollect (class method)">recursivelyCollect</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/relativize" title="Element.relativize (class method)">relativize</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/relativize" title="Element.relativize (class method)">relativize</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/remove" title="Element.remove (class method)">remove</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/removeclassname" title="Element.removeClassName (class method)">removeClassName</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/replace" title="Element.replace (class method)">replace</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/retrieve" title="Element.retrieve (class method)">retrieve</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/scrollto" title="Element.scrollTo (class method)">scrollTo</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/select" title="Element.select (class method)">select</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/setopacity" title="Element.setOpacity (class method)">setOpacity</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/setstyle" title="Element.setStyle (class method)">setStyle</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/show" title="Element.show (class method)">show</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/siblings" title="Element.siblings (class method)">siblings</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/stopobserving" title="Element.stopObserving (class method)">stopObserving</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/store" title="Element.store (class method)">store</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/toggle" title="Element.toggle (class method)">toggle</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/toggleclassname" title="Element.toggleClassName (class method)">toggleClassName</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/undoclipping" title="Element.undoClipping (class method)">undoClipping</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/undopositioned" title="Element.undoPositioned (class method)">undoPositioned</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/up" title="Element.up (class method)">up</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/update" title="Element.update (class method)">update</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/viewportoffset" title="Element.viewportOffset (class method)">viewportOffset</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/viewportoffset" title="Element.viewportOffset (class method)">viewportOffset</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/visible" title="Element.visible (class method)">visible</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/wrap" title="Element.wrap (class method)">wrap</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../../dom/element/writeattribute" title="Element.writeAttribute (class method)">writeAttribute</a></div></li>
+<li><div class="menu-item"><a class="instance-method current" href="../../../../dom/element/prototype/absolutize" title="Element#absolutize (instance method)">absolutize</a></div></li>
+<li><div class="menu-item"><a class="instance-method current" href="../../../../dom/element/prototype/absolutize" title="Element#absolutize (instance method)">absolutize</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/addclassname" title="Element#addClassName (instance method)">addClassName</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/adjacent" title="Element#adjacent (instance method)">adjacent</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/ancestors" title="Element#ancestors (instance method)">ancestors</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/childelements" title="Element#childElements (instance method)">childElements</a></div></li>
+<li><div class="menu-item"><a class="instance-method deprecated" href="../../../../dom/element/prototype/classnames" title="Element#classNames (instance method)">classNames</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/cleanwhitespace" title="Element#cleanWhitespace (instance method)">cleanWhitespace</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/clone" title="Element#clone (instance method)">clone</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/cloneposition" title="Element#clonePosition (instance method)">clonePosition</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/cumulativeoffset" title="Element#cumulativeOffset (instance method)">cumulativeOffset</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/cumulativeoffset" title="Element#cumulativeOffset (instance method)">cumulativeOffset</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/cumulativescrolloffset" title="Element#cumulativeScrollOffset (instance method)">cumulativeScrollOffset</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/cumulativescrolloffset" title="Element#cumulativeScrollOffset (instance method)">cumulativeScrollOffset</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/descendantof" title="Element#descendantOf (instance method)">descendantOf</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/descendants" title="Element#descendants (instance method)">descendants</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/down" title="Element#down (instance method)">down</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/empty" title="Element#empty (instance method)">empty</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/fire" title="Element#fire (instance method)">fire</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/firstdescendant" title="Element#firstDescendant (instance method)">firstDescendant</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/getdimensions" title="Element#getDimensions (instance method)">getDimensions</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/getelementsbyselector" title="Element#getElementsBySelector (instance method)">getElementsBySelector</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/getheight" title="Element#getHeight (instance method)">getHeight</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/getlayout" title="Element#getLayout (instance method)">getLayout</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/getoffsetparent" title="Element#getOffsetParent (instance method)">getOffsetParent</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/getoffsetparent" title="Element#getOffsetParent (instance method)">getOffsetParent</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/getopacity" title="Element#getOpacity (instance method)">getOpacity</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/getstorage" title="Element#getStorage (instance method)">getStorage</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/getstyle" title="Element#getStyle (instance method)">getStyle</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/getwidth" title="Element#getWidth (instance method)">getWidth</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/hasattribute" title="Element#hasAttribute (instance method)">hasAttribute</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/hasclassname" title="Element#hasClassName (instance method)">hasClassName</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/hide" title="Element#hide (instance method)">hide</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/identify" title="Element#identify (instance method)">identify</a></div></li>
+<li><div class="menu-item"><a class="instance-method deprecated" href="../../../../dom/element/prototype/immediatedescendants" title="Element#immediateDescendants (instance method)">immediateDescendants</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/insert" title="Element#insert (instance method)">insert</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/inspect" title="Element#inspect (instance method)">inspect</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/makeclipping" title="Element#makeClipping (instance method)">makeClipping</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/makepositioned" title="Element#makePositioned (instance method)">makePositioned</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/match" title="Element#match (instance method)">match</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/measure" title="Element#measure (instance method)">measure</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/next" title="Element#next (instance method)">next</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/nextsiblings" title="Element#nextSiblings (instance method)">nextSiblings</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/observe" title="Element#observe (instance method)">observe</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/on" title="Element#on (instance method)">on</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/positionedoffset" title="Element#positionedOffset (instance method)">positionedOffset</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/positionedoffset" title="Element#positionedOffset (instance method)">positionedOffset</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/previous" title="Element#previous (instance method)">previous</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/previoussiblings" title="Element#previousSiblings (instance method)">previousSiblings</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/readattribute" title="Element#readAttribute (instance method)">readAttribute</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/recursivelycollect" title="Element#recursivelyCollect (instance method)">recursivelyCollect</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/relativize" title="Element#relativize (instance method)">relativize</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/relativize" title="Element#relativize (instance method)">relativize</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/remove" title="Element#remove (instance method)">remove</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/removeclassname" title="Element#removeClassName (instance method)">removeClassName</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/replace" title="Element#replace (instance method)">replace</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/retrieve" title="Element#retrieve (instance method)">retrieve</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/scrollto" title="Element#scrollTo (instance method)">scrollTo</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/select" title="Element#select (instance method)">select</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/setopacity" title="Element#setOpacity (instance method)">setOpacity</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/setstyle" title="Element#setStyle (instance method)">setStyle</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/show" title="Element#show (instance method)">show</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/siblings" title="Element#siblings (instance method)">siblings</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/stopobserving" title="Element#stopObserving (instance method)">stopObserving</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/store" title="Element#store (instance method)">store</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/toggle" title="Element#toggle (instance method)">toggle</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/toggleclassname" title="Element#toggleClassName (instance method)">toggleClassName</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/undoclipping" title="Element#undoClipping (instance method)">undoClipping</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/undopositioned" title="Element#undoPositioned (instance method)">undoPositioned</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/up" title="Element#up (instance method)">up</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/update" title="Element#update (instance method)">update</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/viewportoffset" title="Element#viewportOffset (instance method)">viewportOffset</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/viewportoffset" title="Element#viewportOffset (instance method)">viewportOffset</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/visible" title="Element#visible (instance method)">visible</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/wrap" title="Element#wrap (instance method)">wrap</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../../dom/element/prototype/writeattribute" title="Element#writeAttribute (instance method)">writeAttribute</a></div></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/event" title="Event (class)">Event</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../dom/event/handler" title="Event.Handler (class)">Event.Handler</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../dom/form" title="Form (namespace)">Form</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../../dom/form/element" title="Form.Element (namespace)">Form.Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../../dom/form/element/eventobserver" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/form/element/observer" title="Form.Element.Observer (class)">Form.Element.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/form/eventobserver" title="Form.EventObserver (class)">Form.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../dom/form/observer" title="Form.Observer (class)">Form.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class deprecated" href="../../../../dom/selector" title="Selector (class)">Selector</a></div><ul class=""></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section" href="../../../../language" title="Language section">Language section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../../language/dollara" title="$A (utility)">$A</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../language/dollarh" title="$H (utility)">$H</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../language/dollarr" title="$R (utility)">$R</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../../language/dollarw" title="$w (utility)">$w</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/array" title="Array (class)">Array</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/class" title="Class (class)">Class</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/date" title="Date (class)">Date</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../../../language/enumerable" title="Enumerable (mixin)">Enumerable</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/function" title="Function (class)">Function</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/hash" title="Hash (class)">Hash</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/number" title="Number (class)">Number</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/object" title="Object (class)">Object</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/objectrange" title="ObjectRange (class)">ObjectRange</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/periodicalexecuter" title="PeriodicalExecuter (class)">PeriodicalExecuter</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../language/prototype" title="Prototype (namespace)">Prototype</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../../language/prototype/browser" title="Prototype.Browser (namespace)">Prototype.Browser</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../language/prototype/browserfeatures" title="Prototype.BrowserFeatures (namespace)">Prototype.BrowserFeatures</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../language/prototype/selector" title="Prototype.Selector (namespace)">Prototype.Selector</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/regexp" title="RegExp (class)">RegExp</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/string" title="String (class)">String</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../../language/template" title="Template (class)">Template</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../../language/try" title="Try (namespace)">Try</a></div><ul class=""></ul></li></ul></li>
+        </ul> <!--- #api_menu =-->
+      </div> <!-- .sidebar-pane -->
+      <div class="sidebar-pane" id="search_pane">
+        <ul id="search_results" class="search-results menu-items scrollable"></ul>
+      </div> <!-- .sidebar-pane -->
+    </div> <!-- #sidebar -->
+
+    <div id="page">
+
+      <div id="main" class="page-content">
+        
+
+
+<ul class="breadcrumbs clearfix">
+  <li><a href="../../../../">Home</a></li>
+    <li>&rarr; <a href="../../../../dom" title="DOM section">DOM section</a></li>
+    <li>&rarr; <a href="../../../../dom/element" title="Element (class)">Element</a></li>
+    <li>&rarr; <a href="../../../../dom/element/prototype/absolutize" title="Element#absolutize (instance method)">absolutize</a></li>
+</ul>
+
+  <p id="src_code_href"><a href="http://github.com/sstephenson/prototype/blob/d11f317/src/dom/layout.js#LID841">src code</a></p>
+
+<h2 class="page-title">
+  <span class="type">instance method</span> Element#absolutize
+</h2>
+
+
+
+
+<div class="section">
+  <div class="section-title">
+  </div> <!-- .section-title -->
+  <div class="section-content">
+    <div class="method-description">
+        <pre class="syntax"><code class="ebnf">Element#absolutize() &rarr; <a href="../../../../dom/element" title="Element (class)">Element</a></code></pre>
+
+
+      <p>Turns <code>element</code> into an absolutely-positioned element <em>without</em>
+changing its position in the page layout.</p>
+      
+      
+
+
+        <p class="note">
+    This method can be called <em>either</em> as an instance method <em>or</em> as a <a href="../../../../dom/element/absolutize">generic method</a>.
+  If calling as a generic, pass the instance in as the first argument.<p>
+
+    </div>
+  </div> <!-- .section-content -->
+</div> <!-- .section -->
+
+      </div> <!-- #main -->
+      
+      <div id="footer">
+        <p><a href="http://prototypejs.org">Prototype JavaScript Framework</a> API documentation.</p>
+        <p>Last updated on April 07, 2010 at 04:31 UTC. Generated by <a href="http://pdoc.org">PDoc</a>. Uses <a href="http://famfamfam.com/lab/icons/silk/" title="famfamfam.com: Silk Icons">Silk Icons</a> and portions of <a href="http://github.com/280north/aristo/tree/master" title="280north's aristo at master - GitHub">Aristo</a>. Licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>.</p>
+      </div> <!-- #footer -->
+
+    </div> <!-- #page -->
+  </body>
+</html>

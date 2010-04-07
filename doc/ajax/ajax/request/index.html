@@ -1,0 +1,337 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Prototype API documentation | Ajax.Request</title>
+  <meta name="generator" content="PDoc" />
+  
+  <script type="text/javascript" src="../../../javascripts/prototype.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../javascripts/application.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../javascripts/tabs.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../javascripts/item_index.js" charset="utf-8"></script>
+  
+  <link type="text/css" rel="stylesheet" href="../../../stylesheets/api.css" charset="utf-8" media="screen, projection" />
+<link type="text/css" rel="stylesheet" href="../../../stylesheets/pygments.css" charset="utf-8" media="screen, projection" />
+  
+  <script type="text/javascript">
+    PDoc.pathPrefix = '../../../';
+  </script>
+</head>
+  <body>
+
+    <div id="sidebar">
+      <ul id="sidebar_tabs" class="sidebar-tabs">
+        <li>
+          <a href="#menu_pane">Menu</a>
+        </li>
+        <li>
+          <a href="#search_pane">Search</a>
+        </li>
+      </ul> <!-- .sidebar-tabs -->
+
+      <form class="search-ribbon">
+        <label>
+          <span class="hidden">Search</span>
+          <input type="text" id="search" size="20" title="Search" />
+        </label>
+      </form>
+      
+      <div class="sidebar-pane scrollable" id="menu_pane">
+        <ul id="api_menu" class="menu-items">
+            <li><div class="menu-item"><a class="section current-parent" href="../../../ajax" title="Ajax section">Ajax section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="namespace current-parent" href="../../../ajax/ajax" title="Ajax (namespace)">Ajax</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../ajax/ajax/periodicalupdater" title="Ajax.PeriodicalUpdater (class)">Ajax.PeriodicalUpdater</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class current" href="../../../ajax/ajax/request" title="Ajax.Request (class)">Ajax.Request</a></div><ul class=""></ul><ul><li><div class="menu-item"><a class="constructor" href="../../../ajax/ajax/request/new" title="new Ajax.Request (constructor)">new</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../ajax/ajax/request/prototype/getheader" title="Ajax.Request#getHeader (instance method)">getHeader</a></div></li>
+<li><div class="menu-item"><a class="instance-method" href="../../../ajax/ajax/request/prototype/success" title="Ajax.Request#success (instance method)">success</a></div></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../ajax/ajax/responders" title="Ajax.Responders (namespace)">Ajax.Responders</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../ajax/ajax/response" title="Ajax.Response (class)">Ajax.Response</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../ajax/ajax/updater" title="Ajax.Updater (class)">Ajax.Updater</a></div><ul class=""></ul></li></ul><ul><li><div class="menu-item"><a class="class-property" href="../../../ajax/ajax/activerequestcount" title="Ajax.activeRequestCount (class property)">activeRequestCount</a></div></li></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section" href="../../../dom" title="DOM section">DOM section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../dom/dollar" title="$ (utility)">$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../dom/dollardollar" title="$$ (utility)">$$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../dom/dollarf" title="$F (utility)">$F</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../dom/abstract" title="Abstract (namespace)">Abstract</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../dom/abstract/eventobserver" title="Abstract.EventObserver (class)">Abstract.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/abstract/timedobserver" title="Abstract.TimedObserver (class)">Abstract.TimedObserver</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../dom/document" title="document (namespace)">document</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../dom/document/viewport" title="document.viewport (namespace)">document.viewport</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/element" title="Element (class)">Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../dom/element/layout" title="Element.Layout (class)">Element.Layout</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../../dom/element/methods" title="Element.Methods (mixin)">Element.Methods</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/element/offset" title="Element.Offset (class)">Element.Offset</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/event" title="Event (class)">Event</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../dom/event/handler" title="Event.Handler (class)">Event.Handler</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../dom/form" title="Form (namespace)">Form</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../dom/form/element" title="Form.Element (namespace)">Form.Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../dom/form/element/eventobserver" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/form/element/observer" title="Form.Element.Observer (class)">Form.Element.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/form/eventobserver" title="Form.EventObserver (class)">Form.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/form/observer" title="Form.Observer (class)">Form.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class deprecated" href="../../../dom/selector" title="Selector (class)">Selector</a></div><ul class=""></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section" href="../../../language" title="Language section">Language section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../language/dollara" title="$A (utility)">$A</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../language/dollarh" title="$H (utility)">$H</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../language/dollarr" title="$R (utility)">$R</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../language/dollarw" title="$w (utility)">$w</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/array" title="Array (class)">Array</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/class" title="Class (class)">Class</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/date" title="Date (class)">Date</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../../language/enumerable" title="Enumerable (mixin)">Enumerable</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/function" title="Function (class)">Function</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/hash" title="Hash (class)">Hash</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/number" title="Number (class)">Number</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/object" title="Object (class)">Object</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/objectrange" title="ObjectRange (class)">ObjectRange</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/periodicalexecuter" title="PeriodicalExecuter (class)">PeriodicalExecuter</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../language/prototype" title="Prototype (namespace)">Prototype</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../language/prototype/browser" title="Prototype.Browser (namespace)">Prototype.Browser</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../language/prototype/browserfeatures" title="Prototype.BrowserFeatures (namespace)">Prototype.BrowserFeatures</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../language/prototype/selector" title="Prototype.Selector (namespace)">Prototype.Selector</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/regexp" title="RegExp (class)">RegExp</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/string" title="String (class)">String</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/template" title="Template (class)">Template</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../language/try" title="Try (namespace)">Try</a></div><ul class=""></ul></li></ul></li>
+        </ul> <!--- #api_menu =-->
+      </div> <!-- .sidebar-pane -->
+      <div class="sidebar-pane" id="search_pane">
+        <ul id="search_results" class="search-results menu-items scrollable"></ul>
+      </div> <!-- .sidebar-pane -->
+    </div> <!-- #sidebar -->
+
+    <div id="page">
+
+      <div id="main" class="page-content">
+        
+
+
+<ul class="breadcrumbs clearfix">
+  <li><a href="../../../">Home</a></li>
+    <li>&rarr; <a href="../../../ajax" title="Ajax section">Ajax section</a></li>
+    <li>&rarr; <a href="../../../ajax/ajax" title="Ajax (namespace)">Ajax</a></li>
+    <li>&rarr; <a href="../../../ajax/ajax/request" title="Ajax.Request (class)">Request</a></li>
+</ul>
+
+  <p id="src_code_href"><a href="http://github.com/sstephenson/prototype/blob/d11f317/src/ajax/request.js#LID159">src code</a></p>
+
+<h2 class="page-title">
+  <span class="type">class</span> Ajax.Request
+</h2>
+
+
+
+
+                <div class="section section-description">
+                <div class="section-title">
+                  <h3>Description</h3>
+                </div> <!-- .section-title -->
+                <div class="section-content">
+
+    <p>Initiates and processes an Ajax request.</p>
+
+<p><code><a href="../../../ajax/ajax/request" title="Ajax.Request (class)">Ajax.Request</a></code> is a general-purpose class for making HTTP requests which
+handles the life-cycle of the request, handles the boilerplate, and lets
+you plug in callback functions for your custom needs.</p>
+
+<p>In the optional <code>options</code> hash, you usually provide an <code>onComplete</code> and/or
+<code>onSuccess</code> callback, unless you're in the edge case where you're getting a
+JavaScript-typed response, that will automatically be <code>eval</code>'d.</p>
+
+<p>For a full list of common options and callbacks, see "Ajax options" heading
+of the <a href="../../../ajax/ajax" title="Ajax (namespace)">Ajax</a>.</p>
+
+<h5>A basic example</h5>
+
+<div class="highlight"><pre><span class="k">new</span> <span class="nx">Ajax</span><span class="p">.</span><span class="nx">Request</span><span class="p">(</span><span class="s1">&#39;/your/url&#39;</span><span class="o">,</span> <span class="p">{</span>
+  <span class="nx">onSuccess</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c">// Handle the response content...</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+<h5>Request life-cycle</h5>
+
+<p>Underneath our nice requester objects lies, of course, <code>XMLHttpRequest</code>. The
+defined life-cycle is as follows:</p>
+
+<ol>
+<li>Created</li>
+<li>Initialized</li>
+<li>Request sent</li>
+<li>Response being received (can occur many times, as packets come in)</li>
+<li>Response received, request complete</li>
+</ol>
+
+<p>As you can see under the "Ajax options" heading of the <a href="../../../ajax/ajax" title="Ajax (namespace)">Ajax</a>,
+Prototype's AJAX objects define a whole slew of callbacks, which are
+triggered in the following order:</p>
+
+<ol>
+<li><code>onCreate</code> (this is actually a callback reserved to <code><a href="../../../ajax/ajax/responders" title="Ajax.Responders (namespace)">Ajax.Responders</a></code>)</li>
+<li><code>onUninitialized</code> (maps on Created)</li>
+<li><code>onLoading</code> (maps on Initialized)</li>
+<li><code>onLoaded</code> (maps on Request sent)</li>
+<li><code>onInteractive</code> (maps on Response being received)</li>
+<li><code>on</code><em>XYZ</em> (numerical response status code), onSuccess or onFailure (see below)</li>
+<li><code>onComplete</code></li>
+</ol>
+
+<p>The two last steps both map on <em>Response received</em>, in that order. If a
+status-specific callback is defined, it gets invoked. Otherwise, if
+<code>onSuccess</code> is defined and the response is deemed a success (see below), it
+is invoked. Otherwise, if <code>onFailure</code> is defined and the response is <em>not</em>
+deemed a sucess, it is invoked. Only after that potential first callback is
+<code>onComplete</code> called.</p>
+
+<h5>A note on portability</h5>
+
+<p>Depending on how your browser implements <code>XMLHttpRequest</code>, one or more
+callbacks may never be invoked. In particular, <code>onLoaded</code> and
+<code>onInteractive</code> are not a 100% safe bet so far. However, the global
+<code>onCreate</code>, <code>onUninitialized</code> and the two final steps are very much
+guaranteed.</p>
+
+<h5><code>onSuccess</code> and <code>onFailure</code>, the under-used callbacks</h5>
+
+<p>Way too many people use <code><a href="../../../ajax/ajax/request" title="Ajax.Request (class)">Ajax.Request</a></code> in a similar manner to raw XHR,
+defining only an <code>onComplete</code> callback even when they're only interested in
+"successful" responses, thereby testing it by hand:</p>
+
+<div class="highlight"><pre><span class="c">// This is too bad, there&#39;s better!</span>
+<span class="k">new</span> <span class="nx">Ajax</span><span class="p">.</span><span class="nx">Request</span><span class="p">(</span><span class="s1">&#39;/your/url&#39;</span><span class="o">,</span> <span class="p">{</span>
+  <span class="nx">onComplete</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="mi">200</span> <span class="o">==</span> <span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="p">)</span>
+      <span class="c">// yada yada yada</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+<p>First, as described below, you could use better "success" detection: success
+is generally defined, HTTP-wise, as either no response status or a "2xy"
+response status (e.g., 201 is a success, too). See the example below.</p>
+
+<p>Second, you could dispense with status testing altogether! Prototype adds
+callbacks specific to success and failure, which we listed above. Here's
+what you could do if you're only interested in success, for instance:</p>
+
+<div class="highlight"><pre><span class="k">new</span> <span class="nx">Ajax</span><span class="p">.</span><span class="nx">Request</span><span class="p">(</span><span class="s1">&#39;/your/url&#39;</span><span class="o">,</span> <span class="p">{</span>
+  <span class="nx">onSuccess</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c">// yada yada yada</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+<h5>Automatic JavaScript response evaluation</h5>
+
+<p>If an Ajax request follows the <em>same-origin policy</em> <strong>and</strong> its response
+has a JavaScript-related <code>Content-type</code>, the content of the <code>responseText</code>
+property will automatically be passed to <code>eval</code>.</p>
+
+<p>In other words: you don't even need to provide a callback to leverage
+pure-JavaScript Ajax responses. This is the convention that drives Rails's
+RJS.</p>
+
+<p>The list of JavaScript-related MIME-types handled by Prototype is:</p>
+
+<ul>
+<li><code>application/ecmascript</code></li>
+<li><code>application/javascript</code></li>
+<li><code>application/x-ecmascript</code></li>
+<li><code>application/x-javascript</code></li>
+<li><code>text/ecmascript</code></li>
+<li><code>text/javascript</code></li>
+<li><code>text/x-ecmascript</code></li>
+<li><code>text/x-javascript</code></li>
+</ul>
+
+<p>The MIME-type string is examined in a case-insensitive manner.</p>
+
+<h5>Methods you may find useful</h5>
+
+<p>Instances of the <code><a href="../../../ajax/ajax/request" title="Ajax.Request (class)">Ajax.Request</a></code> object provide several methods that come
+in handy in your callback functions, especially once the request is complete.</p>
+
+<h6>Is the response a successful one?</h6>
+
+<p>The <code><a href="../../../ajax/ajax/request/prototype/success" title="Ajax.Request#success (instance method)">Ajax.Request#success</a></code> method examines the XHR object's <code>status</code>
+property and follows general HTTP guidelines: unknown status is deemed
+successful, as is the whole <code>2xy</code> status code family. It's a generally
+better way of testing your response than the usual
+<code>200 == transport.status</code>.</p>
+
+<h6>Getting HTTP response headers</h6>
+
+<p>While you can obtain response headers from the XHR object using its
+<code>getResponseHeader</code> method, this makes for verbose code, and several
+implementations raise an exception when the header is not found. To make
+this easier, you can use the <code><a href="../../../ajax/ajax/response/prototype/getheader" title="Ajax.Response#getHeader (instance method)">Ajax.Response#getHeader</a></code> method, which
+delegates to the longer version and returns <code>null</code> if an exception occurs:</p>
+
+<div class="highlight"><pre><span class="k">new</span> <span class="nx">Ajax</span><span class="p">.</span><span class="nx">Request</span><span class="p">(</span><span class="s1">&#39;/your/url&#39;</span><span class="o">,</span> <span class="p">{</span>
+  <span class="nx">onSuccess</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c">// Note how we brace against null values</span>
+    <span class="k">if</span> <span class="p">((</span><span class="nx">response</span><span class="p">.</span><span class="nx">getHeader</span><span class="p">(</span><span class="s1">&#39;Server&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">).</span><span class="nx">match</span><span class="p">(</span><span class="sr">/Apache/</span><span class="p">))</span>
+      <span class="o">++</span><span class="nx">gApacheCount</span><span class="o">;</span>
+    <span class="c">// Remainder of the code</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+<h5>Evaluating JSON headers</h5>
+
+<p>Some backends will return JSON not as response text, but in the <code>X-JSON</code>
+header. In this case, you don't even need to evaluate the returned JSON
+yourself, as Prototype automatically does so. It passes the result as the
+<code>headerJSON</code> property of the <code><a href="../../../ajax/ajax/response" title="Ajax.Response (class)">Ajax.Response</a></code> object. Note that if there
+is no such header &mdash; or its contents are invalid &mdash; <code>headerJSON</code>
+will be set to <code>null</code>.</p>
+
+<div class="highlight"><pre><span class="k">new</span> <span class="nx">Ajax</span><span class="p">.</span><span class="nx">Request</span><span class="p">(</span><span class="s1">&#39;/your/url&#39;</span><span class="o">,</span> <span class="p">{</span>
+  <span class="nx">onSuccess</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">transport</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">transport</span><span class="p">.</span><span class="nx">headerJSON</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre>
+</div>
+                </div> <!-- .section-content -->
+            </div> <!-- .section -->
+
+
+
+
+
+
+
+
+                <div class="section section-constructor">
+                <div class="section-title">
+                  <h3>Constructor</h3>
+                </div> <!-- .section-title -->
+                <div class="section-content">
+
+    <p><code><a href="../../../ajax/ajax/request/new" title="new Ajax.Request (constructor)">new Ajax.Request</a></code></p>
+                </div> <!-- .section-content -->
+            </div> <!-- .section -->
+
+
+
+                  <div class="section section-instance_methods">
+                <div class="section-title">
+                  <h3>Instance methods</h3>
+                </div> <!-- .section-title -->
+                <div class="section-content">
+
+      <ul class="method-list">
+        <li><code><a class="instance-method" href="../../../ajax/ajax/request/prototype/getheader" title="Ajax.Request#getHeader (instance method)">getHeader</a></code></li>
+
+<li><code><a class="instance-method" href="../../../ajax/ajax/request/prototype/success" title="Ajax.Request#success (instance method)">success</a></code></li>
+
+      </ul>
+                  </div> <!-- .section-content -->
+            </div> <!-- .section -->
+
+
+      </div> <!-- #main -->
+      
+      <div id="footer">
+        <p><a href="http://prototypejs.org">Prototype JavaScript Framework</a> API documentation.</p>
+        <p>Last updated on April 07, 2010 at 04:31 UTC. Generated by <a href="http://pdoc.org">PDoc</a>. Uses <a href="http://famfamfam.com/lab/icons/silk/" title="famfamfam.com: Silk Icons">Silk Icons</a> and portions of <a href="http://github.com/280north/aristo/tree/master" title="280north's aristo at master - GitHub">Aristo</a>. Licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>.</p>
+      </div> <!-- #footer -->
+
+    </div> <!-- #page -->
+  </body>
+</html>

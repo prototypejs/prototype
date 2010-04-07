@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Prototype API documentation | Object.toJSON</title>
+  <meta name="generator" content="PDoc" />
+  
+  <script type="text/javascript" src="../../../javascripts/prototype.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../javascripts/application.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../javascripts/tabs.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../../javascripts/item_index.js" charset="utf-8"></script>
+  
+  <link type="text/css" rel="stylesheet" href="../../../stylesheets/api.css" charset="utf-8" media="screen, projection" />
+<link type="text/css" rel="stylesheet" href="../../../stylesheets/pygments.css" charset="utf-8" media="screen, projection" />
+  
+  <script type="text/javascript">
+    PDoc.pathPrefix = '../../../';
+  </script>
+</head>
+  <body>
+
+    <div id="sidebar">
+      <ul id="sidebar_tabs" class="sidebar-tabs">
+        <li>
+          <a href="#menu_pane">Menu</a>
+        </li>
+        <li>
+          <a href="#search_pane">Search</a>
+        </li>
+      </ul> <!-- .sidebar-tabs -->
+
+      <form class="search-ribbon">
+        <label>
+          <span class="hidden">Search</span>
+          <input type="text" id="search" size="20" title="Search" />
+        </label>
+      </form>
+      
+      <div class="sidebar-pane scrollable" id="menu_pane">
+        <ul id="api_menu" class="menu-items">
+            <li><div class="menu-item"><a class="section" href="../../../ajax" title="Ajax section">Ajax section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="namespace" href="../../../ajax/ajax" title="Ajax (namespace)">Ajax</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../ajax/ajax/periodicalupdater" title="Ajax.PeriodicalUpdater (class)">Ajax.PeriodicalUpdater</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../ajax/ajax/request" title="Ajax.Request (class)">Ajax.Request</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../ajax/ajax/responders" title="Ajax.Responders (namespace)">Ajax.Responders</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../ajax/ajax/response" title="Ajax.Response (class)">Ajax.Response</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../ajax/ajax/updater" title="Ajax.Updater (class)">Ajax.Updater</a></div><ul class=""></ul></li></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section" href="../../../dom" title="DOM section">DOM section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../dom/dollar" title="$ (utility)">$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../dom/dollardollar" title="$$ (utility)">$$</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../dom/dollarf" title="$F (utility)">$F</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../dom/abstract" title="Abstract (namespace)">Abstract</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../dom/abstract/eventobserver" title="Abstract.EventObserver (class)">Abstract.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/abstract/timedobserver" title="Abstract.TimedObserver (class)">Abstract.TimedObserver</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../dom/document" title="document (namespace)">document</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../dom/document/viewport" title="document.viewport (namespace)">document.viewport</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/element" title="Element (class)">Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../dom/element/layout" title="Element.Layout (class)">Element.Layout</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../../dom/element/methods" title="Element.Methods (mixin)">Element.Methods</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/element/offset" title="Element.Offset (class)">Element.Offset</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/event" title="Event (class)">Event</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../dom/event/handler" title="Event.Handler (class)">Event.Handler</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../dom/form" title="Form (namespace)">Form</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../dom/form/element" title="Form.Element (namespace)">Form.Element</a></div><ul class=""><li><div class="menu-item"><a class="class" href="../../../dom/form/element/eventobserver" title="Form.Element.EventObserver (class)">Form.Element.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/form/element/observer" title="Form.Element.Observer (class)">Form.Element.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/form/eventobserver" title="Form.EventObserver (class)">Form.EventObserver</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../dom/form/observer" title="Form.Observer (class)">Form.Observer</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class deprecated" href="../../../dom/selector" title="Selector (class)">Selector</a></div><ul class=""></ul></li></ul></li>
+            <li><div class="menu-item"><a class="section current-parent" href="../../../language" title="Language section">Language section</a></div><ul class="menu-section"><li><div class="menu-item"><a class="utility" href="../../../language/dollara" title="$A (utility)">$A</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../language/dollarh" title="$H (utility)">$H</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../language/dollarr" title="$R (utility)">$R</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="utility" href="../../../language/dollarw" title="$w (utility)">$w</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/array" title="Array (class)">Array</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/class" title="Class (class)">Class</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/date" title="Date (class)">Date</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="mixin" href="../../../language/enumerable" title="Enumerable (mixin)">Enumerable</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/function" title="Function (class)">Function</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/hash" title="Hash (class)">Hash</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/number" title="Number (class)">Number</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class current-parent" href="../../../language/object" title="Object (class)">Object</a></div><ul class=""></ul><ul><li><div class="menu-item"><a class="class-method" href="../../../language/object/clone" title="Object.clone (class method)">clone</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/extend" title="Object.extend (class method)">extend</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/inspect" title="Object.inspect (class method)">inspect</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/isarray" title="Object.isArray (class method)">isArray</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/iselement" title="Object.isElement (class method)">isElement</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/isfunction" title="Object.isFunction (class method)">isFunction</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/ishash" title="Object.isHash (class method)">isHash</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/isnumber" title="Object.isNumber (class method)">isNumber</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/isstring" title="Object.isString (class method)">isString</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/isundefined" title="Object.isUndefined (class method)">isUndefined</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/keys" title="Object.keys (class method)">keys</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/tohtml" title="Object.toHTML (class method)">toHTML</a></div></li>
+<li><div class="menu-item"><a class="class-method current" href="../../../language/object/tojson" title="Object.toJSON (class method)">toJSON</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/toquerystring" title="Object.toQueryString (class method)">toQueryString</a></div></li>
+<li><div class="menu-item"><a class="class-method" href="../../../language/object/values" title="Object.values (class method)">values</a></div></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/objectrange" title="ObjectRange (class)">ObjectRange</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/periodicalexecuter" title="PeriodicalExecuter (class)">PeriodicalExecuter</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../language/prototype" title="Prototype (namespace)">Prototype</a></div><ul class=""><li><div class="menu-item"><a class="namespace" href="../../../language/prototype/browser" title="Prototype.Browser (namespace)">Prototype.Browser</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../language/prototype/browserfeatures" title="Prototype.BrowserFeatures (namespace)">Prototype.BrowserFeatures</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../language/prototype/selector" title="Prototype.Selector (namespace)">Prototype.Selector</a></div><ul class=""></ul></li></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/regexp" title="RegExp (class)">RegExp</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/string" title="String (class)">String</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="class" href="../../../language/template" title="Template (class)">Template</a></div><ul class=""></ul></li>
+<li><div class="menu-item"><a class="namespace" href="../../../language/try" title="Try (namespace)">Try</a></div><ul class=""></ul></li></ul></li>
+        </ul> <!--- #api_menu =-->
+      </div> <!-- .sidebar-pane -->
+      <div class="sidebar-pane" id="search_pane">
+        <ul id="search_results" class="search-results menu-items scrollable"></ul>
+      </div> <!-- .sidebar-pane -->
+    </div> <!-- #sidebar -->
+
+    <div id="page">
+
+      <div id="main" class="page-content">
+        
+
+
+<ul class="breadcrumbs clearfix">
+  <li><a href="../../../">Home</a></li>
+    <li>&rarr; <a href="../../../language" title="Language section">Language section</a></li>
+    <li>&rarr; <a href="../../../language/object" title="Object (class)">Object</a></li>
+    <li>&rarr; <a href="../../../language/object/tojson" title="Object.toJSON (class method)">toJSON</a></li>
+</ul>
+
+  <p id="src_code_href"><a href="http://github.com/sstephenson/prototype/blob/d11f317/src/lang/object.js#LID141">src code</a></p>
+
+<h2 class="page-title">
+  <span class="type">class method</span> Object.toJSON
+</h2>
+
+
+
+
+<div class="section">
+  <div class="section-title">
+  </div> <!-- .section-title -->
+  <div class="section-content">
+    <div class="method-description">
+        <pre class="syntax"><code class="ebnf">Object.toJSON(object) &rarr; <a href="../../../language/string" title="String (class)">String</a></code></pre>
+  <ul class="argument-list">
+      <li>
+        <code class="argument-name">object</code>
+          <span class="argument-types">(<code><a href="../../../language/object" title="Object (class)">Object</a></code>)</span>
+         &ndash; The object to be serialized.
+      </li>
+  </ul> <!-- .argument-list -->
+
+
+      <p>Returns a JSON string.</p>
+
+<p><code>undefined</code> and <code>function</code> types have no JSON representation. <code>boolean</code>
+and <code>null</code> are coerced to strings.</p>
+
+<p>For other types, <code><a href="../../../language/object/tojson" title="Object.toJSON (class method)">Object.toJSON</a></code> looks for a <code>toJSON</code> method on <code>object</code>.
+If there is one, it is used; otherwise the object is treated like a
+generic <code><a href="../../../language/object" title="Object (class)">Object</a></code>.</p>
+
+<p>For more information on Prototype's JSON encoder, hop to our
+<a href="http://prototypejs.org/learn/json">tutorial</a>.</p>
+
+<h5>Example</h5>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Violet&#39;</span><span class="o">,</span> <span class="nx">occupation</span><span class="o">:</span> <span class="s1">&#39;character&#39;</span><span class="o">,</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">25</span><span class="o">,</span> <span class="nx">pets</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;frog&#39;</span><span class="o">,</span> <span class="s1">&#39;rabbit&#39;</span><span class="p">]};</span>
+<span class="nb">Object</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+<span class="c">//-&gt; &#39;{&quot;name&quot;: &quot;Violet&quot;, &quot;occupation&quot;: &quot;character&quot;, &quot;age&quot;: 25, &quot;pets&quot;: [&quot;frog&quot;,&quot;rabbit&quot;]}&#39;</span>
+</pre>
+</div>
+      
+      
+
+
+      
+    </div>
+  </div> <!-- .section-content -->
+</div> <!-- .section -->
+
+      </div> <!-- #main -->
+      
+      <div id="footer">
+        <p><a href="http://prototypejs.org">Prototype JavaScript Framework</a> API documentation.</p>
+        <p>Last updated on April 07, 2010 at 04:33 UTC. Generated by <a href="http://pdoc.org">PDoc</a>. Uses <a href="http://famfamfam.com/lab/icons/silk/" title="famfamfam.com: Silk Icons">Silk Icons</a> and portions of <a href="http://github.com/280north/aristo/tree/master" title="280north's aristo at master - GitHub">Aristo</a>. Licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>.</p>
+      </div> <!-- #footer -->
+
+    </div> <!-- #page -->
+  </body>
+</html>
