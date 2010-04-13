@@ -936,7 +936,7 @@
         element = $(element);
         if (isDetached(element)) return new Element.Offset(0, 0);
 
-        var docOffset = $(document.documentElement).viewportOffset(),
+        var docOffset = $(document.body).viewportOffset(),
           elementOffset = element.viewportOffset();
         return elementOffset.relativeTo(docOffset);
       },
