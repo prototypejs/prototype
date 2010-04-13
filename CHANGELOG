@@ -1,5 +1,3 @@
-* Work around an issue with `Element.cumulativeOffset` that was affecting sortable behavior in script.aculo.us. (sam, Andrew Dupont)
-
 *1.7_rc1* (April 1, 2010)
 
 * Add an `Event.Handler` class, plus `Event.on` and `Element#on` methods, for simplified event delegation. (sam, Tobie Langel, Andrew Dupont)
