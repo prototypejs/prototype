@@ -6,7 +6,7 @@
  *
  *--------------------------------------------------------------------------*/
 
-/** section: Language
+/**
  * Prototype
  *
  *  The [[Prototype]] namespace provides fundamental information about the
