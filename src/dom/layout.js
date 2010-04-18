@@ -94,8 +94,8 @@
   // Converts the layout hash property names back to the CSS equivalents.
   // For now, only the border properties differ.
   function cssNameFor(key) {
-    if (key.includes('border')) return key + '-width';
-    return key;
+    if (key.includes('border')) key = key + '-width';
+    return key.camelize();
   }
   
   /**
