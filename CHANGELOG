@@ -1,3 +1,5 @@
+Add `Element.Layout#toObject` and `Element.Layout.toHash`. (Andrew Dupont)
+
 Make `Element.Layout#toCSS` return camelized property names, as expected by `Element.setStyle`. [#1021 state:resolved] (njakobsen, Andrew Dupont)
 
 *1.7_rc1* (April 1, 2010)

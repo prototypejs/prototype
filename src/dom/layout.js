@@ -339,6 +339,45 @@
     },
     
     /**
+     *  Element.Layout#toObject([keys...]) -> Object
+     *  - keys (String): A space-separated list of keys to include.
+     *  
+     *  Converts the layout hash to a plain object of key/value pairs,
+     *  optionally including only the given keys.
+     * 
+     *  Keys can be passed into this method as individual arguments _or_
+     *  separated by spaces within a string.
+    **/
+    toObject: function() {
+      var args = $A(arguments);
+      var keys = (args.length === 0) ? Element.Layout.PROPERTIES :
+       args.join(' ').split(' ');
+      var obj = {};
+      keys.each( function(key) {
+        // Key needs to be a valid Element.Layout property.
+        if (!Element.Layout.PROPERTIES.include(key)) return;
+        var value = this.get(key);
+        if (value != null) obj[key] = value;
+      });
+      return obj;
+    },
+    
+    /**
+     *  Element.Layout#toHash([keys...]) -> Hash
+     *  - keys (String): A space-separated list of keys to include.
+     *  
+     *  Converts the layout hash to an ordinary hash of key/value pairs,
+     *  optionally including only the given keys.
+     * 
+     *  Keys can be passed into this method as individual arguments _or_
+     *  separated by spaces within a string.
+    **/
+    toHash: function() {
+      var obj = this.toObject.apply(this, arguments);
+      return new Hash(obj);
+    },
+    
+    /**
      *  Element.Layout#toCSS([keys...]) -> Object
      *  - keys (String): A space-separated list of keys to include.
      *
