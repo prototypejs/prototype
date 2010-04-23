@@ -12,8 +12,6 @@ function isDisplayed(element) {
 }
 
 new Test.Unit.Runner({
-  setup: function() {
-  },
   'test preCompute argument of layout': function() {
     var preComputedLayout = $('box1').getLayout(true),
         normalLayout = $('box1').getLayout();
@@ -95,5 +93,26 @@ new Test.Unit.Runner({
     
     this.assertEqual(0, layout.get('top'), 'top');
     this.assertIdentical($('box6_parent'), $('box6').getOffsetParent());
+  },
+  
+  'test #toCSS, #toObject, #toHash': function() {
+    var layout = $('box6').getLayout();
+    var top = layout.get('top');
+    
+    var cssObject = layout.toCSS('top');
+
+    this.assert('top' in cssObject,
+     "layout object should have 'top' property");
+     
+    cssObject = layout.toCSS('top left bottom');
+    
+    $w('top left bottom').each( function(prop) {
+      this.assert(prop in cssObject, "layout object should have '" + 
+       prop + "' property");
+    }, this);
+    
+    var obj = layout.toObject('top');
+    this.assert('top' in obj,
+     "object should have 'top' property");
   }
 });

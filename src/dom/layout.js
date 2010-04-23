@@ -94,7 +94,7 @@
   // Converts the layout hash property names back to the CSS equivalents.
   // For now, only the border properties differ.
   function cssNameFor(key) {
-    if (key.includes('border')) key = key + '-width';
+    if (key.include('border')) key = key + '-width';
     return key.camelize();
   }
   
@@ -358,7 +358,7 @@
         if (!Element.Layout.PROPERTIES.include(key)) return;
         var value = this.get(key);
         if (value != null) obj[key] = value;
-      });
+      }, this);
       return obj;
     },
     
@@ -398,6 +398,7 @@
       var keys = (args.length === 0) ? Element.Layout.PROPERTIES :
        args.join(' ').split(' ');
       var css = {};
+
       keys.each( function(key) {
         // Key needs to be a valid Element.Layout property...
         if (!Element.Layout.PROPERTIES.include(key)) return;        
@@ -407,8 +408,8 @@
         var value = this.get(key);
         // Unless the value is null, add 'px' to the end and add it to the
         // returned object.
-        if (value) css[cssNameFor(key)] = value + 'px';
-      });
+        if (value != null) css[cssNameFor(key)] = value + 'px';
+      }, this);
       return css;
     },
     
@@ -443,12 +444,12 @@
         
         var bTop = this.get('border-top'),
          bBottom = this.get('border-bottom');
-         
+
         var pTop = this.get('padding-top'),
          pBottom = this.get('padding-bottom');
-         
+
         if (!this._preComputing) this._end();
-        
+
         return bHeight - bTop - bBottom - pTop - pBottom;
       },
       
