@@ -885,11 +885,11 @@
     }
     
     var offsetParent = getOffsetParent(element);    
-    var eOffset = element.viewportOffset(), pOffset = 
-     offsetParent.viewportOffset();
+    var eOffset = element.viewportOffset(),
+     pOffset = offsetParent.viewportOffset();
      
-    var offset = eOffset.relativeTo(pOffset);    
-    var layout = element.get('layout');    
+    var offset = eOffset.relativeTo(pOffset);
+    var layout = element.getLayout();    
     
     element.store('prototype_absolutize_original_styles', {
       left:   element.getStyle('left'),
