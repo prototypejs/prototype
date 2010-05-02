@@ -16,16 +16,11 @@ Prototype.Selector = (function(engine) {
   function match(element, selector) {
     return engine.matches(selector, [element]).length == 1;
   }
-
-  function filter(elements, selector) {
-    return extend(engine.matches(selector, elements));
-  }
-  
+    
   return {
     engine:  engine,
     select:  select,
-    match:   match,
-    filter:  filter
+    match:   match
   };
 })(Sizzle);
 
