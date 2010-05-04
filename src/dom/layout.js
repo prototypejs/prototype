@@ -25,7 +25,7 @@
     // Non-IE browsers will always return pixels if possible.
     // (We use parseFloat instead of parseInt because Firefox can return
     // non-integer pixel values.)
-    if ((/^\d+(\.\d+)?(px)?$/i).test(value)) {
+    if ((/^(?:-)?\d+(\.\d+)?(px)?$/i).test(value)) {
       return window.parseFloat(value);
     }
     

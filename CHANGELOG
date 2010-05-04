@@ -1,3 +1,5 @@
+Fix issue where `Element.Layout#get` would fail to interpret negative pixel values. (Sebastien Gruhier, Andrew Dupont)
+
 Fix bugs in layout.js. Add tests for `Element.Layout#toCSS`, `#toObject`, and `#toHash`. (RStankov, Andrew Dupont)
 
 Add `Element.Layout#toObject` and `Element.Layout.toHash`. (Andrew Dupont)

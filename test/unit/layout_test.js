@@ -48,6 +48,14 @@ new Test.Unit.Runner({
     this.assert(!isDisplayed($('box3')), 'box should still be hidden');
   },
   
+  'test layout on elements with negative margins': function() {
+    var layout = $('box_with_negative_margins').getLayout();
+
+    this.assertEqual(-10, layout.get('margin-top')  );
+    this.assertEqual( -3, layout.get('margin-left') );
+    this.assertEqual(  2, layout.get('margin-right'));
+  },
+  
   'test layout on elements with display: none and width: auto': function() {
     var layout = $('box3').getLayout();
     
