@@ -20,4 +20,4 @@
 	url = git://github.com/jeresig/sizzle.git
 [submodule "vendor/slick/repository"]
 	path = vendor/slick/repository
-	url = http://github.com/mootools/slick.git
+	url = git://github.com/mootools/slick.git
