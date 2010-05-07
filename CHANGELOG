@@ -1,5 +1,7 @@
 * Add `Element.purge` for cleaning up event listeners and element storage keys on elements that will be removed from the page. Make `Element.update` perform similar cleanup automatically. (Andrew Dupont, Tobie Langel)
 
+* The second argument to Event.Handler callbacks is the target element when no selector is present, or the matching element when a selector is present. Callbacks are always bound to the original element. (sam)
+
 * Fix issue where `Element.Layout#get` would fail to interpret negative pixel values. (Sebastien Gruhier, Andrew Dupont)
 
 * Fix bugs in layout.js. Add tests for `Element.Layout#toCSS`, `#toObject`, and `#toHash`. (RStankov, Andrew Dupont)
