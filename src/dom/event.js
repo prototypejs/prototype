@@ -912,9 +912,8 @@
     },
 
     handleEvent: function(event) {
-      var element = this.selector ? event.findElement(this.selector) :
-       this.element;
-      if (element) this.callback.call(element, event, element);
+      var element = event.findElement(this.selector);
+      if (element) this.callback.call(this.element, event, element);
     }
   });
   
