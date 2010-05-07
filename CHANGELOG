@@ -1,10 +1,12 @@
-Fix issue where `Element.Layout#get` would fail to interpret negative pixel values. (Sebastien Gruhier, Andrew Dupont)
+* Add `Element.purge` for cleaning up event listeners and element storage keys on elements that will be removed from the page. Make `Element.update` perform similar cleanup automatically. (Andrew Dupont, Tobie Langel)
 
-Fix bugs in layout.js. Add tests for `Element.Layout#toCSS`, `#toObject`, and `#toHash`. (RStankov, Andrew Dupont)
+* Fix issue where `Element.Layout#get` would fail to interpret negative pixel values. (Sebastien Gruhier, Andrew Dupont)
 
-Add `Element.Layout#toObject` and `Element.Layout.toHash`. (Andrew Dupont)
+* Fix bugs in layout.js. Add tests for `Element.Layout#toCSS`, `#toObject`, and `#toHash`. (RStankov, Andrew Dupont)
 
-Make `Element.Layout#toCSS` return camelized property names, as expected by `Element.setStyle`. [#1021 state:resolved] (njakobsen, Andrew Dupont)
+* Add `Element.Layout#toObject` and `Element.Layout.toHash`. (Andrew Dupont)
+
+* Make `Element.Layout#toCSS` return camelized property names, as expected by `Element.setStyle`. [#1021 state:resolved] (njakobsen, Andrew Dupont)
 
 *1.7_rc1* (April 1, 2010)
 

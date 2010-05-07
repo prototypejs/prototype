@@ -1501,6 +1501,36 @@ new Test.Unit.Runner({
     this.assert(deepClone.firstChild);
     this.assertEqual('SPAN', deepClone.firstChild.nodeName.toUpperCase());
     this.assert(!deepClone.down('span')._prototypeUID);
+  },
+  
+  testElementPurge: function() {
+    var element = new Element('div');
+    element.store('foo', 'bar');
+    
+    var uid = element._prototypeUID;    
+    this.assert(uid in Element.Storage, "newly-created element's uid should exist in `Element.Storage`");
+
+    element.purge();
+
+    this.assert(!(uid in Element.Storage), "purged element's UID should no longer exist in `Element.Storage`");
+    this.assert(!(Object.isNumber(element._prototypeUID)), "purged element's UID should no longer exist in `Element.Storage`");
+    
+    // Should purge elements replaced via innerHTML.
+    var parent = new Element('div');
+    var child = new Element('p').update('lorem ipsum');
+    
+    parent.insert(child);    
+    child.store('foo', 'bar');
+    child.observe('test:event', function(event) { event.stop(); });
+    var childUID = child._prototypeUID;
+
+    parent.update("");
+    
+    // At this point, `child` should have been purged.
+    this.assert(!(childUID in Element.Storage), "purged element's UID should no longer exist in `Element.Storage`");
+
+    var event = child.fire('test:event');    
+    this.assert(!event.stopped, "fired event should not have been stopped");    
   }
 });
 

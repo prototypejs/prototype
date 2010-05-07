@@ -189,6 +189,19 @@ if (!Node.ELEMENT_NODE) {
 Element.idCounter = 1;
 Element.cache = { };
 
+// Performs cleanup on an element before it is removed from the page.
+// See `Element#purge`.
+function purgeElement(element) {
+  // Must go first because it relies on Element.Storage.
+  Element.stopObserving(element);
+
+  var uid = element._prototypeUID;
+  if (uid) {
+    element._prototypeUID = void 0;
+    delete Element.Storage[uid];
+  }
+}
+
 /**
  *  mixin Element.Methods
  *
@@ -449,6 +462,11 @@ Element.Methods = {
    *  Note that this method allows seamless content update of table related 
    *  elements in Internet Explorer 6 and beyond.
    *  
+   *  Any nodes replaced with `Element.update` will first have event
+   *  listeners unregistered and storage keys removed. This frees up memory
+   *  and prevents leaks in certain versions of Internet Explorer. (See
+   *  [[Element.purge]]).
+   *  
    *  ##### Examples
    *  
    *      language: html
@@ -551,7 +569,14 @@ Element.Methods = {
 
     function update(element, content) {
       element = $(element);
-
+      
+      // Purge the element's existing contents of all storage keys and
+      // event listeners, since said content will be replaced no matter
+      // what.
+      var descendants = Element.select(element, '*'),
+       i = descendants.length;
+      while (i--) purgeElement(descendants[i]);
+      
       if (content && content.toElement)
         content = content.toElement();
 
@@ -3715,8 +3740,8 @@ Element.addMethods({
       uid = 0;
     } else {
       if (typeof element._prototypeUID === "undefined")
-        element._prototypeUID = [Element.Storage.UID++];
-      uid = element._prototypeUID[0];
+        element._prototypeUID = Element.Storage.UID++;
+      uid = element._prototypeUID;
     }
 
     if (!Element.Storage[uid])
@@ -3786,5 +3811,24 @@ Element.addMethods({
       }
     }
     return Element.extend(clone);
+  },
+  
+  /**
+   *  Element.purge(@element) -> null
+   *  
+   *  Removes all event listeners and storage keys from an element.
+   *  
+   *  To be used just before removing an element from the page.
+  **/
+  purge: function(element) {
+    if (!(element = $(element))) return;
+    purgeElement(element);
+
+    var descendants = Element.select(element, '*'),
+     i = descendants.length;
+
+    while (i--) purgeElement(descendants[i]);
+
+    return null;
   }
 });
