@@ -77,7 +77,7 @@ module PrototypeHelper
       :src_code_href => proc { |file, line|
         "http://github.com/sstephenson/prototype/blob/#{current_head}/#{file}#LID#{line}"
       },
-      :pretty_urls => true,
+      :pretty_urls => false,
       :bust_cache => false,
       :name => 'Prototype JavaScript Framework',
       :short_name => 'Prototype',
