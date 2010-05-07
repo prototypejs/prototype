@@ -74,8 +74,10 @@ module PrototypeHelper
       :index_page => 'README.markdown',
       :syntax_highlighter => syntax_highlighter,
       :markdown_parser => :bluecloth,
-      :repository_url => "http://github.com/sstephenson/prototype/blob/#{current_head}/",
-      :pretty_urls => true,
+      :src_code_href => proc { |file, line|
+        "http://github.com/sstephenson/prototype/blob/#{current_head}/#{file}#LID#{line}"
+      },
+      :pretty_urls => false,
       :bust_cache => false,
       :name => 'Prototype JavaScript Framework',
       :short_name => 'Prototype',
