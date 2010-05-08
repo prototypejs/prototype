@@ -1,5 +1,5 @@
 /** section: Language, related to: Array
- *  $A(iterable) -> actualArray
+ *  $A(iterable) -> Array
  *  
  *  Accepts an array-like collection (anything with numeric indices) and returns
  *  its equivalent as an actual [[Array]] object. This method is a convenience

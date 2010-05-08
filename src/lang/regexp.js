@@ -4,10 +4,12 @@
  *  Extensions to the built-in `RegExp` object.
 **/
 
-/** alias of: RegExp#test
+/**
  *  RegExp#match(str) -> Boolean
+ *  - str (String): a string against witch to match the regular expression.
  *
- *  Return true if string matches the regular expression, false otherwise.
+ *  Alias of the native `RegExp#test` method. Returns `true`
+ *  if `str` matches the regular expression, `false` otherwise.
  **/
 RegExp.prototype.match = RegExp.prototype.test;
 
