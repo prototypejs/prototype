@@ -2,23 +2,16 @@ Prototype._original_property = window.Slick;
 //= require "repository/Source/Slick.Parser.js"
 //= require "repository/Source/Slick.Finder.js"
 
-Prototype.Selector = (function(engine) {
-  function extend(elements) {
-    for (var i = 0, length = elements.length; i < length; i++) {
-      Element.extend(elements[i]);
-    }
-    return elements;
-  }
+;(function(engine) {
+  var extendElements = Prototype.Selector.extendElements;
   
   function select(selector, scope) {
-    return extend(engine.search(scope || document, selector));
+    return extendElements(engine.search(scope || document, selector));
   }
   
-  return {
-    engine:  engine,
-    select:  select,
-    match:   engine.match
-  };
+  Prototype.Selector.engine = engine;
+  Prototype.Selector.select = select;
+  Prototype.Selector.match = engine.match;
 })(Slick);
 
 // Restore globals.

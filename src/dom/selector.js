@@ -95,44 +95,44 @@ window.$$ = function() {
  * the choosen selector engine (Sizzle by default).
  *
 **/
+Prototype.Selector = (function() {
+  
+  /**
+   *  Prototype.Selector.select(expression[, root = document]) -> [Element...]
+   *  - expression (String): A CSS selector.
+   *  - root (Element | document): A "scope" to search within. All results will
+   *    be descendants of this node.
+   *
+   *  Searches `root` for elements that match the provided CSS selector and returns an
+   *  array of extended [[Element]] objects.
+  **/
+  function select() {
+    throw new Error('Method "Prototype.Selector.select" must be defined.');
+  }
 
-// Implementation provided by selector engine.
+  /**
+   *  Prototype.Selector.match(element, expression) -> Boolean
+   *  - element (Element): a DOM element.
+   *  - expression (String): A CSS selector.
+   *
+   *  Tests whether `element` matches the CSS selector.
+  **/
+  function match() {
+    throw new Error('Method "Prototype.Selector.match" must be defined.');
+  }
 
-/**
- *  Prototype.Selector.select(expression[, root = document]) -> [Element...]
- *  - expression (String): A CSS selector.
- *  - root (Element | document): A "scope" to search within. All results will
- *    be descendants of this node.
- *
- *  Searches `root` for elements that match the provided CSS selector and returns an
- *  array of extended [[Element]] objects.
-**/
-
-// Implementation provided by selector engine.
-
-/**
- *  Prototype.Selector.match(element, expression) -> Boolean
- *  - element (Element): a DOM element.
- *  - expression (String): A CSS selector.
- *
- *  Tests whether `element` matches the CSS selector.
-**/
-
-// Implementation provided by selector engine.
-
-/**
- *  Prototype.Selector.find(elements, expression[, index = 0]) -> Element
- *  - elements (Enumerable): a collection of DOM elements.
- *  - expression (String): A CSS selector.
- *  - index: Numeric index of the match to return, defaults to 0.
- *
- *  Filters the given collection of elements with `expression` and returns the
- *  first matching element (or the `index`th matching element if `index` is
- *  specified).
-**/
-if (!Prototype.Selector.find) {
-  Prototype.Selector.find = function(elements, expression, index) {
-    if (Object.isUndefined(index)) index = 0;
+  /**
+   *  Prototype.Selector.find(elements, expression[, index = 0]) -> Element
+   *  - elements (Enumerable): a collection of DOM elements.
+   *  - expression (String): A CSS selector.
+   *  - index: Numeric index of the match to return, defaults to 0.
+   *
+   *  Filters the given collection of elements with `expression` and returns the
+   *  first matching element (or the `index`th matching element if `index` is
+   *  specified).
+  **/
+  function find(elements, expression, index) {
+    index = index || 0;
     var match = Prototype.Selector.match, length = elements.length, matchIndex = 0, i;
 
     for (i = 0; i < length; i++) {
@@ -141,5 +141,33 @@ if (!Prototype.Selector.find) {
       }
     }
   }
-}
-
+  
+  /**
+   *  Prototype.Selector.extendElements(elements) -> Enumerable
+   *  - elements (Enumerable): a collection of DOM elements.
+   *
+   *  If necessary, extends the elements contained in `elements`
+   *  and returns `elements` untouched. This is provided as a 
+   *  convenience method for selector engine wrapper implementors.
+  **/
+  function extendElements(elements) {
+    for (var i = 0, length = elements.length; i < length; i++) {
+      Element.extend(elements[i]);
+    }
+    return elements;
+  }
+  
+  /** alias of: Element.extend
+   *  Prototype.Selector.extendElement(element) -> Element
+  **/
+  
+  var K = Prototype.K;
+  
+  return {
+    select: select,
+    match: match,
+    find: find,
+    extendElements: (Element.extend === K) ? K : extendElements,
+    extendElement: Element.extend
+  };
+})();

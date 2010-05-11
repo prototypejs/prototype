@@ -20,9 +20,9 @@
 **/
 
 //= require "dom/dom"
-//= require <selector_engine>
 //= require "dom/layout"
 //= require "dom/selector"
+//= require <selector_engine>
 //= require "dom/form"
 //= require "dom/event"
 

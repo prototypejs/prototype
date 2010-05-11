@@ -1,6 +1,6 @@
 //= require "repository/legacy_selector"
 
-Prototype.Selector = (function(engine) {
+;(function(engine) {
   function select(selector, scope) {
     return engine.findChildElements(scope || document, [selector]);
   }
@@ -9,10 +9,7 @@ Prototype.Selector = (function(engine) {
     return !!engine.findElement([element], selector);
   }
   
-  return {
-    engine:  engine,
-    select:  select,
-    match:   match,
-    filter:  engine.matchElements
-  };
+  Prototype.Selector.engine = engine;
+  Prototype.Selector.select = select;
+  Prototype.Selector.match = match;
 })(Prototype.LegacySelector);

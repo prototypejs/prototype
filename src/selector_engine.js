@@ -1,27 +1,20 @@
 Prototype._original_property = window.Sizzle;
 //= require "sizzle"
 
-Prototype.Selector = (function(engine) {
-  function extend(elements) {
-    for (var i = 0, length = elements.length; i < length; i++) {
-      Element.extend(elements[i]);
-    }
-    return elements;
-  }
+;(function(engine) {
+  var extendElements = Prototype.Selector.extendElements;
   
   function select(selector, scope) {
-    return extend(engine(selector, scope || document));
+    return extendElements(engine(selector, scope || document));
   }
 
   function match(element, selector) {
     return engine.matches(selector, [element]).length == 1;
   }
-    
-  return {
-    engine:  engine,
-    select:  select,
-    match:   match
-  };
+  
+  Prototype.Selector.engine = engine;
+  Prototype.Selector.select = select;
+  Prototype.Selector.match = match;
 })(Sizzle);
 
 // Restore globals.

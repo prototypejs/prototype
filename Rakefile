@@ -151,7 +151,7 @@ module PrototypeHelper
     return if name == DEFAULT_SELECTOR_ENGINE || !name
     submodule_path = File.join(ROOT_DIR, "vendor", name)
     return submodule_path if File.exist?(File.join(submodule_path, "repository", ".git"))
-    
+    return submodule_path if name === "legacy_selector"
     get_submodule('the required selector engine', "#{name}/repository")
     unless File.exist?(submodule_path)
       puts "The selector engine you required isn't available at vendor/#{name}.\n\n"
