@@ -1,3 +1,5 @@
+* Remove redefinition of `Element#cumulativeOffset` when `getBoundingClientRect` is present, as it seems to give inaccurate results. (Andrew Dupont)
+
 * Optimize element purging. (RStankov, Andrew Dupont)
 
 * Add `Element.purge` for cleaning up event listeners and element storage keys on elements that will be removed from the page. Make `Element.update` perform similar cleanup automatically. (Andrew Dupont, Tobie Langel)

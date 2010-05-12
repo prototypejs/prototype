@@ -971,15 +971,6 @@
         return new Element.Offset(rect.left - docEl.clientLeft,
          rect.top - docEl.clientTop);
       },
-      
-      cumulativeOffset: function(element) {
-        element = $(element);
-        if (isDetached(element)) return new Element.Offset(0, 0);
-
-        var docOffset = $(document.body).viewportOffset(),
-          elementOffset = element.viewportOffset();
-        return elementOffset.relativeTo(docOffset);
-      },
             
       positionedOffset: function(element) {
         element = $(element);
