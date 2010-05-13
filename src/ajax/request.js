@@ -179,23 +179,25 @@ Ajax.Request = Class.create(Ajax.Base, {
   request: function(url) {
     this.url = url;
     this.method = this.options.method;
-    var params = Object.clone(this.options.parameters);
+    var params = Object.isString(this.options.parameters) ?
+          this.options.parameters :
+          Object.toQueryString(this.options.parameters);
 
     if (!['get', 'post'].include(this.method)) {
       // simulate other verbs over post
-      params['_method'] = this.method;
+      params += (params ? '&' : '') + "_method=" + this.method;
       this.method = 'post';
     }
 
-    this.parameters = params;
-
-    if (params = Object.toQueryString(params)) {
+    if (params) {
       // when GET, append parameters to URL
       if (this.method == 'get')
         this.url += (this.url.include('?') ? '&' : '?') + params;
       else if (/Konqueror|Safari|KHTML/.test(navigator.userAgent))
         params += '&_=';
     }
+
+    this.parameters = params.toQueryParams();
 
     try {
       var response = new Ajax.Response(this);
