@@ -280,6 +280,14 @@ new Test.Unit.Runner({
     this.assertEqual('', $('form_with_file_input').serialize());   
   },
   
+  testFormSerializeWithDuplicateNames: function() {
+    this.assertEqual("fact=sea-wet&opinion=sea-cold&fact=sun-hot&opinion=sun-ugly", $('form_with_duplicate_input_names').serialize(false));
+  },
+  
+  testFormSerializeURIEncodesInputs: function() {
+    this.assertEqual("user%5Bwristbands%5D%5B%5D%5Bnickname%5D=H%C3%A4sslich", $('form_with_inputs_needing_encoding').serialize(false));
+  },
+  
   testFormMethodsOnExtendedElements: function() {
     var form = $('form');
     this.assertEqual(Form.serialize('form'), form.serialize());

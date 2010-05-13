@@ -106,3 +106,14 @@
   </form>
   
 </div>
+
+<form id="form_with_duplicate_input_names" style="display:none">
+  <input type="hidden" name="fact"    id="fdn_f_1" value="sea-wet" />
+  <input type="hidden" name="opinion" id="fnd_o_1" value="sea-cold" />
+  <input type="hidden" name="fact"    id="fnd_f_2" value="sun-hot" />
+  <input type="hidden" name="opinion" id="fnd_o_2" value="sun-ugly" />
+</form>
+
+<form id="form_with_inputs_needing_encoding" style="display:none">
+  <input type="hidden" name="user[wristbands][][nickname]" id="fine_1" value="Hässlich" />
+</form>
