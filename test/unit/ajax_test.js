@@ -337,6 +337,19 @@ new Test.Unit.Runner({
     }
   },
   
+  testParametersStringOrderIsPreserved: function() {
+    if (this.isRunningFromRake) {
+      new Ajax.Request("/inspect", extendDefault({
+        parameters: "cool=1&bad=2&cool=3&bad=4",
+        method: 'post',
+        onComplete: function(transport) {
+          var body_without_wart = transport.responseJSON.body.match(/((?:(?!&_=$).)*)/)[1];
+          this.assertEqual("cool=1&bad=2&cool=3&bad=4", body_without_wart);
+        }.bind(this)
+      }));
+    }
+  },
+  
   testIsSameOriginMethod: function() {
     var isSameOrigin = Ajax.Request.prototype.isSameOrigin;
     this.assert(isSameOrigin.call({ url: '/foo/bar.html' }), '/foo/bar.html');
