@@ -439,8 +439,11 @@
       'height': function(element) {
         if (!this._preComputing) this._begin();
         
-        var bHeight = this.get('border-box-height');        
-        if (bHeight <= 0) return 0;
+        var bHeight = this.get('border-box-height');
+        if (bHeight <= 0) {
+          if (!this._preComputing) this._end();
+          return 0;
+        }
         
         var bTop = this.get('border-top'),
          bBottom = this.get('border-bottom');
@@ -457,7 +460,10 @@
         if (!this._preComputing) this._begin();
         
         var bWidth = this.get('border-box-width');
-        if (bWidth <= 0) return 0;
+        if (bWidth <= 0) {
+          if (!this._preComputing) this._end();
+          return 0;
+        }
 
         var bLeft = this.get('border-left'),
          bRight = this.get('border-right');

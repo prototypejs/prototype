@@ -1,3 +1,5 @@
+* Ensure we clean up after ourselves for all `width` and `height` computations in `Element.Layout`. (Sam Stephenson, Andrew Dupont)
+
 *1.7_rc2* (May 12, 2010)
 
 * Remove redefinition of `Element#cumulativeOffset` when `getBoundingClientRect` is present, as it seems to give inaccurate results. (Andrew Dupont)
