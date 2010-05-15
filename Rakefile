@@ -67,24 +67,31 @@ module PrototypeHelper
   def self.build_doc_for(file)
     rm_rf(DOC_DIR)
     mkdir_p(DOC_DIR)
-    
+    index_header = <<EOF
+<h1 style="margin-top: 31px; height: 75px; padding: 1px 0; background: url(images/header-stripe-small.png) repeat-x;">
+  <a href="http://prototypejs.org" style="padding-left: 120px;">
+    <img src="images/header-logo-small.png" alt="Prototype JavaScript Framework API" />
+  </a>
+</h1>
+EOF
     PDoc.run({
       :source_files => Dir[File.join('src', '**', '*.js')],
       :destination => DOC_DIR,
       :index_page => 'README.markdown',
       :syntax_highlighter => syntax_highlighter,
       :markdown_parser => :bluecloth,
-      :src_code_href => proc { |file, line|
-        "http://github.com/sstephenson/prototype/blob/#{current_head}/#{file}#LID#{line}"
+      :src_code_href => proc { |obj|
+        "http://github.com/sstephenson/prototype/blob/#{hash}/#{obj.file}#LID#{obj.line_number}"
       },
       :pretty_urls => false,
       :bust_cache => false,
       :name => 'Prototype JavaScript Framework',
       :short_name => 'Prototype',
       :home_url => 'http://prototypejs.org',
-      :doc_url => 'http://prototypejs.org/doc',
       :version => PrototypeHelper::VERSION,
-      :copyright_notice => 'This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>.' 
+      :index_header => index_header,
+      :footer => 'This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>.',
+      :assets => 'doc_assets'
     })
   end
   
