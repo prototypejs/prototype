@@ -41,9 +41,10 @@ new Test.Unit.Runner({
     
     this.assert(!isDisplayed($('box3')), 'box should be hidden');
 
-    this.assertEqual(500, layout.get('width'), 'width');
-    this.assertEqual(3, layout.get('border-right'), 'border-right');
-    this.assertEqual(10, layout.get('padding-bottom'), 'padding-bottom');
+    this.assertEqual(500, layout.get('width'),            'width');
+    this.assertEqual(  3, layout.get('border-right'),     'border-right');
+    this.assertEqual( 10, layout.get('padding-bottom'),   'padding-bottom');    
+    this.assertEqual(526, layout.get('border-box-width'), 'border-box-width');
 
     this.assert(!isDisplayed($('box3')), 'box should still be hidden');
   },
@@ -61,10 +62,11 @@ new Test.Unit.Runner({
     
     this.assert(!isDisplayed($('box3')), 'box should be hidden');
     
-    this.assertEqual(364, layout.get('width'), 'width');
+    this.assertEqual(364, layout.get('width'),            'width');
     this.assertEqual(400, layout.get('margin-box-width'), 'margin-box-width');
-    this.assertEqual(3, layout.get('border-right'), 'border-top');
-    this.assertEqual(10, layout.get('padding-bottom'), 'padding-right');
+    this.assertEqual(390, layout.get('border-box-width'), 'border-box-width');
+    this.assertEqual(3,   layout.get('border-right'),     'border-top');
+    this.assertEqual(10,  layout.get('padding-bottom'),   'padding-right');
 
     // Ensure that we cleaned up after ourselves.
     this.assert(!isDisplayed($('box3')), 'box should still be hidden');

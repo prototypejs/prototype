@@ -1,3 +1,5 @@
+* Fix issue with retrieving border-box-(height|width) of hidden elements. [#1035 state:resolved] (Francois-Pierre Bouchard, Andrew Dupont)
+
 * Ensure we clean up after ourselves for all `width` and `height` computations in `Element.Layout`. (Sam Stephenson, Andrew Dupont)
 
 *1.7_rc2* (May 12, 2010)

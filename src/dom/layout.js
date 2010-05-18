@@ -493,11 +493,17 @@
       },
       
       'border-box-height': function(element) {
-        return element.offsetHeight;
+        if (!this._preComputing) this._begin();
+        var height = element.offsetHeight;
+        if (!this._preComputing) this._end();
+        return height;
       },
             
       'border-box-width': function(element) {
-        return element.offsetWidth;
+        if (!this._preComputing) this._begin();
+        var width = element.offsetWidth;
+        if (!this._preComputing) this._end();
+        return width;
       },
       
       'margin-box-height': function(element) {
