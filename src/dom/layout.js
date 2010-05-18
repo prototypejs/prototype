@@ -571,23 +571,19 @@
       },
       
       'border-top': function(element) {
-        return Object.isNumber(element.clientTop) ? element.clientTop : 
-         getPixelValue(element, 'borderTopWidth');
+        return getPixelValue(element, 'borderTopWidth');
       },
       
       'border-bottom': function(element) {
-        return Object.isNumber(element.clientBottom) ? element.clientBottom : 
-         getPixelValue(element, 'borderBottomWidth');
+        return getPixelValue(element, 'borderBottomWidth');
       },
       
       'border-left': function(element) {
-        return Object.isNumber(element.clientLeft) ? element.clientLeft : 
-         getPixelValue(element, 'borderLeftWidth');
+        return getPixelValue(element, 'borderLeftWidth');
       },
       
       'border-right': function(element) {
-        return Object.isNumber(element.clientRight) ? element.clientRight : 
-         getPixelValue(element, 'borderRightWidth');
+        return getPixelValue(element, 'borderRightWidth');
       },
       
       'margin-top': function(element) {
