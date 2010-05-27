@@ -105,6 +105,36 @@ new Test.Unit.Runner({
     this.assertIdentical($('box6_parent'), $('box6').getOffsetParent());
   },
   
+  'test layout on statically-positioned element with percentage width': function() {
+    var layout = $('box7').getLayout();
+    
+    this.assertEqual(150, layout.get('width'));
+  },
+
+  'test layout on absolutely-positioned element with percentage width': function() {
+    var layout = $('box8').getLayout();
+    
+    this.assertEqual(150, layout.get('width'));
+  },
+  
+  'test layout on fixed-position element with percentage width': function() {
+    var viewportWidth = document.viewport.getWidth();
+    var layout = $('box9').getLayout();
+    
+    function assertNear(v1, v2, message) {
+      var abs = Math.abs(v1 - v2);
+      this.assert(abs <= 1, message);
+    }
+    
+    // With percentage widths, we'll occasionally run into rounding
+    // discrepancies. Assert that the values agree to within 1 pixel.
+    var vWidth = viewportWidth / 4, eWidth = $('box9').measure('width');
+    assertNear.call(this, vWidth, eWidth, 'width (visible)');
+            
+    $('box9').hide();    
+    assertNear.call(this, vWidth, $('box9').measure('width'), 'width (hidden)');    
+  },
+  
   'test #toCSS, #toObject, #toHash': function() {
     var layout = $('box6').getLayout();
     var top = layout.get('top');

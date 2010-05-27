@@ -13,11 +13,13 @@
   //   getPixelValue("11px");
   // Or like this:
   //   getPixelValue(someElement, 'paddingTop');  
-  function getPixelValue(value, property) {
+  function getPixelValue(value, property, context) {
+    var element = null;
     if (Object.isElement(value)) {
       element = value;
       value = element.getStyle(property);
     }
+
     if (value === null) {
       return null;
     }
@@ -29,32 +31,54 @@
       return window.parseFloat(value);
     }
     
+    var isPercentage = value.include('%'), isViewport = (context === document.viewport);    
+    
     // When IE gives us something other than a pixel value, this technique
     // (invented by Dean Edwards) will convert it to pixels.
-    if (/\d/.test(value) && element.runtimeStyle) {
+    //
+    // (This doesn't work for percentage values on elements with `position: fixed`
+    // because those percentages are relative to the viewport.)
+    if (/\d/.test(value) && element && element.runtimeStyle && !(isPercentage && isViewport)) {
       var style = element.style.left, rStyle = element.runtimeStyle.left; 
       element.runtimeStyle.left = element.currentStyle.left;
       element.style.left = value || 0;  
       value = element.style.pixelLeft;
       element.style.left = style;
       element.runtimeStyle.left = rStyle;
-
+      
       return value;
     }
     
     // For other browsers, we have to do a bit of work.
-    if (value.include('%')) {
+    // (At this point, only percentages should be left; all other CSS units
+    // are converted to pixels by getComputedStyle.)
+    if (element && isPercentage) {
+      context = context || element.parentNode;
       var decimal = toDecimal(value);
-      var whole;
-      if (property.include('left') || property.include('right') ||
-       property.include('width')) {
-        whole = $(element.parentNode).measure('width');
-      } else if (property.include('top') || property.include('bottom') ||
-       property.include('height')) {
-        whole = $(element.parentNode).measure('height');
+      var whole = null;
+      var position = element.getStyle('position');
+      
+      var isHorizontal = property.include('left') || property.include('right') ||
+       property.include('width');
+       
+      var isVertical =  property.include('top') || property.include('bottom') ||
+        property.include('height');
+        
+      if (context === document.viewport) {
+        if (isHorizontal) {
+          whole = document.viewport.getWidth();
+        } else if (isVertical) {
+          whole = document.viewport.getHeight();
+        }
+      } else {
+        if (isHorizontal) {
+          whole = $(context).measure('width');
+        } else if (isVertical) {
+          whole = $(context).measure('height');
+        }
       }
       
-      return whole * decimal;
+      return (whole === null) ? 0 : whole * decimal;
     }
     
     // If we get this far, we should probably give up.
@@ -213,7 +237,7 @@
      *  measurements, it's probably not worth it.
     **/
     initialize: function($super, element, preCompute) {
-      $super();      
+      $super();
       this.element = $(element);
       
       // nullify all properties keys
@@ -282,6 +306,10 @@
       
       var position = element.getStyle('position'),
        width = element.getStyle('width');
+      
+      // Preserve the context in case we get a percentage value.  
+      var context = (position === 'fixed') ? document.viewport :
+       element.parentNode;
        
       element.setStyle({
         position:   'absolute',
@@ -299,9 +327,9 @@
         //  (b) it has an explicitly-set width, instead of width: auto.
         // Either way, it means the element is the width it needs to be
         // in order to report an accurate height.
-        newWidth = getPixelValue(width);
+        newWidth = getPixelValue(element, 'width', context);
       } else if (width && (position === 'absolute' || position === 'fixed')) {
-        newWidth = getPixelValue(width);
+        newWidth = getPixelValue(element, 'width', context);
       } else {
         // If not, that means the element's width depends upon the width of
         // its parent.
@@ -335,6 +363,7 @@
       if (!(property in COMPUTATIONS)) {
         throw "Property not found.";
       }
+      
       return this._set(property, COMPUTATIONS[property].call(this, this.element));
     },
     

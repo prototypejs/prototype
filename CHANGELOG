@@ -1,3 +1,5 @@
+* Ensure `Element.Layout` gives accurate measurements for percentages on all elements. Fix inaccurate measurements on `position: fixed` elements with percentages. [#1040 state:resolved] (Dan Popescu, Riccardo De Agostini, Andrew Dupont)
+
 * Fix issue with retrieving border-box-(height|width) of hidden elements. [#1035 state:resolved] (Francois-Pierre Bouchard, Andrew Dupont)
 
 * Ensure we clean up after ourselves for all `width` and `height` computations in `Element.Layout`. (Sam Stephenson, Andrew Dupont)

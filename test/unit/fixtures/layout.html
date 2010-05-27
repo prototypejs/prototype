@@ -140,3 +140,51 @@
     top: 0;
   }
 </style>
+
+<!-- Statically-positioned element with percentage width. -->
+
+<div id="box7_parent">
+  <div id="box7">
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+  </div> <!-- #box7 -->
+</div> <!-- #box7_parent -->
+
+<style type="text/css" media="screen">
+  #box7_parent {
+    width: 500px;
+  }
+  
+  #box7 {
+    width: 30%;
+  }
+</style>
+
+<!-- Absolutely-positioned element with percentage width. -->
+<div id="box8_parent">
+  <div id="box8">
+    Duis aute.
+  </div>
+</div> <!-- #box8_outer -->
+
+<style type="text/css" media="screen">
+  #box8_parent {
+    position: relative;
+    width: 500px;
+  }
+  
+  #box8 {
+    width: 30%;
+  }
+</style>
+
+<!-- Fixed-position element with percentage width. -->
+<div id="box9">
+  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+</div> <!-- #box9 -->
+
+<style type="text/css" media="screen">
+  #box9 {
+    position: fixed;
+    width: 25%;
+  }
+</style>
