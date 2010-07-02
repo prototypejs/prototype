@@ -760,16 +760,31 @@
    *  Finds the computed width and height of `element` and returns them as
    *  key/value pairs of an object.
    *  
-   *  This method returns correct values on elements whose display is set to
-   *  `none` either in an inline style rule or in an CSS stylesheet.
-   *  
-   *  In order to avoid calling the method twice, you should consider caching
-   *  the values returned in a variable as shown below. If you only need
-   *  `element`'s width or height, consider using [[Element.getWidth]] or
-   *  [[Element.getHeight]] instead.
+   *  For backwards-compatibility, these dimensions represent the dimensions
+   *  of the element's "border box" (including CSS padding and border). This
+   *  is equivalent to the built-in `offsetWidth` and `offsetHeight`
+   *  browser properties.
    *  
    *  Note that all values are returned as _numbers only_ although they are
    *  _expressed in pixels_.
+   * 
+   *  ##### Caveats
+   *  
+   *  * If the element is hidden via `display: none` in CSS, this method will
+   *    attempt to measure the element by temporarily removing that CSS and
+   *    applying `visibility: hidden` and `position: absolute`. This gives
+   *    the element dimensions without making it visible or affecting the
+   *    positioning of surrounding elements &mdash; but may not give accurate
+   *    results in some cases. [[Element.measure]] is designed to give more
+   *    accurate results.
+   *  
+   *  * In order to avoid calling the method twice, you should consider
+   *    caching the returned values in a variable, as shown in the example
+   *    below.
+   *  
+   *  * For more complex use cases, use [[Element.measure]], which is able
+   *    to measure many different aspects of an element's dimensions and
+   *    offsets.
    *  
    *  ##### Examples
    *  
@@ -788,11 +803,41 @@
    *      // -> 100
   **/
   function getDimensions(element) {
-    var layout = $(element).getLayout();
-    return {
-      width:  layout.get('width'),
-      height: layout.get('height')
-    };    
+    element = $(element);
+    var display = Element.getStyle(element, 'display');
+    
+    if (display && display !== 'none') {
+      return { width: element.offsetWidth, height: element.offsetHeight };
+    }
+    
+    // All *Width and *Height properties give 0 on elements with
+    // `display: none`, so show the element temporarily.
+    var style = element.style;
+    var originalStyles = {
+      visibility: style.visibility,
+      position:   style.position,
+      display:    style.display
+    };
+    
+    var newStyles = {
+      visibility: 'hidden',
+      display:    'block'
+    };
+
+    // Switching `fixed` to `absolute` causes issues in Safari.
+    if (originalStyles.position !== 'fixed')
+      newStyles.position = 'absolute';
+    
+    Element.setStyle(element, newStyles);
+    
+    var dimensions = {
+      width:  element.offsetWidth,
+      height: element.offsetHeight
+    };
+    
+    Element.setStyle(element, originalStyles);
+
+    return dimensions;
   }
   
   /**
