@@ -1,3 +1,5 @@
+* Fix accidental declaration of `purgeElement` as a global function. [#1089 state:resolved] (Viktor Kojouharov, Andrew Dupont)
+
 * Ensure `Element.Layout` gives accurate measurements for percentages on all elements. Fix inaccurate measurements on `position: fixed` elements with percentages. [#1040 state:resolved] (Dan Popescu, Riccardo De Agostini, Andrew Dupont)
 
 * Fix issue with retrieving border-box-(height|width) of hidden elements. [#1035 state:resolved] (Francois-Pierre Bouchard, Andrew Dupont)

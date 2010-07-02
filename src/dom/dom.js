@@ -191,7 +191,7 @@ Element.cache = { };
 
 // Performs cleanup on an element before it is removed from the page.
 // See `Element#purge`.
-function purgeElement(element) {
+Element._purgeElement = function(element) {
   var uid = element._prototypeUID;
   if (uid) {
     // Must go first because it relies on Element.Storage.
@@ -568,6 +568,7 @@ Element.Methods = {
 
     function update(element, content) {
       element = $(element);
+      var purgeElement = Element._purgeElement;
       
       // Purge the element's existing contents of all storage keys and
       // event listeners, since said content will be replaced no matter
@@ -3820,7 +3821,9 @@ Element.addMethods({
    *  To be used just before removing an element from the page.
   **/
   purge: function(element) {
-    if (!(element = $(element))) return;
+    if (!(element = $(element))) return;    
+    var purgeElement = Element._purgeElement;
+    
     purgeElement(element);
 
     var descendants = element.getElementsByTagName('*'),
