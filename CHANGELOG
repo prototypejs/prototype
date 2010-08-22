@@ -1,3 +1,5 @@
+* Ensure hidden absolutely-positioned elements are sized correctly when they have no explicit width set. [#1084 state:resolved] (Viktor Kojouharov, Andrew Dupont)
+
 * Change custom events implementation to use the `onlosecapture` event instead of the `onfilterchange` event for non-bubbling custom events in Internet Explorer. (John-David Dalton, Andrew Dupont)
 
 * Revert `Element.getHeight` and `Element.getWidth` to their previous behavior in order to ensure backward-compatibility. (Sam Stephenson, Andrew Dupont)

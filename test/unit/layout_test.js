@@ -154,5 +154,12 @@ new Test.Unit.Runner({
     var obj = layout.toObject('top');
     this.assert('top' in obj,
      "object should have 'top' property");
+  },
+
+  'test dimensions on absolutely-positioned, hidden elements': function() {
+    var layout = $('box10').getLayout();
+    
+    this.assertEqual(278, layout.get('width'),  'width' );
+    this.assertEqual(591, layout.get('height'), 'height');
   }
 });

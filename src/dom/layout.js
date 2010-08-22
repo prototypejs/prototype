@@ -328,11 +328,13 @@
         // Either way, it means the element is the width it needs to be
         // in order to report an accurate height.
         newWidth = getPixelValue(element, 'width', context);
-      } else if (width && (position === 'absolute' || position === 'fixed')) {
+      } else if (position === 'absolute' || position === 'fixed') {
+        // Absolute- and fixed-position elements' dimensions don't depend
+        // upon those of their parents.
         newWidth = getPixelValue(element, 'width', context);
       } else {
-        // If not, that means the element's width depends upon the width of
-        // its parent.
+        // Otherwise, the element's width depends upon the width of its
+        // parent.
         var parent = element.parentNode, pLayout = $(parent).getLayout();
 
         newWidth = pLayout.get('width') -
