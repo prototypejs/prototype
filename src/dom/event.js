@@ -684,7 +684,7 @@
         // We observe two IE-proprietarty events: one for custom events that
         // bubble and one for custom events that do not bubble.
         element.attachEvent("ondataavailable", responder);
-        element.attachEvent("onfilterchange", responder);
+        element.attachEvent("onlosecapture", responder);
       }
     } else {
       var actualEventName = _getDOMEventName(eventName);
@@ -798,7 +798,7 @@
         element.removeEventListener("dataavailable", responder, false);
       else {
         element.detachEvent("ondataavailable", responder);
-        element.detachEvent("onfilterchange",  responder);
+        element.detachEvent("onlosecapture", responder);
       }
     } else {
       // Ordinary event.
@@ -816,13 +816,13 @@
 
   /**
    *  Event.fire(element, eventName[, memo[, bubble = true]]) -> Event
-   *  - memo (?): Metadata for the event. Will be accessible through the
-   *    event's `memo` property.
-   *  - bubble (Boolean): Whether the event will bubble.
+   *  - memo (?): Metadata for the event. Will be accessible to event
+   *    handlers through the event's `memo` property.
+   *  - bubble (Boolean): Whether the event should bubble.
    *
    *  Fires a custom event of name `eventName` with `element` as its target.
    *
-   *  Custom events must include a colon (`:`) in their names.
+   *  Custom events **must** include a colon (`:`) in their names.
   **/
   function fire(element, eventName, memo, bubble) {
     element = $(element);
@@ -836,10 +836,10 @@
     var event;
     if (document.createEvent) {
       event = document.createEvent('HTMLEvents');
-      event.initEvent('dataavailable', true, true);
+      event.initEvent('dataavailable', bubble, true);
     } else {
       event = document.createEventObject();
-      event.eventType = bubble ? 'ondataavailable' : 'onfilterchange';
+      event.eventType = bubble ? 'ondataavailable' : 'onlosecapture';
     }
 
     event.eventName = eventName;
