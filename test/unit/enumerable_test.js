@@ -246,6 +246,12 @@ new Test.Unit.Runner({
         return value.nickname.toLowerCase();
       }).pluck('nickname').join(', '));
   },
+
+  testShuffle: function() {
+    this.assertNotEqual('sam-, noradio, htonl, Ulysses',
+      Fixtures.People.shuffle().pluck('nickname').join(', ')
+    );
+  },
   
   testToArray: function() {
     var result = Fixtures.People.toArray();

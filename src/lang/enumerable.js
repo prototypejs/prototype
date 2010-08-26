@@ -677,6 +677,25 @@ var Enumerable = (function() {
   }
 
   /**
+   *  Enumerable#shuffle() -> Array
+   *
+   *  Inside-out Fisher-Yates shuffle.
+  **/
+  function shuffle() {
+    var shuffled = [], rand;
+    this.each(function(value, index) {
+      if (index == 0) {
+        shuffled[0] = value;
+      } else {
+        rand = Math.floor(Math.random() * (index + 1));
+        shuffled[index] = shuffled[rand];
+        shuffled[rand] = value;
+      }
+    });
+    return shuffled;
+  }
+
+  /**
    *  Enumerable#toArray() -> Array
    *
    *  Returns an Array containing the elements of the enumeration.
@@ -810,6 +829,7 @@ var Enumerable = (function() {
     partition:  partition,
     pluck:      pluck,
     reject:     reject,
+    shuffle:    shuffle,
     sortBy:     sortBy,
     toArray:    toArray,
     entries:    toArray,
