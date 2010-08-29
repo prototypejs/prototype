@@ -1,3 +1,5 @@
+* Remove unit test for passing a DOM node into `Object.toJSON`. To continue to support this use case would require bypassing IE's native JSON implementation. (Tobie Langel, Thomas Fuchs, Samuel Lebeau, Andrew Dupont)
+
 * Ensure hidden absolutely-positioned elements are sized correctly when they have no explicit width set. [#1084 state:resolved] (Viktor Kojouharov, Andrew Dupont)
 
 * Change custom events implementation to use the `onlosecapture` event instead of the `onfilterchange` event for non-bubbling custom events in Internet Explorer. (John-David Dalton, Andrew Dupont)

@@ -66,9 +66,6 @@ new Test.Unit.Runner({
     this.assertEqual('null', Object.toJSON(null));
     var sam = new Person('sam');
     this.assertEqual('"-sam"', Object.toJSON(sam));
-    var element = $('test');
-    element.toJSON = function(){return 'I\'m a div with id test'};
-    this.assertEqual('"I\'m a div with id test"', Object.toJSON(element));
   },
 
   testObjectToHTML: function() {
