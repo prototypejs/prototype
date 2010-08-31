@@ -248,8 +248,9 @@ new Test.Unit.Runner({
   },
 
   testShuffle: function() {
-    this.assertNotEqual('sam-, noradio, htonl, Ulysses',
-      Fixtures.People.shuffle().pluck('nickname').join(', ')
+    this.assertEqual(
+      Fixtures.People.pluck('nickname').sort().join(', '),
+      Fixtures.People.shuffle().pluck('nickname').sort().join(', ')
     );
   },
   
