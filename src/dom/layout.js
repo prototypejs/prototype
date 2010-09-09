@@ -874,11 +874,13 @@
   **/
   function cumulativeOffset(element) {
     var valueT = 0, valueL = 0;
-    do {
-      valueT += element.offsetTop  || 0;
-      valueL += element.offsetLeft || 0;
-      element = element.offsetParent;
-    } while (element);
+    if (element.parentNode) {
+      do {
+        valueT += element.offsetTop  || 0;
+        valueL += element.offsetLeft || 0;
+        element = element.offsetParent;
+      } while (element);
+    }
     return new Element.Offset(valueL, valueT);
   }
   
@@ -889,9 +891,6 @@
    *  (the element that would be returned by [[Element.getOffsetParent]]).
   **/  
   function positionedOffset(element) {
-    // Account for the margin of the element.
-    var layout = element.getLayout();
-
     var valueT = 0, valueL = 0;
     do {
       valueT += element.offsetTop  || 0;
@@ -903,10 +902,6 @@
         if (p !== 'static') break;
       }
     } while (element);
-    
-    valueL -= layout.get('margin-top');
-    valueT -= layout.get('margin-left');    
-    
     return new Element.Offset(valueL, valueT);
   }
 
@@ -927,7 +922,7 @@
   }
 
   /**
-   *  Element.viewportOffset(@element) -> Array
+   *  Element.viewportOffset(@element) -> Element.Offset
    *
    *  Returns the X/Y coordinates of element relative to the viewport.
   **/
@@ -1015,6 +1010,62 @@
     if (originalStyles) element.setStyle(originalStyles);
     return element;
   }
+    
+  if (Prototype.Browser.IE) {
+    // IE doesn't report offsets correctly for static elements, so we change them
+    // to "relative" to get the values, then change them back.
+    getOffsetParent = getOffsetParent.wrap(
+      function(proceed, element) {
+        element = $(element);
+        // IE throws an error if element is not in document
+        if (isDetached(element)) return $(document.body);
+
+        var position = element.getStyle('position');
+        if (position !== 'static') return proceed(element);
+
+        element.setStyle({ position: 'relative' });
+        var value = proceed(element);
+        element.setStyle({ position: position });
+        return value;
+      }
+    );
+    
+    positionedOffset = positionedOffset.wrap(function(proceed, element) {
+      element = $(element);
+      if (!element.parentNode) return new Element.Offset(0, 0);
+      var position = element.getStyle('position');
+      if (position !== 'static') return proceed(element);
+
+      // Trigger hasLayout on the offset parent so that IE6 reports
+      // accurate offsetTop and offsetLeft values for position: fixed.
+      var offsetParent = element.getOffsetParent();
+      if (offsetParent && offsetParent.getStyle('position') === 'fixed')
+        hasLayout(offsetParent);
+
+      element.setStyle({ position: 'relative' });
+      var value = proceed(element);
+      element.setStyle({ position: position });
+      return value;
+    });
+  } else if (Prototype.Browser.Webkit) {    
+    // Safari returns margins on body which is incorrect if the child is absolutely
+    // positioned.  For performance reasons, redefine Element#cumulativeOffset for
+    // KHTML/WebKit only.
+    cumulativeOffset = function(element) {
+      var valueT = 0, valueL = 0;
+      do {
+        valueT += element.offsetTop  || 0;
+        valueL += element.offsetLeft || 0;
+        if (element.offsetParent == document.body)
+          if (Element.getStyle(element, 'position') == 'absolute') break;
+
+        element = element.offsetParent;
+      } while (element);
+
+      return new Element.Offset(valueL, valueT);
+    };
+  }
+  
   
   Element.addMethods({
     getLayout:              getLayout,
@@ -1047,40 +1098,14 @@
         element = $(element);        
         if (isDetached(element)) return new Element.Offset(0, 0);
 
-        var rect  = element.getBoundingClientRect(),
+        var rect = element.getBoundingClientRect(),
          docEl = document.documentElement;
         // The HTML element on IE < 8 has a 2px border by default, giving
         // an incorrect offset. We correct this by subtracting clientTop
         // and clientLeft.
         return new Element.Offset(rect.left - docEl.clientLeft,
          rect.top - docEl.clientTop);
-      },
-            
-      positionedOffset: function(element) {
-        element = $(element);
-        var parent = element.getOffsetParent();        
-        if (isDetached(element)) return new Element.Offset(0, 0);
-        
-        // When the BODY is the offsetParent, IE6 mistakenly reports the
-        // parent as HTML. Use that as the litmus test to fix another
-        // annoying IE6 quirk.
-        if (element.offsetParent &&
-         element.offsetParent.nodeName.toUpperCase() === 'HTML') {
-          return positionedOffset(element);
-        }
-        
-        var eOffset = element.viewportOffset(),
-         pOffset = isBody(parent) ? viewportOffset(parent) : 
-          parent.viewportOffset();
-        var retOffset = eOffset.relativeTo(pOffset);
-        
-        // Account for the margin of the element.
-        var layout = element.getLayout();
-        var top  = retOffset.top  - layout.get('margin-top');
-        var left = retOffset.left - layout.get('margin-left');
-        
-        return new Element.Offset(left, top);
       }
     });    
-  }  
+  }
 })();
