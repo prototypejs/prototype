@@ -1513,7 +1513,7 @@ new Test.Unit.Runner({
     element.purge();
 
     this.assert(!(uid in Element.Storage), "purged element's UID should no longer exist in `Element.Storage`");
-    this.assert(!(Object.isNumber(element._prototypeUID)), "purged element's UID should no longer exist in `Element.Storage`");
+    this.assert(!(Object.isNumber(element._prototypeUID)), "purged element's UID should no longer exist as expando on element");
     
     // Should purge elements replaced via innerHTML.
     var parent = new Element('div');
@@ -1521,16 +1521,18 @@ new Test.Unit.Runner({
     
     parent.insert(child);    
     child.store('foo', 'bar');
-    child.observe('test:event', function(event) { event.stop(); });
+    
+    var trigger = false;    
+    child.observe('test:event', function(event) { trigger = true; });
     var childUID = child._prototypeUID;
 
     parent.update("");
-    
+
     // At this point, `child` should have been purged.
     this.assert(!(childUID in Element.Storage), "purged element's UID should no longer exist in `Element.Storage`");
 
-    var event = child.fire('test:event');    
-    this.assert(!event.stopped, "fired event should not have been stopped");    
+    var event = child.fire('test:event');
+    this.assert(!trigger, "fired event should not have triggered handler");
   }
 });
 
