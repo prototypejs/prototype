@@ -23,6 +23,15 @@ new Test.Unit.Runner({
     this.assertHashEqual({foo: 'foo'}, clone,
       "Optimizing Object.clone perf using prototyping doesn't allow properties to be deleted.");
   },
+  
+  testObjectKeys: function() {
+    this.assertEnumEqual([], Object.keys({}));
+    this.assertEnumEqual(['bar', 'foo'], Object.keys({foo: 'foo', bar: 'bar'}).sort());
+    function Foo() { this.bar = 'bar'; }
+    Foo.prototype.foo = 'foo';
+    this.assertEnumEqual(['bar'], Object.keys(new Foo()));
+    this.assertRaise('TypeError', function(){ Object.keys() });
+  },
 
   testObjectInspect: function() {
     this.assertEqual('undefined', Object.inspect());
@@ -37,27 +46,26 @@ new Test.Unit.Runner({
     this.assertUndefined(Object.toJSON(undefined));
     this.assertUndefined(Object.toJSON(Prototype.K));
     this.assertEqual('\"\"', Object.toJSON(''));
+    this.assertEqual('\"test\"', Object.toJSON('test'));
+    this.assertEqual('null', Object.toJSON(Number.NaN));
+    this.assertEqual('0', Object.toJSON(0));
+    this.assertEqual('-293', Object.toJSON(-293));
     this.assertEqual('[]', Object.toJSON([]));
     this.assertEqual('[\"a\"]', Object.toJSON(['a']));
-    this.assertEqual('[\"a\", 1]', Object.toJSON(['a', 1]));
-    this.assertEqual('[\"a\", {\"b\": null}]', Object.toJSON(['a', {'b': null}]));
-    this.assertEqual('{\"a\": \"hello!\"}', Object.toJSON({a: 'hello!'}));
+    this.assertEqual('[\"a\",1]', Object.toJSON(['a', 1]));
+    this.assertEqual('[\"a\",{\"b\":null}]', Object.toJSON(['a', {'b': null}]));
+    this.assertEqual('{\"a\":\"hello!\"}', Object.toJSON({a: 'hello!'}));
     this.assertEqual('{}', Object.toJSON({}));
     this.assertEqual('{}', Object.toJSON({a: undefined, b: undefined, c: Prototype.K}));
-    this.assertEqual('{\"b\": [false, true], \"c\": {\"a\": \"hello!\"}}',
+    this.assertEqual('{\"b\":[null,false,true,null],\"c\":{\"a\":\"hello!\"}}',
       Object.toJSON({'b': [undefined, false, true, undefined], c: {a: 'hello!'}}));
-    this.assertEqual('{\"b\": [false, true], \"c\": {\"a\": \"hello!\"}}',
+    this.assertEqual('{\"b\":[null,false,true,null],\"c\":{\"a\":\"hello!\"}}',
       Object.toJSON($H({'b': [undefined, false, true, undefined], c: {a: 'hello!'}})));
     this.assertEqual('true', Object.toJSON(true));
     this.assertEqual('false', Object.toJSON(false));
     this.assertEqual('null', Object.toJSON(null));
     var sam = new Person('sam');
-    this.assertEqual('-sam', Object.toJSON(sam));
-    this.assertEqual('-sam', sam.toJSON());
-    var element = $('test');
-    this.assertUndefined(Object.toJSON(element));
-    element.toJSON = function(){return 'I\'m a div with id test'};
-    this.assertEqual('I\'m a div with id test', Object.toJSON(element));
+    this.assertEqual('"-sam"', Object.toJSON(sam));
   },
 
   testObjectToHTML: function() {

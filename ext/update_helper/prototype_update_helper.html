@@ -81,7 +81,12 @@
   
   new Test.Unit.Runner({
     testGetStack: function() {
-      this.assertMatch(/prototype_update_helper\.html:\d+\n$/, prototypeUpdateHelper.getStack());
+      var stack = prototypeUpdateHelper.getStack();
+      if (stack === '') {
+        this.info('UpdaterHelper#getStack is currently not supported on this browser.')
+      } else {
+        this.assertMatch(/prototype_update_helper\.html:\d+\n$/, prototypeUpdateHelper.getStack());
+      }
     },
 
     testDisplay: function() {
@@ -278,6 +283,38 @@
         'You can find more about it here: http://prototypejs.org/learn/class-inheritance');
       Class.create({});
       this.assertNotNotified();
+    },
+    
+    testSelectorInstanceMethods: function() {
+      var selector = new Selector('div');
+      this.assertWarnNotified('The Selector class has been deprecated. Please use the new Prototype.Selector API instead.');
+      
+      selector.findElements(document);
+      this.assertWarnNotified('Selector#findElements has been deprecated. Please use the new Prototype.Selector API instead.');
+      
+      selector.match(document.documentElement);
+      this.assertWarnNotified('Selector#match has been deprecated. Please use the new Prototype.Selector API instead.');
+      
+      selector.toString();
+      this.assertWarnNotified('Selector#toString has been deprecated. Please use the new Prototype.Selector API instead.');
+      
+      selector.inspect();
+      this.assertWarnNotified('Selector#inspect has been deprecated. Please use the new Prototype.Selector API instead.');
+    },
+    
+    testSelectorMatchElements: function() {
+      Selector.matchElements([], 'div');
+      this.assertWarnNotified('Selector.matchElements has been deprecated. Please use the new Prototype.Selector API instead.');
+    },
+    
+    testSelectorFindElement: function() {
+      Selector.findElement([], 'div');
+      this.assertWarnNotified('Selector.findElement has been deprecated. Please use the new Prototype.Selector API instead.');
+    },
+    
+    testSelectorFindChildElements: function() {
+      Selector.findChildElements(document, 'div');
+      this.assertWarnNotified('Selector.findChildElements has been deprecated. Please use the new Prototype.Selector API instead.');
     },
     
     testLogDeprecationOption: function() {

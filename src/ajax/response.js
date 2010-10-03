@@ -4,18 +4,21 @@
  *  A wrapper class around `XmlHttpRequest` for dealing with HTTP responses
  *  of Ajax requests.
  *
- *  An instance of `Ajax.Response` is passed as the first argument of all Ajax
+ *  An instance of [[Ajax.Response]] is passed as the first argument of all Ajax
  *  requests' callbacks. You _will not_ need to create instances of
- *  `Ajax.Response` yourself.
+ *  [[Ajax.Response]] yourself.
 **/
 
 /**
  *  Ajax.Response#readyState -> Number
  *
- *  The request's current state.
+ *  A [[Number]] corresponding to the request's current state.
  *
- *  `0` corresponds to `"Uninitialized"`, `1` to `"Loading"`, `2` to
- *  `"Loaded"`, `3` to `"Interactive"`, and `4` to `"Complete"`.
+ *  `0` : `"Uninitialized"`<br />
+ *  `1` : `"Loading"`<br />
+ *  `2` : `"Loaded"`<br />
+ *  `3` : `"Interactive"`<br />
+ *  `4` : `"Complete"`
 **/
 
 /**
@@ -42,6 +45,7 @@
  *  Ajax.Response#headerJSON -> Object | Array | null
  *
  *  Auto-evaluated content of the `X-JSON` header if present; `null` otherwise.
+ *  This is useful to transfer _small_ amounts of data.
 **/
 
 /**
@@ -64,14 +68,14 @@ Ajax.Response = Class.create({
     var transport  = this.transport  = request.transport,
         readyState = this.readyState = transport.readyState;
 
-    if((readyState > 2 && !Prototype.Browser.IE) || readyState == 4) {
+    if ((readyState > 2 && !Prototype.Browser.IE) || readyState == 4) {
       this.status       = this.getStatus();
       this.statusText   = this.getStatusText();
       this.responseText = String.interpret(transport.responseText);
       this.headerJSON   = this._getHeaderJSON();
     }
 
-    if(readyState == 4) {
+    if (readyState == 4) {
       var xml = transport.responseXML;
       this.responseXML  = Object.isUndefined(xml) ? null : xml;
       this.responseJSON = this._getResponseJSON();
@@ -110,8 +114,8 @@ Ajax.Response = Class.create({
   /**
    *  Ajax.Response#getAllHeaders() -> String | null
    *
-   *  Returns a string containing all headers separated by line breaks. _Does
-   *  not__ throw errors if no headers are present the way its native
+   *  Returns a [[String]] containing all headers separated by line breaks.
+   *  _Does not_ throw errors if no headers are present the way its native
    *  counterpart does.
   **/
   getAllHeaders: function() {
@@ -121,22 +125,24 @@ Ajax.Response = Class.create({
   },
 
   /**
-   *  Ajax.Response.getResponseHeader(name) -> String
+   *  Ajax.Response#getResponseHeader(name) -> String
    *
    *  Returns the value of the requested header if present; throws an error
    *  otherwise. This is just a wrapper around the `XmlHttpRequest` method of
-   *  the same name.
+   *  the same name. Prefer it's shorter counterpart:
+   *  [[Ajax.Response#getHeader]].
   **/
   getResponseHeader: function(name) {
     return this.transport.getResponseHeader(name);
   },
 
   /**
-   *  Ajax.Response.getAllResponseHeaders() -> String
+   *  Ajax.Response#getAllResponseHeaders() -> String
    *
-   *  Returns a string containing all headers separated by line breaks; throws
+   *  Returns a [[String]] containing all headers separated by line breaks; throws
    *  an error if no headers exist. This is just a wrapper around the
-   *  `XmlHttpRequest` method of the same name.
+   *  `XmlHttpRequest` method of the same name. Prefer it's shorter counterpart:
+   *  [[Ajax.Response#getAllHeaders]].
   **/
   getAllResponseHeaders: function() {
     return this.transport.getAllResponseHeaders();

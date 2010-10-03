@@ -11,12 +11,12 @@
  *
  *  There's nothing wrong with this approach, except that it is hard to
  *  visualize the output immediately just by glancing at the concatenation
- *  expression. The `Template` class provides a much nicer and clearer way of
+ *  expression. The [[Template]] class provides a much nicer and clearer way of
  *  achieving this formatting.
  *
- *  <h5>Straightforward templates</h5>
+ *  ##### Straightforward templates
  *
- *  The `Template` class uses a basic formatting syntax, similar to what is
+ *  The [[Template]] class uses a basic formatting syntax, similar to what is
  *  used in Ruby. The templates are created from strings that have embedded
  *  symbols in the form (e.g., `#{fieldName}`) that will be replaced by
  *  actual values when the template is applied (evaluated) to an object.
@@ -36,9 +36,9 @@
  *      myTemplate.evaluate(show);
  *      // -> "The TV show The Simpsons was created by Matt Groening."
  *
- *  <h5>Templates are meant to be reused</h5>
+ *  ##### Templates are meant to be reused
  *
- *  As the example illustrates, `Template` objects are not tied to specific
+ *  As the example illustrates, [[Template]] objects are not tied to specific
  *  data. The data is bound to the template only during the evaluation of the
  *  template, without affecting the template itself. The next example shows the
  *  same template being used with a handful of distinct objects.
@@ -60,11 +60,11 @@
  *      // -> Multiply by 0.9478 to convert from kilojoules to BTUs.
  *      // -> Multiply by 1024 to convert from megabytes to gigabytes.
  *
- *  <h5>Escape sequence</h5>
+ *  ##### Escape sequence
  *
  *  There's always the chance that one day you'll need to have a literal in your
  *  template that looks like a symbol, but is not supposed to be replaced. For
- *  these situations there's an escape character: the backslash (<code>\\</code>).
+ *  these situations there's an escape character: the backslash (`\\`).
  *
  *      // NOTE: you're seeing two backslashes here because the backslash
  *      // is also an escape character in JavaScript strings, so a literal
@@ -75,21 +75,21 @@
  *      t.evaluate(data);
  *      // -> in Ruby we also use the #{variable} syntax for templates.
  *
- *  <h5>Custom syntaxes</h5>
+ *  ##### Custom syntaxes
  *
  *  The default syntax of the template strings will probably be enough for most
  *  scenarios. In the rare occasion where the default Ruby-like syntax is
- *  inadequate, there's a provision for customization. `Template`'s
+ *  inadequate, there's a provision for customization. [[Template]]'s
  *  constructor accepts an optional second argument that is a regular expression
  *  object to match the replaceable symbols in the template string. Let's put
- *  together a template that uses a syntax similar to the ubiquitous `<&#38;= %>`
+ *  together a template that uses a syntax similar to the now ubiquitous `{{ }}`
  *  constructs:
  *
- *      // matches symbols like '<&#38;= field %>'
- *      var syntax = /(^|.|\r|\n)(\<%=\s*(\w+)\s*%\>)/;
+ *      // matches symbols like '{{ field }}'
+ *      var syntax = /(^|.|\r|\n)(\{{\s*(\w+)\s*}})/;
  *
  *      var t = new Template(
- *       '<div>Name: <b><&#38;= name %></b>, Age: <b><&#38;=age%></b></div>',
+ *       '<div>Name: <b>{{ name }}</b>, Age: <b>{{ age }}</b></div>',
  *       syntax);
  *      t.evaluate( {name: 'John Smith', age: 26} );
  *      // -> <div>Name: <b>John Smith</b>, Age: <b>26</b></div>
@@ -122,6 +122,23 @@ var Template = Class.create({
    *
    *  Applies the template to `object`'s data, producing a formatted string
    *  with symbols replaced by `object`'s corresponding properties.
+   *  
+   *  #####  Examples
+   *  
+   *      var hrefTemplate = new Template('/dir/showAll?lang=#{language}&amp;categ=#{category}&amp;lv=#{levels}');
+   *      var selection = {category: 'books' , language: 'en-US'};
+   *      
+   *      hrefTemplate.evaluate(selection);
+   *      // -> '/dir/showAll?lang=en-US&amp;categ=books&amp;lv='
+   *      
+   *      hrefTemplate.evaluate({language: 'jp', levels: 3, created: '10/12/2005'});
+   *      // -> '/dir/showAll?lang=jp&amp;categ=&amp;lv=3'
+   *      
+   *      hrefTemplate.evaluate({});
+   *      // -> '/dir/showAll?lang=&amp;categ=&amp;lv='
+   *      
+   *      hrefTemplate.evaluate(null);
+   *      // -> error !
   **/
   evaluate: function(object) {
     if (object && Object.isFunction(object.toTemplateReplacements))
@@ -133,8 +150,9 @@ var Template = Class.create({
       var before = match[1] || '';
       if (before == '\\') return match[2];
 
-      var ctx = object, expr = match[3];
-      var pattern = /^([^.[]+|\[((?:.*?[^\\])?)\])(\.|\[|$)/;
+      var ctx = object, expr = match[3],
+          pattern = /^([^.[]+|\[((?:.*?[^\\])?)\])(\.|\[|$)/;
+          
       match = pattern.exec(expr);
       if (match == null) return before;
 

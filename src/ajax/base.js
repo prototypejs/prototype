@@ -14,9 +14,7 @@ Ajax.Base = Class.create({
 
     this.options.method = this.options.method.toLowerCase();
 
-    if (Object.isString(this.options.parameters))
-      this.options.parameters = this.options.parameters.toQueryParams();
-    else if (Object.isHash(this.options.parameters))
+    if (Object.isHash(this.options.parameters))
       this.options.parameters = this.options.parameters.toObject();
   }
 });

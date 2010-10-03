@@ -20,7 +20,7 @@ Object.extend(Number.prototype, (function() {
    *  (which is therefore assumed to be in the \[0..255\] range, inclusive).
    *  Useful for composing CSS color strings.
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      10.toColorPart()
    *      // -> "0a"
@@ -32,8 +32,8 @@ Object.extend(Number.prototype, (function() {
   /**
    *  Number#succ() -> Number
    *
-   *  Returns the successor of the current Number, as defined by current + 1.
-   *  Used to make numbers compatible with ObjectRange.
+   *  Returns the successor of the current [[Number]], as defined by current + 1.
+   *  Used to make numbers compatible with [[ObjectRange]].
   **/
   function succ() {
     return this + 1;
@@ -49,7 +49,7 @@ Object.extend(Number.prototype, (function() {
    *  the first parameter. The number will be 0 on first call, 1 on second
    *  call, etc. `times` returns the number instance it was called on.
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      (3).times(alert);
    *      // -> Alerts "0", then "1", then "2"; returns 3
@@ -81,7 +81,7 @@ Object.extend(Number.prototype, (function() {
    *  that the string's length is at least equal to `length`. Takes an optional
    *  `radix` argument which specifies the base to use for conversion.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      (13).toPaddedString(4);
    *      // -> "0013"
@@ -101,15 +101,6 @@ Object.extend(Number.prototype, (function() {
   function toPaddedString(length, radix) {
     var string = this.toString(radix || 10);
     return '0'.times(length - string.length) + string;
-  }
-
-  /** related to: Object.toJSON
-   *  Number#toJSON() -> String
-   *
-   *  Returns a JSON string representation of the number.
-  **/
-  function toJSON() {
-    return isFinite(this) ? this.toString() : 'null';
   }
 
   /**
@@ -159,7 +150,6 @@ Object.extend(Number.prototype, (function() {
     succ:           succ,
     times:          times,
     toPaddedString: toPaddedString,
-    toJSON:         toJSON,
     abs:            abs,
     round:          round,
     ceil:           ceil,

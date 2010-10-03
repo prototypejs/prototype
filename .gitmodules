@@ -11,3 +11,13 @@
   path = vendor/sprockets
   url = git://github.com/sstephenson/sprockets.git
 
+
+[submodule "vendor/nwmatcher/repository"]
+	path = vendor/nwmatcher/repository
+	url = git://github.com/dperini/nwmatcher.git
+[submodule "vendor/sizzle/repository"]
+	path = vendor/sizzle/repository
+	url = git://github.com/jeresig/sizzle.git
+[submodule "vendor/slick/repository"]
+	path = vendor/slick/repository
+	url = git://github.com/mootools/slick.git

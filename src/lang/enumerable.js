@@ -1,20 +1,20 @@
 /** section: Language
  * mixin Enumerable
  *
- *  `Enumerable` provides a large set of useful methods for enumerations &mdash;
+ *  [[Enumerable]] provides a large set of useful methods for enumerations &mdash;
  *  objects that act as collections of values. It is a cornerstone of
  *  Prototype.
  *
- *  `Enumerable` is a _mixin_: a set of methods intended not for standaone
+ *  [[Enumerable]] is a _mixin_: a set of methods intended not for standaone
  *  use, but for incorporation into other objects.
  *
- *  Prototype mixes `Enumerable` into several classes. The most visible cases
+ *  Prototype mixes [[Enumerable]] into several classes. The most visible cases
  *  are [[Array]] and [[Hash]], but you'll find it in less obvious spots as
  *  well, such as in [[ObjectRange]] and various DOM- or Ajax-related objects.
  *
- *  <h5>The <code>context</code> parameter</h5>
+ *  ##### The `context` parameter
  *
- *  Every method of `Enumerable` that takes an iterator also takes the "context
+ *  Every method of [[Enumerable]] that takes an iterator also takes the "context
  *  object" as the next (optional) parameter. The context object is what the
  *  iterator will be _bound_ to &mdash; what the keyword `this` will refer to inside
  *  the iterator.
@@ -29,21 +29,21 @@
  *      // -> { foo: 0, bar: 1, baz: 2}
  *
  *  If there is no `context` argument, the iterator function will execute in
- *  the scope from which the `Enumerable` method itself was called.
+ *  the scope from which the [[Enumerable]] method itself was called.
  *
- *  <h5>Mixing <code>Enumerable</code> into your own objects</h5>
+ *  ##### Mixing [[Enumerable]] into your own objects
  *
  *  So, let's say you've created your very own collection-like object (say,
  *  some sort of Set, or perhaps something that dynamically fetches data
  *  ranges from the server side, lazy-loading style). You want to be able to
- *  mix `Enumerable` in (and we commend you for it). How do you go about this?
+ *  mix [[Enumerable]] in (and we commend you for it). How do you go about this?
  *
  *  The Enumerable module basically makes only one requirement on your object:
  *  it must provide a method named `_each` (note the leading underscore) that
  *  will accept a function as its unique argument, and will contain the actual
  *  "raw iteration" algorithm, invoking its argument with each element in turn.
  *
- *  As detailed in the documentation for [[Enumerable#each]], `Enumerable`
+ *  As detailed in the documentation for [[Enumerable#each]], [[Enumerable]]
  *  provides all the extra layers (handling iteration short-circuits, passing
  *  numeric indices, etc.). You just need to implement the actual iteration,
  *  as fits your internal structure.
@@ -52,9 +52,9 @@
  *  [[Array]], [[Hash]], or [[ObjectRange]]. They all begin with their own
  *  `_each` method, which should help you grasp the idea.
  *
- *  Once you're done with this, you just need to mix `Enumerable` in, which
+ *  Once you're done with this, you just need to mix [[Enumerable]] in, which
  *  you'll usually do before defining your methods, so as to make sure whatever
- *  overrides you provide for `Enumerable` methods will indeed prevail. In
+ *  overrides you provide for [[Enumerable]] methods will indeed prevail. In
  *  short, your code will probably end up looking like this:
  *
  *
@@ -93,17 +93,17 @@ var Enumerable = (function() {
    *
    *  Calls `iterator` for each item in the collection.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      ['one', 'two', 'three'].each(alert);
    *      // Alerts "one", then alerts "two", then alerts "three"
    *
-   *  <h5>Built-In Variants</h5>
+   *  ##### Built-In Variants
    *
    *  Most of the common use cases for `each` are already available pre-coded
-   *  as other methods on `Enumerable`. Whether you want to find the first
+   *  as other methods on [[Enumerable]]. Whether you want to find the first
    *  matching item in an enumeration, or transform it, or determine whether it
-   *  has any (or all) values matching a particular condition, `Enumerable`
+   *  has any (or all) values matching a particular condition, [[Enumerable]]
    *  has a method to do that for you.
   **/
   function each(iterator, context) {
@@ -131,7 +131,7 @@ var Enumerable = (function() {
    *  fewer than `number` items; it won't "pad" the last group with empty
    *  values. For that behavior, use [[Enumerable#inGroupsOf]].
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      var students = [
    *        { name: 'Sunny', age: 20 },
@@ -168,7 +168,7 @@ var Enumerable = (function() {
    *  is boolean-equivalent to `false`, such as `undefined`, `0`, or indeed
    *  `false`);
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      [].all();
    *      // -> true (empty arrays have no elements that could be falsy)
@@ -203,7 +203,7 @@ var Enumerable = (function() {
    *  Determines whether at least one element is truthy (boolean-equivalent to
    *  `true`), either directly or through computation by the provided iterator.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      [].any();
    *      // -> false (empty arrays have no elements that could be truthy)
@@ -235,7 +235,7 @@ var Enumerable = (function() {
    *  `iterator` is provided, the elements are simply copied to the
    *  returned array.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      ['Hitch', "Hiker's", 'Guide', 'to', 'the', 'Galaxy'].collect(function(s) {
    *        return s.charAt(0).toUpperCase();
@@ -266,7 +266,7 @@ var Enumerable = (function() {
    *  Returns the first element for which the iterator returns a truthy value.
    *  Aliased by the [[Enumerable#find]] method.
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      [1, 7, -2, -4, 5].detect(function(n) { return n < 0; });
    *      // -> -2
@@ -291,7 +291,7 @@ var Enumerable = (function() {
    *  Returns all the elements for which the iterator returned a truthy value.
    *  For the opposite operation, see [[Enumerable#reject]].
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      [1, 'two', 3, 'four', 5].findAll(Object.isString);
    *      // -> ['two', 'four']
@@ -326,7 +326,7 @@ var Enumerable = (function() {
    *  or a falsy value not to. Note that the `RegExp` `match` function will
    *  convert elements to Strings to perform matching.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      // Get all strings containing a repeated letter
    *      ['hello', 'world', 'this', 'is', 'cool'].grep(/(.)\1/);
@@ -358,7 +358,7 @@ var Enumerable = (function() {
    *  based on the `==` comparison operator (equality with implicit type
    *  conversion).
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      $R(1, 15).include(10);
    *      // -> true
@@ -392,7 +392,7 @@ var Enumerable = (function() {
    *  Like [[Enumerable#eachSlice]], but pads out the last chunk with the
    *  specified value if necessary and doesn't support the `iterator` function.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      var students = [
    *        { name: 'Sunny',  age: 20 },
@@ -434,7 +434,7 @@ var Enumerable = (function() {
    *  argument, the element as its second argument, and the element's index as
    *  its third. It returns the new value for the accumulator.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      $R(1,10).inject(0, function(acc, n) { return acc + n; });
    *      // -> 55 (sum of 1 to 10)
@@ -462,7 +462,7 @@ var Enumerable = (function() {
    *  Invokes the same method, with the same arguments, for all items in a
    *  collection. Returns an array of the results of the method calls.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      ['hello', 'world'].invoke('toUpperCase');
    *      // -> ['HELLO', 'WORLD']
@@ -499,7 +499,7 @@ var Enumerable = (function() {
    *  evaluated, and its index in the enumeration; it should return the value
    *  `max` should consider (and potentially return).
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      ['c', 'b', 'a'].max();
    *      // -> 'c'
@@ -539,7 +539,7 @@ var Enumerable = (function() {
    *  evaluated, and its index in the enumeration; it should return the value
    *  `min` should consider (and potentially return).
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      ['c', 'b', 'a'].min();
    *      // -> 'a'
@@ -578,7 +578,7 @@ var Enumerable = (function() {
    *  then using [[Enumerable#reject]] because the enumeration is only processed
    *  once.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      ['hello', null, 42, false, true, , 17].partition();
    *      // -> [['hello', 42, true, 17], [null, false, undefined]]
@@ -606,7 +606,7 @@ var Enumerable = (function() {
    *  and [[Enumerable#each]]: fetching the same property for all of the
    *  elements. Returns an array of the property values.
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      ['hello', 'world', 'this', 'is', 'nice'].pluck('length');
    *      // -> [5, 5, 4, 2, 4]
@@ -628,7 +628,7 @@ var Enumerable = (function() {
    *  Returns all the elements for which the iterator returns a falsy value.
    *  For the opposite operation, see [[Enumerable#findAll]].
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      [1, "two", 3, "four", 5].reject(Object.isString);
    *      // -> [1, 3, 5]
@@ -654,10 +654,10 @@ var Enumerable = (function() {
    *  well-defined ordering semantics (i.e. the `<` operator must exist between
    *  any two criteria).
    *
-   *  `sortBy` does not guarantee a *stable* sort; adjacent equivalent elements
-   *  may be swapped.
+   *  [[Enumerable#sortBy]] does not guarantee a *stable* sort; adjacent
+   *  equivalent elements may be swapped.
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      ['hello', 'world', 'this', 'is', 'nice'].sortBy(function(s) {
    *        return s.length;
@@ -681,7 +681,7 @@ var Enumerable = (function() {
    *
    *  Returns an Array containing the elements of the enumeration.
    *
-   *  <h5>Example</h5>
+   *  ##### Example
    *
    *      $R(1, 5).toArray();
    *      // -> [1, 2, 3, 4, 5]
@@ -708,7 +708,7 @@ var Enumerable = (function() {
    *  If supplied, `iterator` is called with each tuple as its only argument
    *  and should return the value to use in place of that tuple.
    *
-   *  <h5>Examples</h5>
+   *  ##### Examples
    *
    *      var firstNames = ['Jane', 'Nitin', 'Guy'];
    *      var lastNames  = ['Doe',  'Patel', 'Forcier'];

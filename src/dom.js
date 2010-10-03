@@ -19,9 +19,10 @@
  *
 **/
 
-
 //= require "dom/dom"
+//= require "dom/layout"
 //= require "dom/selector"
+//= require <selector_engine>
 //= require "dom/form"
 //= require "dom/event"
 

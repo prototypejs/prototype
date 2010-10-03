@@ -1143,8 +1143,8 @@ new Test.Unit.Runner({
   },
   
   testElementGetWidth: function() {
-    this.assertIdentical(200, $('dimensions-visible').getWidth());
-    this.assertIdentical(200, $('dimensions-display-none').getWidth());
+    this.assertIdentical(200, $('dimensions-visible').getWidth(), '#dimensions-visible');
+    this.assertIdentical(200, $('dimensions-display-none').getWidth(), '#dimensions-display-none');
   },
   
   testElementGetDimensions: function() {
@@ -1297,31 +1297,35 @@ new Test.Unit.Runner({
 
   testPositionedOffset: function() {
     this.assertEnumEqual([10,10],
-      $('body_absolute').positionedOffset());
+      $('body_absolute').positionedOffset(), '#body_absolute');
     this.assertEnumEqual([10,10],
-      $('absolute_absolute').positionedOffset());
+      $('absolute_absolute').positionedOffset(), '#absolute_absolute');
     this.assertEnumEqual([10,10],
-      $('absolute_relative').positionedOffset());
+      $('absolute_relative').positionedOffset(), '#absolute_relative');
     this.assertEnumEqual([0,10],
-      $('absolute_relative_undefined').positionedOffset());
+      $('absolute_relative_undefined').positionedOffset(), '#absolute_relative_undefined');
     this.assertEnumEqual([10,10],
-      $('absolute_fixed_absolute').positionedOffset());
+      $('absolute_fixed_absolute').positionedOffset(), '#absolute_fixed_absolute');
       
     var afu = $('absolute_fixed_undefined');
     this.assertEnumEqual([afu.offsetLeft, afu.offsetTop],
-      afu.positionedOffset());
+      afu.positionedOffset(), '#absolute_fixed_undefined');
       
     var element = new Element('div'), offset = element.positionedOffset();
-    this.assertEnumEqual([0,0], offset);
-    this.assertIdentical(0, offset.top);
-    this.assertIdentical(0, offset.left);
+    this.assertEnumEqual([0,0], offset, 'new element');
+    this.assertIdentical(0, offset.top, 'new element top');
+    this.assertIdentical(0, offset.left, 'new element left');
   },
   
   testCumulativeOffset: function() {
     var element = new Element('div'), offset = element.cumulativeOffset();
-    this.assertEnumEqual([0,0], offset);
-    this.assertIdentical(0, offset.top);
-    this.assertIdentical(0, offset.left);
+    this.assertEnumEqual([0,0], offset, 'new element');
+    this.assertIdentical(0, offset.top, 'new element top');
+    this.assertIdentical(0, offset.left, 'new element left');
+    
+    var innerEl = new Element('div'), outerEl = new Element('div');
+    outerEl.appendChild(innerEl);
+    this.assertEnumEqual([0,0], innerEl.cumulativeOffset(), 'new inner element');
   },
   
   testViewportOffset: function() {
@@ -1340,12 +1344,17 @@ new Test.Unit.Runner({
   },
   
   testOffsetParent: function() {
-    this.assertEqual('body_absolute', $('absolute_absolute').getOffsetParent().id);
-    this.assertEqual('body_absolute', $('absolute_relative').getOffsetParent().id);
-    this.assertEqual('absolute_relative', $('inline').getOffsetParent().id);
-    this.assertEqual('absolute_relative', $('absolute_relative_undefined').getOffsetParent().id);
+    this.assertEqual('body_absolute', $('absolute_absolute').getOffsetParent().id,
+     '#body_absolute should be parent of #absolute_absolute');
+    this.assertEqual('body_absolute', $('absolute_relative').getOffsetParent().id, 
+     '#body_absolute should be parent of #absolute_relative');
+    this.assertEqual('absolute_relative', $('inline').getOffsetParent().id,
+     '#absolute_relative should be parent of #inline');
+    this.assertEqual('absolute_relative', $('absolute_relative_undefined').getOffsetParent().id,
+     '#absolute_relative should be parent of #absolute_relative_undefined');
     
-    this.assertEqual(document.body, new Element('div').getOffsetParent());
+    this.assertEqual(document.body, new Element('div').getOffsetParent(),
+     'body should be parent of unattached element');
   },
 
   testAbsolutize: function() {
@@ -1492,6 +1501,36 @@ new Test.Unit.Runner({
     this.assert(deepClone.firstChild);
     this.assertEqual('SPAN', deepClone.firstChild.nodeName.toUpperCase());
     this.assert(!deepClone.down('span')._prototypeUID);
+  },
+  
+  testElementPurge: function() {
+    var element = new Element('div');
+    element.store('foo', 'bar');
+    
+    var uid = element._prototypeUID;    
+    this.assert(uid in Element.Storage, "newly-created element's uid should exist in `Element.Storage`");
+
+    element.purge();
+
+    this.assert(!(uid in Element.Storage), "purged element's UID should no longer exist in `Element.Storage`");
+    this.assert(!(Object.isNumber(element._prototypeUID)), "purged element's UID should no longer exist in `Element.Storage`");
+    
+    // Should purge elements replaced via innerHTML.
+    var parent = new Element('div');
+    var child = new Element('p').update('lorem ipsum');
+    
+    parent.insert(child);    
+    child.store('foo', 'bar');
+    child.observe('test:event', function(event) { event.stop(); });
+    var childUID = child._prototypeUID;
+
+    parent.update("");
+    
+    // At this point, `child` should have been purged.
+    this.assert(!(childUID in Element.Storage), "purged element's UID should no longer exist in `Element.Storage`");
+
+    var event = child.fire('test:event');    
+    this.assert(!event.stopped, "fired event should not have been stopped");    
   }
 });
 

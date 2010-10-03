@@ -141,13 +141,6 @@ new Test.Unit.Runner({
     );
   },
   
-  testToJSON: function(){
-    this.assertEqual('[]', [].toJSON());
-    this.assertEqual('[\"a\"]', ['a'].toJSON());
-    this.assertEqual('[\"a\", 1]', ['a', 1].toJSON());
-    this.assertEqual('[\"a\", {\"b\": null}]', ['a', {'b': null}].toJSON());
-  },
-  
   testReverse: function(){
     this.assertEnumEqual([], [].reverse());
     this.assertEnumEqual([1], [1].reverse());

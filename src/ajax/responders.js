@@ -34,7 +34,7 @@
  *        }
  *      });
  *
- *  <h5>Responder callbacks</h5>
+ *  ##### Responder callbacks
  *
  *  The callbacks for responders are similar to the callbacks described in
  *  the [[Ajax section]], but take a different signature. They're invoked with
@@ -64,7 +64,6 @@
  *    the request completes, status-specific callbacks are called, and possible
  *    automatic behaviors are processed. Guaranteed to run regardless of what
  *    happened during the request.
- *
 **/
 
 Ajax.Responders = {

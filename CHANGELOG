@@ -1,3 +1,63 @@
+* Remove unit test for passing a DOM node into `Object.toJSON`. To continue to support this use case would require bypassing IE's native JSON implementation. (Tobie Langel, Thomas Fuchs, Samuel Lebeau, Andrew Dupont)
+
+* Ensure hidden absolutely-positioned elements are sized correctly when they have no explicit width set. [#1084 state:resolved] (Viktor Kojouharov, Andrew Dupont)
+
+* Change custom events implementation to use the `onlosecapture` event instead of the `onfilterchange` event for non-bubbling custom events in Internet Explorer. (John-David Dalton, Andrew Dupont)
+
+* Revert `Element.getHeight` and `Element.getWidth` to their previous behavior in order to ensure backward-compatibility. (Sam Stephenson, Andrew Dupont)
+
+* Fix accidental declaration of `purgeElement` as a global function. [#1089 state:resolved] (Viktor Kojouharov, Andrew Dupont)
+
+* Ensure `Element.Layout` gives accurate measurements for percentages on all elements. Fix inaccurate measurements on `position: fixed` elements with percentages. [#1040 state:resolved] (Dan Popescu, Riccardo De Agostini, Andrew Dupont)
+
+* Fix issue with retrieving border-box-(height|width) of hidden elements. [#1035 state:resolved] (Francois-Pierre Bouchard, Andrew Dupont)
+
+* Ensure we clean up after ourselves for all `width` and `height` computations in `Element.Layout`. (Sam Stephenson, Andrew Dupont)
+
+*1.7_rc2* (May 12, 2010)
+
+* Remove redefinition of `Element#cumulativeOffset` when `getBoundingClientRect` is present, as it seems to give inaccurate results. (Andrew Dupont)
+
+* Optimize element purging. (RStankov, Andrew Dupont)
+
+* Add `Element.purge` for cleaning up event listeners and element storage keys on elements that will be removed from the page. Make `Element.update` perform similar cleanup automatically. (Andrew Dupont, Tobie Langel)
+
+* The second argument to Event.Handler callbacks is the target element when no selector is present, or the matching element when a selector is present. Callbacks are always bound to the original element. (sam)
+
+* Fix issue where `Element.Layout#get` would fail to interpret negative pixel values. (Sebastien Gruhier, Andrew Dupont)
+
+* Fix bugs in layout.js. Add tests for `Element.Layout#toCSS`, `#toObject`, and `#toHash`. (RStankov, Andrew Dupont)
+
+* Add `Element.Layout#toObject` and `Element.Layout.toHash`. (Andrew Dupont)
+
+* Make `Element.Layout#toCSS` return camelized property names, as expected by `Element.setStyle`. [#1021 state:resolved] (njakobsen, Andrew Dupont)
+
+*1.7_rc1* (April 1, 2010)
+
+* Add an `Event.Handler` class, plus `Event.on` and `Element#on` methods, for simplified event delegation. (sam, Tobie Langel, Andrew Dupont)
+
+* Make `Element.Layout` properly interpret computed non-integer pixel values. (e.g., Firefox can report "12.5px" as a computed style value.) (henrymazza)
+
+* Fix deprecated Selector.matchElements. (Tobie Langel)
+
+* Make Object.keys ES5 compliant. (Tobie Langel)
+
+* Make Prototype's JSON implementation EcmaScript 5 compliant. [#453 state:resolved] (Tobie Langel)
+
+* Also detect embedded (UIWebView) mobile Safari. (Thomas Fuchs)
+
+* Avoid object creation and an unnecessary function call in `Class#addMethods`, when working around JScript DontEnum bug. Replace with feature test and a simple boolean check at runtime. (kangax)
+
+* Optimize Element#immediateDescendants. (kangax, Tobie Langel)
+
+* Remove unnecessary function object creation and `Number#times` in `Element._getContentFromAnonymousElement`. (kangax)
+
+* Eliminate runtime forking and long method lookup in `Element.hasAttribute`. (kangax)
+
+* Remove redundant ternary. (kangax)
+
+* Avoid repeating declaration statements where it makes sense, for slightly better runtime performance and minification. (kangax)
+
 * Make `Event.stopObserving` return element in all cases. [#810 state:resolved] (Yaffle, Tobie Langel)
 
 * String#startsWith, String#endsWith performance optimization (Yaffle, Tobie Langel, kangax)
