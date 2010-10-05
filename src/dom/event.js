@@ -85,10 +85,11 @@
   var docEl = document.documentElement;
   var MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED = 'onmouseenter' in docEl
     && 'onmouseleave' in docEl;
+  var IE_LEGACY_EVENT_SYSTEM = (window.attachEvent && !window.addEventListener);
 
   var _isButton;
-  if (Prototype.Browser.IE) {
-    // IE doesn't map left/right/middle the same way.
+  if (IE_LEGACY_EVENT_SYSTEM) {
+    // IE's event system doesn't map left/right/middle the same way.
     var buttonMap = { 0: 1, 1: 4, 2: 2 };
     _isButton = function(event, code) {
       return event.button === buttonMap[code];
@@ -226,6 +227,7 @@
   **/
   function findElement(event, expression) {
     var element = Event.element(event);
+    
     if (!expression) return element;
     while (element) {
       if (Object.isElement(element) && Prototype.Selector.match(element, expression)) {
@@ -363,7 +365,7 @@
     return m;
   });
 
-  if (Prototype.Browser.IE) {
+  if (IE_LEGACY_EVENT_SYSTEM) {
     function _relatedTarget(event) {
       var element;
       switch (event.type) {
