@@ -370,6 +370,7 @@ new Test.Unit.Runner({
   },
   
   testSerializeFormTroublesomeNames: function() {
+    var hash = { length: 'foo', bar: 'baz' };
     var el = new Element('form', { 
       action: '/' 
     });
@@ -385,6 +386,9 @@ new Test.Unit.Runner({
     });
     el.appendChild(input);
     el.appendChild(input2);
-    this.assertHashEqual({ length: 'foo', bar: 'baz' }, el.serialize(true));
+    this.assertHashEqual(hash, el.serialize(true));
+    
+    var form = $('form_with_troublesome_input_names');
+    this.assertHashEqual(hash, form.serialize(true));
   }
 });

@@ -172,13 +172,21 @@ if (!Node.ELEMENT_NODE) {
     attributes = attributes || { };
     tagName = tagName.toLowerCase();
     var cache = Element.cache;
+    
     if (HAS_EXTENDED_CREATE_ELEMENT_SYNTAX && attributes.name) {
       tagName = '<' + tagName + ' name="' + attributes.name + '">';
-      delete attributes.name;
+      delete attributes.name;      
       return Element.writeAttribute(document.createElement(tagName), attributes);
     }
+    
     if (!cache[tagName]) cache[tagName] = Element.extend(document.createElement(tagName));
-    return Element.writeAttribute(cache[tagName].cloneNode(false), attributes);
+    
+    // Don't use the cache if we're setting the `type` attribute, as on an
+    // INPUT element. This prevents an issue with IE9 beta.
+    var node = ('type' in attributes) ? document.createElement(tagName) :
+     cache[tagName].cloneNode(false);
+    
+    return Element.writeAttribute(node, attributes);
   };
   
   Object.extend(global.Element, element || { });

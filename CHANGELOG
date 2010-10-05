@@ -1,3 +1,5 @@
+* Fix an issue in IE9 beta where the `value` attribute of an <input> element would not get set. (Andrew Dupont)
+
 * Move all offset methods to layout.js, eliminating some code repetition.
 
 * Remove unit test for passing a DOM node into `Object.toJSON`. To continue to support this use case would require bypassing IE's native JSON implementation. (Tobie Langel, Thomas Fuchs, Samuel Lebeau, Andrew Dupont)
