@@ -890,7 +890,10 @@
    *  Returns `element`'s offset relative to its closest positioned ancestor
    *  (the element that would be returned by [[Element.getOffsetParent]]).
   **/  
-  function positionedOffset(element) {
+  function positionedOffset(element) {    
+    // Account for the margin of the element.
+    var layout = element.getLayout();
+    
     var valueT = 0, valueL = 0;
     do {
       valueT += element.offsetTop  || 0;
@@ -902,6 +905,10 @@
         if (p !== 'static') break;
       }
     } while (element);
+    
+    valueL -= layout.get('margin-top');
+    valueT -= layout.get('margin-left');
+    
     return new Element.Offset(valueL, valueT);
   }
 
