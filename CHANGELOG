@@ -1,3 +1,5 @@
+* Revert Opera-specific behavior for calling Element#getStyle with (left|right|top|bottom). [#268 state:resolved] (kangax, Andrew Dupont)
+
 * Fix issue with Event#isMiddleClick and #isRightClick on Safari and Chrome. [#731 state:resolved] (Arthur Schreiber)
 
 * Fix issue where an Ajax request in IE sometimes returns 1223 instead of 204 as the status code. [#129 state:resolved] (adevadeh, gordyt, Andrew Dupont)
