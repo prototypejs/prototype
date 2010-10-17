@@ -154,7 +154,18 @@ if (!Node.ELEMENT_NODE) {
  *      var a = new Element('a', {'class': 'foo', href: '/foo.html'}).update("Next page");
 **/
 
-(function(global) {
+(function(global) {  
+  // For performance reasons, we create new elements by cloning a "blank"
+  // version of a given element. But sometimes this causes problems. Skip
+  // the cache if:
+  //   (a) We're creating a SELECT element (troublesome in IE6);
+  //   (b) We're setting the `type` attribute on an INPUT element
+  //       (troublesome in IE9).
+  function shouldUseCache(tagName, attributes) {
+    if (tagName === 'select') return false;
+    if ('type' in attributes) return false;
+    return true;
+  }
   
   var HAS_EXTENDED_CREATE_ELEMENT_SYNTAX = (function(){
     try {
@@ -181,10 +192,8 @@ if (!Node.ELEMENT_NODE) {
     
     if (!cache[tagName]) cache[tagName] = Element.extend(document.createElement(tagName));
     
-    // Don't use the cache if we're setting the `type` attribute, as on an
-    // INPUT element. This prevents an issue with IE9 beta.
-    var node = ('type' in attributes) ? document.createElement(tagName) :
-     cache[tagName].cloneNode(false);
+    var node = shouldUseCache(tagName, attributes) ? 
+     cache[tagName].cloneNode(false) : document.createElement(tagName);
     
     return Element.writeAttribute(node, attributes);
   };
