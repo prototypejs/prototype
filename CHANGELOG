@@ -1,3 +1,5 @@
+* Extend BUTTON elements with everything defined in Form.Element.Methods. Ensure BUTTON elements are traversed in Form.getElements and serialized in Form.serialize. (Luis Gomez, Samuel Lebeau, kangax, Andrew Dupont)
+
 * Ensure Object.isFunction returns `false` for RegExp objects. [#661 state:resolved] (James, kangax, Andrew Dupont)
 
 * Revert Opera-specific behavior for calling Element#getStyle with (left|right|top|bottom). [#268 state:resolved] (kangax, Andrew Dupont)

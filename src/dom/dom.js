@@ -3292,7 +3292,8 @@ Element.addMethods = function(methods) {
       "FORM":     Object.clone(Form.Methods),
       "INPUT":    Object.clone(Form.Element.Methods),
       "SELECT":   Object.clone(Form.Element.Methods),
-      "TEXTAREA": Object.clone(Form.Element.Methods)
+      "TEXTAREA": Object.clone(Form.Element.Methods),
+      "BUTTON":   Object.clone(Form.Element.Methods)
     });
   }
 

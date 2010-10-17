@@ -724,68 +724,77 @@ var $F = Form.Element.Methods.getValue;
 
 /*--------------------------------------------------------------------------*/
 
-Form.Element.Serializers = {
-  input: function(element, value) {
+Form.Element.Serializers = (function() {
+  function input(element, value) {
     switch (element.type.toLowerCase()) {
       case 'checkbox':
       case 'radio':
-        return Form.Element.Serializers.inputSelector(element, value);
+        return inputSelector(element, value);
       default:
-        return Form.Element.Serializers.textarea(element, value);
+        return valueSelector(element, value);
     }
-  },
-
-  inputSelector: function(element, value) {
-    if (Object.isUndefined(value)) return element.checked ? element.value : null;
-    else element.checked = !!value;
-  },
-
-  textarea: function(element, value) {
+  }
+  
+  function inputSelector(element, value) {
+    if (Object.isUndefined(value))
+      return element.checked ? element.value : null;
+    else element.checked = !!value;    
+  }
+  
+  function valueSelector(element, value) {
     if (Object.isUndefined(value)) return element.value;
     else element.value = value;
-  },
-
-  select: function(element, value) {
+  }
+  
+  function select(element, value) {
     if (Object.isUndefined(value))
-      return this[element.type == 'select-one' ?
-        'selectOne' : 'selectMany'](element);
-    else {
-      var opt, currentValue, single = !Object.isArray(value);
-      for (var i = 0, length = element.length; i < length; i++) {
-        opt = element.options[i];
-        currentValue = this.optionValue(opt);
-        if (single) {
-          if (currentValue == value) {
-            opt.selected = true;
-            return;
-          }
+      return (element.type === 'select-one' ? selectOne : selectMany)(element);
+       
+    var opt, currentValue, single = !Object.isArray(value);
+    for (var i = 0, length = element.length; i < length; i++) {
+      opt = element.options[i];
+      currentValue = this.optionValue(opt);
+      if (single) {
+        if (currentValue == value) {
+          opt.selected = true;
+          return;
         }
-        else opt.selected = value.include(currentValue);
       }
+      else opt.selected = value.include(currentValue);
     }
-  },
-
-  selectOne: function(element) {
+  }
+  
+  function selectOne(element) {
     var index = element.selectedIndex;
-    return index >= 0 ? this.optionValue(element.options[index]) : null;
-  },
-
-  selectMany: function(element) {
+    return index >= 0 ? optionValue(element.options[index]) : null;
+  }
+  
+  function selectMany(element) {
     var values, length = element.length;
     if (!length) return null;
 
     for (var i = 0, values = []; i < length; i++) {
       var opt = element.options[i];
-      if (opt.selected) values.push(this.optionValue(opt));
+      if (opt.selected) values.push(optionValue(opt));
     }
     return values;
-  },
-
-  optionValue: function(opt) {
-    // extend element because hasAttribute may not be native
-    return Element.extend(opt).hasAttribute('value') ? opt.value : opt.text;
   }
-};
+  
+  function optionValue(opt) {
+    return Element.hasAttribute(opt, 'value') ? opt.value : opt.text;
+  }
+  
+  return {
+    input:         input,
+    inputSelector: inputSelector,
+    textarea:      valueSelector,
+    select:        select,
+    selectOne:     selectOne,
+    selectMany:    selectMany,
+    optionValue:   optionValue,
+    button:        valueSelector
+  };
+})();
 
 /*--------------------------------------------------------------------------*/
 

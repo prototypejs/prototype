@@ -204,7 +204,7 @@ new Test.Unit.Runner({
   
   testFormGetElements: function() {
     var elements = Form.getElements('various'),
-      names = $w('tf_selectOne tf_textarea tf_checkbox tf_selectMany tf_text tf_radio tf_hidden tf_password');
+      names = $w('tf_selectOne tf_textarea tf_checkbox tf_selectMany tf_text tf_radio tf_hidden tf_password tf_button');
     this.assertEnumEqual(names, elements.pluck('name'))
   },
   
@@ -226,7 +226,15 @@ new Test.Unit.Runner({
   testFormSerialize: function() {
     // form is initially empty
     var form = $('bigform');
-    var expected = { tf_selectOne:'', tf_textarea:'', tf_text:'', tf_hidden:'', tf_password:'' };
+    var expected = {
+      tf_selectOne: '',
+      tf_textarea:  '',
+      tf_text:      '',
+      tf_hidden:    '',
+      tf_password:  '',
+      tf_button:    ''
+    };
+    
     this.assertHashEqual(expected, Form.serialize('various', true));
       
     // set up some stuff
@@ -235,10 +243,19 @@ new Test.Unit.Runner({
     form['tf_text'].value = "123öäü";
     form['tf_hidden'].value = "moo%hoo&test";
     form['tf_password'].value = 'sekrit code';
+    form['tf_button'].value = 'foo bar';
     form['tf_checkbox'].checked = true;
     form['tf_radio'].checked = true;
-    var expected = { tf_selectOne:1, tf_textarea:"boo hoo!", tf_text:"123öäü",
-      tf_hidden:"moo%hoo&test", tf_password:'sekrit code', tf_checkbox:'on', tf_radio:'on' }
+    
+    var expected = {
+      tf_selectOne: 1, tf_textarea: "boo hoo!",
+      tf_text: "123öäü",
+      tf_hidden: "moo%hoo&test",
+      tf_password: 'sekrit code',
+      tf_button: 'foo bar',
+      tf_checkbox: 'on',
+      tf_radio: 'on'
+    };
 
     // return params
     this.assertHashEqual(expected, Form.serialize('various', true));
