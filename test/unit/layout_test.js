@@ -123,7 +123,7 @@ new Test.Unit.Runner({
     
     function assertNear(v1, v2, message) {
       var abs = Math.abs(v1 - v2);
-      this.assert(abs <= 1, message);
+      this.assert(abs <= 1, message + ' (actual: ' + v1 + ', ' + v2 + ')');
     }
     
     // With percentage widths, we'll occasionally run into rounding
