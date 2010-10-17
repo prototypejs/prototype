@@ -850,16 +850,19 @@
   **/
   function getOffsetParent(element) {
     element = $(element);
-    if (isDetached(element)) return $(document.body);
+    
+    // For unusual cases like these, we standardize on returning the BODY
+    // element as the offset parent.
+    if (isDocument(element) || isDetached(element) || isBody(element) || isHtml(element))
+      return $(document.body);
 
     // IE reports offset parent incorrectly for inline elements.
     var isInline = (Element.getStyle(element, 'display') === 'inline');
     if (!isInline && element.offsetParent) return $(element.offsetParent);
-    if (element === document.body) return $(element);
     
     while ((element = element.parentNode) && element !== document.body) {
       if (Element.getStyle(element, 'position') !== 'static') {
-        return (element.nodeName === 'HTML') ? $(document.body) : $(element);
+        return isHtml(element) ? $(document.body) : $(element);
       }
     }
     
@@ -1029,8 +1032,11 @@
     getOffsetParent = getOffsetParent.wrap(
       function(proceed, element) {
         element = $(element);
-        // IE throws an error if element is not in document
-        if (isDetached(element)) return $(document.body);
+        
+        // For unusual cases like these, we standardize on returning the BODY
+        // element as the offset parent.
+        if (isDocument(element) || isDetached(element) || isBody(element) || isHtml(element))
+          return $(document.body);
 
         var position = element.getStyle('position');
         if (position !== 'static') return proceed(element);
@@ -1095,6 +1101,14 @@
   
   function isBody(element) {
     return element.nodeName.toUpperCase() === 'BODY';
+  }
+  
+  function isHtml(element) {
+    return element.nodeName.toUpperCase() === 'HTML';
+  }
+  
+  function isDocument(element) {
+    return element.nodeType === Node.DOCUMENT_NODE;
   }
   
   function isDetached(element) {

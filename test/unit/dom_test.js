@@ -1355,6 +1355,10 @@ new Test.Unit.Runner({
     
     this.assertEqual(document.body, new Element('div').getOffsetParent(),
      'body should be parent of unattached element');
+     
+    [document, document.body, document.documentElement].each (function(node) {
+      this.assertEqual(document.body, Element.getOffsetParent(node));
+    }, this);
   },
 
   testAbsolutize: function() {
