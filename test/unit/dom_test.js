@@ -1135,6 +1135,12 @@ new Test.Unit.Runner({
     
     elWithClassName = new Element('div', { 'class': 'firstClassName' });
     this.assert(elWithClassName.hasClassName('firstClassName'));
+    
+    var radio = new Element('input', { type: 'radio', value: 'test' });
+    this.assert(radio.value === 'test', 'value of a dynamically-created radio button');
+    
+    var radio2 = new Element('input', { type: 'radio', value: 'test2' });
+    this.assert(radio2.value === 'test2', 'value of a dynamically-created radio button');
   },
 
   testElementGetHeight: function() {
