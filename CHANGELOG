@@ -1,3 +1,5 @@
+* Add Object.isDate. [#443 state:resolved] (Nesterenko Dmitry, kangax, Samuel Lebeau, Andrew Dupont)
+
 * Handle cases where `document` or `document.documentElement` is passed into Element#getOffsetParent. Fixes IE errors with many layout/positioning methods. [#90 state:resolved] (Padraig Kennedy, Andrew Dupont)
 
 * Wrap `element` in `$` for Element#cumulativeOffset, #viewportOffset, #positionedOffset, and #getOffsetParent. [#782 state:resolved] (Radoslav Stankov, Andrew Dupont)

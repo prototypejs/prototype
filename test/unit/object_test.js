@@ -160,6 +160,25 @@ new Test.Unit.Runner({
     this.assert(!Object.isNumber(undefined));
     this.assert(!Object.isNumber(document), 'host objects should return false rather than throw exceptions');
   },
+  
+  testObjectIsDate: function() {
+    var d = new Date();
+    this.assert(Object.isDate(d), 'constructor with no arguments');
+    this.assert(Object.isDate(new Date(0)), 'constructor with milliseconds');
+    this.assert(Object.isDate(new Date(1995, 11, 17)), 'constructor with Y, M, D');
+    this.assert(Object.isDate(new Date(1995, 11, 17, 3, 24, 0)), 'constructor with Y, M, D, H, M, S');
+    this.assert(Object.isDate(new Date(Date.parse("Dec 25, 1995"))), 'constructor with result of Date.parse');
+    
+    this.assert(!Object.isDate(d.valueOf()), 'Date#valueOf returns a number');
+    this.assert(!Object.isDate(function() { }));
+    this.assert(!Object.isDate(0));
+    this.assert(!Object.isDate("a string"));
+    this.assert(!Object.isDate([]));
+    this.assert(!Object.isDate({}));
+    this.assert(!Object.isDate(false));
+    this.assert(!Object.isDate(undefined));
+    this.assert(!Object.isDate(document), 'host objects should return false rather than throw exceptions');
+  },
 
   testObjectIsUndefined: function() {
     this.assert(Object.isUndefined(undefined));

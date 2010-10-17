@@ -32,6 +32,7 @@
       NUMBER_CLASS = '[object Number]',
       STRING_CLASS = '[object String]',
       ARRAY_CLASS = '[object Array]',
+      DATE_CLASS = '[object Date]',
       NATIVE_JSON_STRINGIFY_SUPPORT = window.JSON &&
         typeof JSON.stringify === 'function' &&
         JSON.stringify(0) === '0' &&
@@ -513,6 +514,27 @@
   function isNumber(object) {
     return _toString.call(object) === NUMBER_CLASS;
   }
+  
+  /**
+   *  Object.isDate(object) -> Boolean
+   *  - object (Object): The object to test.
+   *  
+   *  Returns `true` if `object` is of type [[Date]]; `false` otherwise.
+   *  
+   *  ##### Examples
+   *  
+   *      Object.isDate(new Date);
+   *      //-> true
+   *  
+   *      Object.isDate("Dec 25, 1995");
+   *      //-> false
+   *  
+   *      Object.isDate(new Date("Dec 25, 1995"));
+   *      //-> true
+  **/
+  function isDate(object) {
+    return _toString.call(object) === DATE_CLASS;
+  }
 
   /**
    *  Object.isUndefined(object) -> Boolean
@@ -556,6 +578,7 @@
     isFunction:    isFunction,
     isString:      isString,
     isNumber:      isNumber,
+    isDate:        isDate,
     isUndefined:   isUndefined
   });
 })();
