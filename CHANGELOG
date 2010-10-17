@@ -1,3 +1,5 @@
+* Define a `relatedTarget` property on extended mouseenter/mouseleave events in IE's legacy event system. [#708 state:resolved] (Walter Smith, Tobie Langel, Andrew Dupont)
+
 * Fix odd behavior with `new Element('select')` in IE6-7. [#480 state:resolved] (Bruce Harris, kangax, Andrew Dupont)
 
 * Extend BUTTON elements with everything defined in Form.Element.Methods. Ensure BUTTON elements are traversed in Form.getElements and serialized in Form.serialize. (Luis Gomez, Samuel Lebeau, kangax, Andrew Dupont)
