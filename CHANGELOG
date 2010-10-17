@@ -1,3 +1,5 @@
+* Wrap `element` in `$` for Element#cumulativeOffset, #viewportOffset, #positionedOffset, and #getOffsetParent. [#782 state:resolved] (Radoslav Stankov, Andrew Dupont)
+
 *1.7_rc3* (October 11, 2010)
 
 * Feature detect IE's legacy event system, since IE9 now supports DOM L2 Events. (Michael Sciacqua, kangax, Andrew Dupont)

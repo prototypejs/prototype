@@ -849,6 +849,7 @@
    *  `body` element is returned.
   **/
   function getOffsetParent(element) {
+    element = $(element);
     if (isDetached(element)) return $(document.body);
 
     // IE reports offset parent incorrectly for inline elements.
@@ -873,6 +874,7 @@
    *  document.
   **/
   function cumulativeOffset(element) {
+    element = $(element);
     var valueT = 0, valueL = 0;
     if (element.parentNode) {
       do {
@@ -891,6 +893,8 @@
    *  (the element that would be returned by [[Element.getOffsetParent]]).
   **/  
   function positionedOffset(element) {    
+    element = $(element);
+
     // Account for the margin of the element.
     var layout = element.getLayout();
     
@@ -934,6 +938,7 @@
    *  Returns the X/Y coordinates of element relative to the viewport.
   **/
   function viewportOffset(forElement) {
+    element = $(element);
     var valueT = 0, valueL = 0, docBody = document.body;
 
     var element = forElement;
@@ -1059,6 +1064,7 @@
     // positioned.  For performance reasons, redefine Element#cumulativeOffset for
     // KHTML/WebKit only.
     cumulativeOffset = function(element) {
+      element = $(element);
       var valueT = 0, valueL = 0;
       do {
         valueT += element.offsetTop  || 0;
