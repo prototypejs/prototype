@@ -125,6 +125,7 @@ new Test.Unit.Runner({
   testObjectIsFunction: function() {
     this.assert(Object.isFunction(function() { }));
     this.assert(Object.isFunction(Class.create()));
+
     this.assert(!Object.isFunction("a string"));
     this.assert(!Object.isFunction($("testlog")));
     this.assert(!Object.isFunction([]));
@@ -132,6 +133,7 @@ new Test.Unit.Runner({
     this.assert(!Object.isFunction(0));
     this.assert(!Object.isFunction(false));
     this.assert(!Object.isFunction(undefined));
+    this.assert(!Object.isFunction(/xyz/), 'regular expressions are not functions');
   },
 
   testObjectIsString: function() {

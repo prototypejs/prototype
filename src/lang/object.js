@@ -28,6 +28,7 @@
       NUMBER_TYPE = 'Number',
       STRING_TYPE = 'String',
       OBJECT_TYPE = 'Object',
+      FUNCTION_CLASS = '[object Function]',
       BOOLEAN_CLASS = '[object Boolean]',
       NUMBER_CLASS = '[object Number]',
       STRING_CLASS = '[object String]',
@@ -470,7 +471,7 @@
    *      //-> false
   **/
   function isFunction(object) {
-    return typeof object === "function";
+    return _toString.call(object) === FUNCTION_CLASS;
   }
 
   /**

@@ -1,3 +1,5 @@
+* Ensure Object.isFunction returns `false` for RegExp objects. [#661 state:resolved] (James, kangax, Andrew Dupont)
+
 * Revert Opera-specific behavior for calling Element#getStyle with (left|right|top|bottom). [#268 state:resolved] (kangax, Andrew Dupont)
 
 * Fix issue with Event#isMiddleClick and #isRightClick on Safari and Chrome. [#731 state:resolved] (Arthur Schreiber)
