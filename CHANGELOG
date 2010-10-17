@@ -1,3 +1,5 @@
+* Fix issue where an Ajax request in IE sometimes returns 1223 instead of 204 as the status code. [#129 state:resolved] (adevadeh, gordyt, Andrew Dupont)
+
 * Add Object.isDate. [#443 state:resolved] (Nesterenko Dmitry, kangax, Samuel Lebeau, Andrew Dupont)
 
 * Handle cases where `document` or `document.documentElement` is passed into Element#getOffsetParent. Fixes IE errors with many layout/positioning methods. [#90 state:resolved] (Padraig Kennedy, Andrew Dupont)

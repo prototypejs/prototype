@@ -278,6 +278,8 @@ Ajax.Request = Class.create(Ajax.Base, {
 
   getStatus: function() {
     try {
+      // IE sometimes returns 1223 for a 204 response.
+      if (this.transport.status === 1223) return 204;
       return this.transport.status || 0;
     } catch (e) { return 0 }
   },
