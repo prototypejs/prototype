@@ -180,26 +180,25 @@ new Test.Unit.Runner({
       catch(e){ return null }
     }
     
-    // Form.focusFirstElement shouldn't focus disabled elements
     var element = Form.findFirstElement('bigform');
-    this.assertEqual('submit', element.id);
+    this.assertEqual('submit', element.id, "Form.focusFirstElement shouldn't focus disabled elements");
     
-    // Test IE doesn't select text on buttons
     Form.focusFirstElement('bigform');
-    if(document.selection) this.assertEqual('', getSelection(element));
+    if (document.selection) this.assertEqual('', getSelection(element), "IE shouldn't select text on buttons");
     
-    // Form.Element.activate shouldn't select text on buttons
     element = $('focus_text');
-    this.assertEqual('', getSelection(element));
+    this.assertEqual('', getSelection(element), "Form.Element.activate shouldn't select text on buttons");
       
-    // Form.Element.activate should select text on text input elements
     element.activate();
-    this.assertEqual('Hello', getSelection(element));
+    this.assertEqual('Hello', getSelection(element), "Form.Element.activate should select text on text input elements");
 
-    // Form.Element.activate shouldn't raise an exception when the form or field is hidden
     this.assertNothingRaised(function() {
       $('form_focus_hidden').focusFirstElement();
-    });
+    }, "Form.Element.activate shouldn't raise an exception when the form or field is hidden");
+    
+    this.assertNothingRaised(function() {
+      $('form_empty').focusFirstElement();
+    }, "Form.focusFirstElement shouldn't raise an exception when the form has no fields");
   },
   
   testFormGetElements: function() {
