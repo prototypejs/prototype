@@ -67,12 +67,14 @@ var Form = {
    *  `{ hash: false }` are used.
    *
    *  If you supply an `options` object, it may have the following options:
-   *  - `hash` ([[Boolean]]): `true` to return a plain object with keys and
+   *  
+   *  * `hash` ([[Boolean]]): `true` to return a plain object with keys and
    *    values (not a [[Hash]]; see below), `false` to return a String in query
    *    string format. If you supply an `options` object with no `hash` member,
    *    `hash` defaults to `true`. Note that this is __not__ the same as leaving
    *    off the `options` object entirely (see above).
-   *  - `submit` ([[Boolean]] | [[String]]): In essence: If you omit this option
+   *  
+   *  * `submit` ([[Boolean]] | [[String]]): In essence: If you omit this option
    *    the first submit button in the form is included; if you supply `false`,
    *    no submit buttons are included; if you supply the name of a submit
    *    button, the first button with that name is included. Note that the
