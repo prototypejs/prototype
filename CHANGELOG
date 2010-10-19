@@ -1,3 +1,5 @@
+* Stop appending `&_=` to the parameters for non-GET Ajax requests in Safari. We no longer support any version of Safari for which this is necessary. [#327 state:resolved] (John-David Dalton, Andrew Dupont)
+
 * Ensure `Form.focusFirstElement` doesn't raise an exception on forms with no fields. [#341 state:resolved] (achernin, Andrew Dupont)
 
 * Define a `relatedTarget` property on extended mouseenter/mouseleave events in IE's legacy event system. [#708 state:resolved] (Walter Smith, Tobie Langel, Andrew Dupont)
