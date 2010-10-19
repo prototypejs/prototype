@@ -85,30 +85,71 @@
   var docEl = document.documentElement;
   var MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED = 'onmouseenter' in docEl
     && 'onmouseleave' in docEl;
-  var IE_LEGACY_EVENT_SYSTEM = (window.attachEvent && !window.addEventListener);
+    
+    
+  // We need to support three different event "modes":
+  //  1. browsers with only DOM L2 Events (WebKit, FireFox);
+  //  2. browsers with only IE's legacy events system (IE 6-8);
+  //  3. browsers with _both_ systems (IE 9 and arguably Opera).
+  //
+  // Groups 1 and 2 are easy; group three is trickier.
+  
+  var isIELegacyEvent = function(event) { return false; };
 
+  if (window.attachEvent) {
+    if (window.addEventListener) {
+      // Both systems are supported. We need to decide at runtime.
+      // (Though Opera supports both systems, the event object appears to be
+      // the same no matter which system is used. That means that this function
+      // will always return `true` in Opera, but that's OK; it keeps us from
+      // having to do a browser sniff.
+      isIELegacyEvent = function(event) {
+        return !(event instanceof window.Event);
+      };
+    } else {
+      // No support for DOM L2 events. All events will be legacy.
+      isIELegacyEvent = function(event) { return true; };
+    }
+  }
+  
+  // The two systems have different ways of indicating which button was used
+  // for a mouse event.
   var _isButton;
-  if (IE_LEGACY_EVENT_SYSTEM) {
-    // IE's event system doesn't map left/right/middle the same way.
-    var buttonMap = { 0: 1, 1: 4, 2: 2 };
-    _isButton = function(event, code) {
-      return event.button === buttonMap[code];
-    };
-  } else if (Prototype.Browser.WebKit) {
-    // In Safari we have to account for when the user holds down
-    // the "meta" key.
-    _isButton = function(event, code) {
-      switch (code) {
-        case 0: return event.which == 1 && !event.metaKey;
-        case 1: return event.which == 2 || (event.which == 1 && event.metaKey);
-        case 2: return event.which == 3;
-        default: return false;
+  
+  function _isButtonForDOMEvents(event, code) {
+    return event.which ? (event.which === code + 1) : (event.button === code);
+  }
+  
+  var legacyButtonMap = { 0: 1, 1: 4, 2: 2 };
+  function _isButtonForLegacyEvents(event, code) {
+    return event.button === legacyButtonMap[code];
+  }
+  
+  // In WebKit we have to account for when the user holds down the "meta" key.
+  function _isButtonForWebKit(event, code) {
+    switch (code) {
+      case 0: return event.which == 1 && !event.metaKey;
+      case 1: return event.which == 2 || (event.which == 1 && event.metaKey);
+      case 2: return event.which == 3;
+      default: return false;
+    }
+  }
+  
+  if (window.attachEvent) {
+    if (!window.addEventListener) {
+      // Legacy IE events only.
+      _isButton = _isButtonForLegacyEvents;      
+    } else {
+      // Both systems are supported; decide at runtime.
+      _isButton = function(event, code) {
+        return isIELegacyEvent(event) ? _isButtonForLegacyEvents(event, code) :
+         _isButtonForDOMEvents(event, code);
       }
-    };
+    }
+  } else if (Prototype.Browser.WebKit) {
+    _isButton = _isButtonForWebKit;
   } else {
-    _isButton = function(event, code) {
-      return event.which ? (event.which === code + 1) : (event.button === code);
-    };
+    _isButton = _isButtonForDOMEvents;
   }
 
   /**
@@ -344,21 +385,21 @@
     event.stopped = true;
   }
 
-  Event.Methods = {
-    isLeftClick: isLeftClick,
-    isMiddleClick: isMiddleClick,
-    isRightClick: isRightClick,
 
-    element: element,
+  Event.Methods = {
+    isLeftClick:   isLeftClick,
+    isMiddleClick: isMiddleClick,
+    isRightClick:  isRightClick,
+
+    element:     element,
     findElement: findElement,
 
-    pointer: pointer,
+    pointer:  pointer,
     pointerX: pointerX,
     pointerY: pointerY,
 
     stop: stop
   };
-
 
   // Compile the list of methods that get extended onto Events.
   var methods = Object.keys(Event.Methods).inject({ }, function(m, name) {
@@ -366,7 +407,9 @@
     return m;
   });
 
-  if (IE_LEGACY_EVENT_SYSTEM) {
+  if (window.attachEvent) {
+    // For IE's event system, we need to do some work to make the event
+    // object behave like a standard event object.
     function _relatedTarget(event) {
       var element;
       switch (event.type) {
@@ -384,11 +427,12 @@
       return Element.extend(element);
     }
 
-    Object.extend(methods, {
+    // These methods should be added _only_ to legacy IE event objects.
+    var additionalMethods = {
       stopPropagation: function() { this.cancelBubble = true },
       preventDefault:  function() { this.returnValue = false },
       inspect: function() { return '[object Event]' }
-    });
+    };
 
     /**
      *  Event.extend(@event) -> Event
@@ -405,9 +449,14 @@
     // IE's method for extending events.
     Event.extend = function(event, element) {
       if (!event) return false;
-      if (event._extendedByPrototype) return event;
 
+      // If it's not a legacy event, it doesn't need extending.
+      if (!isIELegacyEvent(event)) return event;
+
+      // Mark this event so we know not to extend a second time.
+      if (event._extendedByPrototype) return event;
       event._extendedByPrototype = Prototype.emptyFunction;
+      
       var pointer = Event.pointer(event);
 
       // The optional `element` argument gives us a fallback value for the
@@ -418,13 +467,20 @@
         pageX:  pointer.x,
         pageY:  pointer.y
       });
-
-      return Object.extend(event, methods);
+      
+      Object.extend(event, methods);
+      Object.extend(event, additionalMethods);
     };
   } else {
+    // Only DOM events, so no manual extending necessary.
+    Event.extend = Prototype.K;
+  }
+  
+  if (window.addEventListener) {
+    // In all browsers that support DOM L2 Events, we can augment
+    // `Event.prototype` directly.
     Event.prototype = window.Event.prototype || document.createEvent('HTMLEvents').__proto__;
     Object.extend(Event.prototype, methods);
-    Event.extend = Prototype.K;
   }
 
   function _createResponder(element, eventName, handler) {
@@ -922,7 +978,7 @@
     },
 
     handleEvent: function(event) {
-      var element = event.findElement(this.selector);
+      var element = Event.findElement(event, this.selector);
       if (element) this.callback.call(this.element, event, element);
     }
   });
