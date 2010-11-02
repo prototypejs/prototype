@@ -1,3 +1,5 @@
+* Handle sparse arrays properly in `Array#_each` to match behavior with browsers' built-in `Array#forEach` (and ES5). [#790 state:resolved] (Andriy Tyurnikov, Yaffle, Andrew Dupont)
+
 * Make `Event.extend` work with legacy IE events in IE 9. (Andrew Dupont)
 
 * Stop appending `&_=` to the parameters for non-GET Ajax requests in Safari. We no longer support any version of Safari for which this is necessary. [#327 state:resolved] (John-David Dalton, Andrew Dupont)

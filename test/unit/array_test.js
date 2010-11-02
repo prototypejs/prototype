@@ -42,7 +42,7 @@ new Test.Unit.Runner({
     this.assertEnumEqual([], $A(5));
     this.assertEnumEqual([], $A(true));
   },
-  
+
   testClear: function(){
     this.assertEnumEqual([], [].clear());
     this.assertEnumEqual([], [1].clear());
@@ -185,5 +185,11 @@ new Test.Unit.Runner({
   testConcat: function(){
     var args = (function() { return [].concat(arguments) })(1, 2);
     this.assertIdentical(1, args[0][0]);
+  },
+  
+  testEachOnSparseArrays: function() {
+    var sparseArray = [0, 1];
+    sparseArray[5] = 5;
+    this.assertEqual('[0, 1, 5]', sparseArray.inspect(), "Array#each should skip nonexistent keys in an array");
   }
 });
