@@ -568,6 +568,21 @@ Element.Methods = {
         return true;
       }
     })();
+    
+    var LINK_ELEMENT_INNERHTML_BUGGY = (function() {
+      try {
+        var el = document.createElement('div');
+        el.innerHTML = "<link>";
+        var isBuggy = (el.childNodes.length === 0);
+        el = null;
+        return isBuggy;
+      } catch(e) {
+        return true;
+      }
+    })();
+    
+    var ANY_INNERHTML_BUGGY = SELECT_ELEMENT_INNERHTML_BUGGY ||
+     TABLE_ELEMENT_INNERHTML_BUGGY || LINK_ELEMENT_INNERHTML_BUGGY;    
 
     var SCRIPT_ELEMENT_REJECTS_TEXTNODE_APPENDING = (function () {
       var s = document.createElement("script"),
@@ -582,6 +597,7 @@ Element.Methods = {
       s = null;
       return isBuggy;
     })();
+    
 
     function update(element, content) {
       element = $(element);
@@ -610,7 +626,7 @@ Element.Methods = {
         return element;
       }
 
-      if (SELECT_ELEMENT_INNERHTML_BUGGY || TABLE_ELEMENT_INNERHTML_BUGGY) {
+      if (ANY_INNERHTML_BUGGY) {
         if (tagName in Element._insertionTranslations.tags) {
           while (element.firstChild) {
             element.removeChild(element.firstChild);
@@ -619,6 +635,16 @@ Element.Methods = {
             .each(function(node) {
               element.appendChild(node)
             });
+        } else if (LINK_ELEMENT_INNERHTML_BUGGY && Object.isString(content) && content.indexOf('<link') > -1) {
+          // IE barfs when inserting a string that beings with a LINK
+          // element. The workaround is to add any content to the beginning
+          // of the string; we'll be inserting a text node (see
+          // Element._getContentFromAnonymousElement below).
+          while (element.firstChild) {
+            element.removeChild(element.firstChild);
+          }
+          var nodes = Element._getContentFromAnonymousElement(tagName, content.stripScripts(), true);
+          nodes.each(function(node) { element.appendChild(node) });          
         }
         else {
           element.innerHTML = content.stripScripts();
@@ -2966,11 +2992,22 @@ Element._returnOffset = function(l, t) {
   return result;
 };
 
-Element._getContentFromAnonymousElement = function(tagName, html) {
+Element._getContentFromAnonymousElement = function(tagName, html, force) {
   var div = new Element('div'), 
       t = Element._insertionTranslations.tags[tagName];
-  if (t) {
-    div.innerHTML = t[0] + html + t[1];
+  
+  var workaround = false;
+  if (t) workaround = true;
+  else if (force) {
+    workaround = true;
+    t = ['', '', 0];
+  }
+      
+  if (workaround) {
+    // Adding a text node to the beginning of the string (then removing it)
+    // fixes an issue in Internet Explorer. See Element#update above.
+    div.innerHTML = '&nbsp;' + t[0] + html + t[1];
+    div.removeChild(div.firstChild);
     for (var i = t[2]; i--; ) {
       div = div.firstChild;
     }

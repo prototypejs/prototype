@@ -1,3 +1,5 @@
+* Ensure `Element#update` works with string content that includes a LINK tag in Internet Explorer. [#264 state:resolved] (Tobias H. Michaelsen, Andrew Dupont)
+
 * Treat a 304 HTTP status as a successful response. [#331 state:resolved] (Kenneth Kin Lum, Andrew Dupont)
 
 * Handle sparse arrays properly in `Array#_each` to match behavior with browsers' built-in `Array#forEach` (and ES5). [#790 state:resolved] (Andriy Tyurnikov, Yaffle, Andrew Dupont)

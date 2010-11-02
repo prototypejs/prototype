@@ -362,6 +362,23 @@ new Test.Unit.Runner({
     select.update('<option value="3">option 3</option><option selected="selected">option 4</option>');
     this.assertEqual('option 4', select.getValue());
   },
+  
+  testElementUpdateWithLinkTag: function() {
+    var div = new Element('div');
+    div.update('<link rel="stylesheet" />');
+    this.assertEqual(1, div.childNodes.length);
+    var link = div.down('link');
+    this.assert(link);
+    this.assert(link.rel === 'stylesheet');
+    
+    div.update('<p><link rel="stylesheet"></p>')
+    this.assertEqual(1, div.childNodes.length);
+    this.assertEqual(1, div.firstChild.childNodes.length);
+
+    var link = div.down('link');
+    this.assert(link);
+    this.assert(link.rel === 'stylesheet');
+  },
 
   testElementUpdateWithDOMNode: function() {
     $('testdiv').update(new Element('div').insert('bla'));
