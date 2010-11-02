@@ -270,7 +270,7 @@ Ajax.Request = Class.create(Ajax.Base, {
   **/
   success: function() {
     var status = this.getStatus();
-    return !status || (status >= 200 && status < 300);
+    return !status || (status >= 200 && status < 300) || status == 304;
   },
 
   getStatus: function() {
