@@ -854,8 +854,14 @@
       });
       return element;
     }
-
-    var responder = responders.find( function(r) { return r.handler === handler; });
+    
+    var i = responders.length, responder;
+    while (i--) {
+      if (responders[i].handler === handler) {
+        responder = responders[i];
+        break;
+      }
+    }
     if (!responder) return element;
 
     if (eventName.include(':')) {
