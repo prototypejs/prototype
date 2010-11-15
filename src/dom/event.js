@@ -470,6 +470,8 @@
       
       Object.extend(event, methods);
       Object.extend(event, additionalMethods);
+      
+      return event;
     };
   } else {
     // Only DOM events, so no manual extending necessary.
