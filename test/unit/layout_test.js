@@ -39,14 +39,14 @@ new Test.Unit.Runner({
   'test layout on elements with display: none and exact width': function() {
     var layout = $('box2').getLayout();
     
-    this.assert(!isDisplayed($('box3')), 'box should be hidden');
+    this.assert(!isDisplayed($('box2')), 'box should be hidden');
 
     this.assertEqual(500, layout.get('width'),            'width');
     this.assertEqual(  3, layout.get('border-right'),     'border-right');
     this.assertEqual( 10, layout.get('padding-bottom'),   'padding-bottom');    
     this.assertEqual(526, layout.get('border-box-width'), 'border-box-width');
 
-    this.assert(!isDisplayed($('box3')), 'box should still be hidden');
+    this.assert(!isDisplayed($('box2')), 'box should still be hidden');
   },
   
   'test layout on elements with negative margins': function() {

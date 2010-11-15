@@ -307,6 +307,14 @@
       var position = element.getStyle('position'),
        width = element.getStyle('width');
       
+      if (width === "0px" || width === null) {
+        // Opera won't report the true width of the element through
+        // `getComputedStyle` if it's hidden. If we got a nonsensical value,
+        // we need to show the element and try again.
+        element.style.display = 'block';
+        width = element.getStyle('width');
+      }
+      
       // Preserve the context in case we get a percentage value.  
       var context = (position === 'fixed') ? document.viewport :
        element.parentNode;
