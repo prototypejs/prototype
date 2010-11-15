@@ -67,6 +67,7 @@ module PrototypeHelper
   def self.build_doc_for(file)
     rm_rf(DOC_DIR)
     mkdir_p(DOC_DIR)
+    hash = current_head
     index_header = <<EOF
 <h1 style="margin-top: 31px; height: 75px; padding: 1px 0; background: url(images/header-stripe-small.png) repeat-x;">
   <a href="http://prototypejs.org" style="padding-left: 120px;">
@@ -76,15 +77,16 @@ module PrototypeHelper
 EOF
     PDoc.run({
       :source_files => Dir[File.join('src', '**', '*.js')],
-      :destination => DOC_DIR,
-      :index_page => 'README.markdown',
+      :destination  => DOC_DIR,
+      :index_page   => 'README.markdown',
       :syntax_highlighter => syntax_highlighter,
-      :markdown_parser => :bluecloth,
+      :markdown_parser    => :bluecloth,
+      :src_code_text => "View source on GitHub &rarr;",
       :src_code_href => proc { |obj|
-        "http://github.com/sstephenson/prototype/blob/#{hash}/#{obj.file}#LID#{obj.line_number}"
+        "https://github.com/sstephenson/prototype/blob/#{hash}/#{obj.file}#L#{obj.line_number}"
       },
       :pretty_urls => false,
-      :bust_cache => false,
+      :bust_cache  => false,
       :name => 'Prototype JavaScript Framework',
       :short_name => 'Prototype',
       :home_url => 'http://prototypejs.org',
