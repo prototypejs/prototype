@@ -224,9 +224,10 @@
   **/
   Element.Layout = Class.create(Hash, {
     /**
-     *  new Element.Layout(element[, preCompute])
+     *  new Element.Layout(element[, preCompute = false])
      *  - element (Element): The element to be measured.
-     *  - preCompute (Boolean): Whether to compute all values at once.
+     *  - preCompute (Boolean): Whether to compute all values at once. Default
+     *    is `false`.
      *  
      *  Declare a new layout hash.
      *  
@@ -273,6 +274,11 @@
      *  
      *  Retrieve the measurement specified by `property`. Will throw an error
      *  if the property is invalid.
+     *  
+     *  ##### Caveats
+     *  
+     *  * `Element.Layout` can measure the dimensions of an element hidden with
+     *    CSS (`display: none`), but _only_ if its parent element is visible.
     **/
     get: function($super, property) {
       // Try to fetch from the cache.
@@ -386,6 +392,10 @@
      * 
      *  Keys can be passed into this method as individual arguments _or_
      *  separated by spaces within a string.
+     *  
+     *      // Equivalent statements:
+     *      someLayout.toObject('top', 'bottom', 'left', 'right');
+     *      someLayout.toObject('top bottom left right');
     **/
     toObject: function() {
       var args = $A(arguments);
@@ -410,6 +420,10 @@
      * 
      *  Keys can be passed into this method as individual arguments _or_
      *  separated by spaces within a string.
+     *
+     *      // Equivalent statements:
+     *      someLayout.toHash('top', 'bottom', 'left', 'right');
+     *      someLayout.toHash('top bottom left right');
     **/
     toHash: function() {
       var obj = this.toObject.apply(this, arguments);
@@ -712,6 +726,8 @@
     
     /**
      *  Element.Offset#inspect() -> String
+     *  
+     *  Returns a debug-friendly representation of the offset.
     **/
     inspect: function() {
       return "#<Element.Offset left: #{left} top: #{top}>".interpolate(this);
@@ -726,6 +742,8 @@
     
     /**
      *  Element.Offset#toArray() -> Array
+     *  
+     *  Returns an array representation fo the offset in [x, y] format.
     **/
     toArray: function() {
       return [this.left, this.top];
@@ -733,7 +751,10 @@
   });
   
   /**
-   *  Element.getLayout(@element, preCompute) -> Element.Layout
+   *  Element.getLayout(@element[, preCompute = false]) -> Element.Layout
+   *  - element (Element): The element to be measured.
+   *  - preCompute (Boolean): Whether to compute all values at once. Default
+   *    is `false`.
    *
    *  Returns an instance of [[Element.Layout]] for measuring an element's
    *  dimensions.
@@ -744,6 +765,35 @@
    *  `Element.getLayout` whenever you need a measurement. You should call
    *  `Element.getLayout` again only when the values in an existing 
    *  `Element.Layout` object have become outdated.
+   *  
+   *  Remember that instances of `Element.Layout` compute values the first
+   *  time they're asked for and remember those values for later retrieval.
+   *  If you want to compute all an element's measurements at once, pass
+   *  
+   *  ##### Examples
+   *  
+   *      var layout = $('troz').getLayout();
+   *  
+   *      layout.get('width');  //-> 150
+   *      layout.get('height'); //-> 500
+   *      layout.get('padding-left');  //-> 10
+   *      layout.get('margin-left');   //-> 25
+   *      layout.get('border-top');    //-> 5
+   *      layout.get('border-bottom'); //-> 5
+   *      
+   *      // Won't re-compute width; remembers value from first time.
+   *      layout.get('width');  //-> 150
+   *      
+   *      // Composite values obtained by adding together other properties;
+   *      // will re-use any values we've already looked up above.
+   *      layout.get('padding-box-width'); //-> 170
+   *      layout.get('border-box-height'); //-> 510
+   *  
+   *  ##### Caveats
+   *  
+   *  * Instances of `Element.Layout` can measure the dimensions of an
+   *    element hidden with CSS (`display: none`), but _only_ if its parent
+   *    element is visible.
   **/
   function getLayout(element, preCompute) {
     return new Element.Layout(element, preCompute);
@@ -759,6 +809,17 @@
    *  calling this method frequently over short spans of code, you might want
    *  to call [[Element.getLayout]] and operate on the [[Element.Layout]]
    *  object itself (thereby taking advantage of measurement caching).
+   *  
+   *  ##### Examples
+   *  
+   *      $('troz').measure('width'); //-> 150
+   *      $('troz').measure('border-top'); //-> 5
+   *      $('troz').measure('top'); //-> 226
+   *  
+   *  ##### Caveats
+   *  
+   *  * `Element.measure` can measure the dimensions of an element hidden with
+   *    CSS (`display: none`), but _only_ if its parent element is visible.
   **/
   function measure(element, property) {
     return $(element).getLayout().get(property);  

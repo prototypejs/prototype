@@ -937,6 +937,7 @@
    *  avoids adding an observer to a number of individual elements and instead
    *  listens on a _common ancestor_ element.
    *  
+   *  For more information on usage, see [[Event.on]].
   **/
   Event.Handler = Class.create({
     /**
@@ -992,7 +993,20 @@
   });
   
   /**
-   *  Event.on(element, eventName, selector, callback) -> Event.Handler
+   *  Event.on(element, eventName[, selector], callback) -> Event.Handler
+   *  - element (Element | String): The DOM element to observe, or its ID.
+   *  - eventName (String): The name of the event, in all lower case, without
+   *    the "on" prefix&nbsp;&mdash; e.g., "click" (not "onclick").
+   *  - selector (String): A CSS selector. If specified, will call `callback`
+   *    _only_ when it can find an element that matches `selector` somewhere
+   *    in the ancestor chain between the event's target element and the
+   *    given `element`.
+   *  - callback (Function): The event handler function. Should expect two
+   *    arguments: the event object _and_ the element that received the
+   *    event. (If `selector` was given, this element will be the one that
+   *    satisfies the criteria described just above; if not, it will be the
+   *    one specified in the `element` argument). This function is **always**
+   *    bound to `element`.
    *  
    *  Listens for events on an element's descendants, optionally filtering
    *  to match a given CSS selector.
@@ -1000,6 +1014,48 @@
    *  Creates an instance of [[Event.Handler]], calls [[Event.Handler#start]],
    *  then returns that instance. Keep a reference to this returned instance if
    *  you later want to unregister the observer.
+   *  
+   *  ##### Usage
+   *  
+   *  `Event.on` can be used to set up event handlers with or without event
+   *  delegation. In its simplest form, it works just like [[Event.observe]]:
+   *  
+   *      $("messages").on("click", function(event) {
+   *        // ...
+   *      });
+   *  
+   *  An optional second argument lets you specify a CSS selector for event
+   *  delegation. This encapsulates the pattern of using [[Event#findElement]]
+   *  to retrieve the first ancestor element matching a specific selector.
+   *  
+   *      $("messages").on("click", "a.comment", function(event, element) {
+   *         // ...
+   *      });
+   *  
+   *  Note the second argument in the handler above: it references the
+   *  element matched by the selector (in this case, an `a` tag with a class
+   *  of `comment`). This argument is important to use because within the
+   *  callback, the `this` keyword **will always refer to the original
+   *  element** (in this case, the element with the id of `messages`).
+   *  
+   *  `Event.on` differs from `Event.observe` in one other important way:
+   *  its return value is an instance of [[Event.Handler]]. This instance
+   *  has a `stop` method that will remove the event handler when invoked
+   *  (and a `start` method that will attach the event handler again after
+   *  it's been removed).
+   *  
+   *      // Register the handler:
+   *      var handler = $("messages").on("click", "a.comment",
+   *       this.click.bind(this));
+   *  
+   *      // Unregister the handler:
+   *      handler.stop();
+   *  
+   *      // Re-register the handler:
+   *      handler.start();
+   *  
+   *  This means that, unlike `Event.stopObserving`, there's no need to
+   *  retain a reference to the handler function.
   **/
   function on(element, eventName, selector, callback) {
     element = $(element);
@@ -1146,6 +1202,11 @@
     **/
     stopObserving: stopObserving.methodize(),
     
+    /**
+     *  Element.on(@element, eventName[, selector], callback) -> Event.Handler
+     *  
+     *  See [[Event.on]].
+    **/
     on:            on.methodize(),
 
     /**
