@@ -7,6 +7,18 @@ var createParagraph = function(text) {
   return p;
 }
 
+function simulateClick(node) {
+  var oEvent;
+  if (document.createEvent) {
+    oEvent = document.createEvent('MouseEvents');
+    oEvent.initMouseEvent('click', true, true, document.defaultView,
+     0, 0, 0, 0, 0, false, false, false, false, 0, node);
+    node.dispatchEvent(oEvent);
+  } else {
+    node.click();
+  }
+}
+
 new Test.Unit.Runner({
   setup: function() {
     if (documentViewportProperties) return;
@@ -1550,15 +1562,20 @@ new Test.Unit.Runner({
     child.store('foo', 'bar');
     
     var trigger = false;    
-    child.observe('test:event', function(event) { trigger = true; });
+    child.observe('click', function(event) { trigger = true; });
     var childUID = child._prototypeUID;
 
     parent.update("");
 
     // At this point, `child` should have been purged.
-    this.assert(!(childUID in Element.Storage), "purged element's UID should no longer exist in `Element.Storage`");
-
-    var event = child.fire('test:event');
+    this.assert(
+      !(childUID in Element.Storage), 
+      "purged element's UID should no longer exist in `Element.Storage`"
+    );
+    
+    // Simulate a click to be sure the element's handler has been
+    // unregistered.
+    simulateClick(child);
     this.assert(!trigger, "fired event should not have triggered handler");
   }
 });
