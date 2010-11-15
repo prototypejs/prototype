@@ -86,7 +86,7 @@ new Test.Unit.Runner({
     this.assertEqual(13, layout.get('padding-bottom'), 'padding-right');
     
     // Ensure that we cleaned up after ourselves.
-    this.assert(!isDisplayed($('box3')), 'box should still be hidden');
+    this.assert(!isDisplayed($('box4')), 'box should still be hidden');
   },
   
   'test positioning on absolutely-positioned elements': function() {
