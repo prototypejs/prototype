@@ -333,10 +333,21 @@ var Hash = Class.create(Enumerable, (function() {
   function toQueryString() {
     return this.inject([], function(results, pair) {
       var key = encodeURIComponent(pair.key), values = pair.value;
-
+      
       if (values && typeof values == 'object') {
-        if (Object.isArray(values))
-          return results.concat(values.map(toQueryPair.curry(key)));
+        if (Object.isArray(values)) {
+          // We used to use `Array#map` here to get the query pair for each
+          // item in the array, but that caused test regressions once we
+          // added the sparse array behavior for array iterator methods.
+          // Changed to an ordinary `for` loop so that we can handle
+          // `undefined` values ourselves rather than have them skipped.
+          var queryValues = [];
+          for (var i = 0, len = values.length, value; i < len; i++) {
+            value = values[i];
+            queryValues.push(toQueryPair(key, value));            
+          }
+          return results.concat(queryValues);
+        }
       } else results.push(toQueryPair(key, values));
       return results;
     }).join('&');
