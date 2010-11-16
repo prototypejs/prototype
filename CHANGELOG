@@ -1,3 +1,5 @@
+*1.7* (November 16, 2010)
+
 * Ensure `Element#update` works with string content that includes a LINK tag in Internet Explorer. [#264 state:resolved] (Tobias H. Michaelsen, Andrew Dupont)
 
 * Treat a 304 HTTP status as a successful response. [#331 state:resolved] (Kenneth Kin Lum, Andrew Dupont)
