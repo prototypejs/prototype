@@ -278,13 +278,13 @@ new Test.Unit.Runner({
   
   testElementToggle: function(){
     $('test-toggle-visible').toggle();
-    this.assert(!$('test-toggle-visible').visible());
+    this.assert(!$('test-toggle-visible').visible(), 'test-toggle-visible 1');
     $('test-toggle-visible').toggle();
-    this.assert($('test-toggle-visible').visible());
+    this.assert($('test-toggle-visible').visible()), 'test-toggle-visible 2';
     $('test-toggle-hidden').toggle();
-    this.assert($('test-toggle-hidden').visible());
+    this.assert($('test-toggle-hidden').visible(), 'test-toggle-hidden 1');
     $('test-toggle-hidden').toggle();
-    this.assert(!$('test-toggle-hidden').visible());
+    this.assert(!$('test-toggle-hidden').visible(), 'test-toggle-hidden 2');
   },
   
   testElementShow: function(){
@@ -1501,8 +1501,14 @@ new Test.Unit.Runner({
     this.assertEqual("default", element.retrieve('bar', 'default'), "Return default value if undefined key");
     this.assertEqual("default", element.retrieve('bar'), "Makes sure default value has been set properly");
     
+    
+    $('test-empty').store('foo', 'bar');
     var clonedElement = $('test-empty').clone(false);
-    this.assert(Object.isUndefined(clonedElement._prototypeUID), "Cloning a node should not confuse the storage engine");
+    this.assertEqual(
+      clonedElement.retrieve('foo', null),
+      null,
+      "Cloning a node should not confuse the storage engine"
+    );
   },
   
   testElementClone: function() {
