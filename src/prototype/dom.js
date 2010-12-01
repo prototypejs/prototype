@@ -1,3 +1,11 @@
+//= compat
+//= require "dom/dom"
+//= require "dom/layout"
+//= require "dom/selector"
+//= require <selector_engine>
+//= require "dom/form"
+//= require "dom/event"
+
 /**
  *  == DOM ==
  *  Extensions to DOM elements, plus other utilities for DOM traversal
@@ -18,12 +26,5 @@
  *  that do not).
  *
 **/
-
-//= require "dom/dom"
-//= require "dom/layout"
-//= require "dom/selector"
-//= require <selector_engine>
-//= require "dom/form"
-//= require "dom/event"
 
 Element.addMethods();

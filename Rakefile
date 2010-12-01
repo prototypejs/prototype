@@ -76,7 +76,7 @@ module PrototypeHelper
 </h1>
 EOF
     PDoc.run({
-      :source_files => Dir[File.join('src', '**', '*.js')],
+      :source_files => Dir[File.join('src', 'prototype', '**', '*.js')],
       :destination  => DOC_DIR,
       :index_page   => 'README.markdown',
       :syntax_highlighter => syntax_highlighter,

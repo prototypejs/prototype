@@ -1,3 +1,12 @@
+//= compat
+//= require "ajax/ajax"
+//= require "ajax/responders"
+//= require "ajax/base"
+//= require "ajax/request"
+//= require "ajax/response"
+//= require "ajax/updater"
+//= require "ajax/periodical_updater"
+
 /**
  *  == Ajax ==
  *
@@ -31,7 +40,7 @@
  *
  *  * `asynchronous` ([[Boolean]]; default `true`): Determines whether
  *    `XMLHttpRequest` is used asynchronously or not. Synchronous usage is
- *    **strongly discouraged** &mdash; it halts all script execution for the 
+ *    **strongly discouraged** &mdash; it halts all script execution for the
  *    duration of the request _and_ blocks the browser UI.
  *  * `contentType` ([[String]]; default `application/x-www-form-urlencoded`):
  *    The `Content-type` header for your request. Change this header if you
@@ -106,11 +115,3 @@
  *    happened during the request.
  *
 **/
-
-//= require "ajax/ajax"
-//= require "ajax/responders"
-//= require "ajax/base"
-//= require "ajax/request"
-//= require "ajax/response"
-//= require "ajax/updater"
-//= require "ajax/periodical_updater"

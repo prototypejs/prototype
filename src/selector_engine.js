@@ -1,9 +1,11 @@
-Prototype._original_property = window.Sizzle;
+//= compat
 //= require "sizzle"
+
+Prototype._original_property = window.Sizzle;
 
 ;(function(engine) {
   var extendElements = Prototype.Selector.extendElements;
-  
+
   function select(selector, scope) {
     return extendElements(engine(selector, scope || document));
   }
@@ -11,7 +13,7 @@ Prototype._original_property = window.Sizzle;
   function match(element, selector) {
     return engine.matches(selector, [element]).length == 1;
   }
-  
+
   Prototype.Selector.engine = engine;
   Prototype.Selector.select = select;
   Prototype.Selector.match = match;
