@@ -823,7 +823,63 @@
   **/
   function measure(element, property) {
     return $(element).getLayout().get(property);  
-  }  
+  }
+
+  /**
+   *  Element.getHeight(@element) -> Number
+   *
+   *  Returns the height of `element`.
+   *  
+   *  This method returns correct values on elements whose display is set to
+   *  `none` either in an inline style rule or in an CSS stylesheet.
+   *  
+   *  For performance reasons, if you need to query both width _and_ height of
+   *  `element`, you should consider using [[Element.getDimensions]] instead.
+   *  
+   *  Note that the value returned is a _number only_ although it is
+   *  _expressed in pixels_.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <div id="rectangle" style="font-size: 10px; width: 20em; height: 10em"></div>
+   *
+   *  Then:
+   *
+   *      $('rectangle').getHeight();
+   *      // -> 100
+  **/  
+  function getHeight(element) {
+    return Element.getDimensions(element).height;
+  }
+  
+  /**
+   *  Element.getWidth(@element) -> Number
+   *
+   *  Returns the width of `element`.
+   *  
+   *  This method returns correct values on elements whose display is set to
+   *  `none` either in an inline style rule or in an CSS stylesheet.
+   *  
+   *  For performance reasons, if you need to query both width _and_ height of
+   *  `element`, you should consider using [[Element.getDimensions]] instead.
+   *  
+   *  Note that the value returned is a _number only_ although it is
+   *  _expressed in pixels_.
+   *  
+   *  ##### Examples
+   *  
+   *      language: html
+   *      <div id="rectangle" style="font-size: 10px; width: 20em; height: 10em"></div>
+   *
+   *  Then:
+   *
+   *      $('rectangle').getWidth();
+   *      // -> 200
+  **/
+  function getWidth(element) {
+    return Element.getDimensions(element).width;
+  }
 
   /**
    *  Element.getDimensions(@element) -> Object
@@ -1094,6 +1150,315 @@
     if (originalStyles) element.setStyle(originalStyles);
     return element;
   }
+  
+  
+  /**
+   *  Element.scrollTo(@element) -> Element
+   *
+   *  Scrolls the window so that `element` appears at the top of the viewport.
+   *  
+   *  This has a similar effect than what would be achieved using
+   *  [HTML anchors](http://www.w3.org/TR/html401/struct/links.html#h-12.2.3)
+   *  (except the browser's history is not modified).
+   *  
+   *  ##### Example
+   *  
+   *      $(element).scrollTo();
+   *      // -> Element
+  **/
+  function scrollTo(element) {
+    element = $(element);
+    var pos = Element.cumulativeOffset(element);
+    window.scrollTo(pos.left, pos.top);
+    return element;
+  }
+  
+
+  /**
+   *  Element.makePositioned(@element) -> Element
+   *
+   *  Allows for the easy creation of a CSS containing block by setting
+   *  `element`'s CSS `position` to `relative` if its initial position is
+   *  either `static` or `undefined`.
+   *  
+   *  To revert back to `element`'s original CSS position, use
+   *  [[Element.undoPositioned]].
+  **/
+  function makePositioned(element) {
+    element = $(element);
+    var position = Element.getStyle(element, 'position'), styles = {};
+    if (position === 'static' || !position) {
+      styles.position = 'relative';
+      // When an element is `position: relative` with an undefined `top` and
+      // `left`, Opera returns the offset relative to positioning context.
+      if (Prototype.Browser.Opera) {
+        styles.top  = 0;
+        styles.left = 0;
+      }
+      Element.setStyle(element, styles);
+      Element.store(element, 'prototype_made_positioned', true);
+    }
+    return element;
+  }
+  
+  /**
+   *  Element.undoPositioned(@element) -> Element
+   *
+   *  Sets `element` back to the state it was in _before_
+   *  [[Element.makePositioned]] was applied to it.
+   *  
+   *  `element`'s absolutely positioned children will now have their positions
+   *  set relatively to `element`'s nearest ancestor with a CSS `position` of
+   *  `'absolute'`, `'relative'` or `'fixed'`.
+  **/
+  function undoPositioned(element) {
+    element = $(element);
+    var storage = Element.getStorage(element),
+     madePositioned = storage.get('prototype_made_positioned');
+    
+    if (madePositioned) {
+      storage.unset('prototype_made_positioned');
+      Element.setStyle(element, {
+        position: '',
+        top:      '',
+        bottom:   '',
+        left:     '',
+        right:    ''
+      });
+    }  
+    return element;
+  }
+  
+  /**
+   *  Element.makeClipping(@element) -> Element
+   *
+   *  Simulates the poorly-supported CSS `clip` property by setting `element`'s
+   *  `overflow` value to `hidden`.
+   *
+   *  To undo clipping, use [[Element.undoClipping]].
+   *  
+   *  The visible area is determined by `element`'s width and height.
+   *  
+   *  ##### Example
+   *  
+   *      language:html
+   *      <div id="framer">
+   *        <img src="/assets/2007/1/14/chairs.jpg" alt="example" />
+   *      </div>
+   *  
+   *  Then:
+   *
+   *      $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+   *      // -> Element
+   *  
+   *  Another example:
+   *
+   *      language: html
+   *      <a id="clipper" href="#">Click me to try it out.</a>
+   *  
+   *      <div id="framer">
+   *        <img src="/assets/2007/2/24/chairs.jpg" alt="example" />
+   *      </div>
+   *  
+   *      <script type="text/javascript" charset="utf-8">
+   *        var Example = {
+   *          clip: function(){
+   *            $('clipper').update('undo clipping!');
+   *            $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+   *          },
+   *          unClip: function(){
+   *            $('clipper').update('clip!');
+   *            $('framer').undoClipping();
+   *          },
+   *          toggleClip: function(event){
+   *            if($('clipper').innerHTML == 'undo clipping!') Example.unClip();
+   *            else Example.clip();
+   *            Event.stop(event);
+   *          }
+   *        };
+   *        Event.observe('clipper', 'click', Example.toggleClip);
+   *      </script>
+  **/
+  function makeClipping(element) {
+    element = $(element);
+    
+    var storage = Element.getStorage(element),
+     madeClipping = storage.get('prototype_made_clipping');
+    
+    if (!madeClipping) {
+      var overflow = Element.getStyle(element, 'overflow') || 'auto';
+      storage.set('prototype_made_clipping', overflow);
+      if (overflow !== 'hidden')
+        element.style.overflow = 'hidden';
+    }
+    
+    return element;
+  }
+  
+  /**
+   *  Element.undoClipping(@element) -> Element
+   *
+   *  Sets `element`'s CSS `overflow` property back to the value it had
+   *  _before_ [[Element.makeClipping]] was applied.
+   *
+   *  ##### Example
+   *  
+   *      language: html
+   *      <div id="framer">
+   *        <img src="/assets/2007/1/14/chairs.jpg" alt="example" />
+   *      </div>
+   *
+   *  Then:
+   *
+   *      $('framer').undoClipping();
+   *      // -> Element (and sets the CSS overflow property to its original value).
+   *  
+   *  Another example:
+   *
+   *      language: html
+   *      <a id="clipper" href="#">Click me to try it out.</a>
+   *
+   *      <div id="framer">
+   *        <img src="/assets/2007/2/24/chairs_1.jpg" alt="example" />
+   *      </div>
+   *  
+   *      <script type="text/javascript" charset="utf-8">
+   *        var Example = {
+   *          clip: function(){
+   *            $('clipper').update('undo clipping!');
+   *            $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+   *          },
+   *          unClip: function(){
+   *            $('clipper').update('clip!');
+   *            $('framer').undoClipping();
+   *          },
+   *          toggleClip: function(event){
+   *            if($('clipper').innerHTML == 'clip!') Example.clip();
+   *            else Example.unClip();
+   *            Event.stop(event);
+   *          }
+   *        };
+   *        $('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+   *        Event.observe('clipper', 'click', Example.toggleClip);
+   *      </script>
+  **/
+  function undoClipping(element) {
+    element = $(element);
+    var storage = Element.getStorage(element),
+     overflow = storage.get('prototype_made_clipping');
+    
+    if (overflow) {
+      storage.unset('prototype_made_clipping');
+      element.style.overflow = (overflow === 'auto') ? '' : overflow;
+    }
+    
+    return element;    
+  }
+  
+  /**
+   *  Element.clonePosition(@element, source[, options]) -> Element
+   *  - source (Element | String): The source element (or its ID).
+   *  - options (Object): The position fields to clone.
+   *
+   *  Clones the position and/or dimensions of `source` onto the element as
+   *  defined by `options`, with an optional offset for the `left` and `top`
+   *  properties.
+   *
+   *  Note that the element will be positioned exactly like `source` whether or
+   *  not it is part of the same [CSS containing
+   *  block](http://www.w3.org/TR/CSS21/visudet.html#containing-block-details).
+   *
+   *  ##### Options
+   *
+   *  <table class='options'>
+   *  <thead>
+   *    <tr>
+   *      <th style='text-align: left; padding-right: 1em'>Name</th>
+   *      <th style='text-align: left; padding-right: 1em'>Default</th>
+   *      <th style='text-align: left; padding-right: 1em'>Description</th>
+   *    </tr>
+   *  </thead>
+   *  <tbody>
+   *    <tr>
+   *    <td><code>setLeft</code></td>
+   *    <td><code>true</code></td>
+   *  <td>Clones <code>source</code>'s <code>left</code> CSS property onto <code>element</code>.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>setTop</code></td>
+   *    <td><code>true</code></td>
+   *  <td>Clones <code>source</code>'s <code>top</code> CSS property onto <code>element</code>.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>setWidth</code></td>
+   *    <td><code>true</code></td>
+   *  <td>Clones <code>source</code>'s <code>width</code> onto <code>element</code>.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>setHeight</code></td>
+   *    <td><code>true</code></td>
+   *  <td>Clones <code>source</code>'s <code>width</code> onto <code>element</code>.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>offsetLeft</code></td>
+   *    <td><code>0</code></td>
+   *  <td>Number by which to offset <code>element</code>'s <code>left</code> CSS property.</td>
+   *  </tr>
+   *  <tr>
+   *    <td><code>offsetTop</code></td>
+   *    <td><code>0</code></td>
+   *  <td>Number by which to offset <code>element</code>'s <code>top</code> CSS property.</td>
+   *  </tr>
+   *  </tbody>
+   *  </table>
+  **/
+  function clonePosition(element, source, options) {
+    options = Object.extend({
+      setLeft:    true,
+      setTop:     true,
+      setWidth:   true,
+      setHeight:  true,
+      offsetTop:  0,
+      offsetLeft: 0
+    }, options || {});
+    
+    // Find page position of source.    
+    source  = $(source);
+    element = $(element);    
+    var p = Element.viewportOffset(source), delta = [0, 0], parent = null;
+    
+    // A delta of 0/0 will work for `positioned: fixed` elements, but
+    // for `position: absolute` we need to get the parent's offset.
+    if (Element.getStyle(element, 'position') === 'absolute') {
+      parent = Element.getOffsetParent(element);
+      delta  = Element.viewportOffset(parent);
+    }
+    
+    // Adjust by BODY offsets. Fixes some versions of safari.
+    if (parent === document.body) {
+      delta[0] -= document.body.offsetLeft;
+      delta[1] -= document.body.offsetTop;
+    }
+
+
+    var layout = Element.getLayout(source);
+    
+    // Set position.
+    var styles = {};
+    
+    if (options.setLeft)
+      styles.left = (p[0] - delta[0] + options.offsetLeft) + 'px';
+    if (options.setTop)
+      styles.top  = (p[1] - delta[1] + options.offsetTop) + 'px';
+    
+    if (options.setWidth)
+      styles.width = layout.get('border-box-width') + 'px';
+    if (options.setHeight)
+      styles.height = layout.get('border-box-height') + 'px';
+    
+    return Element.setStyle(element, styles);
+  }
+  
     
   if (Prototype.Browser.IE) {
     // IE doesn't report offsets correctly for static elements, so we change them
@@ -1158,14 +1523,22 @@
   Element.addMethods({
     getLayout:              getLayout,
     measure:                measure,
-    getDimensions:          getDimensions,    
+    getWidth:               getWidth,
+    getHeight:              getHeight,
+    getDimensions:          getDimensions,
     getOffsetParent:        getOffsetParent,
     cumulativeOffset:       cumulativeOffset,
     positionedOffset:       positionedOffset,
     cumulativeScrollOffset: cumulativeScrollOffset,
     viewportOffset:         viewportOffset,    
     absolutize:             absolutize,
-    relativize:             relativize    
+    relativize:             relativize,
+    scrollTo:               scrollTo,
+    makePositioned:         makePositioned,
+    undoPositioned:         undoPositioned,
+    makeClipping:           makeClipping,
+    undoClipping:           undoClipping,
+    clonePosition:          clonePosition
   });
   
   function isBody(element) {
@@ -1202,6 +1575,101 @@
         return new Element.Offset(rect.left - docEl.clientLeft,
          rect.top - docEl.clientTop);
       }
-    });    
+    }); 
   }
+  
+  
+})();
+
+(function() {
+  /**
+   *  document.viewport
+   *
+   *  The `document.viewport` namespace contains methods that return information
+   *  about the viewport &mdash; the rectangle that represents the portion of a web
+   *  page within view. In other words, it's the browser window minus all chrome.
+  **/
+  
+  var IS_OLD_OPERA = Prototype.Browser.Opera &&
+   (window.parseFloat(window.opera.version()) < 9.5);
+  var ROOT = null;
+  function getRootElement() {
+    if (ROOT) return ROOT;    
+    ROOT = IS_OLD_OPERA ? document.body : document.documentElement;
+    return ROOT;
+  }
+
+  /**
+   *  document.viewport.getDimensions() -> Object
+   *
+   *  Returns an object containing viewport dimensions in the form
+   *  `{ width: Number, height: Number }`.
+   *
+   *  The _viewport_ is the subset of the browser window that a page occupies
+   *  &mdash; the "usable" space in a browser window.
+   *  
+   *  ##### Example
+   *  
+   *      document.viewport.getDimensions();
+   *      //-> { width: 776, height: 580 }
+  **/
+  function getDimensions() {
+    return { width: this.getWidth(), height: this.getHeight() };
+  }
+  
+  /**
+   *  document.viewport.getWidth() -> Number
+   *
+   *  Returns the width of the viewport.
+   *
+   *  Equivalent to calling `document.viewport.getDimensions().width`.
+  **/
+  function getWidth() {
+    return getRootElement().clientWidth;
+  }
+  
+  /**
+   *  document.viewport.getHeight() -> Number
+   *
+   *  Returns the height of the viewport.
+   *
+   *  Equivalent to `document.viewport.getDimensions().height`.
+  **/
+  function getHeight() {
+    return getRootElement().clientHeight;
+  }
+  
+  /**
+   *  document.viewport.getScrollOffsets() -> Array
+   *
+   *  Returns the viewport's horizontal and vertical scroll offsets.
+   *
+   *  Returns an array in the form of `[leftValue, topValue]`. Also accessible
+   *  as properties: `{ left: leftValue, top: topValue }`.
+   *
+   *  ##### Examples
+   *  
+   *      document.viewport.getScrollOffsets();
+   *      //-> { left: 0, top: 0 }
+   *      
+   *      window.scrollTo(0, 120);
+   *      document.viewport.getScrollOffsets();
+   *      //-> { left: 0, top: 120 }
+  **/
+  function getScrollOffsets() {
+    var x = window.pageXOffset || document.documentElement.scrollLeft ||
+     document.body.scrollLeft;
+    var y = window.pageYOffset || document.documentElement.scrollTop ||
+     document.body.scrollTop;
+     
+    return new Element.Offset(x, y);
+  }
+  
+  document.viewport = {
+    getDimensions:    getDimensions,
+    getWidth:         getWidth,
+    getHeight:        getHeight,
+    getScrollOffsets: getScrollOffsets
+  };
+  
 })();

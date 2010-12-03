@@ -82,7 +82,7 @@
   
   
   // Define the DOM Level 2 node type constants if they're missing.
-  if (!Node) GLOBAL.Node = {};
+  if (!GLOBAL.Node) GLOBAL.Node = {};
   
   if (!GLOBAL.Node.ELEMENT_NODE) {
     Object.extend(GLOBAL.Node, {
@@ -2112,10 +2112,10 @@
   }
   
   var descendantOf;
-  if (DIV.contains && typeof DIV.contains === 'function') {
-    descendantOf = descendantOf_contains;
-  } else if (DIV.compareDocumentPosition) {
+  if (DIV.compareDocumentPosition) {
     descendantOf = descendantOf_compareDocumentPosition;
+  } else if (DIV.contains && typeof DIV.contains === 'function') {
+    descendantOf = descendantOf_contains;
   } else {
     descendantOf = descendantOf_DOM;
   }
@@ -2703,7 +2703,7 @@
     
     for (var property in styles) {
       if (property === 'opacity') {
-        Element.setOpacity(styles[property]);
+        Element.setOpacity(element, styles[property]);
       } else {
         var value = styles[property];
         if (property === 'float' || property === 'cssFloat') {
@@ -2820,7 +2820,7 @@
     }
     
     if (style === 'opacity')
-      return interpretOpacityValue_IE(element, opacity);
+      return getOpacity_IE(element);
       
     if (value === 'auto') {
       // If we need a dimension, return null for hidden elements, but return
@@ -2833,9 +2833,14 @@
     return value;    
   }
   
+  function stripAlphaFromFilter_IE(filter) {
+    return filter.replace(/alpha\([^\)]*\)/gi, '');
+  }
   
-  function interpretOpacityValue_IE(element, opacity) {
-    
+  function hasLayout_IE(element) {
+    if (!element.currentStyle.hasLayout)
+      element.style.zoom = 1;
+    return element;
   }
 
 
@@ -2859,13 +2864,37 @@
    *      element.setStyle({ opacity: 0.5 });
    *      element.setStyle("opacity: 0.5");
   **/
-  function setOpacity(element, opacity) {
+  function setOpacity(element, value) {
     element = $(element);
     if (value == 1 || value === '') value = '';
-    if (value < 0.00001) value = 0;
-    element.style.opacity = value;
+    else if (value < 0.00001) value = 0;    
+    element.style.opacity = value;    
     return element;
   }
+  
+  function setOpacity_IE(element, value) {
+    element = hasLayout($(element));
+    var filter = Element.getStyle(element, 'filter'),
+     style = element.style;
+     
+    if (value == 1 || value === '') {
+      // Remove the `alpha` filter from IE's `filter` CSS property. If there
+      // is anything left after removal, put it back where it was; otherwise
+      // remove the property.
+      filter = stripAlphaFromFilter_IE(filter);
+      if (filter) style.filter = filter;
+      else style.removeAttribute('filter');
+      return element;
+    }
+    
+    if (value < 0.00001) value = 0;
+        
+    style.filter = stripAlphaFromFilter_IE(filter) + 
+     'alpha(opacity=' + (value * 100) + ')';
+     
+    return element;
+  }
+  
   
   /**
    *  Element.getOpacity(@element) -> String | null
@@ -2876,12 +2905,27 @@
     return Element.getStyle(element, 'opacity');
   }
   
+  function getOpacity_IE(element) {
+    var filter = Element.getStyle(element, 'filter');
+    var match = (filter || '').match(/alpha\(opacity=(.*)\)/);
+    if (match[1]) return parseFloat(match[1]) / 100;
+    return 1.0;
+  }
+  
+  
   Object.extend(methods, {
     setStyle:   setStyle,
     getStyle:   getStyle,
     setOpacity: setOpacity,
     getOpacity: getOpacity
   });
+  
+  if ('styleFloat' in DIV.style) {
+    methods.getStyle = getStyle_IE;
+    methods.setOpacity = setOpacity_IE;
+    methods.getOpacity = getOpacity_IE;
+  }
+    
   
   
   // STORAGE
@@ -3325,11 +3369,5 @@
   }
 
   Element.addMethods(methods);
-  
-  // TODO: move dimensions stuff to layout
-  //  getHeight, getWidth, getDimensions, scrollTo,
-  //  makePositioned, undoPositioned, makeClipping, undoClipping,
-  //  clonePosition
-  //  document.viewport
   
 })(this);
