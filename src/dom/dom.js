@@ -1755,9 +1755,12 @@
   // Element#descendants (and therefore extend all nodes).
   function down_IE(element, expression, index) {
     element = $(element);
-    if (arguments.length == 1) return element.firstDescendant();
-    return Object.isNumber(expression) ? _descendants(element)[expression] :
+    if (arguments.length === 1)
+      return Element.firstDescendant(element);
+
+    var node = Object.isNumber(expression) ? _descendants(element)[expression] :
       Element.select(element, expression)[index || 0];
+    return Element.extend(node);
   }
   
   if (!Prototype.BrowserFeatures.ElementExtensions)
@@ -2115,7 +2118,7 @@
    *      $('homo-erectus').descendantOf('homo-sapiens');
    *      // -> false
   **/
-  function descendantOf_DOM(element) {
+  function descendantOf_DOM(element, ancestor) {
     element = $(element);
     while (element = element.parentNode)
       if (element === ancestor) return true;
@@ -2124,6 +2127,8 @@
   
   function descendantOf_contains(element, ancestor) {
     element = $(element), ancestor = $(ancestor);
+    // Some nodes, like `document`, don't have the "contains" method.
+    if (!ancestor.contains) return descendantOf_DOM(element, ancestor);
     return ancestor.contains(element) && ancestor !== element;
   }
   
@@ -2135,7 +2140,7 @@
   var descendantOf;
   if (DIV.compareDocumentPosition) {
     descendantOf = descendantOf_compareDocumentPosition;
-  } else if (DIV.contains && typeof DIV.contains === 'function') {
+  } else if (DIV.contains) {
     descendantOf = descendantOf_contains;
   } else {
     descendantOf = descendantOf_DOM;
@@ -2309,6 +2314,20 @@
   function readAttribute_Opera(element, name) {
     if (name === 'title') return element.title;
     return element.getAttribute(attribute);
+  }
+  
+  var PROBLEMATIC_ATTRIBUTE_READING = (function() {
+    DIV.setAttribute('onclick', Prototype.emptyFunction);
+    var value = DIV.getAttribute('onclick');
+    var isFunction = (typeof value === 'function');
+    DIV.removeAttribute('onclick');
+    return isFunction;
+  })();
+  
+  if (PROBLEMATIC_ATTRIBUTE_READING) {
+    readAttribute = readAttribute_IE;
+  } else if (Prototype.Browser.Opera) {
+    readAttribute = readAttribute_Opera;
   }
   
   
@@ -2659,15 +2678,16 @@
   
   // STYLES
   function normalizeStyleName(style) {
-    if (style === 'float') return 'cssFloat';
+    if (style === 'float' || style === 'styleFloat')
+      return 'cssFloat';
     return style.camelize();
   }
   
   function normalizeStyleName_IE(style) {
-    if (style === 'float') return 'styleFloat';
+    if (style === 'float' || style === 'cssFloat')
+      return 'styleFloat';
     return style.camelize();
   }
-  
 
   /** 
    *  Element.setStyle(@element, styles) -> Element
@@ -2855,7 +2875,7 @@
   }
   
   function stripAlphaFromFilter_IE(filter) {
-    return filter.replace(/alpha\([^\)]*\)/gi, '');
+    return (filter || '').replace(/alpha\([^\)]*\)/gi, '');
   }
   
   function hasLayout_IE(element) {
@@ -2894,9 +2914,9 @@
   }
   
   function setOpacity_IE(element, value) {
-    element = hasLayout($(element));
+    element = hasLayout_IE($(element));
     var filter = Element.getStyle(element, 'filter'),
-     style = element.style;
+     style = element.style;     
      
     if (value == 1 || value === '') {
       // Remove the `alpha` filter from IE's `filter` CSS property. If there
@@ -2904,7 +2924,7 @@
       // remove the property.
       filter = stripAlphaFromFilter_IE(filter);
       if (filter) style.filter = filter;
-      else style.removeAttribute('filter');
+      else style.removeAttribute('filter');      
       return element;
     }
     
@@ -2928,6 +2948,7 @@
   
   function getOpacity_IE(element) {
     var filter = Element.getStyle(element, 'filter');
+    if (filter.length === 0) return 1.0;
     var match = (filter || '').match(/alpha\(opacity=(.*)\)/);
     if (match[1]) return parseFloat(match[1]) / 100;
     return 1.0;
@@ -2946,13 +2967,11 @@
     methods.setOpacity = setOpacity_IE;
     methods.getOpacity = getOpacity_IE;
   }
-    
-  
   
   // STORAGE
   var UID = 0;
   
-  GLOBAL.Element.Storage = {};
+  GLOBAL.Element.Storage = { UID: 0 };
   
   function getUniqueElementID(element) {
     if (element === window) return 0;
@@ -2960,14 +2979,17 @@
     // Need to use actual `typeof` operator to prevent errors in some
     // environments when accessing node expandos.
     if (typeof element._prototypeUID === 'undefined')
-      element._prototypeUID = UID++;
+      element._prototypeUID = Element.Storage.UID++;
     return element._prototypeUID;
   }
   
   // In Internet Explorer, DOM nodes have a `uniqueID` property. Saves us
   // from inventing our own.
   function getUniqueElementID_IE(element) {
-    return element === window ? 0 : element.uniqueID;
+    if (element === window) return 0;
+    // The document object's `uniqueID` property changes each time you read it.
+    if (element == document) return 1;
+    return element.uniqueID;
   }
   
   var HAS_UNIQUE_ID_PROPERTY = ('uniqueID' in DIV);
@@ -3139,9 +3161,12 @@
     
     return element;
   }
-  
-  if (F.SpecificElementExtensions && HTMLOBJECTELEMENT_PROTOTYPE_BUGGY)
-    extend = extend_IE8;
+
+  // If the browser lets us extend specific elements, we can replace `extend`
+  // with a thinner version (or, ideally, an empty version).
+  if (F.SpecificElementExtensions) {
+    extend = HTMLOBJECTELEMENT_PROTOTYPE_BUGGY ? extend_IE8 : Prototype.K;
+  }
   
   function addMethodsToTagName(tagName, methods) {
     tagName = tagName.toUpperCase();
