@@ -502,12 +502,17 @@ new Test.Unit.Runner({
   
   testElementIdentify: function() {
     var parent = $('identification');
-    this.assertEqual(parent.down().identify(), 'predefined_id');
-    this.assert(parent.down(1).identify().startsWith('anonymous_element_'));
-    this.assert(parent.down(2).identify().startsWith('anonymous_element_'));
-    this.assert(parent.down(3).identify().startsWith('anonymous_element_'));
+    this.assertEqual(parent.down().identify(), 'predefined_id',
+     "identify should preserve the IDs of elements that already have them");
+    this.assert(parent.down(1).identify().startsWith('anonymous_element_'),
+     "should have #anonymous_element_1");
+    this.assert(parent.down(2).identify().startsWith('anonymous_element_'),
+     "should have #anonymous_element_2");
+    this.assert(parent.down(3).identify().startsWith('anonymous_element_'),
+     "should have #anonymous_element_3");
     
-    this.assert(parent.down(3).id !== parent.down(2).id);
+    this.assert(parent.down(3).id !== parent.down(2).id,
+     "should not assign duplicate IDs");
   },
      
   testElementClassNameMethod: function() {
@@ -760,10 +765,12 @@ new Test.Unit.Runner({
   },
 
   testDescendantOf: function() {
-    this.assert($('child').descendantOf('ancestor'));
-    this.assert($('child').descendantOf($('ancestor')));
-    
-    this.assert(!$('ancestor').descendantOf($('child')));
+    this.assert($('child').descendantOf('ancestor'),
+     '#child should be descendant of #ancestor');
+    this.assert($('child').descendantOf($('ancestor')),
+     '#child should be descendant of #ancestor');    
+    this.assert(!$('ancestor').descendantOf($('child')),
+     '#ancestor should not be descendant of child');
 
     this.assert($('great-grand-child').descendantOf('ancestor'), 'great-grand-child < ancestor');
     this.assert($('grand-child').descendantOf('ancestor'), 'grand-child < ancestor');
@@ -783,18 +790,23 @@ new Test.Unit.Runner({
     this.assert(!$('great-grand-child').descendantOf('not-in-the-family'), 'great-grand-child < not-in-the-family');
     this.assert(!$('child').descendantOf('not-in-the-family'), 'child < not-in-the-family');
     
-    this.assert(!$(document.body).descendantOf('great-grand-child'));
+    this.assert(!$(document.body).descendantOf('great-grand-child'),
+     'BODY should not be descendant of anything within it');
 
     // dynamically-created elements
     $('ancestor').insert(new Element('div', { id: 'weird-uncle' }));
-    this.assert($('weird-uncle').descendantOf('ancestor'));
+    this.assert($('weird-uncle').descendantOf('ancestor'),
+     'dynamically-created element should work properly');
     
     $(document.body).insert(new Element('div', { id: 'impostor' }));
-    this.assert(!$('impostor').descendantOf('ancestor'));
+    this.assert(!$('impostor').descendantOf('ancestor'),
+     'elements inserted elsewhere in the DOM tree should not be descendants');
     
     // test descendantOf document
-    this.assert($(document.body).descendantOf(document));  
-    this.assert($(document.documentElement).descendantOf(document));  
+    this.assert($(document.body).descendantOf(document),
+     'descendantOf(document) should behave predictably');  
+    this.assert($(document.documentElement).descendantOf(document),
+     'descendantOf(document) should behave predictably');
   },  
   
   testChildOf: function() {
@@ -829,11 +841,9 @@ new Test.Unit.Runner({
     $('style_test_3').setStyle({ opacity: 0.5 });
     this.assertEqual(0.5, $('style_test_3').getStyle('opacity'));
     
-    window.debug = true;
     $('style_test_3').setStyle({ opacity: '' });
     this.assertEqual(1, $('style_test_3').getStyle('opacity'),
      '#style_test_3 opacity should be 1');
-    window.debug = false;
     
     $('style_test_3').setStyle({ opacity: 0 });
     this.assertEqual(0, $('style_test_3').getStyle('opacity'),
@@ -869,7 +879,7 @@ new Test.Unit.Runner({
   },
   
   testElementSetOpacity: function() {
-    [0,0.1,0.5,0.999].each(function(opacity){
+    [0, 0.1, 0.5, 0.999].each(function(opacity){
       $('style_test_3').setOpacity(opacity);
       
       // b/c of rounding issues on IE special case
@@ -877,7 +887,10 @@ new Test.Unit.Runner({
       
       // opera rounds off to two significant digits, so we check for a
       // ballpark figure
-      this.assert((Number(realOpacity) - opacity) <= 0.002, 'setting opacity to ' + opacity);        
+      this.assert(
+        (Number(realOpacity) - opacity) <= 0.002,
+        'setting opacity to ' + opacity + ' (actual: ' + realOpacity + ')'
+      );        
     }, this);
     
     this.assertEqual(0,
