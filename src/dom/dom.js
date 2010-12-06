@@ -1152,6 +1152,27 @@
     }
   }
   
+  function purgeCollection(elements) {
+    var i = elements.length;
+    while (i--)
+      purgeElement(elements[i]);
+  }
+  
+  function purgeCollection_IE(elements) {
+    var i = elements.length, element, eventName, responders, uid, j;
+    while (i--) {
+      element = elements[i];
+      uid = getUniqueElementID(element);
+      delete Element.Storage[uid];
+      delete Event.cache[uid];
+    }
+  }
+  
+  if (!window.addEventListener && window.attachEvent) {
+    purgeCollection = purgeCollection_IE;
+  }
+  
+  
   /**
    *  Element.purge(@element) -> null
    *  
