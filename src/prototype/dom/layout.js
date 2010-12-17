@@ -1041,11 +1041,16 @@
    *  Turns `element` into an absolutely-positioned element _without_
    *  changing its position in the page layout.
    *
+   *  It also reverts back a previous [[Element.relativize]] call
+   *  on this `element`.
+   *
    *  To revert back to `element`'s original position,
    *  use [[Element.undoAbsolutize]].
   **/
   function absolutize(element) {
     element = $(element);
+    
+    element.undoRelativize();
     
     if (Element.getStyle(element, 'position') === 'absolute') {
       return element;
@@ -1106,11 +1111,17 @@
    *  Turns `element` into a relatively-positioned element without changing
    *  its position in the page layout.
    *
+   *  It also reverts back a previous [[Element.absolutize]] call
+   *  on this `element`.
+   *
    *  To revert back to `element`'s original position,
    *  use [[Element.undoRelativize]].
   **/
   function relativize(element) {
     element = $(element);
+    
+    element.undoAbsolutize();
+    
     if (Element.getStyle(element, 'position') === 'relative') {
       return element;
     }

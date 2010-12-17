@@ -1469,6 +1469,24 @@ new Test.Unit.Runner({
     var element = $('position-untouched');
     this.assertEqual(element, element.undoRelativize());
   },
+  
+  testAbsolutizeThenRelativize: function() {
+    var element = $('position-static');
+    element.absolutize();
+    element.relativize();
+    element.undoAbsolutize();
+    element.undoRelativize();
+    this.assertEqual('static', element.getStyle('position'));
+  },
+  
+  testRelativizeThenAbsolutize: function() {
+    var element = $('position-static');
+    element.relativize();
+    element.absolutize();
+    element.undoRelativize();
+    element.undoAbsolutize();
+    this.assertEqual('static', element.getStyle('position'));
+  },
 
   testViewportDimensions: function() {
     preservingBrowserDimensions(function() {
