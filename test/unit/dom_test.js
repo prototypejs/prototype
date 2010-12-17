@@ -1399,20 +1399,77 @@ new Test.Unit.Runner({
   testAbsolutize: function() {
     $('notInlineAbsoluted', 'inlineAbsoluted').each(function(elt) {
       if ('_originalLeft' in elt) delete elt._originalLeft;
+      
       elt.absolutize();
+      
       this.assertUndefined(elt._originalLeft, 'absolutize() did not detect absolute positioning');
     }, this);
+    
+    // make sure it store original properties and set position as absolute
+    var element = $('absolute_fixed_undefined');
+    
+    if (element.retrieve('prototype_absolutize_original_styles') !== undefined)
+      element.store('prototype_absolutize_original_styles', undefined);
+    
+    element.absolutize();
+    
+    this.assertEqual('absolute', element.getStyle('position'));
+    
+    var originalStyles = element.retrieve('prototype_absolutize_original_styles');
+    this.assertNotUndefined(originalStyles, 'absolutize() did not store original properties');
+    ['position', 'top', 'left', 'width', 'height'].each(function(property) {
+      this.assertNotUndefined(originalStyles[property],
+        'absolutize() did not store original ' + property + ' property');
+    }, this);
+    
     // invoking on "absolute" positioned element should return element 
     var element = $('absolute_fixed_undefined').setStyle({position: 'absolute'});
     this.assertEqual(element, element.absolutize());
   },
-  
+
+  testUndoAbsolutize: function() {
+    $('position-static', 'position-fixed', 'position-relative').each(function(elt) {
+      elt.absolutize();
+      this.assertEqual(elt, elt.undoAbsolutize());
+      this.assertEqual(elt.id.split('-').last(), elt.getStyle('position'));
+      this.assertUndefined(elt.retrieve('prototype_absolutize_original_styles'));
+    }, this);
+    // invoking on none "absolute" positioned element should return element
+    var element = $('position-untouched');
+    this.assertEqual(element, element.undoAbsolutize());
+  },
+
   testRelativize: function() {
+    var element = $('absolute_fixed_undefined');
+    
+    if (element.retrieve('prototype_relativize_original_styles') !== undefined)
+      element.store('prototype_relativize_original_styles', undefined);
+    
+    element.relativize();
+    
+    this.assertEqual('relative', element.getStyle('position'));
+    
+    var originalStyles = element.retrieve('prototype_relativize_original_styles');
+    this.assertNotUndefined(originalStyles, 'relativize() did not store original properties');
+    this.assertNotUndefined(originalStyles['position'],
+      'relativize() did not store original position property');
+    
     // invoking on "relative" positioned element should return element
-    var element = $('absolute_fixed_undefined').setStyle({position: 'relative'});
     this.assertEqual(element, element.relativize());
   },
-  
+
+  testUndoRelativize: function() {
+    $('position-static', 'position-fixed', 'position-absolute').each(function(elt) {
+      elt.relativize();
+      this.assertEqual(elt, elt.undoRelativize());
+      this.assertEqual(elt.id.split('-').last(), elt.getStyle('position'));
+      this.assertUndefined(elt.retrieve('prototype_relativize_original_styles'));
+    }, this);
+    // invoking on none "relative" positioned element should return element
+    var element = $('position-untouched');
+    this.assertEqual(element, element.undoRelativize());
+  },
+
   testViewportDimensions: function() {
     preservingBrowserDimensions(function() {
       window.resizeTo(800, 600);

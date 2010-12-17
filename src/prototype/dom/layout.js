@@ -1040,6 +1040,9 @@
    *
    *  Turns `element` into an absolutely-positioned element _without_
    *  changing its position in the page layout.
+   *
+   *  To revert back to `element`'s original position,
+   *  use [[Element.undoAbsolutize]].
   **/
   function absolutize(element) {
     element = $(element);
@@ -1056,10 +1059,11 @@
     var layout = element.getLayout();    
     
     element.store('prototype_absolutize_original_styles', {
-      left:   element.getStyle('left'),
-      top:    element.getStyle('top'),
-      width:  element.getStyle('width'),
-      height: element.getStyle('height')
+      position: element.getStyle('position'),
+      left:     element.getStyle('left'),
+      top:      element.getStyle('top'),
+      width:    element.getStyle('width'),
+      height:   element.getStyle('height')
     });
     
     element.setStyle({
@@ -1074,16 +1078,15 @@
   }
   
   /**
-   *  Element.relativize(@element) -> Element
+   *  Element.undoAbsolutize(@element) -> Element
    *
-   *  Turns `element` into a relatively-positioned element without changing
-   *  its position in the page layout.
-   *
-   *  Used to undo a call to [[Element.absolutize]].
+   *  Sets `element` back to the state it was in _before_
+   *  [[Element.absolutize]] was applied to it.
   **/
-  function relativize(element) {
+  function undoAbsolutize(element) {
     element = $(element);
-    if (Element.getStyle(element, 'position') === 'relative') {
+    
+    if (Element.getStyle(element, 'position') !== 'absolute') {
       return element;
     }
     
@@ -1091,10 +1094,61 @@
     var originalStyles = 
      element.retrieve('prototype_absolutize_original_styles');
     
+    element.store('prototype_absolutize_original_styles', undefined);
+    
     if (originalStyles) element.setStyle(originalStyles);
     return element;
   }
+  
+  /**
+   *  Element.relativize(@element) -> Element
+   *
+   *  Turns `element` into a relatively-positioned element without changing
+   *  its position in the page layout.
+   *
+   *  To revert back to `element`'s original position,
+   *  use [[Element.undoRelativize]].
+  **/
+  function relativize(element) {
+    element = $(element);
+    if (Element.getStyle(element, 'position') === 'relative') {
+      return element;
+    }
+
+    element.store('prototype_relativize_original_styles', {
+      position: element.getStyle('position')
+    });
     
+    element.setStyle({
+      position: 'relative'
+    });
+    
+    return element;
+  }
+  
+  /**
+   *  Element.undoRelativize(@element) -> Element
+   *
+   *  Sets `element` back to the state it was in _before_
+   *  [[Element.relativize]] was applied to it.
+  **/
+  function undoRelativize(element) {
+    element = $(element);
+    
+    if (Element.getStyle(element, 'position') !== 'relative') {
+      return element;
+    }
+    
+    // Restore the original styles as captured by Element#relativize.
+    var originalStyles = 
+     element.retrieve('prototype_relativize_original_styles');
+    
+    element.store('prototype_relativize_original_styles', undefined);
+    
+    if (originalStyles) element.setStyle(originalStyles);
+    return element;
+  }
+
   if (Prototype.Browser.IE) {
     // IE doesn't report offsets correctly for static elements, so we change them
     // to "relative" to get the values, then change them back.
@@ -1165,7 +1219,9 @@
     cumulativeScrollOffset: cumulativeScrollOffset,
     viewportOffset:         viewportOffset,    
     absolutize:             absolutize,
-    relativize:             relativize    
+    undoAbsolutize:         undoAbsolutize,
+    relativize:             relativize,
+    undoRelativize:         undoRelativize
   });
   
   function isBody(element) {
