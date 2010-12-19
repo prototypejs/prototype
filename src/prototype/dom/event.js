@@ -1236,7 +1236,7 @@
   }
 
   function checkReadyState() {
-    if (document.readyState === 'complete') {
+    if (document.readyState && document.readyState === 'complete') {
       document.stopObserving('readystatechange', checkReadyState);
       fireContentLoadedEvent();
     }
@@ -1258,6 +1258,9 @@
     if (window == top)
       timer = pollDoScroll.defer();
   }
+
+  // check if document already loaded (ie, DOMContentLoaded already passed)
+  checkReadyState();
 
   // Worst-case fallback
   Event.observe(window, 'load', fireContentLoadedEvent);
