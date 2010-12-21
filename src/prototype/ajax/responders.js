@@ -115,6 +115,6 @@ Ajax.Responders = {
 Object.extend(Ajax.Responders, Enumerable);
 
 Ajax.Responders.register({
-  onCreate:   function() { Ajax.activeRequestCount++ },
-  onComplete: function() { Ajax.activeRequestCount-- }
+  onCreate:   function() { Ajax.activeRequestCount++; },
+  onComplete: function() { Ajax.activeRequestCount--; }
 });

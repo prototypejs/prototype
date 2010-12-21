@@ -121,7 +121,7 @@ var Form = {
       initial = '';
       accumulator = function(result, key, value) {
         return result + (result ? '&' : '') + encodeURIComponent(key) + '=' + encodeURIComponent(value);
-      }
+      };
     }
     
     return elements.inject(initial, function(result, element) {
@@ -198,7 +198,7 @@ Form.Methods = {
       if (serializers[child.tagName.toLowerCase()])
         elements.push(Element.extend(child));
       return elements;
-    })
+    });
   },
 
   /**
@@ -304,7 +304,7 @@ Form.Methods = {
     });
     var firstByIndex = elements.findAll(function(element) {
       return element.hasAttribute('tabIndex') && element.tabIndex >= 0;
-    }).sortBy(function(element) { return element.tabIndex }).first();
+    }).sortBy(function(element) { return element.tabIndex; }).first();
 
     return firstByIndex ? firstByIndex : elements.find(function(element) {
       return /^(?:input|select|textarea)$/i.test(element.tagName);

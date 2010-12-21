@@ -20,7 +20,7 @@
 **/
 function $H(object) {
   return new Hash(object);
-};
+}
 
 /** section: Language
  * class Hash

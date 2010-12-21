@@ -216,7 +216,7 @@ Element._purgeElement = function(element) {
     element._prototypeUID = void 0;
     delete Element.Storage[uid];
   }
-}
+};
 
 /**
  *  mixin Element.Methods
@@ -632,9 +632,7 @@ Element.Methods = {
             element.removeChild(element.firstChild);
           }
           Element._getContentFromAnonymousElement(tagName, content.stripScripts())
-            .each(function(node) {
-              element.appendChild(node)
-            });
+            .each(function(node) {element.appendChild(node);});
         } else if (LINK_ELEMENT_INNERHTML_BUGGY && Object.isString(content) && content.indexOf('<link') > -1) {
           // IE barfs when inserting a string that beings with a LINK
           // element. The workaround is to add any content to the beginning
@@ -644,7 +642,7 @@ Element.Methods = {
             element.removeChild(element.firstChild);
           }
           var nodes = Element._getContentFromAnonymousElement(tagName, content.stripScripts(), true);
-          nodes.each(function(node) { element.appendChild(node) });          
+          nodes.each(function(node) { element.appendChild(node); });          
         }
         else {
           element.innerHTML = content.stripScripts();
@@ -1820,7 +1818,7 @@ Element.Methods = {
     element = $(element);
     var id = Element.readAttribute(element, 'id');
     if (id) return id;
-    do { id = 'anonymous_element_' + Element.idCounter++ } while ($(id));
+    do { id = 'anonymous_element_' + Element.idCounter++; } while ($(id));
     Element.writeAttribute(element, 'id', id);
     return id;
   },
@@ -2847,7 +2845,7 @@ else if (Prototype.Browser.IE) {
           }
         }
       }
-    }
+    };
   })();
 
   Element._attributeTranslations.write = {
@@ -2922,7 +2920,7 @@ else if (Prototype.Browser.IE) {
         if (arguments.length == 1) return element.firstDescendant();
         return Object.isNumber(expression) ? _descendants(element)[expression] :
           Element.select(element, expression)[index || 0];
-      }
+      };
     })();
   }
 
@@ -2974,9 +2972,9 @@ if ('outerHTML' in document.documentElement) {
           fragments = Element._getContentFromAnonymousElement(tagName, content.stripScripts());
       parent.removeChild(element);
       if (nextSibling)
-        fragments.each(function(node) { parent.insertBefore(node, nextSibling) });
+        fragments.each(function(node) { parent.insertBefore(node, nextSibling); });
       else
-        fragments.each(function(node) { parent.appendChild(node) });
+        fragments.each(function(node) { parent.appendChild(node); });
     }
     else element.outerHTML = content.stripScripts();
 
@@ -3157,7 +3155,7 @@ Element.extend = (function() {
           }
         }
         return element;
-      }
+      };
     }
     return Prototype.K;
   }
@@ -3493,7 +3491,7 @@ document.viewport = {
 
     property[D] = 'client' + D;
 
-    viewport['get' + D] = function() { return element[property[D]] };
+    viewport['get' + D] = function() { return element[property[D]]; };
     return viewport['get' + D]();
   }
 

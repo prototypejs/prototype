@@ -36,7 +36,7 @@ Object.extend(String.prototype, (function() {
   function prepareReplacement(replacement) {
     if (Object.isFunction(replacement)) return replacement;
     var template = new Template(replacement);
-    return function(match) { return template.evaluate(match) };
+    return function(match) { return template.evaluate(match); };
   }
 
   /**
@@ -386,7 +386,7 @@ Object.extend(String.prototype, (function() {
    *  an array containing the value returned by each script.
   **/
   function evalScripts() {
-    return this.extractScripts().map(function(script) { return eval(script) });
+    return this.extractScripts().map(function(script) { return eval(script); });
   }
 
   /** related to: String#unescapeHTML

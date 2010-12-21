@@ -111,7 +111,7 @@ Object.extend(Function.prototype, (function() {
     return function() {
       var a = merge(args, arguments);
       return __method.apply(context, a);
-    }
+    };
   }
 
   /** related to: Function#bind
@@ -174,7 +174,7 @@ Object.extend(Function.prototype, (function() {
     return function(event) {
       var a = update([event || window.event], args);
       return __method.apply(context, a);
-    }
+    };
   }
 
   /**
@@ -207,7 +207,7 @@ Object.extend(Function.prototype, (function() {
     return function() {
       var a = merge(args, arguments);
       return __method.apply(this, a);
-    }
+    };
   }
 
   /**
@@ -317,7 +317,7 @@ Object.extend(Function.prototype, (function() {
     return function() {
       var a = update([__method.bind(this)], arguments);
       return wrapper.apply(this, a);
-    }
+    };
   }
 
   /**
@@ -386,6 +386,6 @@ Object.extend(Function.prototype, (function() {
     defer:               defer,
     wrap:                wrap,
     methodize:           methodize
-  }
+  };
 })());
 

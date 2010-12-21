@@ -50,7 +50,7 @@ var Class = (function() {
    *  [inheritance tutorial](http://prototypejs.org/learn/class-inheritance)
    *  on the Prototype website.
   **/
-  function subclass() {};
+  function subclass() {}
   function create() {
     var parent = null, properties = $A(arguments);
     if (Object.isFunction(properties[0]))

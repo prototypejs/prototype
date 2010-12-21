@@ -358,7 +358,7 @@ Array.from = $A;
   **/
   function intersect(array) {
     return this.uniq().findAll(function(item) {
-      return array.detect(function(value) { return item === value });
+      return array.detect(function(value) { return item === value; });
     });
   }
 
@@ -486,7 +486,7 @@ Array.from = $A;
   // fix for opera
   var CONCAT_ARGUMENTS_BUGGY = (function() {
     return [].concat(arguments)[0][0] !== 1;
-  })(1,2)
+  })(1,2);
 
   if (CONCAT_ARGUMENTS_BUGGY) arrayProto.concat = concat;
 

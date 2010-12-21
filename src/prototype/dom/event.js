@@ -144,7 +144,7 @@
       _isButton = function(event, code) {
         return isIELegacyEvent(event) ? _isButtonForLegacyEvents(event, code) :
          _isButtonForDOMEvents(event, code);
-      }
+      };
     }
   } else if (Prototype.Browser.WebKit) {
     _isButton = _isButtonForWebKit;
@@ -162,7 +162,7 @@
    *  button. When a mouse is in left-handed mode, the browser will report
    *  clicks of the _right_ button as "left-clicks."
   **/
-  function isLeftClick(event)   { return _isButton(event, 0) }
+  function isLeftClick(event)   { return _isButton(event, 0); }
 
   /**
    *  Event.isMiddleClick(@event) -> Boolean
@@ -170,7 +170,7 @@
    *  Determines whether a button-related mouse event involved the middle
    *  mouse button.
   **/
-  function isMiddleClick(event) { return _isButton(event, 1) }
+  function isMiddleClick(event) { return _isButton(event, 1); }
 
   /**
    *  Event.isRightClick(@event) -> Boolean
@@ -182,7 +182,7 @@
    *  mouse button. When a mouse is in left-handed mode, the browser will
    *  report clicks of the _left_ button as "left-clicks."
   **/
-  function isRightClick(event)  { return _isButton(event, 2) }
+  function isRightClick(event)  { return _isButton(event, 2); }
 
   /** deprecated
    *  Event.element(@event) -> Element
@@ -429,9 +429,9 @@
 
     // These methods should be added _only_ to legacy IE event objects.
     var additionalMethods = {
-      stopPropagation: function() { this.cancelBubble = true },
-      preventDefault:  function() { this.returnValue = false },
-      inspect: function() { return '[object Event]' }
+      stopPropagation: function() { this.cancelBubble = true; },
+      preventDefault:  function() { this.returnValue = false; },
+      inspect: function() { return '[object Event]'; }
     };
 
     /**
