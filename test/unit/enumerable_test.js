@@ -1,5 +1,5 @@
 function prime(value) {
-  for (var i = 2; i < value; i++)
+  for (var i = 2; i <= value/2; i++)
     if (value % i == 0) return false;
   return true;
 }
@@ -267,5 +267,30 @@ new Test.Unit.Runner({
     this.assertEqual(4, Fixtures.Nicknames.size());
     this.assertEqual(26, Fixtures.Primes.size());
     this.assertEqual(0, [].size());
+  },
+
+  testAfterEachReplacing: function() {
+    Array.prototype.each = Array.prototype.forEach;
+    var basicArray = Fixtures.Basic;
+    var check = function(value) {
+      return value === basicArray[1];
+    };
+    this.assert(!basicArray.all(check));
+    this.assert(!basicArray.every(check));
+    this.assert(basicArray.any(check));
+    this.assert(basicArray.some(check));
+    this.assert(basicArray.some(check));
+    this.assertEnumEqual([false, true, false], basicArray.collect(check));
+    this.assertEnumEqual([false, true, false], basicArray.map(check));
+    this.assertEqual(2, basicArray.detect(check));
+    this.assertEnumEqual([2], basicArray.findAll(check));
+    this.assertEnumEqual([2], basicArray.select(check));
+    this.assertEnumEqual([2], basicArray.filter(check));
+    this.assertEnumEqual([2], basicArray.grep(/2/));
+    this.assert(basicArray.include(2));
+    this.assert(basicArray.member(2));
+    this.assertEqual(1, basicArray.min());
+    this.assertEqual(3, basicArray.max());
+    this.assertEnumEqual([1, 3], basicArray.reject(check));
   }
 });

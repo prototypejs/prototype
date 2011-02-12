@@ -5,7 +5,7 @@
  *  objects that act as collections of values. It is a cornerstone of
  *  Prototype.
  *
- *  [[Enumerable]] is a _mixin_: a set of methods intended not for standaone
+ *  [[Enumerable]] is a _mixin_: a set of methods intended not for standalone
  *  use, but for incorporation into other objects.
  *
  *  Prototype mixes [[Enumerable]] into several classes. The most visible cases
@@ -185,7 +185,7 @@ var Enumerable = (function() {
   function all(iterator, context) {
     iterator = iterator || Prototype.K;
     var result = true;
-    this.each(function(value, index) {
+    each.call(this, function(value, index) {
       result = result && !!iterator.call(context, value, index);
       if (!result) throw $break;
     });
@@ -217,7 +217,7 @@ var Enumerable = (function() {
   function any(iterator, context) {
     iterator = iterator || Prototype.K;
     var result = false;
-    this.each(function(value, index) {
+    each.call(this, function(value, index) {
       if (result = !!iterator.call(context, value, index))
         throw $break;
     });
@@ -250,7 +250,7 @@ var Enumerable = (function() {
   function collect(iterator, context) {
     iterator = iterator || Prototype.K;
     var results = [];
-    this.each(function(value, index) {
+    each.call(this, function(value, index) {
       results.push(iterator.call(context, value, index));
     });
     return results;
@@ -273,7 +273,7 @@ var Enumerable = (function() {
   **/
   function detect(iterator, context) {
     var result;
-    this.each(function(value, index) {
+    each.call(this, function(value, index) {
       if (iterator.call(context, value, index)) {
         result = value;
         throw $break;
@@ -298,7 +298,7 @@ var Enumerable = (function() {
   **/
   function findAll(iterator, context) {
     var results = [];
-    this.each(function(value, index) {
+    each.call(this, function(value, index) {
       if (iterator.call(context, value, index))
         results.push(value);
     });
@@ -343,7 +343,7 @@ var Enumerable = (function() {
     if (Object.isString(filter))
       filter = new RegExp(RegExp.escape(filter));
 
-    this.each(function(value, index) {
+    each.call(this, function(value, index) {
       if (filter.match(value))
         results.push(iterator.call(context, value, index));
     });
@@ -374,7 +374,7 @@ var Enumerable = (function() {
       if (this.indexOf(object) != -1) return true;
 
     var found = false;
-    this.each(function(value) {
+    each.call(this, function(value) {
       if (value == object) {
         found = true;
         throw $break;
@@ -448,7 +448,7 @@ var Enumerable = (function() {
    *      // -> 'ace'
   **/
   function inject(memo, iterator, context) {
-    this.each(function(value, index) {
+    each.call(this, function(value, index) {
       memo = iterator.call(context, memo, value, index);
     });
     return memo;
@@ -513,7 +513,7 @@ var Enumerable = (function() {
   function max(iterator, context) {
     iterator = iterator || Prototype.K;
     var result;
-    this.each(function(value, index) {
+    each.call(this, function(value, index) {
       value = iterator.call(context, value, index);
       if (result == null || value >= result)
         result = value;
@@ -553,7 +553,7 @@ var Enumerable = (function() {
   function min(iterator, context) {
     iterator = iterator || Prototype.K;
     var result;
-    this.each(function(value, index) {
+    each.call(this, function(value, index) {
       value = iterator.call(context, value, index);
       if (result == null || value < result)
         result = value;
@@ -591,7 +591,7 @@ var Enumerable = (function() {
   function partition(iterator, context) {
     iterator = iterator || Prototype.K;
     var trues = [], falses = [];
-    this.each(function(value, index) {
+    each.call(this, function(value, index) {
       (iterator.call(context, value, index) ?
         trues : falses).push(value);
     });
@@ -613,7 +613,7 @@ var Enumerable = (function() {
   **/
   function pluck(property) {
     var results = [];
-    this.each(function(value) {
+    each.call(this, function(value) {
       results.push(value[property]);
     });
     return results;
@@ -635,7 +635,7 @@ var Enumerable = (function() {
   **/
   function reject(iterator, context) {
     var results = [];
-    this.each(function(value, index) {
+    each.call(this, function(value, index) {
       if (!iterator.call(context, value, index))
         results.push(value);
     });
