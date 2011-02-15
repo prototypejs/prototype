@@ -1,3 +1,5 @@
+* Ensure that prototype works in IE < 9 when compiled via Closure Compiler [#1217 state:resolved] (Christopher Blum)
+
 *1.7* (November 16, 2010)
 
 * Ensure `Element#update` works with string content that includes a LINK tag in Internet Explorer. [#264 state:resolved] (Tobias H. Michaelsen, Andrew Dupont)
