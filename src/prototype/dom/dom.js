@@ -3006,7 +3006,7 @@ Element._getContentFromAnonymousElement = function(tagName, html, force) {
   if (workaround) {
     // Adding a text node to the beginning of the string (then removing it)
     // fixes an issue in Internet Explorer. See Element#update above.
-    div.innerHTML = '&nbsp;' + t[0] + html + t[1];
+    div.innerHTML = '&#160;' + t[0] + html + t[1];
     div.removeChild(div.firstChild);
     for (var i = t[2]; i--; ) {
       div = div.firstChild;
