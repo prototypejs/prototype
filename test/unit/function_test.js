@@ -129,5 +129,21 @@ new Test.Unit.Runner({
         this.assertEqual.bind(this, arg3), arg1, arg2, arg3 );
       call(eventTest);
     }
+  },
+
+  testFluent: function() {
+    var hash = new Hash();
+    hash.set = hash.set.fluent();
+    this.assertIdentical(hash, hash.set('a', 'foo') );
+  },
+
+  testOnce: function() {
+    var i = 0;
+    var f = function() {
+      return ++i;
+    }.once();
+    this.assertIdentical(0, f() );
+    this.assertIdentical(undefined, f() );
+    this.assertEqual(i, 1);
   }
 });

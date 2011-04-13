@@ -377,6 +377,92 @@ Object.extend(Function.prototype, (function() {
     };
   }
 
+  /**
+   *  Function#fluent() -> Function
+   *
+   *  Makes function acting fluent-way (allows chaining). It makes method of an
+   *  object always returning that object (no matter what oriignal method returns).
+   *
+   *  ##### Example
+   *
+   *      // Original Hash.set returns value which was passed to it
+   *      var hash = new Hash();
+   *      // Now we make it chainable
+   *      hash.set = hash.set.fluent();
+   *
+   *      // Use it
+   *      hash.set("a", "foo")
+   *          .set("b", "bar");
+   *      hash.get("b");
+   *      // -> "bar"
+  **/
+  function fluent()
+  {
+    var method = this;
+
+    return function() {
+      // note that "this" here is relative context bound at call-time
+      method.apply(this, arguments);
+      return this;
+    };
+  }
+
+  /**
+   *  Function#fluent() -> Function
+   *
+   *  Allows only single execution of subject function. It can be usefull when
+   *  attaching functions as callbacks for multiple events when only first execution
+   *  should be cought.
+   *
+   *  ##### Example
+   *
+   *      var i = 0;
+   *      var f = function() {
+   *        ++i;
+   *      }.once();
+   *
+   *      // Now call it as many times as you want
+   *      f();
+   *      f();
+   *      f();
+   *      f();
+   *
+   *      i;
+   *      // -> 1
+   *
+   *  At first time, function will return value returned by original function. After
+   *  that result of function will be undefined.
+   *
+   *  ##### Example
+   *
+   *      var i = 0;
+   *      var f = function() {
+   *        return ++i;
+   *      }.once();
+   *
+   *      f();
+   *      // -> 0
+   *      f();
+   *      // -> undefined
+  **/
+  function once()
+  {
+    var method = this, names = this.argumentNames();
+
+    var wrapper = function() {
+      // remembers returned value
+      var result = method();
+      method = function() {};
+      return result;
+    };
+    // this will overwrite wrapper argument names to manifest oryginal arugment names
+    wrapper.argumentNames = function() {
+      return names;
+    };
+
+    return wrapper
+  }
+
   return {
     argumentNames:       argumentNames,
     bind:                bind,
@@ -385,7 +471,9 @@ Object.extend(Function.prototype, (function() {
     delay:               delay,
     defer:               defer,
     wrap:                wrap,
-    methodize:           methodize
+    methodize:           methodize,
+    fluent:              fluent,
+    once:                once
   }
 })());
 
