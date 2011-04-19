@@ -290,9 +290,16 @@
   }
   
   /**
-   *  Element.toggle(@element) -> Element
+   *  Element.toggle(@element[, bool]) -> Element
    *
-   *  Toggles the visibility of `element`. Returns `element`.
+   *  Toggles the CSS `display` of `element`. Returns `element`.
+   *  
+   *  Switches an element's CSS `display` between `none` and its inherited
+   *  value (usually `block` or `inline`).
+   *
+   *  By default, `toggle` will switch the display to the opposite of its
+   *  current state, but will use the `bool` argument instead if it's
+   *  provided (`true` to show the element, `false` to hide it).
    *  
    *  ##### Examples
    *  
@@ -305,6 +312,10 @@
    *      $('error-message').toggle();
    *      // -> Element (and displays div#error-message)
    *  
+   *      $('error-message).toggle(true);
+   *      // -> Element (and displays div#error-message, no matter what its
+   *      //    previous state)
+   *  
    *  Toggle multiple elements using [[Enumerable#each]]:
    *  
    *      ['error-message', 'welcome-message'].each(Element.toggle);
@@ -314,6 +325,11 @@
    *  
    *      $('error-message', 'welcome-message').invoke('toggle');
    *      // -> [Element, Element]
+   *  
+   *      $('error-message', 'welcome-message').invoke('toggle', false);
+   *      // -> [Element, Element] (and hides both elements, no matter what
+   *            their previous state)
+   *  
    *
    *  ##### Notes
    *  
@@ -331,7 +347,7 @@
    *      
    *      <div id="hidden-by-css"></div>
    *  
-   *      $('hidden-by-css').toggle(); // WONT' WORK!
+   *      $('hidden-by-css').toggle(); // WON'T WORK!
    *      // -> Element (div#hidden-by-css is still hidden!)
   **/
   function toggle(element, bool) {
@@ -2485,9 +2501,13 @@
   }
   
   /**
-   *  Element.toggleClassName(@element, className) -> Element
+   *  Element.toggleClassName(@element, className[, bool]) -> Element
    *
    *  Toggles the presence of CSS class `className` on `element`.
+   *  
+   *  By default, `toggleClassName` will flip to the opposite state, but
+   *  will use `bool` instead if it's given; `true` will add the class name
+   *  and `false` will remove it.
    *
    *  ##### Examples
    *  
@@ -2500,10 +2520,13 @@
    *      // -> false
    *      
    *      $('mutsu').toggleClassName('fruit');
-   *      // -> element
+   *      // -> Element
    *      
    *      $('mutsu').hasClassName('fruit');
    *      // -> true
+   *  
+   *      $('mutsu').toggleClassName('fruit', true);
+   *      // -> Element (keeps the "fruit" class name that was already there)
   **/
   function toggleClassName(element, className, bool) {
     if (!(element = $(element))) return;

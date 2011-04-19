@@ -99,7 +99,7 @@
       // (Though Opera supports both systems, the event object appears to be
       // the same no matter which system is used. That means that this function
       // will always return `true` in Opera, but that's OK; it keeps us from
-      // having to do a browser sniff.
+      // having to do a browser sniff.)
       isIELegacyEvent = function(event) {
         return !(event instanceof window.Event);
       };
@@ -151,6 +151,7 @@
   
   /**
    *  Event.isLeftClick(@event) -> Boolean
+   *  - event (Event): An Event object
    *
    *  Determines whether a button-related mouse event involved the left
    *  mouse button.
@@ -163,6 +164,7 @@
 
   /**
    *  Event.isMiddleClick(@event) -> Boolean
+   *  - event (Event): An Event object
    *
    *  Determines whether a button-related mouse event involved the middle
    *  mouse button.
@@ -171,11 +173,12 @@
 
   /**
    *  Event.isRightClick(@event) -> Boolean
+   *  - event (Event): An Event object
    *
    *  Determines whether a button-related mouse event involved the right
    *  mouse button.
    *
-   *  Keep in mind that the "left" mouse button is actually the "secondary"
+   *  Keep in mind that the "right" mouse button is actually the "secondary"
    *  mouse button. When a mouse is in left-handed mode, the browser will
    *  report clicks of the _left_ button as "left-clicks."
   **/
@@ -255,11 +258,11 @@
    *  
    *  ##### Example
    *  
-   *  Here's a simple code that lets you click everywhere on the page and hides
-   *  the closest-fitting paragraph around your click (if any).
+   *  Here's a simple example that lets you click everywhere on the page and
+   *  hides the closest-fitting paragraph around your click (if any).
    *  
    *      document.observe('click', function(event) {
-   *        var element = Event.findElement(event, 'p');
+   *        var element = event.findElement('p');
    *        if (element != document)
    *          $(element).hide();
    *      });
@@ -433,6 +436,7 @@
 
     /**
      *  Event.extend(@event) -> Event
+     *  - event (Event): An Event object
      *  
      *  Extends `event` with all of the methods contained in `Event.Methods`.
      *  
