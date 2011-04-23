@@ -1,4 +1,3 @@
-
 (function() {
   
   // Converts a CSS percentage value to a decimal.
@@ -1088,6 +1087,7 @@
     }
     
     // Restore the original styles as captured by Element#absolutize.
+    element.style.position = 'relative';
     var originalStyles = 
      element.retrieve('prototype_absolutize_original_styles');
     
