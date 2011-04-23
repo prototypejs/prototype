@@ -356,10 +356,18 @@ Array.from = $A;
    *  Returns an array containing every item that is shared between the two
    *  given arrays.
   **/
-  function intersect(array) {
-    return this.uniq().findAll(function(item) {
-      return array.detect(function(value) { return item === value });
-    });
+  // Alternative implementation of Prototype's Array#intersect using Array#uniq to guarantee uniqueness before intersecting
+  // If both the source and comparison arrays are already unique, set the argument "u" to a truthy value for extra performance
+  function intersect(array, sorted) {
+    var r = [],
+         b = sorted ? this.concat(array).sort() : this.concat([]).sort().uniq(true).concat(array.concat([]).sort().uniq(true)).sort(),
+         x = b.length;
+    if (x > 0) {
+      for (; --x;) {
+        if (b[x] === b[x - 1] && r[0] !== b[x]) { r.unshift(b[x]); }
+      }
+    }
+    return r;
   }
 
   /** alias of: Array#clone
