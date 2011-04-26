@@ -1275,11 +1275,11 @@ new Test.Unit.Runner({
   testElementScrollTo: function() {
     var elem = $('scroll_test_2');
     Element.scrollTo('scroll_test_2');
-    this.assertEqual(Position.page(elem)[1], 0);
+    this.assertEqual(0, Position.page(elem)[1]);
     window.scrollTo(0, 0);
     
     elem.scrollTo();
-    this.assertEqual(Position.page(elem)[1], 0);      
+    this.assertEqual(0, Position.page(elem)[1]);
     window.scrollTo(0, 0);
   },
   
