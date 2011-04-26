@@ -994,6 +994,8 @@
    *  scrolling containers.
   **/
   function cumulativeScrollOffset(element) {
+    element = $(element);
+
     var valueT = 0, valueL = 0;
     do {
       valueT += element.scrollTop  || 0;
@@ -1009,10 +1011,9 @@
    *  Returns the X/Y coordinates of element relative to the viewport.
   **/
   function viewportOffset(forElement) {
-    element = $(element);
     var valueT = 0, valueL = 0, docBody = document.body;
 
-    var element = forElement;
+    var element = $(forElement);
     do {
       valueT += element.offsetTop  || 0;
       valueL += element.offsetLeft || 0;
@@ -1021,7 +1022,7 @@
         Element.getStyle(element, 'position') == 'absolute') break;
     } while (element = element.offsetParent);
 
-    element = forElement;
+    element = $(forElement);
     do {
       // Opera < 9.5 sets scrollTop/Left on both HTML and BODY elements.
       // Other browsers set it only on the HTML element. The BODY element
@@ -1196,11 +1197,18 @@
 
         var rect = element.getBoundingClientRect(),
          docEl = document.documentElement;
+
+	//
+	// Firefox may return fractional values here, so round them to the
+	// largest integer part.
+	//
+	var top = Math.floor(Math.abs(rect.top)) * ((rect.top >= 0) ? 1 : -1);
+	var left = Math.floor(Math.abs(rect.left)) * ((rect.left >= 0) ? 1 : -1);
+
         // The HTML element on IE < 8 has a 2px border by default, giving
         // an incorrect offset. We correct this by subtracting clientTop
         // and clientLeft.
-        return new Element.Offset(rect.left - docEl.clientLeft,
-         rect.top - docEl.clientTop);
+	return new Element.Offset(left - docEl.clientLeft, top - docEl.clientTop);
       }
     });    
   }
