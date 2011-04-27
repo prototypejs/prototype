@@ -185,8 +185,13 @@ if (!Node.ELEMENT_NODE) {
     var cache = Element.cache;
     
     if (HAS_EXTENDED_CREATE_ELEMENT_SYNTAX && attributes.name) {
-      tagName = '<' + tagName + ' name="' + attributes.name + '">';
-      delete attributes.name;      
+      tagName = '<' + tagName + ' name="' + attributes.name;
+      delete attributes.name;  
+      if (attributes.type) {
+        tagName = tagName + '" type="' + attributes.type;
+        delete attributes.type;  
+      }  
+      tagName = tagName + '">';
       return Element.writeAttribute(document.createElement(tagName), attributes);
     }
     
@@ -2259,7 +2264,7 @@ Element.Methods = {
    *  [Document Object Model (DOM) Level 2 Style Specification](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle).
    **/
   getStyle: function(element, style) {
-    element = $(element);
+    element = $(element); 
     style = style == 'float' ? 'cssFloat' : style.camelize();
     var value = element.style[style];
     if (!value || value == 'auto') {

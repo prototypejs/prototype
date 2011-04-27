@@ -1170,6 +1170,25 @@ new Test.Unit.Runner({
     
     var radio2 = new Element('input', { type: 'radio', value: 'test2' });
     this.assert(radio2.value === 'test2', 'value of a dynamically-created radio button');
+    
+    var button = new Element('div');
+    var button1 = new Element('button', { type: 'submit', name: 'test' });
+    this.assertEqual('submit', button1.readAttribute('type'));
+    button.insert(button1);
+    this.assertEqual('submit', button.down().readAttribute('type'));
+    if (Prototype.Browser.IE) {
+      this.assertEqual('<button name=test type=submit></button>', getInnerHTML(button));
+    } else if (Prototype.Browser.WebKit || Prototype.Browser.Opera) {
+      this.assertEqual('<button type="submit" name="test"></button>', getInnerHTML(button));
+    } else {
+      this.assertEqual('<button name="test" type="submit"></button>', getInnerHTML(button));
+    }
+    button1 = new Element('button', { type: 'button', name: 'test' });
+    this.assertEqual('button', button1.readAttribute('type'));
+    button1 = new Element('button', { type: 'reset', name: 'test' });
+    this.assertEqual('reset', button1.readAttribute('type'));
+    button1 = new Element('input', { type: 'submit', name: 'test' });
+    this.assertEqual('submit', button1.readAttribute('type'));
   },
 
   testElementGetHeight: function() {
