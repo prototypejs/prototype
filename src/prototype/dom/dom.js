@@ -184,14 +184,17 @@ if (!Node.ELEMENT_NODE) {
     tagName = tagName.toLowerCase();
     var cache = Element.cache;
     
-    if (HAS_EXTENDED_CREATE_ELEMENT_SYNTAX && attributes.name) {
-      tagName = '<' + tagName + ' name="' + attributes.name;
-      delete attributes.name;  
+    if (HAS_EXTENDED_CREATE_ELEMENT_SYNTAX && (attributes.name || attributes.type)) {
+      tagName = '<' + tagName;
+      if (attributes.name) {
+        tagName += ' name="' + attributes.name + '"';
+        delete attributes.name;  
+      }
       if (attributes.type) {
-        tagName = tagName + '" type="' + attributes.type;
+        tagName += ' type="' + attributes.type + '"';
         delete attributes.type;  
       }  
-      tagName = tagName + '">';
+      tagName += '>';
       return Element.writeAttribute(document.createElement(tagName), attributes);
     }
     
