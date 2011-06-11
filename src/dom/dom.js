@@ -791,6 +791,9 @@
     after: function(element, node) {
       element.parentNode.insertBefore(node, element.nextSibling);
     },
+    into: function (element, node) {
+      node.appendChild(element);
+    },
     
     tags: {
       TABLE:  ['<table>',                '</table>',                   1],
