@@ -159,7 +159,8 @@ new Test.Unit.Runner({
     var span = $("span"), observer = Prototype.emptyFunction, eventID;
     
     span.observe("test:somethingHappened", observer);
-    
+    span.observe("test:somethingHappened2", observer);
+
     var registry = span.getStorage().get('prototype_event_registry');
     
     this.assert(registry);
@@ -171,8 +172,14 @@ new Test.Unit.Runner({
     registry = span.getStorage().get('prototype_event_registry');
     
     this.assert(registry);
-    this.assert(Object.isArray(registry.get('test:somethingHappened')));
-    this.assertEqual(0, registry.get('test:somethingHappened').length);
+    this.assert(!Object.isArray(registry.get('test:somethingHappened')));
+    this.assert(Object.isArray(registry.get('test:somethingHappened2')));
+    this.assertEqual(1, registry.get('test:somethingHappened2').length);
+
+    span.stopObserving("test:somethingHappened2", observer);
+
+    registry = span.getStorage().get('prototype_event_registry');
+    this.assert(!registry, "Should cleanup registry when the last event is removed");
   },
   
   testObserveAndStopObservingAreChainable: function() {
