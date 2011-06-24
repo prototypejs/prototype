@@ -492,8 +492,8 @@
 
     if (Object.isUndefined(registry)) {
       // First time we've handled this element. Put it into the cache.
-      CACHE.push(element);
       registry = Element.retrieve(element, 'prototype_event_registry', $H());
+      CACHE[element._prototypeUID || 0] = element;
     }
 
     var respondersForEvent = registry.get(eventName);
@@ -557,13 +557,13 @@
   }
 
   function _destroyCache() {
-    for (var i = 0, length = CACHE.length; i < length; i++) {
-      Event.stopObserving(CACHE[i]);
-      CACHE[i] = null;
+    for (var key in CACHE) {
+      Event.stopObserving(CACHE[key]);
     }
+    CACHE = {};
   }
 
-  var CACHE = [];
+  var CACHE = {};
 
   // Internet Explorer needs to remove event handlers on page unload
   // in order to avoid memory leaks.
@@ -892,7 +892,7 @@
       registry.unset(eventName);
       if (registry.size() == 0) {
         // to prevent memory leak!
-        CACHE = CACHE.without(element);
+        delete CACHE[element._prototypeUID || 0];
         // to ensure element will be re-added to CACHE in case of new Event.observe:
         Element.getStorage(element).unset('prototype_event_registry');
       }
