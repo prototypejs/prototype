@@ -3359,7 +3359,7 @@
    *  failure handler (since we didn't supply one).
   **/
   function addMethods(methods) {
-    if (arguments.length === 0) return addFormMethods();
+    if (arguments.length === 0) addFormMethods();
     
     if (arguments.length === 2) {
       // Tag names have been specified.
