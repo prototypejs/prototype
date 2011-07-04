@@ -1,5 +1,4 @@
-(function() {
-
+(function(GLOBAL) {
   /** section: DOM
    * class Event
    *
@@ -63,6 +62,11 @@
    *  different method of event registration, for whatever reason,you'll need to
    *  extend these events manually with [[Event.extend]].
   **/
+  var DIV = document.createElement('div');
+  var docEl = document.documentElement;
+  var MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED = 'onmouseenter' in docEl
+   && 'onmouseleave' in docEl;
+  
   var Event = {
     KEY_BACKSPACE: 8,
     KEY_TAB:       9,
@@ -77,23 +81,16 @@
     KEY_END:      35,
     KEY_PAGEUP:   33,
     KEY_PAGEDOWN: 34,
-    KEY_INSERT:   45,
-
-    cache: {}
+    KEY_INSERT:   45
   };
-
-  var docEl = document.documentElement;
-  var MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED = 'onmouseenter' in docEl
-    && 'onmouseleave' in docEl;
-    
-    
+  
   // We need to support three different event "modes":
   //  1. browsers with only DOM L2 Events (WebKit, FireFox);
   //  2. browsers with only IE's legacy events system (IE 6-8);
   //  3. browsers with _both_ systems (IE 9 and arguably Opera).
   //
   // Groups 1 and 2 are easy; group three is trickier.
-  
+
   var isIELegacyEvent = function(event) { return false; };
 
   if (window.attachEvent) {
@@ -102,7 +99,7 @@
       // (Though Opera supports both systems, the event object appears to be
       // the same no matter which system is used. That means that this function
       // will always return `true` in Opera, but that's OK; it keeps us from
-      // having to do a browser sniff.
+      // having to do a browser sniff.)
       isIELegacyEvent = function(event) {
         return !(event instanceof window.Event);
       };
@@ -115,16 +112,16 @@
   // The two systems have different ways of indicating which button was used
   // for a mouse event.
   var _isButton;
-  
+
   function _isButtonForDOMEvents(event, code) {
     return event.which ? (event.which === code + 1) : (event.button === code);
   }
-  
+
   var legacyButtonMap = { 0: 1, 1: 4, 2: 2 };
   function _isButtonForLegacyEvents(event, code) {
     return event.button === legacyButtonMap[code];
   }
-  
+
   // In WebKit we have to account for when the user holds down the "meta" key.
   function _isButtonForWebKit(event, code) {
     switch (code) {
@@ -134,7 +131,7 @@
       default: return false;
     }
   }
-  
+
   if (window.attachEvent) {
     if (!window.addEventListener) {
       // Legacy IE events only.
@@ -151,9 +148,10 @@
   } else {
     _isButton = _isButtonForDOMEvents;
   }
-
+  
   /**
    *  Event.isLeftClick(@event) -> Boolean
+   *  - event (Event): An Event object
    *
    *  Determines whether a button-related mouse event involved the left
    *  mouse button.
@@ -166,6 +164,7 @@
 
   /**
    *  Event.isMiddleClick(@event) -> Boolean
+   *  - event (Event): An Event object
    *
    *  Determines whether a button-related mouse event involved the middle
    *  mouse button.
@@ -174,16 +173,17 @@
 
   /**
    *  Event.isRightClick(@event) -> Boolean
+   *  - event (Event): An Event object
    *
    *  Determines whether a button-related mouse event involved the right
    *  mouse button.
    *
-   *  Keep in mind that the "left" mouse button is actually the "secondary"
+   *  Keep in mind that the "right" mouse button is actually the "secondary"
    *  mouse button. When a mouse is in left-handed mode, the browser will
    *  report clicks of the _left_ button as "left-clicks."
   **/
   function isRightClick(event)  { return _isButton(event, 2) }
-
+  
   /** deprecated
    *  Event.element(@event) -> Element
    *  - event (Event): An Event object
@@ -258,11 +258,11 @@
    *  
    *  ##### Example
    *  
-   *  Here's a simple code that lets you click everywhere on the page and hides
-   *  the closest-fitting paragraph around your click (if any).
+   *  Here's a simple example that lets you click everywhere on the page and
+   *  hides the closest-fitting paragraph around your click (if any).
    *  
    *      document.observe('click', function(event) {
-   *        var element = Event.findElement(event, 'p');
+   *        var element = event.findElement('p');
    *        if (element != document)
    *          $(element).hide();
    *      });
@@ -436,6 +436,7 @@
 
     /**
      *  Event.extend(@event) -> Event
+     *  - event (Event): An Event object
      *  
      *  Extends `event` with all of the methods contained in `Event.Methods`.
      *  
@@ -449,7 +450,7 @@
     // IE's method for extending events.
     Event.extend = function(event, element) {
       if (!event) return false;
-
+      
       // If it's not a legacy event, it doesn't need extending.
       if (!isIELegacyEvent(event)) return event;
 
@@ -484,108 +485,117 @@
     Event.prototype = window.Event.prototype || document.createEvent('HTMLEvents').__proto__;
     Object.extend(Event.prototype, methods);
   }
+  
+  //
+  // EVENT REGISTRY
+  //
+  var EVENT_TRANSLATIONS = {
+    mouseenter: 'mouseover',
+    mouseleave: 'mouseout'
+  };
+  
+  function getDOMEventName(eventName) {
+    return EVENT_TRANSLATIONS[eventName] || eventName;
+  }
+  
+  if (MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED)
+    getDOMEventName = Prototype.K;
+  
+  function getUniqueElementID(element) {
+    if (element === window) return 0;
 
-  function _createResponder(element, eventName, handler) {
-    // We don't set a default on the call to Element#retrieve so that we can
-    // handle the element's "virgin" state.
-    var registry = Element.retrieve(element, 'prototype_event_registry');
+    // Need to use actual `typeof` operator to prevent errors in some
+    // environments when accessing node expandos.
+    if (typeof element._prototypeUID === 'undefined')
+      element._prototypeUID = Element.Storage.UID++;
+    return element._prototypeUID;
+  }
+  
+  // In Internet Explorer, DOM nodes have a `uniqueID` property. Saves us
+  // from inventing our own.
+  function getUniqueElementID_IE(element) {
+    if (element === window) return 0;
+    // The document object's `uniqueID` property changes each time you read it.
+    if (element == document) return 1;
+    return element.uniqueID;
+  }
+  
+  if ('uniqueID' in DIV)
+    getUniqueElementID = getUniqueElementID_IE;
 
-    if (Object.isUndefined(registry)) {
-      // First time we've handled this element. Put it into the cache.
-      CACHE.push(element);
-      registry = Element.retrieve(element, 'prototype_event_registry', $H());
-    }
+  function isCustomEvent(eventName) {
+    return eventName.include(':');
+  }
 
-    var respondersForEvent = registry.get(eventName);
-    if (Object.isUndefined(respondersForEvent)) {
-      respondersForEvent = [];
-      registry.set(eventName, respondersForEvent);
-    }
+  Event._isCustomEvent = isCustomEvent;
 
-    // Work around the issue that permits a handler to be attached more than
-    // once to the same element & event type.
-    if (respondersForEvent.pluck('handler').include(handler)) return false;
+  function getRegistryForElement(element) {
+    var CACHE = GLOBAL.Event.cache;
+    var uid = getUniqueElementID(element);
+    if (!CACHE[uid]) CACHE[uid] = { element: element };
+    return CACHE[uid];
+  }
+  
+  function destroyRegistryForElement(element) {
+    var uid = getUniqueElementID(element);
+    delete GLOBAL.Event.cache[uid];
+  }
+  
+  // The `register` and `unregister` functions handle creating the responder
+  // and managing an event registry. They _don't_ attach and detach the
+  // listeners themselves.
+  
+  // Add an event to the element's event registry.
+  function register(element, eventName, handler) {
+    var registry = getRegistryForElement(element);
+    if (!registry[eventName]) registry[eventName] = [];
+    var entries = registry[eventName];
 
-    var responder;
-    if (eventName.include(":")) {
-      // Custom event.
-      responder = function(event) {
-        // If it's not a custom event, ignore it.
-        if (Object.isUndefined(event.eventName))
-          return false;
+    // Make sure this handler isn't already attached.
+    var i = entries.length;
+    while (i--)
+      if (entries[i].handler === handler) return null;
+      
+    var uid = getUniqueElementID(element);
+    var responder = GLOBAL.Event._createResponder(uid, eventName, handler);
+    var entry = {
+      responder: responder,
+      handler:   handler
+    };
 
-        // If it's a custom event, but not the _correct_ custom event, ignore it.
-        if (event.eventName !== eventName)
-          return false;
-
-        Event.extend(event, element);
-        handler.call(element, event);
-      };
-    } else {
-      // Non-custom event.
-      if (!MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED &&
-       (eventName === "mouseenter" || eventName === "mouseleave")) {
-        // If we're dealing with mouseenter or mouseleave in a non-IE browser,
-        // we create a custom responder that mimics their behavior within
-        // mouseover and mouseout.
-        if (eventName === "mouseenter" || eventName === "mouseleave") {
-          responder = function(event) {
-            Event.extend(event, element);
-
-            var parent = event.relatedTarget;
-            while (parent && parent !== element) {
-              try { parent = parent.parentNode; }
-              catch(e) { parent = element; }
-            }
-
-            if (parent === element) return;
-
-            handler.call(element, event);
-          };
-        }
-      } else {
-        responder = function(event) {
-          Event.extend(event, element);
-          handler.call(element, event);
-        };
+    entries.push(entry);    
+    return entry;
+  }
+  
+  // Remove an event from the element's event registry.
+  function unregister(element, eventName, handler) {
+    var registry = getRegistryForElement(element);
+    var entries = registry[eventName];
+    if (!entries) return;
+    
+    var i = entries.length, entry;
+    while (i--) {
+      if (entries[i].handler === handler) {
+        entry = entries[i];
+        break;
       }
     }
+    
+    // This handler wasn't in the collection, so it doesn't need to be
+    // unregistered.
+    if (!entry) return;
 
-    responder.handler = handler;
-    respondersForEvent.push(responder);
-    return responder;
-  }
-
-  function _destroyCache() {
-    for (var i = 0, length = CACHE.length; i < length; i++) {
-      Event.stopObserving(CACHE[i]);
-      CACHE[i] = null;
-    }
-  }
-
-  var CACHE = [];
-
-  // Internet Explorer needs to remove event handlers on page unload
-  // in order to avoid memory leaks.
-  if (Prototype.Browser.IE)
-    window.attachEvent('onunload', _destroyCache);
-
-  // Safari needs a dummy event handler on page unload so that it won't
-  // use its bfcache. Safari <= 3.1 has an issue with restoring the "document"
-  // object when page is returned to via the back button using its bfcache.
-  if (Prototype.Browser.WebKit)
-    window.addEventListener('unload', Prototype.emptyFunction, false);
-
-
-  var _getDOMEventName = Prototype.K,
-      translations = { mouseenter: "mouseover", mouseleave: "mouseout" };
-
-  if (!MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED) {
-    _getDOMEventName = function(eventName) {
-      return (translations[eventName] || eventName);
-    };
-  }
-
+    // Remove the entry from the collection;
+    var index = entries.indexOf(entry);
+    entries.splice(index, 1);
+    
+    return entry;
+  }  
+  
+  
+  //
+  // EVENT OBSERVING
+  //
   /**
    *  Event.observe(element, eventName, handler) -> Element
    *  - element (Element | String): The DOM element to observe, or its ID.
@@ -736,37 +746,42 @@
    *  1.6 also introduced setting the `this` context to the element being
    *  observed, automatically extending the [[Event]] object, and the
    *  [[Event#findElement]] method.
-  **/
+  **/  
   function observe(element, eventName, handler) {
     element = $(element);
+    var entry = register(element, eventName, handler);
+    
+    if (entry === null) return element;
 
-    var responder = _createResponder(element, eventName, handler);
-
-    if (!responder) return element;
-
-    if (eventName.include(':')) {
-      // Custom event.
-      if (element.addEventListener)
-        element.addEventListener("dataavailable", responder, false);
-      else {
-        // We observe two IE-proprietarty events: one for custom events that
-        // bubble and one for custom events that do not bubble.
-        element.attachEvent("ondataavailable", responder);
-        element.attachEvent("onlosecapture", responder);
-      }
-    } else {
-      var actualEventName = _getDOMEventName(eventName);
-
-      // Ordinary event.
-      if (element.addEventListener)
-        element.addEventListener(actualEventName, responder, false);
-      else
-        element.attachEvent("on" + actualEventName, responder);
-    }
-
+    var responder = entry.responder;    
+    if (isCustomEvent(eventName))
+      observeCustomEvent(element, eventName, responder);
+    else
+      observeStandardEvent(element, eventName, responder);
+      
     return element;
   }
-
+  
+  function observeStandardEvent(element, eventName, responder) {
+    var actualEventName = getDOMEventName(eventName);
+    if (element.addEventListener) {
+      element.addEventListener(actualEventName, responder, false);
+    } else {
+      element.attachEvent('on' + actualEventName, responder);
+    }
+  }
+  
+  function observeCustomEvent(element, eventName, responder) {
+    if (element.addEventListener) {
+      element.addEventListener('dataavailable', responder, false);
+    } else {
+      // We observe two IE-proprietarty events: one for custom events that
+      // bubble and one for custom events that do not bubble.
+      element.attachEvent('ondataavailable', responder);
+      element.attachEvent('onlosecapture',   responder);
+    }
+  }
+  
   /**
    *  Event.stopObserving(element[, eventName[, handler]]) -> Element
    *  - element (Element | String): The element to stop observing, or its ID.
@@ -828,66 +843,97 @@
    *  ...and then to remove:
    *
    *      $('foo').stopObserving('click', this.boundHandlerMethod); // <== Right
-  **/
+  **/  
   function stopObserving(element, eventName, handler) {
     element = $(element);
-
-    var registry = Element.retrieve(element, 'prototype_event_registry');
-    if (!registry) return element;
-
-    if (!eventName) {
-      // We stop observing all events.
-      // e.g.: $(element).stopObserving();
-      registry.each( function(pair) {
-        var eventName = pair.key;
-        stopObserving(element, eventName);
-      });
-      return element;
-    }
-
-    var responders = registry.get(eventName);
-    if (!responders) return element;
-
-    if (!handler) {
-      // We stop observing all handlers for the given eventName.
-      // e.g.: $(element).stopObserving('click');
-      responders.each(function(r) {
-        stopObserving(element, eventName, r.handler);
-      });
+    var handlerGiven = !Object.isUndefined(handler),
+     eventNameGiven = !Object.isUndefined(eventName);
+     
+    if (!eventNameGiven && !handlerGiven) {
+      stopObservingElement(element);
       return element;
     }
     
-    var i = responders.length, responder;
-    while (i--) {
-      if (responders[i].handler === handler) {
-        responder = responders[i];
-        break;
-      }
+    if (!handlerGiven) {
+      stopObservingEventName(element, eventName);
+      return element;
     }
-    if (!responder) return element;
-
-    if (eventName.include(':')) {
-      // Custom event.
-      if (element.removeEventListener)
-        element.removeEventListener("dataavailable", responder, false);
-      else {
-        element.detachEvent("ondataavailable", responder);
-        element.detachEvent("onlosecapture", responder);
-      }
-    } else {
-      // Ordinary event.
-      var actualEventName = _getDOMEventName(eventName);
-      if (element.removeEventListener)
-        element.removeEventListener(actualEventName, responder, false);
-      else
-        element.detachEvent('on' + actualEventName, responder);
-    }
-
-    registry.set(eventName, responders.without(responder));
-
+    
+    var entry = unregister(element, eventName, handler);
+    
+    if (!entry) return element; 
+    removeEvent(element, eventName, entry.responder);
     return element;
   }
+  
+  function stopObservingStandardEvent(element, eventName, responder) {
+    var actualEventName = getDOMEventName(eventName);
+    if (element.removeEventListener) {
+      element.removeEventListener(actualEventName, responder, false);      
+    } else {
+      element.detachEvent('on' + actualEventName, responder);
+    }
+  }
+  
+  function stopObservingCustomEvent(element, eventName, responder) {
+    if (element.removeEventListener) {
+      element.removeEventListener('dataavailable', responder, false);
+    } else {
+      element.detachEvent('ondataavailable', responder);
+      element.detachEvent('onlosecapture',   responder);
+    }
+  }
+  
 
+  // The `stopObservingElement` and `stopObservingEventName` functions are
+  // for bulk removal of event listeners. We use them rather than recurse
+  // back into `stopObserving` to avoid touching the registry more often than
+  // necessary.
+  
+  // Stop observing _all_ listeners on an element.
+  function stopObservingElement(element) {
+    var registry = getRegistryForElement(element);
+    destroyRegistryForElement(element);
+    
+    var entries, i;
+    for (var eventName in registry) {
+      entries = registry[eventName];
+      i = entries.length;
+      while (i--)
+        removeEvent(element, eventName, entries[i].responder);
+    }
+  }
+  
+  // Stop observing all listeners of a certain event name on an element.
+  function stopObservingEventName(element, eventName) {
+    var registry = getRegistryForElement(element);
+    var entries = registry[eventName];
+    if (!entries) return;
+    delete registry[eventName];
+    
+    var i = entries.length;
+    while (i--)
+      removeEvent(element, eventName, entries[i].responder);
+  }
+
+  
+  function removeEvent(element, eventName, handler) {
+    if (isCustomEvent(eventName))
+      stopObservingCustomEvent(element, eventName, handler);
+    else
+      stopObservingStandardEvent(element, eventName, handler);
+  }
+  
+  
+  
+  // FIRING CUSTOM EVENTS
+  function getFireTarget(element) {
+    if (element !== document) return element;
+    if (document.createEvent && !element.dispatchEvent)
+      return document.documentElement;
+    return element;
+  }
+  
   /**
    *  Event.fire(element, eventName[, memo[, bubble = true]]) -> Event
    *  - memo (?): Metadata for the event. Will be accessible to event
@@ -899,33 +945,40 @@
    *  Custom events **must** include a colon (`:`) in their names.
   **/
   function fire(element, eventName, memo, bubble) {
-    element = $(element);
-
-    if (Object.isUndefined(bubble))
-      bubble = true;
-
-    if (element == document && document.createEvent && !element.dispatchEvent)
-      element = document.documentElement;
-
-    var event;
-    if (document.createEvent) {
-      event = document.createEvent('HTMLEvents');
-      event.initEvent('dataavailable', bubble, true);
-    } else {
-      event = document.createEventObject();
-      event.eventType = bubble ? 'ondataavailable' : 'onlosecapture';
-    }
-
-    event.eventName = eventName;
-    event.memo = memo || { };
-
-    if (document.createEvent)
-      element.dispatchEvent(event);
-    else
-      element.fireEvent(event.eventType, event);
-
+    element = getFireTarget($(element));
+    if (Object.isUndefined(bubble)) bubble = true;      
+    memo = memo || {};
+      
+    var event = fireEvent(element, eventName, memo, bubble);
     return Event.extend(event);
   }
+  
+  function fireEvent_DOM(element, eventName, memo, bubble) {
+    var event = document.createEvent('HTMLEvents');
+    event.initEvent('dataavailable', bubble, true);
+    
+    event.eventName = eventName;
+    event.memo = memo;
+    
+    element.dispatchEvent(event);
+    return event;
+  }
+  
+  function fireEvent_IE(element, eventName, memo, bubble) {
+    var event = document.createEventObject();
+    event.eventType = bubble ? 'ondataavailable' : 'onlosecapture';
+    
+    event.eventName = eventName;
+    event.memo = memo;
+    
+    element.fireEvent(event.eventType, event);    
+    return event;
+  }
+  
+  var fireEvent = document.createEvent ? fireEvent_DOM : fireEvent_IE;
+  
+  
+  // EVENT DELEGATION
   
   /**
    *  class Event.Handler
@@ -965,6 +1018,7 @@
       this.callback  = callback;
       this.handler   = this.handleEvent.bind(this);
     },
+    
 
     /**
      *  Event.Handler#start -> Event.Handler
@@ -975,7 +1029,7 @@
       Event.observe(this.element, this.eventName, this.handler);
       return this;
     },
-
+    
     /**
      *  Event.Handler#stop -> Event.Handler
      *  
@@ -985,7 +1039,7 @@
       Event.stopObserving(this.element, this.eventName, this.handler);
       return this;
     },
-
+    
     handleEvent: function(event) {
       var element = Event.findElement(event, this.selector);
       if (element) this.callback.call(this.element, event, element);
@@ -1065,7 +1119,7 @@
     
     return new Event.Handler(element, eventName, selector, callback).start();
   }
-
+  
   Object.extend(Event, Event.Methods);
 
   Object.extend(Event, {
@@ -1218,47 +1272,133 @@
   });
 
   // Export to the global scope.
-  if (window.Event) Object.extend(window.Event, Event);
-  else window.Event = Event;
-})();
+  if (GLOBAL.Event) Object.extend(window.Event, Event);
+  else GLOBAL.Event = Event;
+  
+  GLOBAL.Event.cache = {};
+    
+  function destroyCache_IE() {
+    GLOBAL.Event.cache = null;
+  }
+  
+  if (window.attachEvent)
+    window.attachEvent('onunload', destroyCache_IE);
+    
+  DIV = null;
+  docEl = null;
+})(this);
 
-(function() {
+(function(GLOBAL) {  
+  /* Code for creating leak-free event responders is based on work by
+   John-David Dalton. */
+  
+  var docEl = document.documentElement;
+  var MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED = 'onmouseenter' in docEl
+    && 'onmouseleave' in docEl;
+    
+  function isSimulatedMouseEnterLeaveEvent(eventName) {
+    return MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED &&
+     (eventName === 'mouseenter' || eventName === 'mouseleave');
+  }
+  
+  // The functions for creating responders accept the element's UID rather
+  // than the element itself. This way, there are _no_ DOM objects inside the
+  // closure we create, meaning there's no need to unregister event listeners
+  // on unload.
+  function createResponder(uid, eventName, handler) {    
+    if (Event._isCustomEvent(eventName))
+      return createResponderForCustomEvent(uid, eventName, handler);      
+    if (isSimulatedMouseEnterLeaveEvent(eventName))
+      return createMouseEnterLeaveResponder(uid, eventName, handler);
+    
+    return function(event) {
+      var cacheEntry = Event.cache[uid];
+      var element = cacheEntry.element;
+
+      Event.extend(event, element);
+      handler.call(element, event);
+    };
+  }
+  
+  function createResponderForCustomEvent(uid, eventName, handler) {
+    return function(event) {
+      var cacheEntry = Event.cache[uid], element = cacheEntry.element;
+
+      if (Object.isUndefined(event.eventName))
+        return false;
+        
+      if (event.eventName !== eventName)
+        return false;
+        
+      Event.extend(event, element);
+      handler.call(element, event);
+    };
+  }
+  
+  function createMouseEnterLeaveResponder(uid, eventName, handler) {
+    return function(event) {
+      var cacheEntry = Event.cache[uid], element = cacheEntry.element;
+
+      Event.extend(event, element);
+      var parent = event.relatedTarget;
+      
+      // Walk up the DOM tree to see if the related target is a descendant of
+      // the original element. If it is, we ignore the event to match the
+      // behavior of mouseenter/mouseleave.
+      while (parent && parent !== element) {
+        try { parent = parent.parentNode; }
+        catch(e) { parent = element; }
+      }
+      
+      if (parent === element) return;      
+      handler.call(element, event);
+    }
+  }
+  
+  GLOBAL.Event._createResponder = createResponder;
+  docEl = null;
+})(this);
+
+(function(GLOBAL) {
   /* Support for the DOMContentLoaded event is based on work by Dan Webb,
      Matthias Miller, Dean Edwards, John Resig, and Diego Perini. */
-
-  var timer;
-
+  
+  var TIMER;
+  
   function fireContentLoadedEvent() {
     if (document.loaded) return;
-    if (timer) window.clearTimeout(timer);
+    if (TIMER) window.clearTimeout(TIMER);
     document.loaded = true;
     document.fire('dom:loaded');
   }
-
+  
   function checkReadyState() {
     if (document.readyState === 'complete') {
-      document.stopObserving('readystatechange', checkReadyState);
+      document.detachEvent('onreadystatechange', checkReadyState);
       fireContentLoadedEvent();
     }
   }
-
+  
   function pollDoScroll() {
-    try { document.documentElement.doScroll('left'); }
-    catch(e) {
-      timer = pollDoScroll.defer();
+    try {
+      document.documentElement.doScroll('left');
+    } catch (e) {
+      TIMER = pollDoScroll.defer();
       return;
     }
+    
     fireContentLoadedEvent();
   }
-
+  
   if (document.addEventListener) {
+    // All browsers that support DOM L2 Events support DOMContentLoaded,
+    // including IE 9.
     document.addEventListener('DOMContentLoaded', fireContentLoadedEvent, false);
   } else {
-    document.observe('readystatechange', checkReadyState);
-    if (window == top)
-      timer = pollDoScroll.defer();
+    document.attachEvent('onreadystatechange', checkReadyState);
+    if (window == top) TIMER = pollDoScroll.defer();
   }
-
-  // Worst-case fallback
+  
+  // Worst-case fallback.
   Event.observe(window, 'load', fireContentLoadedEvent);
-})();
+})(this);
