@@ -42,7 +42,7 @@ var PeriodicalExecuter = Class.create({
    *  was previously called.
   **/
   start: function() {
-    this.timer = setInterval(this.execute.bind(this), this.frequency * 1000);
+    if (!this.timer) this.timer = setInterval(this.execute.bind(this), this.frequency * 1000);
   },
 
   execute: function() {
