@@ -31,13 +31,18 @@ var PeriodicalExecuter = Class.create({
   initialize: function(callback, frequency) {
     this.callback = callback;
     this.frequency = frequency;
-    this.currentlyExecuting = false;
 
-    this.registerCallback();
+    this.start();
   },
 
-  registerCallback: function() {
-    this.timer = setInterval(this.onTimerEvent.bind(this), this.frequency * 1000);
+  /**
+   *  PeriodicalExecuter#start() -> undefined
+   *
+   *  Starts the [[PeriodicalExecuter]] or restarts it if `#stop`
+   *  was previously called.
+  **/
+  start: function() {
+    this.timer = setInterval(this.execute.bind(this), this.frequency * 1000);
   },
 
   execute: function() {
@@ -71,22 +76,4 @@ var PeriodicalExecuter = Class.create({
     clearInterval(this.timer);
     this.timer = null;
   },
-
-  onTimerEvent: function() {
-    if (!this.currentlyExecuting) {
-      // IE doesn't support `finally` statements unless all errors are caught.
-      // We mimic the behaviour of `finally` statements by duplicating code
-      // that would belong in it. First at the bottom of the `try` statement
-      // (for errorless cases). Secondly, inside a `catch` statement which
-      // rethrows any caught errors.
-      try {
-        this.currentlyExecuting = true;
-        this.execute();
-        this.currentlyExecuting = false;
-      } catch(e) {
-        this.currentlyExecuting = false;
-        throw e;
-      }
-    }
-  }
 });
