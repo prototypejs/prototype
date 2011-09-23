@@ -3027,11 +3027,22 @@
   function getStorage(element) {
     if (!(element = $(element))) return;
     
-    var uid = getUniqueElementID(element);
+    var key, uid = getUniqueElementID(element);
     
-    if (!Element.Storage[uid])
-      Element.Storage[uid] = $H();
-      
+    if (!Element.Storage[uid]) {
+      if (element.dataset) {
+        Element.Storage[uid] = $H(element.dataset);
+      } else {
+        Element.Storage[uid] = $H();
+        // for attribute in element.attributes {
+        //   if ((/^data-.+$/i).match(attribute.nodeName)) {
+        //     key = String.camelize(attribute.nodeName.substr(5));
+        //     Element.Storage[uid].set(key, attribute.value.nodeValue);
+        //   }
+        // }
+      }
+    }
+    
     return Element.Storage[uid];
   }
   

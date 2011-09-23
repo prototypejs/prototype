@@ -1543,6 +1543,11 @@ new Test.Unit.Runner({
       null,
       "Cloning a node should not confuse the storage engine"
     );
+    
+    
+    element = $('test-empty-with-data-attributes');
+    this.assertEqual("bar", element.retrieve('foo'), "Retrieving a data-* attribute");
+    this.assertEqual("quux", element.retrieve('barBaz'), "Properly camelCasing data-* attributes");
   },
   
   testElementClone: function() {
