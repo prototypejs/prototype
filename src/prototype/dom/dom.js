@@ -3023,6 +3023,8 @@
    *  Element.getStorage(@element) -> Hash
    *
    *  Returns the [[Hash]] object that stores custom metadata for this element.
+   *
+   *  This list will be prepopulatd with any data-* attributes on the element.
   **/  
   function getStorage(element) {
     if (!(element = $(element))) return;
@@ -3069,7 +3071,8 @@
   /**
    *  Element.retrieve(@element, key[, defaultValue]) -> ?
    *
-   *  Retrieves custom metadata set on `element` with [[Element.store]].
+   *  Retrieves custom metadata set on `element` with [[Element.store]] or
+   *  through data-* attributes on the element.
    *
    *  If the value is `undefined` and `defaultValue` is given, it will be
    *  stored on the element as its new value for that key, then returned.
