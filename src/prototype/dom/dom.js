@@ -3023,15 +3023,29 @@
    *  Element.getStorage(@element) -> Hash
    *
    *  Returns the [[Hash]] object that stores custom metadata for this element.
+   *
+   *  This list will be prepopulatd with any data-* attributes on the element.
   **/  
   function getStorage(element) {
     if (!(element = $(element))) return;
     
-    var uid = getUniqueElementID(element);
+    var key, value, uid = getUniqueElementID(element);
     
-    if (!Element.Storage[uid])
-      Element.Storage[uid] = $H();
-      
+    if (!Element.Storage[uid]) {
+      if (element.dataset) {
+        Element.Storage[uid] = $H(element.dataset);
+      } else {
+        Element.Storage[uid] = $H();
+        for (var i = 0, len = element.attributes.length; i < len; i++) {
+          if ((/^data-/).match(element.attributes[i].name)) {
+            key = element.attributes[i].name.substr(5).camelize();
+            value = element.getAttribute(element.attributes[i].name);
+            Element.Storage[uid].set(key, value);
+          }
+        }
+      }
+    }
+    
     return Element.Storage[uid];
   }
   
@@ -3057,7 +3071,8 @@
   /**
    *  Element.retrieve(@element, key[, defaultValue]) -> ?
    *
-   *  Retrieves custom metadata set on `element` with [[Element.store]].
+   *  Retrieves custom metadata set on `element` with [[Element.store]] or
+   *  through data-* attributes on the element.
    *
    *  If the value is `undefined` and `defaultValue` is given, it will be
    *  stored on the element as its new value for that key, then returned.
