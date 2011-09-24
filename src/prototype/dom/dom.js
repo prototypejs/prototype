@@ -3027,19 +3027,20 @@
   function getStorage(element) {
     if (!(element = $(element))) return;
     
-    var key, uid = getUniqueElementID(element);
+    var key, value, uid = getUniqueElementID(element);
     
     if (!Element.Storage[uid]) {
       if (element.dataset) {
         Element.Storage[uid] = $H(element.dataset);
       } else {
         Element.Storage[uid] = $H();
-        // for attribute in element.attributes {
-        //   if ((/^data-.+$/i).match(attribute.nodeName)) {
-        //     key = String.camelize(attribute.nodeName.substr(5));
-        //     Element.Storage[uid].set(key, attribute.value.nodeValue);
-        //   }
-        // }
+        for (var i = 0, len = element.attributes.length; i < len; i++) {
+          if ((/^data-/).match(element.attributes[i].name)) {
+            key = element.attributes[i].name.substr(5).camelize();
+            value = element.getAttribute(element.attributes[i].name);
+            Element.Storage[uid].set(key, value);
+          }
+        }
       }
     }
     
