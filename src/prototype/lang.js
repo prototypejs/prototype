@@ -12,6 +12,7 @@
 //= require "lang/hash"
 //= require "lang/number"
 //= require "lang/range"
+//= require "lang/json"
 
 /**
  * == Language ==

@@ -95,6 +95,71 @@ var Prototype = {
   **/
   BrowserFeatures: {
     /**
+     *  Prototype.BrowserFeatures.FileAPI -> Boolean
+     *
+     *  Used internally to detect if the browser supports the
+     *  [DOM FileAPI](http://www.w3.org/TR/FileAPI/).
+    **/
+    FileAPI: (function() {
+      if (typeof window.FileReader == "object")
+        return true;
+      
+      var input = document.createElement("input");
+      input.type = "file";
+      
+      var check = ("files" in input);
+      input = null;
+      
+      return check;
+    })(),
+    
+    /**
+     *  Prototype.BrowserFeatures.JSON -> Boolean
+     *
+     *  Used internally to detect if the browser supports native JSON
+    **/
+    JSON: (typeof window.JSON == "object"),
+    
+    /**
+     *  Prototype.BrowserFeatures.XMLHttpRequest2 -> Boolean
+     *
+     *  Used internally to detect if the browser supports
+     *  [DOM XMLHttpRequest Level 2](http://dev.w3.org/2006/webapi/XMLHttpRequest-2/).
+    **/
+    XMLHttpRequest2: (typeof window.XMLHttpRequestUpload == "object"),
+    
+    /**
+     *  Prototype.BrowserFeatures.WebSockets -> Boolean
+     *
+     *  Used internally to detect if the browser supports the
+     *  [DOM WebSockets API](http://dev.w3.org/html5/websockets/).
+    **/
+    WebSockets: (function() {
+      // standard
+      if (typeof window.WebSocket == "function")
+        return true;
+          
+      // mozilla
+      if (typeof window.MozWebSocket == "function")
+        return true;
+          
+      // older chrome/safari (etc.)
+      if (typeof window.WebkitWebSocket == "function")
+        return true;
+          
+      // nope
+      return false;
+    })(),
+    
+    /**
+     *  Prototype.BrowserFeatures.EventSource -> Boolean
+     *
+     *  Used internally to detect if the browser supports
+     *  [DOM Server Sent Events](http://www.w3.org/TR/eventsource/).
+    **/
+    EventSource: (typeof window.EventSource != "undefined"),
+        
+    /**
      *  Prototype.BrowserFeatures.XPath -> Boolean
      *
      *  Used internally to detect if the browser supports
@@ -120,6 +185,7 @@ var Prototype = {
       var constructor = window.Element || window.HTMLElement;
       return !!(constructor && constructor.prototype);
     })(),
+    
     SpecificElementExtensions: (function() {
       // First, try the named class
       if (typeof window.HTMLDivElement !== 'undefined')

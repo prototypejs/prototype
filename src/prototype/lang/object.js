@@ -21,37 +21,13 @@
 **/
 (function() {
 
-  var _toString = Object.prototype.toString,
-      NULL_TYPE = 'Null',
-      UNDEFINED_TYPE = 'Undefined',
-      BOOLEAN_TYPE = 'Boolean',
-      NUMBER_TYPE = 'Number',
-      STRING_TYPE = 'String',
-      OBJECT_TYPE = 'Object',
-      FUNCTION_CLASS = '[object Function]',
-      BOOLEAN_CLASS = '[object Boolean]',
-      NUMBER_CLASS = '[object Number]',
-      STRING_CLASS = '[object String]',
-      ARRAY_CLASS = '[object Array]',
-      DATE_CLASS = '[object Date]',
-      NATIVE_JSON_STRINGIFY_SUPPORT = window.JSON &&
-        typeof JSON.stringify === 'function' &&
-        JSON.stringify(0) === '0' &&
-        typeof JSON.stringify(Prototype.K) === 'undefined';
-        
-  function Type(o) {
-    switch(o) {
-      case null: return NULL_TYPE;
-      case (void 0): return UNDEFINED_TYPE;
-    }
-    var type = typeof o;
-    switch(type) {
-      case 'boolean': return BOOLEAN_TYPE;
-      case 'number':  return NUMBER_TYPE;
-      case 'string':  return STRING_TYPE;
-    }
-    return OBJECT_TYPE;
-  }
+  var _toString = Object.prototype.toString;
+  
+  var FUNCTION_CLASS = '[object Function]',
+      NUMBER_CLASS   = '[object Number]',
+      STRING_CLASS   = '[object String]',
+      ARRAY_CLASS    = '[object Array]',
+      DATE_CLASS     = '[object Date]';
 
   /**
    *  Object.extend(destination, source) -> Object
@@ -141,69 +117,7 @@
    *      //-> '{"name": "Violet", "occupation": "character", "age": 25, "pets": ["frog","rabbit"]}'
   **/
   function toJSON(value) {
-    return Str('', { '': value }, []);
-  }
-
-  function Str(key, holder, stack) {
-    var value = holder[key],
-        type = typeof value;
-
-    if (Type(value) === OBJECT_TYPE && typeof value.toJSON === 'function') {
-      value = value.toJSON(key);
-    }
-
-    var _class = _toString.call(value);
-
-    switch (_class) {
-      case NUMBER_CLASS:
-      case BOOLEAN_CLASS:
-      case STRING_CLASS:
-        value = value.valueOf();
-    }
-
-    switch (value) {
-      case null: return 'null';
-      case true: return 'true';
-      case false: return 'false';
-    }
-
-    type = typeof value;
-    switch (type) {
-      case 'string':
-        return value.inspect(true);
-      case 'number':
-        return isFinite(value) ? String(value) : 'null';
-      case 'object':
-
-        for (var i = 0, length = stack.length; i < length; i++) {
-          if (stack[i] === value) { throw new TypeError(); }
-        }
-        stack.push(value);
-
-        var partial = [];
-        if (_class === ARRAY_CLASS) {
-          for (var i = 0, length = value.length; i < length; i++) {
-            var str = Str(i, value, stack);
-            partial.push(typeof str === 'undefined' ? 'null' : str);
-          }
-          partial = '[' + partial.join(',') + ']';
-        } else {
-          var keys = Object.keys(value);
-          for (var i = 0, length = keys.length; i < length; i++) {
-            var key = keys[i], str = Str(key, value, stack);
-            if (typeof str !== "undefined") {
-               partial.push(key.inspect(true)+ ':' + str);
-             }
-          }
-          partial = '{' + partial.join(',') + '}';
-        }
-        stack.pop();
-        return partial;
-    }
-  }
-
-  function stringify(object) {
-    return JSON.stringify(object);
+    return JSON.stringify(value);
   }
 
   /**
@@ -306,7 +220,11 @@
    *      // -> ['name', 'version']
   **/
   function keys(object) {
-    if (Type(object) !== OBJECT_TYPE) { throw new TypeError(); }
+    var type = typeof object;
+    
+    if (type != "object" || [(void 0), null].indexOf(object) > -1)
+      throw new TypeError(String(object).inspect() + " is not an object");
+      
     var results = [];
     for (var property in object) {
       if (object.hasOwnProperty(property)) {
@@ -567,7 +485,7 @@
   extend(Object, {
     extend:        extend,
     inspect:       inspect,
-    toJSON:        NATIVE_JSON_STRINGIFY_SUPPORT ? stringify : toJSON,
+    toJSON:        toJSON,
     toQueryString: toQueryString,
     toHTML:        toHTML,
     keys:          Object.keys || keys,
