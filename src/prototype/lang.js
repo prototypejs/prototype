@@ -1,5 +1,6 @@
 //= compat
 //= require "lang/class"
+//= require "lang/json"
 //= require "lang/object"
 //= require "lang/function"
 //= require "lang/date"
@@ -12,7 +13,6 @@
 //= require "lang/hash"
 //= require "lang/number"
 //= require "lang/range"
-//= require "lang/json"
 
 /**
  * == Language ==

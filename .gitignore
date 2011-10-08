@@ -4,3 +4,4 @@ test/unit/tmp/*
 doc
 tmp
 *.pdoc.yaml
+src/prototype/ext

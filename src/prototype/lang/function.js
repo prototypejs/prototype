@@ -257,23 +257,12 @@
    *
   **/
   function delay(timeout) {
-    var __method = this, args = slice.call(arguments, 1), timer;
-    
+    var __method = this, args = slice.call(arguments, 1);
     timeout = timeout * 1000;
-    timer = window.setTimeout(function() { 
-      timer = null;
+    
+    return window.setTimeout(function() { 
       return __method.apply(__method, args); 
     }, timeout);
-    
-    function clear() {
-      if (timer) {
-        window.clearTimeout(timer);
-        timer = null;
-      }
-    }
-    
-    timer.clear = clear;
-    return timer;
   }
 
   /**
