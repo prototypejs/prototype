@@ -2501,13 +2501,9 @@
   }
   
   /**
-   *  Element.toggleClassName(@element, className[, bool]) -> Element
+   *  Element.toggleClassName(@element, className) -> Element
    *
    *  Toggles the presence of CSS class `className` on `element`.
-   *  
-   *  By default, `toggleClassName` will flip to the opposite state, but
-   *  will use `bool` instead if it's given; `true` will add the class name
-   *  and `false` will remove it.
    *
    *  ##### Examples
    *  
@@ -2524,11 +2520,12 @@
    *      
    *      $('mutsu').hasClassName('fruit');
    *      // -> true
-   *  
-   *      $('mutsu').toggleClassName('fruit', true);
-   *      // -> Element (keeps the "fruit" class name that was already there)
+   *
+   *  ##### NOTES
+   *
+   *  the optional third argument `bool` was removed for better compatibility
   **/
-  function toggleClassName(element, className, bool) {
+  function toggleClassName(element, className) {
     if (!(element = $(element))) return;
     
     if (Object.isUndefined(bool))
@@ -2536,6 +2533,32 @@
       
     var method = Element[bool ? 'addClassName' : 'removeClassName'];
     return method(element, className);
+  }
+  
+  // use native classList if available
+  if (typeof DIV.classList == "object") {
+    hasClassName = function(element, className) {
+      if (!(element = $(element))) return;
+      return element.classList.contains(className);
+    };
+    
+    addClassName = function(element, className) {
+      if (!(element = $(element))) return;
+      element.classList.add(className);
+      return element;
+    };
+    
+    removeClassName = function(element, className) {
+      if (!(element = $(element))) return;
+      element.classList.remove(className);
+      return element;
+    };
+    
+    toggleClassName = function(element, className) { 
+      if (!(element = $(element))) return;
+      element.classList.toggle(className);
+      return element;
+    };
   }
   
   var ATTRIBUTE_TRANSLATIONS = {};
@@ -2685,7 +2708,6 @@
     onselect:    _getEv,
     onchange:    _getEv    
   });
-  
   
   Object.extend(methods, {
     identify:        identify,
