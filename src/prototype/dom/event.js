@@ -85,14 +85,14 @@
   };
   
   // We need to support three different event "modes":
-  //  1. browsers with only DOM L2 Events (WebKit, FireFox);
+  //  1. browsers with only DOM L2+ Events (WebKit, FireFox);
   //  2. browsers with only IE's legacy events system (IE 6-8);
   //  3. browsers with _both_ systems (IE 9 and arguably Opera).
   //
   // Groups 1 and 2 are easy; group three is trickier.
 
   var isIELegacyEvent = function(event) { return false; };
-
+  
   if (window.attachEvent) {
     if (window.addEventListener) {
       // Both systems are supported. We need to decide at runtime.
@@ -597,11 +597,12 @@
   // EVENT OBSERVING
   //
   /**
-   *  Event.observe(element, eventName, handler) -> Element
+   *  Event.observe(element, eventName, handler, useCapture) -> Element
    *  - element (Element | String): The DOM element to observe, or its ID.
    *  - eventName (String): The name of the event, in all lower case, without
    *    the "on" prefix&nbsp;&mdash; e.g., "click" (not "onclick").
    *  - handler (Function): The function to call when the event occurs.
+   *  - useCapture (Boolean): Only supported if DOM Level 3 Events can be used. Defaults to false. 
    *
    *  Registers an event handler on a DOM element. Aliased as [[Element#observe]].
    *
@@ -735,6 +736,14 @@
    *  example, the timing of the `change` or `blur` events varies a bit from
    *  browser to browser.
    *
+   *  ##### Changes in 1.7.?
+   *
+   *  `useCapture` was reimplemented since some HTML5 events (e.g. Form Validation)
+   *  can only be handled in the capturing phase. 
+   *  
+   *  MSIE >= 9 supports DOM Level 3 Events too.
+   *  http://blogs.msdn.com/b/ie/archive/2010/03/26/dom-level-3-events-support-in-ie9.aspx
+   *
    *  ##### Changes in 1.6.x
    *
    *  Prior to Prototype 1.6, [[Event.observe]] supported a fourth argument
@@ -747,7 +756,7 @@
    *  observed, automatically extending the [[Event]] object, and the
    *  [[Event#findElement]] method.
   **/  
-  function observe(element, eventName, handler) {
+  function observe(element, eventName, handler, useCapture) {
     element = $(element);
     var entry = register(element, eventName, handler);
     
@@ -755,25 +764,25 @@
 
     var responder = entry.responder;    
     if (isCustomEvent(eventName))
-      observeCustomEvent(element, eventName, responder);
+      observeCustomEvent(element, eventName, responder, useCapture);
     else
-      observeStandardEvent(element, eventName, responder);
+      observeStandardEvent(element, eventName, responder, useCapture);
       
     return element;
   }
   
-  function observeStandardEvent(element, eventName, responder) {
+  function observeStandardEvent(element, eventName, responder, useCapture) {
     var actualEventName = getDOMEventName(eventName);
     if (element.addEventListener) {
-      element.addEventListener(actualEventName, responder, false);
+      element.addEventListener(actualEventName, responder, !!useCapture);
     } else {
       element.attachEvent('on' + actualEventName, responder);
     }
   }
   
-  function observeCustomEvent(element, eventName, responder) {
+  function observeCustomEvent(element, eventName, responder, useCapture) {
     if (element.addEventListener) {
-      element.addEventListener('dataavailable', responder, false);
+      element.addEventListener('dataavailable', responder, !!useCapture);
     } else {
       // We observe two IE-proprietarty events: one for custom events that
       // bubble and one for custom events that do not bubble.

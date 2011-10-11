@@ -28,10 +28,9 @@ Object.extend(String, {
   }
 });
 
-Object.extend(String.prototype, (function() {
-  var NATIVE_JSON_PARSE_SUPPORT = window.JSON &&
-    typeof JSON.parse === 'function' &&
-    JSON.parse('{"test": true}').test;
+(function() {
+
+  var stringProto = String.prototype;
 
   function prepareReplacement(replacement) {
     if (Object.isFunction(replacement)) return replacement;
@@ -225,20 +224,6 @@ Object.extend(String.prototype, (function() {
     truncation = Object.isUndefined(truncation) ? '...' : truncation;
     return this.length > length ?
       this.slice(0, length - truncation.length) + truncation : String(this);
-  }
-
-  /**
-   *  String#strip() -> String
-   *
-   *  Strips all leading and trailing whitespace from a string.
-   *  
-   *  ##### Example
-   *  
-   *      '    hello world!    '.strip();
-   *      // -> 'hello world!'
-  **/
-  function strip() {
-    return this.replace(/^\s+/, '').replace(/\s+$/, '');
   }
 
   /**
@@ -703,10 +688,6 @@ Object.extend(String.prototype, (function() {
    *  String#evalJSON([sanitize = false]) -> object
    *
    *  Evaluates the JSON in the string and returns the resulting object.
-   *
-   *  If the optional `sanitize` parameter is set to `true`, the string is
-   *  checked for possible malicious attempts; if one is detected, `eval`
-   *  is _not called_.
    *  
    *  ##### Warning
    *  
@@ -719,37 +700,23 @@ Object.extend(String.prototype, (function() {
    *      person.name;
    *      //-> "Violet"
    *      
-   *      person = 'grabUserPassword()'.evalJSON(true);
-   *      //-> SyntaxError: Badly formed JSON string: 'grabUserPassword()'
-   *      
    *      person = '/*-secure-\n{"name": "Violet", "occupation": "character"}\n*\/'.evalJSON()
    *      person.name;
    *      //-> "Violet"
    *  
    *  ##### Note
-   *  
-   *  Always set the `sanitize` parameter to `true` for data coming from
-   *  externals sources to prevent XSS attacks.
+   *
+   *  The `sanitize` parameter was removed for better compatibility in newer browsers.
+   *  All JSON-strings are now santized by default.
    *  
    *  As [[String#evalJSON]] internally calls [[String#unfilterJSON]], optional
    *  security comment delimiters (defined in [[Prototype.JSONFilter]]) are
    *  automatically removed.
+   *
+   *  You can also use JSON.parse() and JSON.stringify() to de/encode JSON since Prototype defines 
+   *  its own polyfill in older browsers.
   **/
-  function evalJSON(sanitize) {
-    var json = this.unfilterJSON(),
-        cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
-    if (cx.test(json)) {
-      json = json.replace(cx, function (a) {
-        return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-      });
-    }
-    try {
-      if (!sanitize || json.isJSON()) return eval('(' + json + ')');
-    } catch (e) { }
-    throw new SyntaxError('Badly formed JSON string: ' + this.inspect());
-  }
-  
-  function parseJSON() {
+  function evalJSON() {
     var json = this.unfilterJSON();
     return JSON.parse(json);
   }
@@ -850,15 +817,50 @@ Object.extend(String.prototype, (function() {
   function interpolate(object, pattern) {
     return new Template(this, pattern).evaluate(object);
   }
-
-  return {
+  
+  /**
+   *  String#strip() -> String
+   *
+   *  Strips all leading and trailing whitespace from a string.
+   *  Alias for String#trim().
+   *  
+   *  ##### Example
+   *  
+   *      '    hello world!    '.strip();
+   *      // -> 'hello world!'
+  **/
+  function strip() {}
+  
+  // polyfill
+  function trim() {
+    return this.replace(/^\s+/, '').replace(/\s+$/, '');
+  }
+  
+  // polyfill
+  function trimLeft() {
+    return this.replace(/^\s+/, '');
+  }
+  
+  // polyfill
+  function trimRight() {
+    return this.replace(/\s+$/, '');
+  }
+  
+  if (!stringProto.trim) {
+    Object.extend(stringProto, {
+      trim:       trim,
+      trimLeft:   trimLeft,
+      trimRight:  trimRight
+    });
+  }
+  
+  Object.extend(stringProto, {
+    strip:          stringProto.trim,
+    // ------------------------------
     gsub:           gsub,
     sub:            sub,
     scan:           scan,
     truncate:       truncate,
-    // Firefox 3.5+ supports String.prototype.trim
-    // (`trim` is ~ 5x faster than `strip` in FF3.5)
-    strip:          String.prototype.trim || strip,
     stripTags:      stripTags,
     stripScripts:   stripScripts,
     extractScripts: extractScripts,
@@ -877,13 +879,13 @@ Object.extend(String.prototype, (function() {
     inspect:        inspect,
     unfilterJSON:   unfilterJSON,
     isJSON:         isJSON,
-    evalJSON:       NATIVE_JSON_PARSE_SUPPORT ? parseJSON : evalJSON,
+    evalJSON:       evalJSON,
     include:        include,
     startsWith:     startsWith,
     endsWith:       endsWith,
     empty:          empty,
     blank:          blank,
     interpolate:    interpolate
-  };
-})());
+  });
+})();
 

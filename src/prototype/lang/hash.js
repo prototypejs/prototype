@@ -100,7 +100,7 @@ var Hash = Class.create(Enumerable, (function() {
       pair.value = value;
       iterator(pair);
     }
-  }
+  } 
 
   /**
    *  Hash#set(key, value) -> value
@@ -164,6 +164,25 @@ var Hash = Class.create(Enumerable, (function() {
     return value;
   }
 
+  /**
+   *  Hash#isset(key) -> Boolean
+   *
+   *  Returns true if the speficed user-defined key is set
+   *
+   *  ##### Example
+   *
+   *      var h = new Hash({a: 'apple', b: 'banana', c: 'coconut'});
+   *      h.isset('a');
+   *      // -> true
+   *      h.unset('a');
+   *      // -> 'apple'
+   *      h.isset('a');
+   *      // -> false
+  **/
+  function isset(key) {
+    return (this._object.hasOwnProperty(key) && this._object[key] != null);
+  }
+  
   /**
    *  Hash#toObject() -> Object
    *
@@ -379,6 +398,7 @@ var Hash = Class.create(Enumerable, (function() {
     set:                    set,
     get:                    get,
     unset:                  unset,
+    isset:                  isset,
     toObject:               toObject,
     toTemplateReplacements: toObject,
     keys:                   keys,

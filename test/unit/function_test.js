@@ -34,8 +34,10 @@ new Test.Unit.Runner({
     function methodWithArguments()    { return this.hi + ',' + $A(arguments).join(',') };
     var func = Prototype.emptyFunction;
 
-    this.assertIdentical(func, func.bind());
-    this.assertIdentical(func, func.bind(undefined));
+    // native Function.bind does not return identical function-objects
+    
+    // this.assertIdentical(func, func.bind());
+    // this.assertIdentical(func, func.bind(undefined));
     this.assertNotIdentical(func, func.bind(null));
 
     this.assertEqual('without', methodWithoutArguments.bind({ hi: 'without' })());

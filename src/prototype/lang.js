@@ -1,5 +1,6 @@
 //= compat
 //= require "lang/class"
+//= require "lang/json"
 //= require "lang/object"
 //= require "lang/function"
 //= require "lang/date"
