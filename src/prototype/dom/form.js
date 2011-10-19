@@ -184,21 +184,16 @@ Form.Methods = {
    *  OPTION elements are not included in the result; only their parent
    *  SELECT control is.
   **/
+  
   getElements: function(form) {
-    var elements = $(form).getElementsByTagName('*'),
-        element,
-        arr = [ ],
-        serializers = Form.Element.Serializers;
-    // `length` is not used to prevent interference with
-    // length-named elements shadowing `length` of a nodelist
+    var elements = $(form).getElementsByTagName('*');
+    var element, results = [], serializers = Form.Element.Serializers;
+    
     for (var i = 0; element = elements[i]; i++) {
-      arr.push(element);
+      if (serializers[element.tagName.toLowerCase()])
+        results.push(Element.extend(element));
     }
-    return arr.inject([], function(elements, child) {
-      if (serializers[child.tagName.toLowerCase()])
-        elements.push(Element.extend(child));
-      return elements;
-    })
+    return results;
   },
 
   /**
