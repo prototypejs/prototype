@@ -1347,14 +1347,14 @@
    *  Then:
    *
    *      $('australopithecus').firstDescendant();
-   *      // -> div#homo-herectus
+   *      // -> div#homo-erectus
    *      
    *      // the DOM property returns any first node
-   *      $('homo-herectus').firstChild;
+   *      $('homo-erectus').firstChild;
    *      // -> comment node "Latin is super"
    *      
    *      // this is what we want!
-   *      $('homo-herectus').firstDescendant();
+   *      $('homo-erectus').firstDescendant();
    *      // -> div#homo-neanderthalensis
   **/
   function firstDescendant(element) {
