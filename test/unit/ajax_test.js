@@ -11,15 +11,15 @@ new Test.Unit.Runner({
     $('content').update('');
     $('content2').update('');
   },
-  
+
   teardown: function() {
     // hack to cleanup responders
     Ajax.Responders.responders = [Ajax.Responders.responders[0]];
   },
-  
+
   testSynchronousRequest: function() {
     this.assertEqual("", $("content").innerHTML);
-    
+
     this.assertEqual(0, Ajax.activeRequestCount);
     new Ajax.Request("../fixtures/hello.js", {
       asynchronous: false,
@@ -27,14 +27,14 @@ new Test.Unit.Runner({
       evalJS: 'force'
     });
     this.assertEqual(0, Ajax.activeRequestCount);
-    
+
     var h2 = $("content").firstChild;
     this.assertEqual("Hello world!", h2.innerHTML);
   },
-  
+
   testAsynchronousRequest: function() {
     this.assertEqual("", $("content").innerHTML);
-    
+
     new Ajax.Request("../fixtures/hello.js", {
       asynchronous: true,
       method: 'get',
@@ -45,49 +45,49 @@ new Test.Unit.Runner({
       this.assertEqual("Hello world!", h2.innerHTML);
     });
   },
-  
+
   testUpdater: function() {
     this.assertEqual("", $("content").innerHTML);
-    
+
     new Ajax.Updater("content", "../fixtures/content.html", { method:'get' });
-    
+
     this.wait(1000, function() {
       this.assertEqual(sentence, $("content").innerHTML.strip().toLowerCase());
-      
+
       $('content').update('');
       this.assertEqual("", $("content").innerHTML);
-       
+
       new Ajax.Updater({ success:"content", failure:"content2" },
         "../fixtures/content.html", { method:'get', parameters:{ pet:'monkey' } });
-      
+
       new Ajax.Updater("", "../fixtures/content.html", { method:'get', parameters:"pet=monkey" });
-      
+
       this.wait(1000, function() {
         this.assertEqual(sentence, $("content").innerHTML.strip().toLowerCase());
         this.assertEqual("", $("content2").innerHTML);
       });
-    }); 
+    });
   },
-  
+
   testUpdaterWithInsertion: function() {
     $('content').update();
     new Ajax.Updater("content", "../fixtures/content.html", { method:'get', insertion: Insertion.Top });
     this.wait(1000, function() {
       this.assertEqual(sentence, $("content").innerHTML.strip().toLowerCase());
       $('content').update();
-      new Ajax.Updater("content", "../fixtures/content.html", { method:'get', insertion: 'bottom' });      
+      new Ajax.Updater("content", "../fixtures/content.html", { method:'get', insertion: 'bottom' });
       this.wait(1000, function() {
         this.assertEqual(sentence, $("content").innerHTML.strip().toLowerCase());
-        
+
         $('content').update();
-        new Ajax.Updater("content", "../fixtures/content.html", { method:'get', insertion: 'after' });      
+        new Ajax.Updater("content", "../fixtures/content.html", { method:'get', insertion: 'after' });
         this.wait(1000, function() {
           this.assertEqual('five dozen', $("content").next().innerHTML.strip().toLowerCase());
         });
       });
     });
   },
-  
+
   testUpdaterOptions: function() {
     var options = {
       method: 'get',
@@ -99,61 +99,61 @@ new Test.Unit.Runner({
     request.options.onComplete = Prototype.emptyFunction;
     this.assertIdentical(Prototype.emptyFunction, options.onComplete);
   },
-  
+
   testResponders: function(){
     // check for internal responder
     this.assertEqual(1, Ajax.Responders.responders.length);
-    
+
     var dummyResponder = {
       onComplete: Prototype.emptyFunction
     };
-    
+
     Ajax.Responders.register(dummyResponder);
     this.assertEqual(2, Ajax.Responders.responders.length);
-    
+
     // don't add twice
     Ajax.Responders.register(dummyResponder);
     this.assertEqual(2, Ajax.Responders.responders.length);
-    
+
     Ajax.Responders.unregister(dummyResponder);
     this.assertEqual(1, Ajax.Responders.responders.length);
-    
+
     var responder = {
       onCreate:   function(req){ responderCounter++ },
       onLoading:  function(req){ responderCounter++ },
       onComplete: function(req){ responderCounter++ }
     };
     Ajax.Responders.register(responder);
-    
+
     this.assertEqual(0, responderCounter);
     this.assertEqual(0, Ajax.activeRequestCount);
     new Ajax.Request("../fixtures/content.html", { method:'get', parameters:"pet=monkey" });
     this.assertEqual(1, responderCounter);
     this.assertEqual(1, Ajax.activeRequestCount);
-    
+
     this.wait(1000,function() {
       this.assertEqual(3, responderCounter);
       this.assertEqual(0, Ajax.activeRequestCount);
     });
   },
-  
+
   testEvalResponseShouldBeCalledBeforeOnComplete: function() {
     if (this.isRunningFromRake) {
       this.assertEqual("", $("content").innerHTML);
-    
+
       this.assertEqual(0, Ajax.activeRequestCount);
       new Ajax.Request("../fixtures/hello.js", extendDefault({
         onComplete: function(response) { this.assertNotEqual("", $("content").innerHTML) }.bind(this)
       }));
       this.assertEqual(0, Ajax.activeRequestCount);
-    
+
       var h2 = $("content").firstChild;
       this.assertEqual("Hello world!", h2.innerHTML);
     } else {
       this.info(message);
     }
   },
-  
+
   testContentTypeSetForSimulatedVerbs: function() {
     if (this.isRunningFromRake) {
       new Ajax.Request('/inspect', extendDefault({
@@ -167,42 +167,42 @@ new Test.Unit.Runner({
       this.info(message);
     }
   },
-  
+
   testOnCreateCallback: function() {
     new Ajax.Request("../fixtures/content.html", extendDefault({
       onCreate: function(transport) { this.assertEqual(0, transport.readyState) }.bind(this),
       onComplete: function(transport) { this.assertNotEqual(0, transport.readyState) }.bind(this)
     }));
   },
-  
+
   testEvalJS: function() {
     if (this.isRunningFromRake) {
-      
+
       $('content').update();
       new Ajax.Request("/response", extendDefault({
         parameters: Fixtures.js,
-        onComplete: function(transport) { 
+        onComplete: function(transport) {
           var h2 = $("content").firstChild;
           this.assertEqual("Hello world!", h2.innerHTML);
         }.bind(this)
       }));
-      
+
       $('content').update();
       new Ajax.Request("/response", extendDefault({
         evalJS: false,
         parameters: Fixtures.js,
-        onComplete: function(transport) { 
+        onComplete: function(transport) {
           this.assertEqual("", $("content").innerHTML);
         }.bind(this)
       }));
     } else {
       this.info(message);
     }
-    
+
     $('content').update();
     new Ajax.Request("../fixtures/hello.js", extendDefault({
       evalJS: 'force',
-      onComplete: function(transport) { 
+      onComplete: function(transport) {
         var h2 = $("content").firstChild;
         this.assertEqual("Hello world!", h2.innerHTML);
       }.bind(this)
@@ -213,7 +213,7 @@ new Test.Unit.Runner({
     var options = extendDefault({
       onCreate: function(transport) { this.assertInstanceOf(Ajax.Response, transport) }.bind(this)
     });
-    
+
     Ajax.Request.Events.each(function(state){
       options['on' + state] = options.onCreate;
     });
@@ -225,17 +225,17 @@ new Test.Unit.Runner({
     new Ajax.Request("../fixtures/empty.html", extendDefault({
       onComplete: function(transport) { this.assertEqual('', transport.responseText) }.bind(this)
     }));
-    
+
     new Ajax.Request("../fixtures/content.html", extendDefault({
       onComplete: function(transport) { this.assertEqual(sentence, transport.responseText.toLowerCase()) }.bind(this)
     }));
   },
-  
+
   testResponseXML: function() {
     if (this.isRunningFromRake) {
       new Ajax.Request("/response", extendDefault({
         parameters: Fixtures.xml,
-        onComplete: function(transport) { 
+        onComplete: function(transport) {
           this.assertEqual('foo', transport.responseXML.getElementsByTagName('name')[0].getAttribute('attr'))
         }.bind(this)
       }));
@@ -243,14 +243,14 @@ new Test.Unit.Runner({
       this.info(message);
     }
   },
-      
+
   testResponseJSON: function() {
     if (this.isRunningFromRake) {
       new Ajax.Request("/response", extendDefault({
         parameters: Fixtures.json,
         onComplete: function(transport) { this.assertEqual(123, transport.responseJSON.test) }.bind(this)
       }));
-      
+
       new Ajax.Request("/response", extendDefault({
         parameters: {
           'Content-Length': 0,
@@ -258,18 +258,18 @@ new Test.Unit.Runner({
         },
         onComplete: function(transport) { this.assertNull(transport.responseJSON) }.bind(this)
       }));
-      
+
       new Ajax.Request("/response", extendDefault({
         evalJSON: false,
         parameters: Fixtures.json,
         onComplete: function(transport) { this.assertNull(transport.responseJSON) }.bind(this)
       }));
-    
+
       new Ajax.Request("/response", extendDefault({
         parameters: Fixtures.jsonWithoutContentType,
         onComplete: function(transport) { this.assertNull(transport.responseJSON) }.bind(this)
       }));
-    
+
       new Ajax.Request("/response", extendDefault({
         sanitizeJSON: true,
         parameters: Fixtures.invalidJson,
@@ -280,13 +280,13 @@ new Test.Unit.Runner({
     } else {
       this.info(message);
     }
-    
+
     new Ajax.Request("../fixtures/data.json", extendDefault({
       evalJSON: 'force',
       onComplete: function(transport) { this.assertEqual(123, transport.responseJSON.test) }.bind(this)
     }));
   },
-  
+
   testHeaderJSON: function() {
     if (this.isRunningFromRake) {
       new Ajax.Request("/response", extendDefault({
@@ -296,9 +296,9 @@ new Test.Unit.Runner({
           this.assertEqual('hello #éà', json.test);
         }.bind(this)
       }));
-    
+
       new Ajax.Request("/response", extendDefault({
-        onComplete: function(transport, json) { 
+        onComplete: function(transport, json) {
           this.assertNull(transport.headerJSON)
           this.assertNull(json)
         }.bind(this)
@@ -307,7 +307,7 @@ new Test.Unit.Runner({
       this.info(message);
     }
   },
-  
+
   testGetHeader: function() {
     if (this.isRunningFromRake) {
      new Ajax.Request("/response", extendDefault({
@@ -321,7 +321,7 @@ new Test.Unit.Runner({
       this.info(message);
     }
   },
-  
+
   testParametersCanBeHash: function() {
     if (this.isRunningFromRake) {
       new Ajax.Request("/response", extendDefault({
@@ -336,7 +336,7 @@ new Test.Unit.Runner({
       this.info(message);
     }
   },
-  
+
   testParametersStringOrderIsPreserved: function() {
     if (this.isRunningFromRake) {
       new Ajax.Request("/inspect", extendDefault({
@@ -349,7 +349,7 @@ new Test.Unit.Runner({
       }));
     }
   },
-  
+
   testIsSameOriginMethod: function() {
     var isSameOrigin = Ajax.Request.prototype.isSameOrigin;
     this.assert(isSameOrigin.call({ url: '/foo/bar.html' }), '/foo/bar.html');
@@ -364,7 +364,7 @@ new Test.Unit.Runner({
       $("content").update('same origin policy');
       new Ajax.Request("/response", extendDefault({
         parameters: Fixtures.js,
-        onComplete: function(transport) { 
+        onComplete: function(transport) {
           this.assertEqual("same origin policy", $("content").innerHTML);
         }.bind(this)
       }));

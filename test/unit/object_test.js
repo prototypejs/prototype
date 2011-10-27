@@ -23,7 +23,7 @@ new Test.Unit.Runner({
     this.assertHashEqual({foo: 'foo'}, clone,
       "Optimizing Object.clone perf using prototyping doesn't allow properties to be deleted.");
   },
-  
+
   testObjectKeys: function() {
     this.assertEnumEqual([], Object.keys({}));
     this.assertEnumEqual(['bar', 'foo'], Object.keys({foo: 'foo', bar: 'bar'}).sort());
@@ -162,7 +162,7 @@ new Test.Unit.Runner({
     this.assert(!Object.isNumber(undefined));
     this.assert(!Object.isNumber(document), 'host objects should return false rather than throw exceptions');
   },
-  
+
   testObjectIsDate: function() {
     var d = new Date();
     this.assert(Object.isDate(d), 'constructor with no arguments');
@@ -170,7 +170,7 @@ new Test.Unit.Runner({
     this.assert(Object.isDate(new Date(1995, 11, 17)), 'constructor with Y, M, D');
     this.assert(Object.isDate(new Date(1995, 11, 17, 3, 24, 0)), 'constructor with Y, M, D, H, M, S');
     this.assert(Object.isDate(new Date(Date.parse("Dec 25, 1995"))), 'constructor with result of Date.parse');
-    
+
     this.assert(!Object.isDate(d.valueOf()), 'Date#valueOf returns a number');
     this.assert(!Object.isDate(function() { }));
     this.assert(!Object.isDate(0));

@@ -3,7 +3,7 @@ Prototype
 
 #### An object-oriented JavaScript framework ####
 
-Prototype is a JavaScript framework that aims to ease development of dynamic 
+Prototype is a JavaScript framework that aims to ease development of dynamic
 web applications.  It offers a familiar class-style OO framework, extensive
 Ajax support, higher-order programming constructs, and easy DOM manipulation.
 
@@ -20,8 +20,8 @@ Prototype currently targets the following platforms:
 Using Prototype
 ---------------
 
-To use Prototype in your application, download the latest release from the 
-Prototype web site (<http://prototypejs.org/download>) and copy 
+To use Prototype in your application, download the latest release from the
+Prototype web site (<http://prototypejs.org/download>) and copy
 `dist/prototype.js` to a suitable location. Then include it in your HTML
 like so:
 
@@ -29,7 +29,7 @@ like so:
 
 ### Building Prototype from source ###
 
-`prototype.js` is a composite file generated from many source files in 
+`prototype.js` is a composite file generated from many source files in
 the `src/` directory. To build Prototype, you'll need:
 
 * a copy of the Prototype source tree, either from a distribution tarball or
@@ -40,15 +40,15 @@ the `src/` directory. To build Prototype, you'll need:
 
 From the root Prototype directory,
 
-* `rake dist` will preprocess the Prototype source using Sprockets and 
+* `rake dist` will preprocess the Prototype source using Sprockets and
   generate the composite `dist/prototype.js`.
-* `rake package` will create a distribution tarball in the 
+* `rake package` will create a distribution tarball in the
   `pkg/` directory.
 
 Contributing to Prototype
 -------------------------
 
-Check out the Prototype source with 
+Check out the Prototype source with
 
     $ git clone git://github.com/sstephenson/prototype.git
     $ cd prototype

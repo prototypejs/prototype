@@ -1,39 +1,39 @@
 /** section: DOM, related to: Prototype.Selector
  *  $$(cssRule...) -> [Element...]
- *  
+ *
  *  Takes an arbitrary number of CSS selectors (strings) and returns a document-order
  *  array of extended DOM elements that match any of them.
- *  
+ *
  *  Sometimes the usual tools from your DOM arsenal -- `document.getElementById` encapsulated
  *  by [[$]], `getElementsByTagName` and even Prototype's very own `getElementsByClassName`
  *  extensions -- just aren't enough to quickly find elements or collections of elements.
  *  If you know the DOM tree structure, you can simply resort to CSS selectors to get
  *  the job done.
- *  
+ *
  *  ##### Quick examples
- *  
+ *
  *      $$('div');
  *      // -> all DIVs in the document. Same as document.getElementsByTagName('div').
  *      // Nice addition, the elements you're getting back are already extended!
- *      
+ *
  *      $$('#contents');
  *      // -> same as $('contents'), only it returns an array anyway (even though IDs must
  *      // be unique within a document).
- *      
+ *
  *      $$('li.faux');
  *      // -> all LI elements with class 'faux'
- *  
+ *
  *  The [[$$]] function searches the entire document. For selector queries on more specific
  *  sections of a document, use [[Element.select]].
- *  
+ *
  *  ##### Supported CSS syntax
- *  
+ *
  *  The [[$$]] function does not rely on the browser's internal CSS parsing capabilities
  *  (otherwise, we'd be in cross-browser trouble...), and therefore offers a consistent
  *  set of selectors across all supported browsers.
- *  
+ *
  *  ###### Supported in v1.5.0
- *  
+ *
  *  * Type selector: tag names, as in `div`.
  *  * Descendant selector: the space(s) between other selectors, as in `#a li`.
  *  * Attribute selectors: the full CSS 2.1 set of `[attr]`, `[attr=value]`, `[attr~=value]`
@@ -41,13 +41,13 @@
  *  against includes a space, be sure to enclose the value in quotation marks (`[title="Hello World!"]`).
  *  * Class selector: CSS class names, as in `.highlighted` or `.example.wrong`.
  *  * ID selector: as in `#item1`.
- *  
+ *
  *  ###### Supported from v1.5.1
- *  
+ *
  *  Virtually all of [CSS3](http://www.w3.org/TR/2001/CR-css3-selectors-20011113/#selectors)
  *  is supported, with the exception of pseudo-elements (like `::first-letter`) and some
  *  pseudo-classes (like `:hover`). Some examples of new selectors that can be used in 1.5.1:
- *  
+ *
  *  * Child selector: selects immediate descendants, as in `#a > li`.
  *  * Attribute selectors: all attribute operators are supported, including `~=` (matches
  *  part of a space-delimited attribute value, like `rel` or `class`); `^=` (matches the
@@ -60,26 +60,26 @@
  *  (the third-to-last paragraph on the page).
  *  * The `:empty` pseudo-class (for selecting elements without children or text content).
  *  * The `:enabled`, `:disabled`, and `:checked` pseudo-classes (for use with form controls).
- *  
+ *
  *  ##### Examples
- *  
+ *
  *      $$('#contents a[rel]');
  *      // -> all links inside the element of ID "contents" with a rel attribute
- *      
+ *
  *      $$('a[href="#"]');
  *      // -> all links with a href attribute of value "#" (eyeew!)
- *      
+ *
  *      $$('#navbar a', '#sidebar a');
  *      // -> all links within the elements of ID "navbar" or "sidebar"
- *  
+ *
  *  **With version 1.5.1 and above** you can do various types of advanced selectors:
- *  
+ *
  *      $$('a:not([rel~=nofollow])');
  *      // -> all links, excluding those whose rel attribute contains the word "nofollow"
- *      
+ *
  *      $$('table tbody > tr:nth-child(even)');
  *      // -> all even rows within all table bodies
- *      
+ *
  *      $$('div:empty');
  *      // -> all DIVs without content (i.e., whitespace-only)
 **/
@@ -96,7 +96,7 @@ window.$$ = function() {
  *
 **/
 Prototype.Selector = (function() {
-  
+
   /**
    *  Prototype.Selector.select(expression[, root = document]) -> [Element...]
    *  - expression (String): A CSS selector.
@@ -141,13 +141,13 @@ Prototype.Selector = (function() {
       }
     }
   }
-  
+
   /**
    *  Prototype.Selector.extendElements(elements) -> Enumerable
    *  - elements (Enumerable): a collection of DOM elements.
    *
    *  If necessary, extends the elements contained in `elements`
-   *  and returns `elements` untouched. This is provided as a 
+   *  and returns `elements` untouched. This is provided as a
    *  convenience method for selector engine wrapper implementors.
   **/
   function extendElements(elements) {
@@ -156,13 +156,13 @@ Prototype.Selector = (function() {
     }
     return elements;
   }
-  
+
   /** alias of: Element.extend
    *  Prototype.Selector.extendElement(element) -> Element
   **/
-  
+
   var K = Prototype.K;
-  
+
   return {
     select: select,
     match: match,

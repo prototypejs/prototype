@@ -122,21 +122,21 @@ var Template = Class.create({
    *
    *  Applies the template to `object`'s data, producing a formatted string
    *  with symbols replaced by `object`'s corresponding properties.
-   *  
+   *
    *  #####  Examples
-   *  
+   *
    *      var hrefTemplate = new Template('/dir/showAll?lang=#{language}&amp;categ=#{category}&amp;lv=#{levels}');
    *      var selection = {category: 'books' , language: 'en-US'};
-   *      
+   *
    *      hrefTemplate.evaluate(selection);
    *      // -> '/dir/showAll?lang=en-US&amp;categ=books&amp;lv='
-   *      
+   *
    *      hrefTemplate.evaluate({language: 'jp', levels: 3, created: '10/12/2005'});
    *      // -> '/dir/showAll?lang=jp&amp;categ=&amp;lv=3'
-   *      
+   *
    *      hrefTemplate.evaluate({});
    *      // -> '/dir/showAll?lang=&amp;categ=&amp;lv='
-   *      
+   *
    *      hrefTemplate.evaluate(null);
    *      // -> error !
   **/
@@ -152,7 +152,7 @@ var Template = Class.create({
 
       var ctx = object, expr = match[3],
           pattern = /^([^.[]+|\[((?:.*?[^\\])?)\])(\.|\[|$)/;
-          
+
       match = pattern.exec(expr);
       if (match == null) return before;
 

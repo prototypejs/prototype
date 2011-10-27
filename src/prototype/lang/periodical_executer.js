@@ -48,11 +48,11 @@ var PeriodicalExecuter = Class.create({
    *  PeriodicalExecuter#stop() -> undefined
    *
    *  Stops the periodical executer (there will be no further triggers).
-   *  
+   *
    *  Once a [[PeriodicalExecuter]] is created, it constitues an infinite loop,
    *  triggering at the given interval until the page unloads. This method lets
    *  you stop it any time you want.
-   *  
+   *
    *  ##### Example
    *
    *  This will only alert 1, 2 and 3, then the [[PeriodicalExecuter]] stops.

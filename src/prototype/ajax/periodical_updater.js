@@ -57,27 +57,27 @@ Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
    *    [[Ajax section]] for more information.
    *
    *  Creates a new [[Ajax.PeriodicalUpdater]].
-   *  
+   *
    *  Periodically performs an AJAX request and updates a container's contents
-   *  based on the response text. Offers a mechanism for "decay," which lets it   
+   *  based on the response text. Offers a mechanism for "decay," which lets it
    *  trigger at widening intervals while the response is unchanged.
-   *  
+   *
    *  This object addresses the common need of periodical update, which is used
    *  by all sorts of "polling" mechanisms (e.g. in an online chatroom or an
    *  online mail client).
-   *  
+   *
    *  The basic idea is to run a regular [[Ajax.Updater]] at
    *  regular intervals, monitoring changes in the response text if the `decay`
    *  option (see below) is active.
-   *  
+   *
    *  ##### Additional options
-   *  
+   *
    *  [[Ajax.PeriodicalUpdater]] features all the common options and callbacks
    *  (see the [[Ajax section]] for more information), plus those added by
    *  [[Ajax.Updater]]. It also provides two new options that deal with the
    *  original period, and its decay rate (how Rocket Scientist does that make
    *  us sound, uh?!).
-   *  
+   *
    *  <table>
    *  <thead>
    *    <tr>
@@ -111,14 +111,14 @@ Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
    *    </tr>
    *  </tbody>
    *  </table>
-   *  
+   *
    *  To better understand decay, here is a small sequence of calls from the
    *  following example:
-   *  
+   *
    *      new Ajax.PeriodicalUpdater('items', '/items', {
    *        method: 'get', frequency: 3, decay: 2
    *      });
-   *  
+   *
    *  <table id="decayTable">
    *  <thead>
    *    <tr>
@@ -189,15 +189,15 @@ Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
    *    </tr>
    *  </tbody>
    *  </table>
-   *  
+   *
    *  ##### Disabling and re-enabling a [[Ajax.PeriodicalUpdater]]
-   *  
+   *
    *  You can pull the brake on a running [[Ajax.PeriodicalUpdater]] by simply
    *  calling its `stop` method. If you wish to re-enable it later, just call
    *  its `start` method. Both take no argument.
-   *  
+   *
    *  ##### Beware!  Not a specialization!
-   *  
+   *
    *  [[Ajax.PeriodicalUpdater]] is not a specialization of [[Ajax.Updater]],
    *  despite its name. When using it, do not expect to be able to use methods
    *  normally provided by [[Ajax.Request]] and "inherited" by [[Ajax.Updater]],

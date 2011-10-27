@@ -1,6 +1,6 @@
 var Fixtures = {
   one: { a: 'A#' },
-  
+
   many: {
     a: 'A',
     b: 'B',
@@ -12,7 +12,7 @@ var Fixtures = {
     quad: function(n) { return n*n },
     plus: function(n) { return n+n }
   },
-  
+
   multiple:         { color: $w('r g b') },
   multiple_nil:     { color: ['r', null, 'g', undefined, 0] },
   multiple_all_nil: { color: [null, undefined] },

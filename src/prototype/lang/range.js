@@ -24,41 +24,41 @@
 
 /** section: Language
  *  $R(start, end[, exclusive = false]) -> ObjectRange
- *  
+ *
  *  Creates a new [[ObjectRange]] object. This method is a convenience wrapper
  *  around the [[ObjectRange]] constructor, but [[$R]] is the preferred alias.
- *  
- *  [[ObjectRange]] instances represent a range of consecutive values, be they 
+ *
+ *  [[ObjectRange]] instances represent a range of consecutive values, be they
  *  numerical, textual, or of another type that semantically supports value
  *  ranges. See the type's documentation for further details, and to discover
  *  how your own objects can support value ranges.
- *  
+ *
  *  The [[$R]] function takes exactly the same arguments as the original
  *  constructor: the **lower and upper bounds** (value of the same, proper
  *  type), and **whether the upper bound is exclusive** or not. By default, the
  *  upper bound is inclusive.
- *  
+ *
  *  ##### Examples
- *  
+ *
  *      $R(0, 10).include(10)
  *      // -> true
- *      
+ *
  *      $A($R(0, 5)).join(', ')
  *      // -> '0, 1, 2, 3, 4, 5'
- *      
+ *
  *      $A($R('aa', 'ah')).join(', ')
  *      // -> 'aa, ab, ac, ad, ae, af, ag, ah'
- *      
+ *
  *      $R(0, 10, true).include(10)
  *      // -> false
- *      
+ *
  *      $R(0, 10, true).each(function(value) {
  *        // invoked 10 times for value = 0 to 9
  *      });
- *  
- *  Note that [[ObjectRange]] mixes in the [[Enumerable]] module: this makes it 
+ *
+ *  Note that [[ObjectRange]] mixes in the [[Enumerable]] module: this makes it
  *  easy to convert a range to an [[Array]] ([[Enumerable]] provides the
- *  [[Enumerable#toArray]] method, which makes the [[$A]] conversion 
+ *  [[Enumerable#toArray]] method, which makes the [[$A]] conversion
  *  straightforward), or to iterate through values. (Note, however, that getting
  *  the bounds back will be more efficiently done using the
  *  [[ObjectRange#start]] and [[ObjectRange#end]] properties than calling the
@@ -69,10 +69,10 @@
  *  **Be careful with [[String]] ranges**: as described in its [[String#succ]]
  *  method, it does not use alphabetical boundaries, but goes all the way
  *  through the character table:
- *  
+ *
  *      $A($R('a', 'e'))
  *      // -> ['a', 'b', 'c', 'd', 'e'], no surprise there
- *      
+ *
  *      $A($R('ax', 'ba'))
  *      // -> Ouch! Humongous array, starting as ['ax', 'ay', 'az', 'a{', 'a|', 'a}', 'a~'...]
  *
@@ -123,18 +123,18 @@ var ObjectRange = Class.create(Enumerable, (function() {
    *  in [[Enumerable]], this method overrides the default version of
    *  [[Enumerable#include]], and is much more efficient (it uses a maximum of
    *  two comparisons).
-   *  
+   *
    *  ##### Examples
-   *  
+   *
    *      $R(1, 10).include(5);
    *      // -> true
-   *      
+   *
    *      $R('a', 'h').include('x');
    *      // -> false
-   *      
+   *
    *      $R(1, 10).include(10);
    *      // -> true
-   *      
+   *
    *      $R(1, 10, true).include(10);
    *      // -> false
   **/

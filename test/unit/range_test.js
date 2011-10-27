@@ -1,5 +1,5 @@
 new Test.Unit.Runner({
-  
+
   testInclude: function() {
     this.assert(!$R(0, 0, true).include(0));
     this.assert($R(0, 0, false).include(0));
@@ -51,7 +51,7 @@ new Test.Unit.Runner({
     this.assertEnumEqual([-3, -2, -1, 0, 1, 2], $R(-3, 3, true).toArray());
     this.assertEnumEqual([-3, -2, -1, 0, 1, 2, 3], $R(-3, 3, false).toArray());
   },
-  
+
   testDefaultsToNotExclusive: function() {
     this.assertEnumEqual($R(-3,3), $R(-3,3,false));
   }

@@ -202,7 +202,7 @@ Object.extend(Element.ClassNames.prototype, Enumerable);
     initialize: function(expression) {
       this.expression = expression.strip();
     },
-  
+
     /** deprecated
      *  Selector#findElements(root) -> [Element...]
      *  - root (Element | document): A "scope" to search within. All results will
@@ -214,7 +214,7 @@ Object.extend(Element.ClassNames.prototype, Enumerable);
     findElements: function(rootElement) {
       return Prototype.Selector.select(this.expression, rootElement);
     },
-  
+
     /** deprecated
      *  Selector#match(element) -> Boolean
      *
@@ -223,11 +223,11 @@ Object.extend(Element.ClassNames.prototype, Enumerable);
     match: function(element) {
       return Prototype.Selector.match(element, this.expression);
     },
-  
+
     toString: function() {
       return this.expression;
     },
-  
+
     inspect: function() {
       return "#<Selector: " + this.expression + ">";
     }
@@ -244,7 +244,7 @@ Object.extend(Element.ClassNames.prototype, Enumerable);
     matchElements: function(elements, expression) {
       var match = Prototype.Selector.match,
           results = [];
-          
+
       for (var i = 0, length = elements.length; i < length; i++) {
         var element = elements[i];
         if (match(element, expression)) {
