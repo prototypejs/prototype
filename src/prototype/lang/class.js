@@ -9,8 +9,8 @@
  *  inheritance](http://prototypejs.org/learn/class-inheritance).
 **/
 var Class = (function() {
-  
-  // Some versions of JScript fail to enumerate over properties, names of which 
+
+  // Some versions of JScript fail to enumerate over properties, names of which
   // correspond to non-enumerable properties in the prototype chain
   var IS_DONTENUM_BUGGY = (function(){
     for (var p in { toString: 1 }) {
@@ -19,7 +19,7 @@ var Class = (function() {
     }
     return true;
   })();
-  
+
   /**
    *  Class.create([superclass][, methods...]) -> Class
    *    - superclass (Class): The optional superclass to inherit methods from.

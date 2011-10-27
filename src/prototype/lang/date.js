@@ -6,7 +6,7 @@
 
 
 (function(proto) {
-  
+
   /**
    *  Date#toISOString() -> String
    *
@@ -21,7 +21,7 @@
    *      d.toISOString();
    *      //-> '1969-12-31T16:00:00Z'
   **/
-  
+
   function toISOString() {
     return this.getUTCFullYear() + '-' +
       (this.getUTCMonth() + 1).toPaddedString(2) + '-' +
@@ -30,7 +30,7 @@
       this.getUTCMinutes().toPaddedString(2) + ':' +
       this.getUTCSeconds().toPaddedString(2) + 'Z';
   }
-  
+
   /**
    *  Date#toJSON() -> String
    *
@@ -48,9 +48,9 @@
   function toJSON() {
     return this.toISOString();
   }
-  
+
   if (!proto.toISOString) proto.toISOString = toISOString;
   if (!proto.toJSON) proto.toJSON = toJSON;
-  
+
 })(Date.prototype);
 

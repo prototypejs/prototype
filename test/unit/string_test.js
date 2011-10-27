@@ -16,7 +16,7 @@ new Test.Unit.Runner({
 
   testGsubWithReplacementFunction: function() {
     var source = 'foo boo boz';
-    
+
     this.assertEqual('Foo Boo BoZ',
       source.gsub(/[^o]+/, function(match) {
         return match[0].toUpperCase()
@@ -31,29 +31,29 @@ new Test.Unit.Runner({
       }));
 
   },
-  
+
   testGsubWithReplacementString: function() {
     var source = 'foo boo boz';
-    
+
     this.assertEqual('foobooboz',
       source.gsub(/\s+/, ''));
-    this.assertEqual('  z', 
+    this.assertEqual('  z',
       source.gsub(/(.)(o+)/, ''));
-      
-    this.assertEqual('ウィメンズ2007<br/>クルーズコレクション', 
+
+    this.assertEqual('ウィメンズ2007<br/>クルーズコレクション',
       'ウィメンズ2007\nクルーズコレクション'.gsub(/\n/,'<br/>'));
-    this.assertEqual('ウィメンズ2007<br/>クルーズコレクション', 
+    this.assertEqual('ウィメンズ2007<br/>クルーズコレクション',
       'ウィメンズ2007\nクルーズコレクション'.gsub('\n','<br/>'));
-      
+
     this.assertEqual('barfbarobarobar barbbarobarobar barbbarobarzbar',
       source.gsub('', 'bar'));
     this.assertEqual('barfbarobarobar barbbarobarobar barbbarobarzbar',
       source.gsub(new RegExp(''), 'bar'));
   },
-  
+
   testGsubWithReplacementTemplateString: function() {
     var source = 'foo boo boz';
-    
+
     this.assertEqual('-oo-#{1}- -oo-#{1}- -o-#{1}-z',
       source.gsub(/(.)(o+)/, '-#{2}-\\#{1}-'));
     this.assertEqual('-foo-f- -boo-b- -bo-b-z',
@@ -61,9 +61,9 @@ new Test.Unit.Runner({
     this.assertEqual('-oo-f- -oo-b- -o-b-z',
       source.gsub(/(.)(o+)/, '-#{2}-#{1}-'));
     this.assertEqual('  z',
-      source.gsub(/(.)(o+)/, '#{3}'));      
+      source.gsub(/(.)(o+)/, '#{3}'));
   },
-  
+
   testGsubWithTroublesomeCharacters: function() {
     this.assertEqual('ab', 'a|b'.gsub('|', ''));
     //'ab'.gsub('', ''); // freeze
@@ -75,8 +75,8 @@ new Test.Unit.Runner({
     this.assertEqual('ab', 'a*b'.gsub('*', ''));
     this.assertEqual('ab', 'a{1}b'.gsub('{1}', ''));
     this.assertEqual('ab', 'a.b'.gsub('.', ''));
-  },  
-  
+  },
+
   testSubWithReplacementFunction: function() {
     var source = 'foo boo boz';
 
@@ -97,10 +97,10 @@ new Test.Unit.Runner({
         return match[0].toUpperCase()
       }, -1), -1);
   },
-  
+
   testSubWithReplacementString: function() {
     var source = 'foo boo boz';
-    
+
     this.assertEqual('oo boo boz',
       source.sub(/[^o]+/, ''));
     this.assertEqual('oooo boz',
@@ -110,7 +110,7 @@ new Test.Unit.Runner({
     this.assertEqual('-f-oo- b-oo boz',
       source.sub(/[^o]+/, '-#{0}-', 2));
   },
-  
+
   testScan: function() {
     var source = 'foo boo boz', results = [];
     var str = source.scan(/[o]+/, function(match) {
@@ -120,7 +120,7 @@ new Test.Unit.Runner({
     this.assertEqual(source, source.scan(/x/, this.fail));
     this.assert(typeof str == 'string');
   },
-  
+
   testToArray: function() {
     this.assertEnumEqual([],''.toArray());
     this.assertEnumEqual(['a'],'a'.toArray());
@@ -128,7 +128,7 @@ new Test.Unit.Runner({
     this.assertEnumEqual(['f','o','o'],'foo'.toArray());
   },
 
-  /* 
+  /*
     Note that camelize() differs from its Rails counterpart,
     as it is optimized for dealing with JavaScript object
     properties in conjunction with CSS property names:
@@ -142,14 +142,14 @@ new Test.Unit.Runner({
     this.assertEqual('foo_bar', 'foo_bar'.camelize());
     this.assertEqual('FooBar', '-foo-bar'.camelize());
     this.assertEqual('FooBar', 'FooBar'.camelize());
-    
+
     this.assertEqual('fooBar', 'foo-bar'.camelize());
     this.assertEqual('borderBottomWidth', 'border-bottom-width'.camelize());
-    
+
     this.assertEqual('classNameTest','class-name-test'.camelize());
     this.assertEqual('classNameTest','className-test'.camelize());
     this.assertEqual('classNameTest','class-nameTest'.camelize());
-    
+
     /* this.benchmark(function(){
       'class-name-test'.camelize();
     },10000); */
@@ -163,8 +163,8 @@ new Test.Unit.Runner({
     this.assertEqual('Hello','HELLO'.capitalize());
     this.assertEqual('Hello','Hello'.capitalize());
     this.assertEqual('Hello world','hello WORLD'.capitalize());
-  },  
-    
+  },
+
   testUnderscore: function() {
     this.assertEqual('', ''.underscore());
     this.assertEqual('_', '-'.underscore());
@@ -173,9 +173,9 @@ new Test.Unit.Runner({
     this.assertEqual('foo_bar', 'foo_bar'.underscore());
     this.assertEqual('border_bottom', 'borderBottom'.underscore());
     this.assertEqual('border_bottom_width', 'borderBottomWidth'.underscore());
-    this.assertEqual('border_bottom_width', 'border-Bottom-Width'.underscore());      
+    this.assertEqual('border_bottom_width', 'border-Bottom-Width'.underscore());
   },
-  
+
   testDasherize: function() {
     this.assertEqual('', ''.dasherize());
     this.assertEqual('foo', 'foo'.dasherize());
@@ -183,25 +183,25 @@ new Test.Unit.Runner({
     this.assertEqual('foo-bar', 'foo-bar'.dasherize());
     this.assertEqual('border-bottom-width', 'border_bottom_width'.dasherize());
   },
-  
+
   testTruncate: function() {
     var source = 'foo boo boz foo boo boz foo boo boz foo boo boz';
     this.assertEqual(source, source.truncate(source.length));
     this.assertEqual('foo boo boz foo boo boz foo...', source.truncate(0));
     this.assertEqual('fo...', source.truncate(5));
     this.assertEqual('foo b', source.truncate(5, ''));
-    
+
     this.assert(typeof 'foo'.truncate(5) == 'string');
     this.assert(typeof 'foo bar baz'.truncate(5) == 'string');
   },
-  
+
   testStrip: function() {
     this.assertEqual('hello world', '   hello world  '.strip());
     this.assertEqual('hello world', 'hello world'.strip());
     this.assertEqual('hello  \n  world', '  hello  \n  world  '.strip());
     this.assertEqual('', ' '.strip());
   },
-  
+
   testStripTags: function() {
     this.assertEqual('hello world', 'hello world'.stripTags());
     this.assertEqual('hello world', 'hello <span>world</span>'.stripTags());
@@ -210,76 +210,76 @@ new Test.Unit.Runner({
     this.assertEqual('1\n2', '1\n2'.stripTags());
     this.assertEqual('one < two blah baz', 'one < two <a href="#" title="foo > bar">blah</a> <input disabled>baz'.stripTags());
   },
-  
+
   testStripScripts: function() {
     this.assertEqual('foo bar', 'foo bar'.stripScripts());
     this.assertEqual('foo bar', ('foo <script>boo();<'+'/script>bar').stripScripts());
     this.assertEqual('foo bar', ('foo <script type="text/javascript">boo();\nmoo();<'+'/script>bar').stripScripts());
   },
-  
+
   testExtractScripts: function() {
     this.assertEnumEqual([], 'foo bar'.extractScripts());
     this.assertEnumEqual(['boo();'], ('foo <script>boo();<'+'/script>bar').extractScripts());
-    this.assertEnumEqual(['boo();','boo();\nmoo();'], 
+    this.assertEnumEqual(['boo();','boo();\nmoo();'],
       ('foo <script>boo();<'+'/script><script type="text/javascript">boo();\nmoo();<'+'/script>bar').extractScripts());
-    this.assertEnumEqual(['boo();','boo();\nmoo();'], 
+    this.assertEnumEqual(['boo();','boo();\nmoo();'],
       ('foo <script>boo();<'+'/script>blub\nblub<script type="text/javascript">boo();\nmoo();<'+'/script>bar').extractScripts());
   },
-  
+
   testEvalScripts: function() {
     this.assertEqual(0, evalScriptsCounter);
-    
+
     ('foo <script>evalScriptsCounter++<'+'/script>bar').evalScripts();
     this.assertEqual(1, evalScriptsCounter);
-    
+
     var stringWithScripts = '';
     (3).times(function(){ stringWithScripts += 'foo <script>evalScriptsCounter++<'+'/script>bar' });
     stringWithScripts.evalScripts();
     this.assertEqual(4, evalScriptsCounter);
   },
-  
+
   testEscapeHTML: function() {
     this.assertEqual('foo bar', 'foo bar'.escapeHTML());
     this.assertEqual('foo &lt;span&gt;bar&lt;/span&gt;', 'foo <span>bar</span>'.escapeHTML());
     this.assertEqual('foo ß bar', 'foo ß bar'.escapeHTML());
-    
-    this.assertEqual('ウィメンズ2007\nクルーズコレクション', 
+
+    this.assertEqual('ウィメンズ2007\nクルーズコレクション',
       'ウィメンズ2007\nクルーズコレクション'.escapeHTML());
-      
+
     this.assertEqual('a&lt;a href="blah"&gt;blub&lt;/a&gt;b&lt;span&gt;&lt;div&gt;&lt;/div&gt;&lt;/span&gt;cdef&lt;strong&gt;!!!!&lt;/strong&gt;g',
       'a<a href="blah">blub</a>b<span><div></div></span>cdef<strong>!!!!</strong>g'.escapeHTML());
-    
+
     this.assertEqual(largeTextEscaped, largeTextUnescaped.escapeHTML());
-    
+
     this.assertEqual('1\n2', '1\n2'.escapeHTML());
-    
+
     this.benchmark(function() { largeTextUnescaped.escapeHTML() }, 1000);
   },
-  
+
   testUnescapeHTML: function() {
     this.assertEqual('foo bar', 'foo bar'.unescapeHTML());
     this.assertEqual('foo <span>bar</span>', 'foo &lt;span&gt;bar&lt;/span&gt;'.unescapeHTML());
     this.assertEqual('foo ß bar', 'foo ß bar'.unescapeHTML());
-    
+
     this.assertEqual('a<a href="blah">blub</a>b<span><div></div></span>cdef<strong>!!!!</strong>g',
       'a&lt;a href="blah"&gt;blub&lt;/a&gt;b&lt;span&gt;&lt;div&gt;&lt;/div&gt;&lt;/span&gt;cdef&lt;strong&gt;!!!!&lt;/strong&gt;g'.unescapeHTML());
-    
+
     this.assertEqual(largeTextUnescaped, largeTextEscaped.unescapeHTML());
-    
+
     this.assertEqual('1\n2', '1\n2'.unescapeHTML());
     this.assertEqual('Pride & Prejudice', '<h1>Pride &amp; Prejudice</h1>'.unescapeHTML());
-    
+
     this.assertIdentical('&lt;', '&amp;lt;'.unescapeHTML());
-    
+
     this.benchmark(function() { largeTextEscaped.unescapeHTML() }, 1000);
-    
+
   },
-  
+
   testTemplateEvaluation: function() {
     var source = '<tr><td>#{name}</td><td>#{age}</td></tr>';
     var person = {name: 'Sam', age: 21};
     var template = new Template(source);
-    
+
     this.assertEqual('<tr><td>Sam</td><td>21</td></tr>',
       template.evaluate(person));
     this.assertEqual('<tr><td></td><td></td></tr>',
@@ -299,7 +299,7 @@ new Test.Unit.Runner({
     var source = '<tr><td>#{zero}</td><td>#{_false}</td><td>#{undef}</td><td>#{_null}</td><td>#{empty}</td></tr>';
     var falses = {zero:0, _false:false, undef:undefined, _null:null, empty:""};
     var template = new Template(source);
-    
+
     this.assertEqual('<tr><td>0</td><td>false</td><td></td><td></td><td></td></tr>',
       template.evaluate(falses));
   },
@@ -342,7 +342,7 @@ new Test.Unit.Runner({
       toTemplateReplacements: function() { return { name: this.name, job: this.getJob() } }
     };
     this.assertEqual('My name is Stephan, my job is Web developer', new Template(source).evaluate(subject));
-    
+
     var strActual = new Template('foo #{bar} baz').evaluate({
       toTemplateReplacements: function(){ return null; }
     });
@@ -378,16 +378,16 @@ new Test.Unit.Runner({
     this.assertHashEqual(result, 'foo?a&b=c'.toQueryParams(), 'query with URL');
     this.assertHashEqual(result, 'foo?a&b=c#fragment'.toQueryParams(), 'query with URL and fragment');
     this.assertHashEqual(result, 'a;b=c'.toQueryParams(';'), 'custom delimiter');
-  
+
     this.assertHashEqual({a:undefined}, 'a'.toQueryParams(), 'key without value');
     this.assertHashEqual({a:'b'},  'a=b&=c'.toQueryParams(), 'empty key');
     this.assertHashEqual({a:'b', c:''}, 'a=b&c='.toQueryParams(), 'empty value');
-    
+
     this.assertHashEqual({'a b':'c', d:'e f', g:'h'},
       'a%20b=c&d=e%20f&g=h'.toQueryParams(), 'proper decoding');
     this.assertHashEqual({a:'b=c=d'}, 'a=b=c=d'.toQueryParams(), 'multiple equal signs');
     this.assertHashEqual({a:'b', c:'d'}, '&a=b&&&c=d'.toQueryParams(), 'proper splitting');
-    
+
     this.assertEnumEqual($w('r g b'), 'col=r&col=g&col=b'.toQueryParams()['col'],
       'collection without square brackets');
     var msg = 'empty values inside collection';
@@ -395,7 +395,7 @@ new Test.Unit.Runner({
     this.assertEnumEqual(['', 'blue'],   'c=&c=blue'.toQueryParams()['c'], msg);
     this.assertEnumEqual(['blue', ''],   'c=blue&c='.toQueryParams()['c'], msg);
   },
-  
+
   testInspect: function() {
     this.assertEqual('\'\'', ''.inspect());
     this.assertEqual('\'test\'', 'test'.inspect());
@@ -406,16 +406,16 @@ new Test.Unit.Runner({
     this.assertEqual('\'\\b\\t\\n\\f\\r\'', '\x08\x09\x0a\x0c\x0d'.inspect());
     this.assertEqual('\'\\u001a\'', '\x1a'.inspect());
   },
-  
+
   testInclude: function() {
     this.assert('hello world'.include('h'));
     this.assert('hello world'.include('hello'));
     this.assert('hello world'.include('llo w'));
-    this.assert('hello world'.include('world'));      
+    this.assert('hello world'.include('world'));
     this.assert(!'hello world'.include('bye'));
     this.assert(!''.include('bye'));
   },
-  
+
   testStartsWith: function() {
     this.assert('hello world'.startsWith('h'));
     this.assert('hello world'.startsWith('hello'));
@@ -423,7 +423,7 @@ new Test.Unit.Runner({
     this.assert(!''.startsWith('bye'));
     this.assert(!'hell'.startsWith('hello'));
   },
-  
+
   testEndsWith: function() {
     this.assert('hello world'.endsWith('d'));
     this.assert('hello world'.endsWith(' world'));
@@ -432,7 +432,7 @@ new Test.Unit.Runner({
     this.assert('hello world world'.endsWith(' world'));
     this.assert(!'z'.endsWith('az'));
   },
-  
+
   testBlank: function() {
     this.assert(''.blank());
     this.assert(' '.blank());
@@ -440,7 +440,7 @@ new Test.Unit.Runner({
     this.assert(!'a'.blank());
     this.assert(!'\t y \n'.blank());
   },
-  
+
   testEmpty: function() {
     this.assert(''.empty());
     this.assert(!' '.empty());
@@ -448,7 +448,7 @@ new Test.Unit.Runner({
     this.assert(!'a'.empty());
     this.assert(!'\t y \n'.empty());
   },
-  
+
   testSucc: function() {
     this.assertEqual('b', 'a'.succ());
     this.assertEqual('B', 'A'.succ());
@@ -469,22 +469,22 @@ new Test.Unit.Runner({
     this.assertEqual('aaaaa', 'a'.times(5));
     this.assertEqual('foofoofoofoofoo', 'foo'.times(5));
     this.assertEqual('', 'foo'.times(-5));
-    
+
     /*window.String.prototype.oldTimes = function(count) {
       var result = '';
       for (var i = 0; i < count; i++) result += this;
       return result;
     };
-    
+
     this.benchmark(function() {
       'foo'.times(15);
     }, 1000, 'new: ');
-    
+
     this.benchmark(function() {
       'foo'.oldTimes(15);
     }, 1000, 'previous: ');*/
   },
-  
+
   testIsJSON: function() {
     this.assert(!''.isJSON());
     this.assert(!'     '.isJSON());
@@ -515,7 +515,7 @@ new Test.Unit.Runner({
     var longString = '"' + '123456789\\"'.times(size * 10) + '"';
     var object = '{' + longString + ': ' + longString + '},';
     var huge = '[' + object.times(size) + '{"test": 123}]';
-    
+
     this.assertEqual('hello world!', valid.evalJSON().test);
     this.assertEqual('hello world!', valid.evalJSON(true).test);
     this.assertRaise('SyntaxError', function() { invalid.evalJSON() });
@@ -530,9 +530,9 @@ new Test.Unit.Runner({
     Prototype.JSONFilter = /^\/\*([\s\S]*)\*\/$/; // test custom delimiters.
     this.assertEqual('hello world!', ('/*' + valid + '*/').evalJSON().test);
     Prototype.JSONFilter = temp;
-    
+
     this.assertMatch(123, huge.evalJSON(true).last().test);
-    
+
     this.assertEqual('', '""'.evalJSON());
     this.assertEqual('foo', '"foo"'.evalJSON());
     this.assert('object', typeof '{}'.evalJSON());

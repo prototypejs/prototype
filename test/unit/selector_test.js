@@ -5,48 +5,48 @@ function reduce(arr) {
 }
 
 new Test.Unit.Runner({
-  
+
   testSelectorWithTagName: function() {
     this.assertEnumEqual($A(document.getElementsByTagName('li')), $$('li'));
     this.assertEnumEqual([$('strong')], $$('strong'));
     this.assertEnumEqual([], $$('nonexistent'));
-    
+
     var allNodes = $A(document.getElementsByTagName('*')).select( function(node) {
       return node.tagName !== '!';
-    });      
+    });
     this.assertEnumEqual(allNodes, $$('*'));
   },
-  
+
   testSelectorWithId: function() {
     this.assertEnumEqual([$('fixtures')], $$('#fixtures'));
     this.assertEnumEqual([], $$('#nonexistent'));
     this.assertEnumEqual([$('troubleForm')], $$('#troubleForm'));
   },
-  
+
   testSelectorWithClassName: function() {
     this.assertEnumEqual($('p', 'link_1', 'item_1'), $$('.first'));
     this.assertEnumEqual([], $$('.second'));
   },
-  
+
   testSelectorWithTagNameAndId: function() {
     this.assertEnumEqual([$('strong')], $$('strong#strong'));
     this.assertEnumEqual([], $$('p#strong'));
   },
-  
+
   testSelectorWithTagNameAndClassName: function() {
     this.assertEnumEqual($('link_1', 'link_2'), $$('a.internal'));
     this.assertEnumEqual([$('link_2')], $$('a.internal.highlight'));
     this.assertEnumEqual([$('link_2')], $$('a.highlight.internal'));
     this.assertEnumEqual([], $$('a.highlight.internal.nonexistent'));
   },
-  
+
   testSelectorWithIdAndClassName: function() {
     this.assertEnumEqual([$('link_2')], $$('#link_2.internal'));
     this.assertEnumEqual([$('link_2')], $$('.internal#link_2'));
     this.assertEnumEqual([$('link_2')], $$('#link_2.internal.highlight'));
     this.assertEnumEqual([], $$('#link_2.internal.nonexistent'));
   },
-  
+
   testSelectorWithTagNameAndIdAndClassName: function() {
     this.assertEnumEqual([$('link_2')], $$('a#link_2.internal'));
     this.assertEnumEqual([$('link_2')], $$('a.internal#link_2'));
@@ -54,12 +54,12 @@ new Test.Unit.Runner({
     this.assertEnumEqual([], $$('li#item_1.nonexistent'));
     this.assertEnumEqual([], $$('li#item_1.first.nonexistent'));
   },
-  
+
   test$$MatchesAncestryWithTokensSeparatedByWhitespace: function() {
     this.assertEnumEqual($('em2', 'em', 'span'), $$('#fixtures a *'));
     this.assertEnumEqual([$('p')], $$('div#fixtures p'));
   },
-  
+
   test$$CombinesResultsWhenMultipleExpressionsArePassed: function() {
     this.assertEnumEqual($('link_1', 'link_2', 'item_1', 'item_2', 'item_3'), $$('#p a', ' ul#list li '));
   },
@@ -69,17 +69,17 @@ new Test.Unit.Runner({
     this.assertEnumEqual($$('#fixtures h1'), $$('h1[CLASS]'), 'h1[CLASS]');
     this.assertEnumEqual([$('item_3')], $$('li#item_3[class]'), 'li#item_3[class]');
   },
-  
+
   testSelectorWithTagNameAndSpecificAttributeValue: function() {
     this.assertEnumEqual($('link_1', 'link_2', 'link_3'), $$('a[href="#"]'));
     this.assertEnumEqual($('link_1', 'link_2', 'link_3'), $$('a[href=#]'));
   },
-  
+
   testSelectorWithTagNameAndWhitespaceTokenizedAttributeValue: function() {
     this.assertEnumEqual($('link_1', 'link_2'), $$('a[class~="internal"]'), "a[class~=\"internal\"]");
     this.assertEnumEqual($('link_1', 'link_2'), $$('a[class~=internal]'), "a[class~=internal]");
   },
-  
+
   testSelectorWithAttributeAndNoTagName: function() {
     this.assertEnumEqual($(document.body).select('a[href]'), $(document.body).select('[href]'));
     this.assertEnumEqual($$('a[class~="internal"]'), $$('[class~=internal]'));
@@ -90,11 +90,11 @@ new Test.Unit.Runner({
     this.assertEnumEqual($$('#troubleForm *[type=radio]'), $$('#troubleForm [type=radio]'));
     this.assertEnumEqual($$('#troubleForm *[type]'), $$('#troubleForm [type]'));
   },
-  
+
   testSelectorWithAttributeContainingDash: function() {
     this.assertEnumEqual([$('attr_with_dash')], $$('[foo-bar]'), "attribute with hyphen");
-  },                                                            
-  
+  },
+
   testSelectorWithTagNameAndNegatedAttributeValue: function() {
     this.assertEnumEqual([], $$('a[href!="#"]'));
   },
@@ -105,57 +105,57 @@ new Test.Unit.Runner({
     this.assertEnumEqual([$('chk_2')], $$('#troubleForm2 input[name="brackets[5][]"][value=2]'));
     this.assertEnumEqual([], $$('#troubleForm2 input[name=brackets[5][]]'));
   },
-  
+
   test$$WithNestedAttributeSelectors: function() {
     this.assertEnumEqual([$('strong')], $$('div[style] p[id] strong'), 'div[style] p[id] strong');
   },
-  
+
   testSelectorWithMultipleConditions: function() {
     this.assertEnumEqual([$('link_3')], $$('a[class~=external][href="#"]'),
      'a[class~=external][href="#"]');
     this.assertEnumEqual([], $$('a[class~=external][href!="#"]'),
      'a[class~=external][href!="#"]');
   },
-  
+
   testSelectorMatchElements: function() {
     this.assertElementsMatch(Selector.matchElements($('list').descendants(), 'li'), '#item_1', '#item_2', '#item_3');
     this.assertElementsMatch(Selector.matchElements($('fixtures').descendants(), 'a.internal'), '#link_1', '#link_2');
     this.assertEnumEqual([], Selector.matchElements($('fixtures').descendants(), 'p.last'));
     this.assertElementsMatch(Selector.matchElements($('fixtures').descendants(), '.inexistant, a.internal'), '#link_1', '#link_2');
   },
-  
+
   testSelectorFindElement: function() {
     this.assertElementMatches(Selector.findElement($('list').descendants(), 'li'), 'li#item_1.first');
     this.assertElementMatches(Selector.findElement($('list').descendants(), 'li', 1), 'li#item_2');
     this.assertElementMatches(Selector.findElement($('list').descendants(), 'li#item_3'), 'li');
     this.assertEqual(undefined, Selector.findElement($('list').descendants(), 'em'));
   },
-  
+
   testElementMatch: function() {
     var span = $('dupL1');
-    
+
     // tests that should pass
     this.assert(span.match('span'));
     this.assert(span.match('span#dupL1'));
     this.assert(span.match('div > span'), 'child combinator');
-    this.assert(span.match('#dupContainer span'), 'descendant combinator');      
+    this.assert(span.match('#dupContainer span'), 'descendant combinator');
     this.assert(span.match('#dupL1'), 'ID only');
     this.assert(span.match('span.span_foo'), 'class name 1');
     this.assert(span.match('span.span_bar'), 'class name 2');
     this.assert(span.match('span:first-child'), 'first-child pseudoclass');
-    
+
     this.assert(!span.match('span.span_wtf'), 'bogus class name');
     this.assert(!span.match('#dupL2'), 'different ID');
     this.assert(!span.match('div'), 'different tag name');
     this.assert(!span.match('span span'), 'different ancestry');
     this.assert(!span.match('span > span'), 'different parent');
     this.assert(!span.match('span:nth-child(5)'), 'different pseudoclass');
-    
+
     this.assert(!$('link_2').match('a[rel^=external]'));
     this.assert($('link_1').match('a[rel^=external]'));
     this.assert($('link_1').match('a[rel^="external"]'));
     this.assert($('link_1').match("a[rel^='external']"));
-    
+
     this.assert(span.match({ match: function(element) { return true }}), 'custom selector');
     this.assert(!span.match({ match: function(element) { return false }}), 'custom selector');
   },
@@ -163,7 +163,7 @@ new Test.Unit.Runner({
   testSelectorWithSpaceInAttributeValue: function() {
     this.assertEnumEqual([$('with_title')], $$('cite[title="hello world!"]'));
   },
-  
+
   // AND NOW COME THOSE NEW TESTS AFTER ANDREW'S REWRITE!
 
   testSelectorWithChild: function() {
@@ -180,7 +180,7 @@ new Test.Unit.Runner({
 
   testSelectorWithAdjacence: function() {
     this.assertEnumEqual([$('uncle')], $$('div.brothers + div.brothers'));
-    this.assertEnumEqual([$('uncle')], $$('div.brothers + div'));      
+    this.assertEnumEqual([$('uncle')], $$('div.brothers + div'));
     this.assertEqual($('level2_2'), reduce($$('#level2_1+span')));
     this.assertEqual($('level2_2'), reduce($$('#level2_1 + span')));
     this.assertEqual($('level2_2'), reduce($$('#level2_1 + *')));
@@ -260,7 +260,7 @@ new Test.Unit.Runner({
       this.benchmark(function() { $$('#level1 *:only-child') }, 1000, ':only-child');
     });
   },
-  
+
   testSelectorWithFirstLastNthNthLastOfType: function() {
     this.assertEnumEqual([$('link_2')], $$('#p a:nth-of-type(2)'), 'nth-of-type');
     this.assertEnumEqual([$('link_1')], $$('#p a:nth-of-type(1)'), 'nth-of-type');
@@ -268,7 +268,7 @@ new Test.Unit.Runner({
     this.assertEnumEqual([$('link_1')], $$('#p a:first-of-type'), 'first-of-type');
     this.assertEnumEqual([$('link_2')], $$('#p a:last-of-type'), 'last-of-type');
   },
-  
+
   testSelectorWithNot: function() {
     this.assertEnumEqual([$('link_2')], $$('#p a:not(a:first-of-type)'), 'first-of-type');
     this.assertEnumEqual([$('link_1')], $$('#p a:not(a:last-of-type)'), 'last-of-type');
@@ -283,20 +283,20 @@ new Test.Unit.Runner({
     this.assertEnumEqual([$('em')], $$('#p a:not(a[rel$="nofollow"]) em'), 'attribute 4 + all descendants');
     this.assertEnumEqual([$('em')], $$('#p a:not(a[rel$="nofollow"])>em'), 'attribute 4 (without whitespace)');
   },
-  
+
   testSelectorWithEnabledDisabledChecked: function() {
     this.assertEnumEqual([$('disabled_text_field')], $$('#troubleForm > *:disabled'));
     this.assertEnumEqual($('troubleForm').getInputs().without($('disabled_text_field'), $('hidden')), $$('#troubleForm > *:enabled'));
     this.assertEnumEqual($('checked_box', 'checked_radio'), $$('#troubleForm *:checked'));
   },
-  
+
   testSelectorWithEmpty: function() {
     $('level3_1').innerHTML = "";
     this.assertEnumEqual($('level3_1', 'level3_2', 'level2_3'),
      $$('#level1 *:empty'), '#level1 *:empty');
     this.assertEnumEqual([], $$('#level_only_child:empty'), 'newlines count as content!');
-  },    
-  
+  },
+
   testIdenticalResultsFromEquivalentSelectors: function() {
     this.assertEnumEqual($$('div.brothers'), $$('div[class~=brothers]'));
     this.assertEnumEqual($$('div.brothers'), $$('div[class~=brothers].brothers'));
@@ -311,7 +311,7 @@ new Test.Unit.Runner({
     this.assertEnumEqual($$('ul>li'), $$('ul > li'));
     this.assertEnumEqual($$('#p a:not(a[rel$="nofollow"])>em'), $$('#p a:not(a[rel$="nofollow"]) > em'))
   },
-  
+
   testSelectorsThatShouldReturnNothing: function() {
     this.assertEnumEqual([], $$('span:empty > *'));
     this.assertEnumEqual([], $$('div.brothers:not(.brothers)'));
@@ -325,7 +325,7 @@ new Test.Unit.Runner({
     this.assertEnumEqual($('commaParent', 'commaChild'), $$('form[title*="commas,"], input[value="#commaOne,#commaTwo"]'));
     this.assertEnumEqual($('commaParent', 'commaChild'), $$('form[title*="commas,"]', 'input[value="#commaOne,#commaTwo"]'));
   },
-  
+
   testSelectorExtendsAllNodes: function(){
     var element = document.createElement('div');
     (3).times(function(){
@@ -333,13 +333,13 @@ new Test.Unit.Runner({
     });
     element.setAttribute('id','scratch_element');
     $$('body')[0].appendChild(element);
-    
+
     var results = $$('#scratch_element div');
     this.assert(typeof results[0].show == 'function');
     this.assert(typeof results[1].show == 'function');
     this.assert(typeof results[2].show == 'function');
   },
-  
+
   testCopiedNodesGetIncluded: function() {
     this.assertElementsMatch(
       Selector.matchElements($('counted_container').descendants(), 'div'),
@@ -347,7 +347,7 @@ new Test.Unit.Runner({
     );
     $('counted_container').innerHTML += $('counted_container').innerHTML;
     this.assertElementsMatch(
-      Selector.matchElements($('counted_container').descendants(), 'div'), 'div.is_counted', 
+      Selector.matchElements($('counted_container').descendants(), 'div'), 'div.is_counted',
       'div.is_counted'
     );
   },
@@ -360,28 +360,28 @@ new Test.Unit.Runner({
       'selecting: [id=myTD]');
     this.assertNotNullOrUndefined(wrapper.select('#myTD')[0],
       'selecting: #myTD');
-    this.assertNotNullOrUndefined(wrapper.select('td')[0], 
-      'selecting: td');      
+    this.assertNotNullOrUndefined(wrapper.select('td')[0],
+      'selecting: td');
     this.assert($$('#myTD').length == 0,
       'should not turn up in document-rooted search');
     window.debug = false;
-  },   
-  
+  },
+
   testElementDown: function() {
-    var a = $('dupL4'); 
+    var a = $('dupL4');
     var b = $('dupContainer').down('#dupL4');
-    
+
     this.assertEqual(a, b);
   },
   testElementDownWithDotAndColon: function() {
-    var a = $('dupL4_dotcolon'); 
-    var b = $('dupContainer.withdot:active').down('#dupL4_dotcolon');    
+    var a = $('dupL4_dotcolon');
+    var b = $('dupContainer.withdot:active').down('#dupL4_dotcolon');
     var c = $('dupContainer.withdot:active').select('#dupL4_dotcolon');
-    
+
     this.assertEqual(a, b);
     this.assertEnumEqual([a], c);
   },
-  
+
   testDescendantSelectorBuggy: function() {
     var el = document.createElement('div');
     el.innerHTML = '<ul><li></li></ul><div><ul><li></li></ul></div>';
@@ -389,7 +389,7 @@ new Test.Unit.Runner({
     this.assertEqual(2, $(el).select('ul li').length);
     document.body.removeChild(el);
   },
-  
+
   testFindElementWithIndexWhenElementsAreNotInDocumentOrder: function() {
     var ancestors = $("target_1").ancestors();
     this.assertEqual($("container_2"), Selector.findElement(ancestors, "[container], .container", 0));

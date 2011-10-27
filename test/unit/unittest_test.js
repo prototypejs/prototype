@@ -8,7 +8,7 @@ var testObj = {
 }
 
 new Test.Unit.Runner({
-  
+
   testIsRunningFromRake:  function() {
     if (window.location.toString().startsWith('http')) {
       this.assert(this.isRunningFromRake);
@@ -22,17 +22,17 @@ new Test.Unit.Runner({
   testBuildMessage:  function() {
     this.assertEqual("'foo' 'bar'", this.buildMessage('', '? ?', 'foo', 'bar'))
   },
-  
+
   testAssertEqual: function() {
     this.assertEqual(0, 0);
     this.assertEqual(0, 0, "test");
-    
+
     this.assertEqual(0,'0');
     this.assertEqual(65.0, 65);
-    
+
     this.assertEqual("a", "a");
     this.assertEqual("a", "a", "test");
-    
+
     this.assertNotEqual(0, 1);
     this.assertNotEqual("a","b");
     this.assertNotEqual({},{});
@@ -46,42 +46,42 @@ new Test.Unit.Runner({
     this.assertEnumEqual(['1', '2'], [1, 2]);
     this.assertEnumNotEqual(['1', '2'], [1, 2, 3]);
   },
-  
+
   testAssertHashEqual: function() {
     this.assertHashEqual({}, {});
     this.assertHashEqual({a:'b'}, {a:'b'});
     this.assertHashEqual({a:'b', c:'d'}, {c:'d', a:'b'});
     this.assertHashNotEqual({a:'b', c:'d'}, {c:'d', a:'boo!'});
   },
-  
+
   testAssertRespondsTo: function() {
     this.assertRespondsTo('isNice', testObj);
     this.assertRespondsTo('isBroken', testObj);
   },
-  
-  testAssertIdentical: function() { 
-    this.assertIdentical(0, 0); 
-    this.assertIdentical(0, 0, "test"); 
-    this.assertIdentical(1, 1); 
-    this.assertIdentical('a', 'a'); 
-    this.assertIdentical('a', 'a', "test"); 
-    this.assertIdentical('', ''); 
-    this.assertIdentical(undefined, undefined); 
-    this.assertIdentical(null, null); 
-    this.assertIdentical(true, true); 
-    this.assertIdentical(false, false); 
-    
+
+  testAssertIdentical: function() {
+    this.assertIdentical(0, 0);
+    this.assertIdentical(0, 0, "test");
+    this.assertIdentical(1, 1);
+    this.assertIdentical('a', 'a');
+    this.assertIdentical('a', 'a', "test");
+    this.assertIdentical('', '');
+    this.assertIdentical(undefined, undefined);
+    this.assertIdentical(null, null);
+    this.assertIdentical(true, true);
+    this.assertIdentical(false, false);
+
     var obj = {a:'b'};
     this.assertIdentical(obj, obj);
-    
+
     this.assertNotIdentical({1:2,3:4},{1:2,3:4});
-    
+
     this.assertIdentical(1, 1.0); // both are typeof == 'number'
-    
+
     this.assertNotIdentical(1, '1');
     this.assertNotIdentical(1, '1.0');
   },
-  
+
   testAssertNullAndAssertUndefined: function() {
     this.assertNull(null);
     this.assertNotNull(undefined);
@@ -96,7 +96,7 @@ new Test.Unit.Runner({
     this.assertNotNullOrUndefined(0);
     this.assertNotNullOrUndefined('');
   },
-  
+
   testAssertMatch: function() {
     this.assertMatch(/knowmad.jpg$/, 'http://script.aculo.us/images/knowmad.jpg');
     this.assertMatch(/Fuc/, 'Thomas Fuchs');
@@ -106,25 +106,25 @@ new Test.Unit.Runner({
     this.assertMatch(/^((0?[123456789])|(1[012]))\s*:\s*([012345]\d)(\s*:\s*([012345]\d))?\s*[ap]m\s*-\s*((0?[123456789])|(1[012]))\s*:\s*([012345]\d)(\s*:\s*([012345]\d))?\s*[ap]m$/i, '2:00PM-2:15PM');
     this.assertNoMatch(/zubar/, 'foo bar');
   },
-  
+
   testAssertInstanceOf: function() {
     this.assertInstanceOf(String, new String);
     this.assertInstanceOf(RegExp, /foo/);
     this.assertNotInstanceOf(String, {});
   },
-  
+
   testAssertVisible: function() {
     this.assertVisible('testcss1');
     this.assertNotVisible('testcss1_span');
     //this.assertNotVisible('testcss2', "Due to a Safari bug, this test fails in Safari.");
-    
+
     Element.hide('testcss1');
     this.assertNotVisible('testcss1');
     this.assertNotVisible('testcss1_span');
     Element.show('testcss1');
     this.assertVisible('testcss1');
     this.assertNotVisible('testcss1_span');
-    
+
     Element.show('testcss1_span');
     this.assertVisible('testcss1_span');
     Element.hide('testcss1');
@@ -132,8 +132,8 @@ new Test.Unit.Runner({
   },
 
   testAssertElementsMatch: function() {
-    this.assertElementsMatch($$('#tlist'), '#tlist');   
-    this.assertElementMatches($('tlist'), '#tlist');   
+    this.assertElementsMatch($$('#tlist'), '#tlist');
+    this.assertElementMatches($('tlist'), '#tlist');
   }
 });
 
@@ -141,7 +141,7 @@ new Test.Unit.Runner({
   testDummy: function() {
     this.assert(true);
   },
-  
+
   testMultipleTestRunner: function() {
     this.assertEqual('passed', $('testlog_2').down('td', 1).innerHTML);
   }

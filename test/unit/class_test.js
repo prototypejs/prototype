@@ -112,7 +112,7 @@ new Test.Unit.Runner({
       toString: function() { return "toString" },
       valueOf: function() { return "valueOf" }
     });
-    
+
     var Bar = Class.create(Foo, {
       valueOf: function() { return "myValueOf" }
     });

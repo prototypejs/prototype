@@ -5,7 +5,7 @@
   <title>Prototype functional test file</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <script src="../../dist/prototype.js"       type="text/javascript"></script>
-  
+
   <style type="text/css" media="screen">
   /* <![CDATA[ */
     body {
@@ -24,11 +24,11 @@
     h2 a:hover { color:blue }
     a:visited { color:blue }
     a:hover { color:red }
-    
+
     .test {
-      
+
     }
-    
+
       .test span {
         border: 2px solid #999;
         background-color: #ddd;
@@ -36,7 +36,7 @@
       }
   /* ]]> */
   </style>
-  
+
   <script type="text/javascript">
     Element.addMethods({
       passed: function(el, message) {
@@ -44,14 +44,14 @@
         el.className = 'passed';
         (el.down('span') || el).update(message || 'Test passed!');
       },
-      
+
       failed: function(el, message) {
         el = $(el);
         el.className = 'failed';
         (el.down('span') || el).update(message || 'Test failed');
       }
     });
-    
+
     function log(obj) {
       var line, all = [];
       for (prop in obj) {
@@ -65,17 +65,17 @@
 </head>
 <body>
   <h1>Prototype functional tests for the Event module</h1>
-  
+
   <fieldset>
     <legend>Log</legend>
     <div id="log"></div>
   </fieldset>
-  
+
   <p id="basic">A basic event test - <strong>click here</strong></p>
   <p id="basic_remove" class="subtest"><strong>click</strong> to stop observing the first test</p>
-  
+
   <p id="inline_test" onclick="Event.stop(event); $(this).passed();"><strong>click</strong> to ensure generic Event methods work on inline handlers</p>
-  
+
   <script type="text/javascript">
     var basic_callback = function(e){
       $('basic').passed();
@@ -92,9 +92,9 @@
       log(e);
     }).hide()
   </script>
-  
+
   <p id="basic2"><strong>Scope</strong> test - scope of the handler should be this element</p>
-  
+
   <script type="text/javascript">
     $('basic2').observe('click', function(e) {
       if(this === window) $('basic2').failed('Window scope! (needs scope correction)');
@@ -104,7 +104,7 @@
   </script>
 
   <p id="basic3"><strong>Event object</strong> test - should be present as a first argument</p>
-  
+
   <script type="text/javascript">
     $('basic3').observe('click', function(evt) {
       el = $('basic3');
@@ -115,14 +115,14 @@
   </script>
 
   <p><a href="#wrong" id="hijack">Hijack link test</a> (preventDefault)</p>
-  
+
   <script type="text/javascript">
     $('hijack').observe('click', function(e){
       el = $(this.parentNode);
       log(e); // this makes it fail?!?
-    
+
       e.preventDefault();
-    
+
       setTimeout(function() {
         if (window.location.hash == '#wrong') el.failed('Hijack failed (<a href="' +
             window.location.toString().replace(/#.+$/, '') + '">remove the fragment</a>)')
@@ -130,13 +130,13 @@
       }, 50)
     })
   </script>
-  
+
   <hr />
 
 
   <p>Mouse click:
   <span class="button" id="left">left</span> <span class="button" id="middle">middle</span> <span class="button" id="right">right</span></p>
-  
+
   <script type="text/javascript">
     $w('left middle right').each(function(button) {
       Event.observe(button, 'mousedown', function(e) {
@@ -146,9 +146,9 @@
       });
     });
   </script>
-  
+
   <p id="context">Context menu event (tries to prevent default)</p>
-  
+
   <script type="text/javascript">
     $('context').observe('contextmenu', function(e){
       this.passed();
@@ -158,7 +158,7 @@
   </script>
 
   <p id="target">Event.element() test</p>
-  
+
   <script type="text/javascript">
     $('target').observe('click', function(e) {
       if (e.element() == this && e.target == this) this.passed();
@@ -168,7 +168,7 @@
   </script>
 
   <p id="currentTarget"><span>Event.currentTarget test</span></p>
-  
+
   <script type="text/javascript">
     $('currentTarget').observe('click', function(e){
       if(e.currentTarget !== this) this.failed();
@@ -176,9 +176,9 @@
       log(e);
     })
   </script>
-  
+
   <p id="findElement"><span>Event.findElement() test</span></p>
-  
+
   <script type="text/javascript">
     $('findElement').observe('click', function(e){
       if(e.findElement('p') == this && e.findElement('body') == document.body &&
@@ -187,9 +187,9 @@
       log(e);
     })
   </script>
-  
+
   <div id="container"><p id="stop"><strong>Stop propagation</strong> test (bubbling)</p></div>
-  
+
   <script type="text/javascript">
     $('stop').observe('click', function(e){
       e.stop();
@@ -201,12 +201,12 @@
       log(e);
     })
   </script>
-  
+
   <div>
     <p id="keyup_log"><strong>Keyup</strong> test - focus on the textarea and type</p>
     <textarea id="keyup" class="subtest"></textarea>
   </div>
-  
+
   <script type="text/javascript">
     $('keyup').observe('keyup', function(e){
       el = $('keyup_log');
@@ -214,9 +214,9 @@
       log(e);
     })
   </script>
-  
+
   <p id="bind"><code>bindAsEventListener()</code> test</p>
-  
+
   <script type="text/javascript">
     $('bind').observe('click', function(e, str, arr){
       el = $('bind')
@@ -230,9 +230,9 @@
       log(e);
     }.bindAsEventListener(document.body, 'foo', [1,2,3]))
   </script>
-  
+
   <p id="obj_inspect"><code>Object.inspect(event)</code> test</p>
-  
+
   <script type="text/javascript">
     $('obj_inspect').observe('click', function(e){
       el = $('obj_inspect')
@@ -241,9 +241,9 @@
       log(e);
     })
   </script>
-  
+
   <p id="mouseenter"><code>mouseenter</code> test</p>
-  
+
   <script type="text/javascript">
     $('mouseenter').observe('click', function() {
       $('mouseenter').insert("<br />carefully mouse over the word 'mouseenter', then outside of the box entirely");
@@ -255,14 +255,14 @@
         if ($(event.relatedTarget).descendantOf($('mouseenter'))) {
           $('mouseenter').failed();
         } else $('mouseenter').passed();
-        
+
         $('mouseenter').stopObserving();
       });
     });
   </script>
-  
+
   <p id="addunload">Add unload events</p>
-  
+
   <script type="text/javascript">
     $('addunload').observe('click', function(e){
       if (this._done) return;
@@ -280,7 +280,7 @@
       log(e);
     })
   </script>
-  
+
   <div id="delegation_container">
     Event delegation
     <ul>
@@ -294,8 +294,8 @@
         <span>Child 3 (mouseup)</span>
       </li>
     </ul>
-    
-    Results: 
+
+    Results:
 
     <ul id="delegation_results">
       <li id="delegation_result_1">Test 1</li>
@@ -303,7 +303,7 @@
       <li id="delegation_result_3">Test 3</li>
     </ul>
   </div>
-    
+
   <script type="text/javascript">
       var msg = "Passed. Click to unregister.";
       var clickMsg = "Now try original event again to ensure observation was stopped."
@@ -315,7 +315,7 @@
           observer1.stop();
         });
       });
-      
+
       var observer2 = $(document).on('mouseover', '.delegation-child-2', function() {
         var result = $('delegation_results').down('li', 1);
         result.passed(msg + " (" + ((new Date).toString())) + ")";
@@ -324,7 +324,7 @@
           observer2.stop();
         });
       })
-      
+
       var observer3 = $('delegation_container').on('mouseup', '.delegation-child-3', function() {
         var result = $('delegation_results').down('li', 2);
         result.passed(msg + " (" + ((new Date).toString())) + ")";
@@ -334,30 +334,30 @@
         });
       });
   </script>
-  
-  
+
+
   <p id="ie_legacy_event_support" style="display: none">
     Extending event objects (click to test)
   </p>
-  
+
   <script type="text/javascript">
     Event.observe(window, 'load', function() {
       // Ensures we can manually extend events in IE's legacy event system.
       // IE9 supports both the legacy system and DOM L2 events, so we have to
       // inspect an event object at runtime to determine if it needs to be
-      // extended.      
+      // extended.
       if (!window.attachEvent) return;
-      
+
       function mouseButton(event) {
         if (event.isLeftClick())   return 'left';
         if (event.isRightClick())  return 'right';
         if (event.isMiddleClick()) return 'middle';
         return null;
       }
-      
+
       var container = $('ie_legacy_event_support');
       container.show();
-      
+
       container.attachEvent('onmouseup', function(event) {
         if ('stop' in event) container.failed('Custom property already on event! Something weird happened!');
         Event.extend(event);
@@ -369,10 +369,10 @@
           // objects report them in a different way.
           container.passed('button pressed: ' + mouseButton(event));
         }
-      });      
+      });
     });
   </script>
-  
-  
+
+
 </body>
 </html>

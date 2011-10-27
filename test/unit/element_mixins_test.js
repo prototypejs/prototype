@@ -9,21 +9,21 @@ new Test.Unit.Runner({
     this.assertIdentical(Prototype.K, Form.Element.coffee);
     this.assertIdentical(Prototype.K, Form.Element.Methods.coffee);
   },
-  
+
   testForm: function() {
     this.assert($("form").reset != null);
     this.assert($("form").getInputs().length == 2);
   },
-  
+
   testEvent: function() {
     this.assert($("form").observe != null)
     // Can't really test this one with TestUnit...
-    $('form').observe("submit", function(e) { 
-      alert("yeah!"); 
-      Event.stop(e); 
+    $('form').observe("submit", function(e) {
+      alert("yeah!");
+      Event.stop(e);
     });
   },
-  
+
   testCollections: function() {
     this.assert($$("input").all(function(input) {
       return (input.focus != null);
