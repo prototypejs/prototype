@@ -8,6 +8,7 @@
 
 /**
  *  == DOM ==
+ *
  *  Extensions to DOM elements, plus other utilities for DOM traversal
  *  and modification.
  *
