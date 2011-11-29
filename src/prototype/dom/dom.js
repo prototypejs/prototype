@@ -9,6 +9,9 @@
   var DIV = document.createElement('div');
 
   /** section: DOM, related to: Element
+   * class Element
+  **/
+  /** section: DOM, related to: Element
    *  $(id) -> Element
    *  $(id...) -> [Element...]
    *    - id (String | Element): A DOM node or a string that references a node's
@@ -1464,6 +1467,7 @@
   
   /**
    *  Element.siblings(@element) -> [Element...]
+   *
    *  Collects all of element's siblings and returns them as an [[Array]] of
    *  elements.
    *
