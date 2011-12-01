@@ -9,6 +9,58 @@
     return (Number(match[1]) / 100);
   }
   
+  // A bare-bones version of Element.getStyle. Needed because getStyle is
+  // public-facing and too user-friendly for our tastes. We need raw,
+  // non-normalized values.
+  //
+  // Camel-cased property names only.
+  function getRawStyle(element, style) {
+    element = $(element);
+
+    // Try inline styles first.
+    var value = element.style[style];
+    if (!value || value === 'auto') {
+      // Reluctantly retrieve the computed style.
+      var css = document.defaultView.getComputedStyle(element, null);
+      value = css ? css[style] : null;
+    }
+    
+    if (style === 'opacity') return value ? parseFloat(value) : 1.0;
+    return value === 'auto' ? null : value;
+  }
+  
+  function getRawStyle_IE(element, style) {
+    // Try inline styles first.
+    var value = element.style[style];    
+    if (!value && element.currentStyle) {
+      // Reluctantly retrieve the current style.
+      value = element.currentStyle[style];
+    }
+    return value;
+  }
+  
+  // Quickly figures out the content width of an element. Used instead of
+  // `element.measure('width')` in several places below; we don't want to 
+  // call back into layout code recursively if we don't have to.
+  //
+  // But this means it doesn't handle edge cases. Use it when you know the
+  // element in question is visible and will give accurate measurements.
+  function getContentWidth(element, context) {
+    var boxWidth = element.offsetWidth;
+    
+    var bl = getPixelValue(element, 'borderLeftWidth',  context) || 0;
+    var br = getPixelValue(element, 'borderRightWidth', context) || 0;
+    var pl = getPixelValue(element, 'paddingLeft',      context) || 0;
+    var pr = getPixelValue(element, 'paddingRight',     context) || 0;
+    
+    return boxWidth - bl - br - pl - pr;
+  }
+  
+  if ('currentStyle' in document.documentElement) {
+    getRawStyle = getRawStyle_IE;
+  }
+  
+  
   // Can be called like this:
   //   getPixelValue("11px");
   // Or like this:
@@ -17,10 +69,10 @@
     var element = null;
     if (Object.isElement(value)) {
       element = value;
-      value = element.getStyle(property);
+      value = getRawStyle(element, property);
     }
 
-    if (value === null) {
+    if (value === null || Object.isUndefined(value)) {
       return null;
     }
     
@@ -30,8 +82,8 @@
     if ((/^(?:-)?\d+(\.\d+)?(px)?$/i).test(value)) {
       return window.parseFloat(value);
     }
-    
-    var isPercentage = value.include('%'), isViewport = (context === document.viewport);    
+
+    var isPercentage = value.include('%'), isViewport = (context === document.viewport);
     
     // When IE gives us something other than a pixel value, this technique
     // (invented by Dean Edwards) will convert it to pixels.
@@ -48,11 +100,16 @@
       
       return value;
     }
-    
+
     // For other browsers, we have to do a bit of work.
     // (At this point, only percentages should be left; all other CSS units
     // are converted to pixels by getComputedStyle.)
     if (element && isPercentage) {
+      // The `context` argument comes into play for percentage units; it's
+      // the thing that the unit represents a percentage of. When an
+      // absolutely-positioned element has a width of 50%, we know that's
+      // 50% of its offset parent. If it's `position: fixed` instead, we know
+      // it's 50% of the viewport. And so on.
       context = context || element.parentNode;
       var decimal = toDecimal(value);
       var whole = null;
@@ -61,7 +118,7 @@
       var isHorizontal = property.include('left') || property.include('right') ||
        property.include('width');
        
-      var isVertical =  property.include('top') || property.include('bottom') ||
+      var isVertical   = property.include('top') || property.include('bottom') ||
         property.include('height');
         
       if (context === document.viewport) {
@@ -87,12 +144,12 @@
   
   // Turns plain numbers into pixel measurements.
   function toCSSPixels(number) {
-    if (Object.isString(number) && number.endsWith('px')) {
+    if (Object.isString(number) && number.endsWith('px'))
       return number;
-    }    
     return number + 'px';    
   }
   
+  // Shortcut for figuring out if an element is `display: none` or not.
   function isDisplayed(element) {
     var originalElement = element;    
     while (element && element.parentNode) {
@@ -105,6 +162,8 @@
     return true;
   }
   
+  // In IE6-7, positioned elements often need hasLayout triggered before they
+  // report accurate measurements.
   var hasLayout = Prototype.K;  
   if ('currentStyle' in document.documentElement) {
     hasLayout = function(element) {
@@ -282,7 +341,7 @@
     **/
     get: function($super, property) {
       // Try to fetch from the cache.
-      var value = $super(property);      
+      var value = $super(property);
       return value === null ? this._compute(property) : value;
     },
     
@@ -291,13 +350,23 @@
     // when hidden), elements need a "preparation" phase that ensures
     // accuracy of measurements.
     _begin: function() {
-      if (this._prepared) return;      
-
+      if (this._isPrepared()) return;
+      
       var element = this.element;
       if (isDisplayed(element)) {
-        this._prepared = true;
+        this._setPrepared(true);
         return;
       }
+      
+      // If we get this far, it means this element is hidden. To get usable
+      // measurements, we must remove `display: none`, but in a manner that 
+      // isn't noticeable to the user. That means we also set
+      // `visibility: hidden` to make it invisible, and `position: absolute`
+      // so that it won't alter the document flow when displayed.
+      //
+      // Once we do this, the element is "prepared," and we can make our
+      // measurements. When we're done, the `_end` method cleans up our
+      // changes.
       
       // Remember the original values for some styles we're going to alter.
       var originalStyles = {
@@ -307,33 +376,36 @@
         display:    element.style.display    || ''
       };
       
-      // We store them so that the `_end` function can retrieve them later.
+      // We store them so that the `_end` method can retrieve them later.
       element.store('prototype_original_styles', originalStyles);
       
-      var position = element.getStyle('position'),
-       width = element.getStyle('width');
-      
-      if (width === "0px" || width === null) {
-        // Opera won't report the true width of the element through
+      var position = getRawStyle(element, 'position'), width = element.offsetWidth;
+
+      if (width === 0 || width === null) {
+        // Opera/IE won't report the true width of the element through
         // `getComputedStyle` if it's hidden. If we got a nonsensical value,
         // we need to show the element and try again.
         element.style.display = 'block';
-        width = element.getStyle('width');
+        width = element.offsetWidth;
       }
       
       // Preserve the context in case we get a percentage value.  
       var context = (position === 'fixed') ? document.viewport :
        element.parentNode;
        
-      element.setStyle({
-        position:   'absolute',
+      var tempStyles = {
         visibility: 'hidden',
         display:    'block'
-      });
+      };
       
-      var positionedWidth = element.getStyle('width');
+      // If the element's `position: fixed`, it's already out of the document
+      // flow, so it's both unnecessary and inaccurate to set
+      // `position: absolute`.
+      if (position !== 'fixed') tempStyles.position = 'absolute';
+       
+      element.setStyle(tempStyles);
       
-      var newWidth;
+      var positionedWidth = element.offsetWidth, newWidth;
       if (width && (positionedWidth === width)) {
         // If the element's width is the same both before and after
         // we set absolute positioning, that means:
@@ -341,11 +413,11 @@
         //  (b) it has an explicitly-set width, instead of width: auto.
         // Either way, it means the element is the width it needs to be
         // in order to report an accurate height.
-        newWidth = getPixelValue(element, 'width', context);
+        newWidth = getContentWidth(element, context);
       } else if (position === 'absolute' || position === 'fixed') {
         // Absolute- and fixed-position elements' dimensions don't depend
         // upon those of their parents.
-        newWidth = getPixelValue(element, 'width', context);
+        newWidth = getContentWidth(element, context);
       } else {
         // Otherwise, the element's width depends upon the width of its
         // parent.
@@ -360,18 +432,20 @@
          this.get('margin-right');
       }
       
+      // Whatever the case, we've now figured out the correct `width` value
+      // for the element.
       element.setStyle({ width: newWidth + 'px' });
       
       // The element is now ready for measuring.
-      this._prepared = true;
+      this._setPrepared(true);
     },
     
     _end: function() {
       var element = this.element;
       var originalStyles = element.retrieve('prototype_original_styles');
-      element.store('prototype_original_styles', null);      
+      element.store('prototype_original_styles', null);
       element.setStyle(originalStyles);
-      this._prepared = false;
+      this._setPrepared(false);
     },
     
     _compute: function(property) {
@@ -381,6 +455,14 @@
       }
       
       return this._set(property, COMPUTATIONS[property].call(this, this.element));
+    },
+    
+    _isPrepared: function() {
+      return this.element.retrieve('prototype_element_layout_prepared', false);
+    },
+    
+    _setPrepared: function(bool) {
+      return this.element.store('prototype_element_layout_prepared', bool);
     },
     
     /**
@@ -459,8 +541,6 @@
         if (Element.Layout.COMPOSITE_PROPERTIES.include(key)) return;
 
         var value = this.get(key);
-        // Unless the value is null, add 'px' to the end and add it to the
-        // returned object.
         if (value != null) css[cssNameFor(key)] = value + 'px';
       }, this);
       return css;
@@ -523,9 +603,8 @@
 
         var pLeft = this.get('padding-left'),
          pRight = this.get('padding-right');
-        
+         
         if (!this._preComputing) this._end();
-        
         return bWidth - bLeft - bRight - pLeft - pRight;
       },
       
@@ -766,10 +845,11 @@
    *  `Element.getLayout` again only when the values in an existing 
    *  `Element.Layout` object have become outdated.
    *  
-   *  Remember that instances of `Element.Layout` compute values the first
-   *  time they're asked for and remember those values for later retrieval.
-   *  If you want to compute all an element's measurements at once, pass
-   *  
+   *  If the `preCompute` argument is `true`, all properties will be measured
+   *  when the layout object is instantiated. If you plan to measure several
+   *  properties of an element's dimensions, it's probably worth it to get a
+   *  pre-computed hash.
+   *      
    *  ##### Examples
    *  
    *      var layout = $('troz').getLayout();
@@ -1512,8 +1592,9 @@
       do {
         valueT += element.offsetTop  || 0;
         valueL += element.offsetLeft || 0;
-        if (element.offsetParent == document.body)
+        if (element.offsetParent == document.body) {
           if (Element.getStyle(element, 'position') == 'absolute') break;
+        }
 
         element = element.offsetParent;
       } while (element);
