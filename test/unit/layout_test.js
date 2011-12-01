@@ -121,6 +121,8 @@ new Test.Unit.Runner({
     var viewportWidth = document.viewport.getWidth();
     var layout = $('box9').getLayout();
     
+    this.info("NOTE: IE6 WILL fail these tests because it doesn't support position: fixed. This is expected.");
+    
     function assertNear(v1, v2, message) {
       var abs = Math.abs(v1 - v2);
       this.assert(abs <= 1, message + ' (actual: ' + v1 + ', ' + v2 + ')');
@@ -132,7 +134,8 @@ new Test.Unit.Runner({
     assertNear.call(this, vWidth, eWidth, 'width (visible)');
             
     $('box9').hide();    
-    assertNear.call(this, vWidth, $('box9').measure('width'), 'width (hidden)');    
+    assertNear.call(this, vWidth, $('box9').measure('width'), 'width (hidden)');   
+    $('box9').show();
   },
   
   'test #toCSS, #toObject, #toHash': function() {
