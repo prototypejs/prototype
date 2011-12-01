@@ -7,6 +7,10 @@
   // this DIV for capability checks (where possible) and for normalizing
   // HTML content.
   var DIV = document.createElement('div');
+  
+  /** section: DOM
+   * class Element
+  **/
 
   /** section: DOM, related to: Element
    *  $(id) -> Element
