@@ -1,6 +1,6 @@
 (function(GLOBAL) {
   
-  var UNDEFINED = void 0;
+  var UNDEFINED;
   var SLICE = Array.prototype.slice;
   
   // Try to reuse the same created element as much as possible. We'll use
