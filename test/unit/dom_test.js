@@ -1448,15 +1448,31 @@ new Test.Unit.Runner({
   },
   
   testViewportDimensions: function() {
-    preservingBrowserDimensions(function() {
-      window.resizeTo(800, 600);
-      var before = document.viewport.getDimensions();
-      window.resizeBy(50, 50);
-      var after  = document.viewport.getDimensions();
+    var original = document.viewport.getDimensions();
     
-      this.assertEqual(before.width + 50, after.width, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
-      this.assertEqual(before.height + 50, after.height, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
-    }.bind(this));
+    window.resizeTo(800, 600);
+    
+    this.wait(1000, function() {
+      var before = document.viewport.getDimensions();
+      
+      var delta = { width: 800 - before.width, height: 600 - before.height };
+      
+      window.resizeBy(50, 50);
+      this.wait(1000, function() {
+        var after  = document.viewport.getDimensions();
+
+        this.assertEqual(before.width + 50, after.width, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
+        this.assertEqual(before.height + 50, after.height, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
+        
+        this.wait(1000, function() {
+          // Restore original dimensions.
+          window.resizeTo(
+            original.width  + delta.width,
+            original.height + delta.height
+          );
+        });
+      })
+    });
   },
   
   testElementToViewportDimensionsDoesNotAffectDocumentProperties: function() {
@@ -1475,19 +1491,31 @@ new Test.Unit.Runner({
   },
 
   testViewportScrollOffsets: function() {
-    preservingBrowserDimensions(function() {
-      window.scrollTo(0, 0);
-      this.assertEqual(0, document.viewport.getScrollOffsets().top);
+    var original = document.viewport.getDimensions();
     
-      window.scrollTo(0, 35);
-      this.assertEqual(35, document.viewport.getScrollOffsets().top);
+    window.scrollTo(0, 0);
+    this.assertEqual(0, document.viewport.getScrollOffsets().top);
+  
+    window.scrollTo(0, 35);
+    this.assertEqual(35, document.viewport.getScrollOffsets().top);
     
-      window.resizeTo(200, 650);
+    window.resizeTo(200, 650);
+    
+    this.wait(1000, function() {
+      var before = document.viewport.getDimensions();
+      var delta = { width: 200 - before.width, height: 650 - before.height };
+      
       window.scrollTo(25, 35);
       this.assertEqual(25, document.viewport.getScrollOffsets().left, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THESE TESTS TO PASS");
-    
-      window.resizeTo(850, 650);
-    }.bind(this));
+      
+      this.wait(1000, function() {
+        // Restore original dimensions.
+        window.resizeTo(
+          original.width  + delta.width,
+          original.height + delta.height
+        );
+      });
+    });
   },
   
   testNodeConstants: function() {
@@ -1600,10 +1628,14 @@ new Test.Unit.Runner({
   },
   
   testElementPurge: function() {
+    function uidForElement(elem) {
+      return elem.uniqueID ? elem.uniqueID : elem._prototypeUID;
+    }
+    
     var element = new Element('div');
     element.store('foo', 'bar');
     
-    var uid = element._prototypeUID;    
+    var uid = uidForElement(element);
     this.assert(uid in Element.Storage, "newly-created element's uid should exist in `Element.Storage`");
 
     var storageKeysBefore = Object.keys(Element.Storage).length;
@@ -1647,14 +1679,20 @@ new Test.Unit.Runner({
 
 function preservingBrowserDimensions(callback) {
   var original = document.viewport.getDimensions();
+  
   window.resizeTo(640, 480);
+  
   var resized = document.viewport.getDimensions();
   original.width += 640 - resized.width, original.height += 480 - resized.height;
   
   try {
     window.resizeTo(original.width, original.height);
     callback();
-  } finally {
+  } catch(e) {
+    throw e;
+  }finally {
     window.resizeTo(original.width, original.height);
   }
 }
+
+
