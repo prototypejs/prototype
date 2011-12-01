@@ -2813,8 +2813,12 @@
    *  
    *  ##### Notes
    *  
-   *  Internet Explorer returns literal values while other browsers return
-   *  computed values.
+   *  Not all CSS shorthand properties are supported. You may only use the CSS
+   *  properties described in the
+   *  [Document Object Model (DOM) Level 2 Style Specification](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle).
+   *  
+   *  Old versions of Internet Explorer return _literal_ values; other browsers
+   *  return _computed_ values.
    *
    *  Consider the following HTML snippet:
    *  
@@ -2833,12 +2837,33 @@
    *      // -> '1em' in Internet Explorer,
    *      // -> '12px' elsewhere.
    *  
+   *
    *  Safari returns `null` for *any* non-inline property if the element is
    *  hidden (has `display` set to `'none'`).
+   *
+   *  ##### Caveats
    *  
-   *  Not all CSS shorthand properties are supported. You may only use the CSS
-   *  properties described in the
-   *  [Document Object Model (DOM) Level 2 Style Specification](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle).
+   *  Early versions of Prototype attempted to "fix" this behavior for
+   *  certain properties. A few examples:
+   *  
+   *  1. Reading and writing the CSS `opacity` property works exactly like
+   *     calling [[Element.getOpacity]] and [[Element.setOpacity]]
+   *     respectively. This lets us pretend that IE didn't have a
+   *     properietary way to set opacity in versions 6-7.
+   *  2. Browsers disagree on how to report certain properties of hidden
+   *     elements (i.e., `display: none`). Opera, for instance, says that a
+   *     hidden element has a `width` of `0px`. It's an arguable point, but
+   *     we return `null` in those cases instead (so as to agree with the
+   *     majority behavior). **In short: if an element is hidden,
+   *     `getStyle('width')` and `getStyle('height')` will return `null`.**
+   *  3. In older versions of Internet Explorer, Prototype will return a
+   *     pixel value for `width` and `height`, even if the literal value is
+   *     a different unit. It does this by treating `width` like `offsetWidth`
+   *     and `height` like `offsetHeight`. This is often the incorrect
+   *     measurement, but it's a mistake we're stuck with for
+   *     backward-compatibility. **If you're trying to measure an element's 
+   *     dimensions, don't use `getStyle`; use [[Element.measure]] instead.**
+   *  
   **/
   function getStyle(element, style) {
     element = $(element);
