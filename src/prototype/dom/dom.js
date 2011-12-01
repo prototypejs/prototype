@@ -1166,7 +1166,7 @@
     var uid = getUniqueElementID(element);
     if (uid) {
       Element.stopObserving(element);
-      if (HAS_UNIQUE_ID_PROPERTY)
+      if (!HAS_UNIQUE_ID_PROPERTY)
         element._prototypeUID = UNDEFINED;
       delete Element.Storage[uid];
     }
@@ -1188,7 +1188,7 @@
     }
   }
   
-  if (!window.addEventListener && window.attachEvent) {
+  if (HAS_UNIQUE_ID_PROPERTY) {
     purgeCollection = purgeCollection_IE;
   }
   
