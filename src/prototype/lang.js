@@ -15,6 +15,7 @@
 
 /**
  * == Language ==
+ *
  * Additions to JavaScript's "standard library" and extensions to
  * built-in JavaScript objects.
 **/
