@@ -22,6 +22,7 @@
 (function() {
 
   var _toString = Object.prototype.toString,
+      _hasOwnProperty = Object.prototype.hasOwnProperty,
       NULL_TYPE = 'Null',
       UNDEFINED_TYPE = 'Undefined',
       BOOLEAN_TYPE = 'Boolean',
@@ -39,6 +40,21 @@
         JSON.stringify(0) === '0' &&
         typeof JSON.stringify(Prototype.K) === 'undefined';
         
+  
+  
+  var DONT_ENUMS = ['toString', 'toLocaleString', 'valueOf',
+   'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'constructor'];
+  
+  // Some versions of JScript fail to enumerate over properties, names of which 
+  // correspond to non-enumerable properties in the prototype chain
+  var IS_DONTENUM_BUGGY = (function(){
+    for (var p in { toString: 1 }) {
+      // check actual property name, so that it works with augmented Object.prototype
+      if (p === 'toString') return false;
+    }
+    return true;
+  })();
+        
   function Type(o) {
     switch(o) {
       case null: return NULL_TYPE;
@@ -52,7 +68,7 @@
     }
     return OBJECT_TYPE;
   }
-
+  
   /**
    *  Object.extend(destination, source) -> Object
    *  - destination (Object): The object to receive the new properties.
@@ -309,10 +325,18 @@
     if (Type(object) !== OBJECT_TYPE) { throw new TypeError(); }
     var results = [];
     for (var property in object) {
-      if (object.hasOwnProperty(property)) {
+      if (_hasOwnProperty.call(object, property))
         results.push(property);
+    }
+    
+    // Account for the DontEnum properties in affected browsers.
+    if (IS_DONTENUM_BUGGY) {
+      for (var i = 0; property = DONT_ENUMS[i]; i++) {
+        if (_hasOwnProperty.call(object, property))
+          results.push(property);
       }
     }
+    
     return results;
   }
 
