@@ -94,11 +94,13 @@ var ObjectRange = Class.create(Enumerable, (function() {
   function initialize(start, end, exclusive) {
     /**
      *  ObjectRange#start -> ?
+     *
      *  The lower bounding value of the range.
     **/
     this.start = start;
     /**
      *  ObjectRange#end -> ?
+     *
      *  The upper bounding value of the range.
     **/
     this.end = end;
