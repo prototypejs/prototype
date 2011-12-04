@@ -1132,6 +1132,7 @@
   Element.addMethods({
     /**
      *  Element.fire(@element, eventName[, memo[, bubble = true]]) -> Event
+     *
      *  See [[Event.fire]].
      *
      *  Fires a custom event with the current element as its target.
@@ -1177,18 +1178,21 @@
 
     /**
      *  Element.observe(@element, eventName, handler) -> Element
+     *
      *  See [[Event.observe]].
     **/
     observe:       observe,
 
     /**
      *  Element.stopObserving(@element[, eventName[, handler]]) -> Element
+     *
      *  See [[Event.stopObserving]].
     **/
     stopObserving: stopObserving,
     
     /**
      *  Element.on(@element, eventName[, selector], callback) -> Element
+     *
      *  See [[Event.on]].
     **/
     on:            on
