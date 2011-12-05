@@ -3023,7 +3023,7 @@
   // STORAGE
   var UID = 0;
   
-  GLOBAL.Element.Storage = { UID: 0 };
+  GLOBAL.Element.Storage = { UID: 1 };
   
   function getUniqueElementID(element) {
     if (element === window) return 0;
