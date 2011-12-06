@@ -125,7 +125,7 @@ Prototype.Selector = (function() {
    *  Prototype.Selector.find(elements, expression[, index = 0]) -> Element
    *  - elements (Enumerable): a collection of DOM elements.
    *  - expression (String): A CSS selector.
-   *  - index: Numeric index of the match to return, defaults to 0.
+   *  - index (Number): Numeric index of the match to return, defaults to 0.
    *
    *  Filters the given collection of elements with `expression` and returns the
    *  first matching element (or the `index`th matching element if `index` is
