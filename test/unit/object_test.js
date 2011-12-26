@@ -160,13 +160,17 @@ new Test.Unit.Runner({
   testObjectIsNumber: function() {
     this.assert(Object.isNumber(0));
     this.assert(Object.isNumber(1.0));
+    this.assert(Object.isNumber(parseInt("1",10)));
+    this.assert(Object.isNumber(parseInt("0x10")));
     this.assert(Object.isNumber(new Number(0)));
     this.assert(Object.isNumber(new Number(1.0)));
     this.assert(!Object.isNumber(function() { }));
     this.assert(!Object.isNumber({ test: function() { return 3 } }));
     this.assert(!Object.isNumber("a string"));
+    this.assert(!Object.isNumber(parseInt("a string",10))); //parseInt(String) returns NaN. Javascript handles NaN as a Number type
     this.assert(!Object.isNumber([]));
     this.assert(!Object.isNumber({}));
+    this.assert(!Object.isNumber(NaN));
     this.assert(!Object.isNumber(false));
     this.assert(!Object.isNumber(undefined));
     this.assert(!Object.isNumber(document), 'host objects should return false rather than throw exceptions');

@@ -537,7 +537,7 @@
    *      //-> false
   **/
   function isNumber(object) {
-    return _toString.call(object) === NUMBER_CLASS;
+    return _toString.call(object) === NUMBER_CLASS && !isNaN(object);
   }
   
   /**
