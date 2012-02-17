@@ -447,6 +447,9 @@ Array.from = $A;
   }
 
   // Replaces a built-in function. No PDoc needed.
+  //
+  // Used instead of the broken version of Array#concat in some versions of
+  // Opera. Made to be ES5-compliant.
   function concat(_) {
     var array = [], items = slice.call(arguments, 0), item, n = 0;
     items.unshift(this);
@@ -465,15 +468,33 @@ Array.from = $A;
     return array;
   }
   
+  // Certain ES5 array methods have the same names as Prototype array methods
+  // and perform the same functions.
+  //
+  // Prototype's implementations of these methods differ from the ES5 spec in
+  // the way a missing iterator function is handled. Prototype uses 
+  // `Prototype.K` as a default iterator, while ES5 specifies that a
+  // `TypeError` must be thrown. Implementing the ES5 spec completely would 
+  // break backward compatibility and would force users to pass `Prototype.K`
+  // manually. 
+  //
+  // Instead, if native versions of these methods exist, we wrap the existing
+  // methods with our own behavior. This has very little performance impact.
+  // It violates the spec by suppressing `TypeError`s for certain methods,
+  // but that's an acceptable trade-off.
   function wrapNative(method) {
     return function() {
       if (arguments.length === 0) {
+        // No iterator was given. Instead of throwing a `TypeError`, use
+        // `Prototype.K` as the default iterator.
         return method.call(this, Prototype.K);
       } else if (arguments[0] === undefined) {
+        // Same as above.
         var args = slice.call(arguments, 1);
-        args.unshift(Prototype.K)
+        args.unshift(Prototype.K);
         return method.apply(this, args);
       } else {
+        // Pass straight through to the native method.
         return method.apply(this, arguments);
       }
     };
@@ -487,7 +508,7 @@ Array.from = $A;
       var results = [], context = arguments[1], n = 0;
 
       for (var i = 0, length = this.length; i < length; i++) {
-        if (i in this) {
+        if (i in this)
           results[n] = iterator.call(context, this[i], i, this);
         }
         n++;
@@ -498,10 +519,13 @@ Array.from = $A;
   }
   
   if (arrayProto.filter) {
+    // `Array#filter` requires an iterator by nature, so we don't need to
+    // wrap it.
     var filter = Array.prototype.filter;
   } else {
     function filter(iterator) {
-      if (!Object.isFunction(iterator)) { throw new TypeError(); }
+      if (!Object.isFunction(iterator))
+        throw new TypeError();
       var results = [], context = arguments[1], value;
 
       for (var i = 0, length = this.length; i < length; i++) {
@@ -550,14 +574,14 @@ Array.from = $A;
     }
   }
   
+  // Prototype's `Array#inject` behaves identically to ES5's `Array#reduce`.
   if (arrayProto.reduce) {
-    // Keep a copy of the native reduce
     var _reduce = arrayProto.reduce;
     function inject(memo, iterator) {
       iterator = iterator || Prototype.K;
       var context = arguments[2];
-      // The iterator has to be bound, as Array.prototype.reduce
-      // always executes the iterator in the global context.
+      // The iterator must be bound, as `Array#reduce` always executes the
+      // iterator in the global context.
       return _reduce.call(this, iterator.bind(context), memo, context);
     }
   } else {
@@ -605,7 +629,7 @@ Array.from = $A;
 
   if (CONCAT_ARGUMENTS_BUGGY) arrayProto.concat = concat;
 
-  // use native browser JS 1.6 implementation if available
+  // Use native browser JS 1.6 implementations if available.
   if (!arrayProto.indexOf) arrayProto.indexOf = indexOf;
   if (!arrayProto.lastIndexOf) arrayProto.lastIndexOf = lastIndexOf;
 })();
