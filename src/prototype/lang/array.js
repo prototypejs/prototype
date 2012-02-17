@@ -508,7 +508,7 @@ Array.from = $A;
       var results = [], context = arguments[1], n = 0;
 
       for (var i = 0, length = this.length; i < length; i++) {
-        if (i in this)
+        if (i in this) {
           results[n] = iterator.call(context, this[i], i, this);
         }
         n++;
