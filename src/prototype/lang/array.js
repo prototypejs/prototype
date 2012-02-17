@@ -447,18 +447,121 @@ Array.from = $A;
   }
 
   // Replaces a built-in function. No PDoc needed.
-  function concat() {
-    var array = slice.call(this, 0), item;
-    for (var i = 0, length = arguments.length; i < length; i++) {
-      item = arguments[i];
+  function concat(_) {
+    var array = [], items = slice.call(arguments, 0), item, n = 0;
+    items.unshift(this);
+    for (var i = 0, length = items.length; i < length; i++) {
+      item = items[i];
       if (Object.isArray(item) && !('callee' in item)) {
-        for (var j = 0, arrayLength = item.length; j < arrayLength; j++)
-          array.push(item[j]);
+        for (var j = 0, arrayLength = item.length; j < arrayLength; j++) {
+          if (j in item) array[n] = item[j];
+          n++;
+        }
       } else {
-        array.push(item);
+        array[n++] = item;
       }
     }
+    array.length = n;
     return array;
+  }
+  
+  function wrapNative(method) {
+    return function() {
+      if (arguments.length === 0) {
+        return method.call(this, Prototype.K);
+      } else if (arguments[0] === undefined) {
+        var args = slice.call(arguments, 1);
+        args.unshift(Prototype.K)
+        return method.apply(this, args);
+      } else {
+        return method.apply(this, arguments);
+      }
+    };
+  }
+  
+  if (arrayProto.map) {
+    var map = wrapNative(Array.prototype.map);
+  } else {
+    function map(iterator) {
+      iterator = iterator || Prototype.K;
+      var results = [], context = arguments[1], n = 0;
+
+      for (var i = 0, length = this.length; i < length; i++) {
+        if (i in this) {
+          results[n] = iterator.call(context, this[i], i, this);
+        }
+        n++;
+      }
+      results.length = n;
+      return results;
+    }
+  }
+  
+  if (arrayProto.filter) {
+    var filter = Array.prototype.filter;
+  } else {
+    function filter(iterator) {
+      if (!Object.isFunction(iterator)) { throw new TypeError(); }
+      var results = [], context = arguments[1], value;
+
+      for (var i = 0, length = this.length; i < length; i++) {
+        if (i in this) {
+          value = this[i];
+          if (iterator.call(context, value, i, this)) {
+            results.push(value);
+          }
+        }
+      }
+      return results;
+    }
+  }
+  
+  if (arrayProto.some) {
+    var some = wrapNative(Array.prototype.some);
+  } else {
+    function some(iterator) {
+      iterator = iterator || Prototype.K;
+      var context = arguments[1];
+
+      for (var i = 0, length = this.length; i < length; i++) {
+        if (i in this && iterator.call(context, this[i], i, this)) {
+          return true;
+        }
+      }
+      
+      return false;
+    }
+  }
+  
+  if (arrayProto.every) {
+    var every = wrapNative(Array.prototype.every);
+  } else {
+    function every(iterator) {
+      iterator = iterator || Prototype.K;
+      var context = arguments[1];
+
+      for (var i = 0, length = this.length; i < length; i++) {
+        if (i in this && !iterator.call(context, this[i], i, this)) {
+          return false;
+        }
+      }
+      
+      return true;
+    }
+  }
+  
+  if (arrayProto.reduce) {
+    // Keep a copy of the native reduce
+    var _reduce = arrayProto.reduce;
+    function inject(memo, iterator) {
+      iterator = iterator || Prototype.K;
+      var context = arguments[2];
+      // The iterator has to be bound, as Array.prototype.reduce
+      // always executes the iterator in the global context.
+      return _reduce.call(this, iterator.bind(context), memo, context);
+    }
+  } else {
+    var inject = Enumerable.inject;
   }
 
   Object.extend(arrayProto, Enumerable);
@@ -468,6 +571,18 @@ Array.from = $A;
 
   Object.extend(arrayProto, {
     _each:     _each,
+    
+    map:       map,
+    collect:   map,
+    select:    filter,
+    filter:    filter,
+    findAll:   filter,
+    some:      some,
+    any:       some,
+    every:     every,
+    all:       every,
+    inject:    inject,
+    
     clear:     clear,
     first:     first,
     last:      last,
@@ -486,7 +601,7 @@ Array.from = $A;
   // fix for opera
   var CONCAT_ARGUMENTS_BUGGY = (function() {
     return [].concat(arguments)[0][0] !== 1;
-  })(1,2)
+  })(1,2);
 
   if (CONCAT_ARGUMENTS_BUGGY) arrayProto.concat = concat;
 

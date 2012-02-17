@@ -107,10 +107,10 @@ var ObjectRange = Class.create(Enumerable, (function() {
     this.exclusive = exclusive;
   }
 
-  function _each(iterator) {
+  function _each(iterator, context) {
     var value = this.start;
     while (this.include(value)) {
-      iterator(value);
+      iterator.call(context, value);
       value = value.succ();
     }
   }
