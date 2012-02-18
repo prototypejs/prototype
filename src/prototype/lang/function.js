@@ -105,13 +105,27 @@ Object.extend(Function.prototype, (function() {
    *
    *  (To curry without binding, see [[Function#curry]].)
   **/
+
   function bind(context) {
-    if (arguments.length < 2 && Object.isUndefined(arguments[0])) return this;
+    if (arguments.length < 2 && Object.isUndefined(arguments[0]))
+      return this;
+
+    if (!Object.isFunction(this))
+      throw new TypeError("The object is not callable.");
+      
+    var nop = function() {};
     var __method = this, args = slice.call(arguments, 1);
-    return function() {
+    
+    var bound = function() {
       var a = merge(args, arguments);
-      return __method.apply(context, a);
+      var c = this instanceof nop ? this : context || window;
+      return __method.apply(c, a);
     }
+    
+    nop.prototype = this.prototype;
+    bound.prototype = new nop();
+    
+    return bound;
   }
 
   /** related to: Function#bind

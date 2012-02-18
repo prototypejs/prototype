@@ -44,6 +44,36 @@ new Test.Unit.Runner({
       methodWithArguments.bind({ hi: 'withBindArgs' }, 'arg1', 'arg2')());
     this.assertEqual('withBindArgsAndArgs,arg1,arg2,arg3,arg4',
       methodWithArguments.bind({ hi: 'withBindArgsAndArgs' }, 'arg1', 'arg2')('arg3', 'arg4'));
+      
+    
+    // Ensure that bound functions ignore their `context` when used as
+    // constructors. Taken from example at:
+    // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
+    function Point(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+
+    Point.prototype.toString = function() { 
+      return this.x + "," + this.y; 
+    };
+
+    var p = new Point(1, 2);
+    p.toString(); // "1,2"
+
+    var emptyObj = {};
+    var YAxisPoint = Point.bind(emptyObj, 0 /* x */);
+
+    var axisPoint = new YAxisPoint(5);
+    axisPoint.toString(); //  "0,5"
+    
+    this.assertEqual("0,5", axisPoint.toString(),
+     "bound constructor should ignore context and curry properly");
+    
+    this.assert(axisPoint instanceof Point,
+     "should be an instance of Point");
+    this.assert(axisPoint instanceof YAxisPoint,
+     "should be an instance of YAxisPoint");
   },
 
   testFunctionCurry: function() {
