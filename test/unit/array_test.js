@@ -216,9 +216,13 @@ new Test.Unit.Runner({
   },
   
   testEachOnSparseArrays: function() {
+    var counter = 0;
+    
     var sparseArray = [0, 1];
     sparseArray[5] = 5;
-    this.assertEqual('[0, 1, 5]', sparseArray.inspect(), "Array#each should skip nonexistent keys in an array");
+    sparseArray.each( function(item) { counter++; });
+    
+    this.assertEqual(3, counter, "Array#each should skip nonexistent keys in an array");
   },
   
   testMapGeneric: function() {
