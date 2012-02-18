@@ -500,91 +500,93 @@ Array.from = $A;
     };
   }
   
-  if (arrayProto.map) {
-    var map = wrapNative(Array.prototype.map);
-  } else {
-    function map(iterator) {
-      iterator = iterator || Prototype.K;
-      var results = [], context = arguments[1], n = 0;
+  function map(iterator) {
+    iterator = iterator || Prototype.K;
+    var results = [], context = arguments[1], n = 0;
 
-      for (var i = 0, length = this.length; i < length; i++) {
-        if (i in this) {
-          results[n] = iterator.call(context, this[i], i, this);
-        }
-        n++;
+    for (var i = 0, length = this.length; i < length; i++) {
+      if (i in this) {
+        results[n] = iterator.call(context, this[i], i, this);
       }
-      results.length = n;
-      return results;
+      n++;
     }
+    results.length = n;
+    return results;
   }
   
+  if (arrayProto.map) {
+    map = wrapNative(Array.prototype.map);
+  }
+  
+  function filter(iterator) {
+    if (!Object.isFunction(iterator))
+      throw new TypeError();
+    var results = [], context = arguments[1], value;
+
+    for (var i = 0, length = this.length; i < length; i++) {
+      if (i in this) {
+        value = this[i];
+        if (iterator.call(context, value, i, this)) {
+          results.push(value);
+        }
+      }
+    }
+    return results;
+  }
+
   if (arrayProto.filter) {
     // `Array#filter` requires an iterator by nature, so we don't need to
     // wrap it.
-    var filter = Array.prototype.filter;
-  } else {
-    function filter(iterator) {
-      if (!Object.isFunction(iterator))
-        throw new TypeError();
-      var results = [], context = arguments[1], value;
+    filter = Array.prototype.filter;
+  }
 
-      for (var i = 0, length = this.length; i < length; i++) {
-        if (i in this) {
-          value = this[i];
-          if (iterator.call(context, value, i, this)) {
-            results.push(value);
-          }
-        }
+  function some(iterator) {
+    iterator = iterator || Prototype.K;
+    var context = arguments[1];
+
+    for (var i = 0, length = this.length; i < length; i++) {
+      if (i in this && iterator.call(context, this[i], i, this)) {
+        return true;
       }
-      return results;
     }
+      
+    return false;
   }
   
   if (arrayProto.some) {
     var some = wrapNative(Array.prototype.some);
-  } else {
-    function some(iterator) {
-      iterator = iterator || Prototype.K;
-      var context = arguments[1];
+  }
+  
+  function every(iterator) {
+    iterator = iterator || Prototype.K;
+    var context = arguments[1];
 
-      for (var i = 0, length = this.length; i < length; i++) {
-        if (i in this && iterator.call(context, this[i], i, this)) {
-          return true;
-        }
+    for (var i = 0, length = this.length; i < length; i++) {
+      if (i in this && !iterator.call(context, this[i], i, this)) {
+        return false;
       }
-      
-      return false;
     }
+      
+    return true;
   }
   
   if (arrayProto.every) {
     var every = wrapNative(Array.prototype.every);
-  } else {
-    function every(iterator) {
-      iterator = iterator || Prototype.K;
-      var context = arguments[1];
-
-      for (var i = 0, length = this.length; i < length; i++) {
-        if (i in this && !iterator.call(context, this[i], i, this)) {
-          return false;
-        }
-      }
-      
-      return true;
-    }
   }
   
   // Prototype's `Array#inject` behaves similarly to ES5's `Array#reduce`.
-  if (arrayProto.reduce) {
-    var _reduce = arrayProto.reduce;
-    function inject(memo, iterator) {
-      iterator = iterator || Prototype.K;
-      var context = arguments[2];
-      // The iterator must be bound, as `Array#reduce` always executes the
-      // iterator in the global context.
-      return _reduce.call(this, iterator.bind(context), memo, context);
-    }
-  } else {
+  var _reduce = arrayProto.reduce;
+  function inject(memo, iterator) {
+    iterator = iterator || Prototype.K;
+    var context = arguments[2];
+    // The iterator must be bound, as `Array#reduce` always executes the
+    // iterator in the global context.
+    return _reduce.call(this, iterator.bind(context), memo, context);
+  }
+  
+  // Piggyback on `Array#reduce` if it exists; otherwise fall back to the
+  // standard `Enumerable.inject`.
+  if (!arrayProto.reduce) {
     var inject = Enumerable.inject;
   }
 
