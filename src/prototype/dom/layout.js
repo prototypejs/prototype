@@ -1508,22 +1508,15 @@
     // Find page position of source.    
     source  = $(source);
     element = $(element);    
-    var p = Element.viewportOffset(source), delta = [0, 0], parent = null;
+    var p = Element.viewportOffset(source), delta = [0, 0];
     
     // A delta of 0/0 will work for `positioned: fixed` elements, but
     // for `position: absolute` we need to get the parent's offset.
     if (Element.getStyle(element, 'position') === 'absolute') {
-      parent = Element.getOffsetParent(element);
-      delta  = Element.viewportOffset(parent);
+      var parent = Element.getOffsetParent(element);
+      if (parent !== document.body) delta = Element.viewportOffset(parent);
     }
     
-    // Adjust by BODY offsets. Fixes some versions of safari.
-    if (parent === document.body) {
-      delta[0] -= document.body.offsetLeft;
-      delta[1] -= document.body.offsetTop;
-    }
-
-
     var layout = Element.getLayout(source);
     
     // Set position.
@@ -1532,10 +1525,10 @@
     if (options.setLeft)
       styles.left = (p[0] - delta[0] + options.offsetLeft) + 'px';
     if (options.setTop)
-      styles.top  = (p[1] - delta[1] + options.offsetTop) + 'px';
+      styles.top  = (p[1] - delta[1] + options.offsetTop)  + 'px';
     
     if (options.setWidth)
-      styles.width = layout.get('border-box-width') + 'px';
+      styles.width  = layout.get('border-box-width')  + 'px';
     if (options.setHeight)
       styles.height = layout.get('border-box-height') + 'px';
     
