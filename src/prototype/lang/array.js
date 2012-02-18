@@ -500,13 +500,23 @@ Array.from = $A;
     };
   }
   
+  // Note that #map, #filter, #some, and #every take some extra steps for
+  // ES5 compliance: the context in which they're called is coerced to an
+  // object, and that object's `length` property is coerced to a finite
+  // integer. This makes it easier to use the methods as generics.
+  //
+  // This means that they behave a little differently from other methods in
+  // `Enumerable`/`Array` that don't collide with ES5, but that's OK.
   function map(iterator) {
+    if (this == null) throw new TypeError();
     iterator = iterator || Prototype.K;
+
+    var object = Object(this);
     var results = [], context = arguments[1], n = 0;
 
-    for (var i = 0, length = this.length; i < length; i++) {
-      if (i in this) {
-        results[n] = iterator.call(context, this[i], i, this);
+    for (var i = 0, length = object.length >>> 0; i < length; i++) {
+      if (i in object) {
+        results[n] = iterator.call(context, object[i], i, object);
       }
       n++;
     }
@@ -519,14 +529,16 @@ Array.from = $A;
   }
   
   function filter(iterator) {
-    if (!Object.isFunction(iterator))
+    if (this == null || !Object.isFunction(iterator))
       throw new TypeError();
+    
+    var object = Object(this);
     var results = [], context = arguments[1], value;
 
-    for (var i = 0, length = this.length; i < length; i++) {
-      if (i in this) {
-        value = this[i];
-        if (iterator.call(context, value, i, this)) {
+    for (var i = 0, length = object.length >>> 0; i < length; i++) {
+      if (i in object) {
+        value = object[i];
+        if (iterator.call(context, value, i, object)) {
           results.push(value);
         }
       }
@@ -541,11 +553,13 @@ Array.from = $A;
   }
 
   function some(iterator) {
+    if (this == null) throw new TypeError();
     iterator = iterator || Prototype.K;
     var context = arguments[1];
 
-    for (var i = 0, length = this.length; i < length; i++) {
-      if (i in this && iterator.call(context, this[i], i, this)) {
+    var object = Object(this);
+    for (var i = 0, length = object.length >>> 0; i < length; i++) {
+      if (i in object && iterator.call(context, object[i], i, object)) {
         return true;
       }
     }
@@ -558,11 +572,13 @@ Array.from = $A;
   }
   
   function every(iterator) {
+    if (this == null) throw new TypeError();
     iterator = iterator || Prototype.K;
     var context = arguments[1];
 
-    for (var i = 0, length = this.length; i < length; i++) {
-      if (i in this && !iterator.call(context, this[i], i, this)) {
+    var object = Object(this);
+    for (var i = 0, length = object.length >>> 0; i < length; i++) {
+      if (i in object && !iterator.call(context, object[i], i, object)) {
         return false;
       }
     }
@@ -579,9 +595,9 @@ Array.from = $A;
   function inject(memo, iterator) {
     iterator = iterator || Prototype.K;
     var context = arguments[2];
-    // The iterator must be bound, as `Array#reduce` always executes the
-    // iterator in the global context.
-    return _reduce.call(this, iterator.bind(context), memo, context);
+    // The iterator must be bound, as `Array#reduce` always binds to
+    // `undefined`.
+    return _reduce.call(this, iterator.bind(context), memo);
   }
   
   // Piggyback on `Array#reduce` if it exists; otherwise fall back to the
