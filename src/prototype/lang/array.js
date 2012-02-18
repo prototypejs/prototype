@@ -574,7 +574,7 @@ Array.from = $A;
     }
   }
   
-  // Prototype's `Array#inject` behaves identically to ES5's `Array#reduce`.
+  // Prototype's `Array#inject` behaves similarly to ES5's `Array#reduce`.
   if (arrayProto.reduce) {
     var _reduce = arrayProto.reduce;
     function inject(memo, iterator) {
