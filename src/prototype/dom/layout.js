@@ -1,4 +1,3 @@
-
 (function() {
   
   // Converts a CSS percentage value to a decimal.
@@ -113,10 +112,9 @@
       context = context || element.parentNode;
       var decimal = toDecimal(value);
       var whole = null;
-      var position = element.getStyle('position');
       
       var isHorizontal = property.include('left') || property.include('right') ||
-       property.include('width');
+        property.include('width');
        
       var isVertical   = property.include('top') || property.include('bottom') ||
         property.include('height');
@@ -151,7 +149,6 @@
   
   // Shortcut for figuring out if an element is `display: none` or not.
   function isDisplayed(element) {
-    var originalElement = element;    
     while (element && element.parentNode) {
       var display = element.getStyle('display');
       if (display === 'none') {
@@ -215,7 +212,7 @@
    *  
    *  The following are the CSS-related properties that can be retrieved.
    *  Nearly all of them map directly to their property names in CSS. (The
-   *  only exception is for borders — e.g., `border-width` instead of 
+   *  only exception is for borders — e.g., `border-left` instead of 
    *  `border-left-width`.)
    *  
    *  * `height`
@@ -236,6 +233,7 @@
    *  * `margin-bottom`
    *  * `margin-left`
    *  * `margin-right`
+   *  * `outline`
    *  
    *  In addition, these "composite" properties can be retrieved:
    *  
@@ -557,7 +555,7 @@
      *  
      *  A list of all measurable properties.
     **/
-    PROPERTIES: $w('height width top left right bottom border-left border-right border-top border-bottom padding-left padding-right padding-top padding-bottom margin-top margin-bottom margin-left margin-right padding-box-width padding-box-height border-box-width border-box-height margin-box-width margin-box-height'),
+    PROPERTIES: $w('height width top left right bottom border-left border-right border-top border-bottom padding-left padding-right padding-top padding-bottom margin-top margin-bottom margin-left margin-right padding-box-width padding-box-height border-box-width border-box-height margin-box-width margin-box-height outline'),
     
     /**
      *  Element.Layout.COMPOSITE_PROPERTIES = Array
@@ -605,6 +603,7 @@
          pRight = this.get('padding-right');
          
         if (!this._preComputing) this._end();
+
         return bWidth - bLeft - bRight - pLeft - pRight;
       },
       
@@ -738,6 +737,10 @@
       
       'margin-right': function(element) {
         return getPixelValue(element, 'marginRight');
+      },
+
+      'outline': function(element) {
+        return getPixelValue(element, 'outlineWidth');
       }
     }
   });
@@ -1146,10 +1149,9 @@
    *  Returns the X/Y coordinates of element relative to the viewport.
   **/
   function viewportOffset(forElement) {
-    element = $(element);
     var valueT = 0, valueL = 0, docBody = document.body;
 
-    var element = forElement;
+    var element = $(forElement);
     do {
       valueT += element.offsetTop  || 0;
       valueL += element.offsetLeft || 0;
