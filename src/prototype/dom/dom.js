@@ -193,7 +193,7 @@
    *      $(element).hide(); 
    *      
    *  Return an [[Enumerable]] of all descendant nodes of the element with the id
-   *  "article"
+   *  "articles"
    *  
    *      $('articles').descendants();
   **/
@@ -234,7 +234,7 @@
     element = $(element);
     var result = '<' + element.tagName.toLowerCase();
     
-    var attribute;
+    var attribute, value;
     for (var property in INSPECT_ATTRIBUTES) {
       attribute = INSPECT_ATTRIBUTES[property];
       value = (element[property] || '').toString();
@@ -246,7 +246,7 @@
   
   methods.inspect = inspect;
   
-  // VISIBLITY
+  // VISIBILITY
   
   /**
    *  Element.visible(@element) -> Boolean
@@ -307,8 +307,8 @@
    *  
    *  ##### Examples
    *  
-   *      <div id="welcome-message"></div>
-   *      <div id="error-message" style="display:none;"></div>
+   *      <div id="welcome-message">Welcome</div>
+   *      <div id="error-message" style="display:none;">Error</div>
    *  
    *      $('welcome-message').toggle();
    *      // -> Element (and hides div#welcome-message)
@@ -316,7 +316,7 @@
    *      $('error-message').toggle();
    *      // -> Element (and displays div#error-message)
    *  
-   *      $('error-message).toggle(true);
+   *      $('error-message').toggle(true);
    *      // -> Element (and displays div#error-message, no matter what its
    *      //    previous state)
    *  
@@ -1179,7 +1179,7 @@
   }
   
   function purgeCollection_IE(elements) {
-    var i = elements.length, element, eventName, responders, uid, j;
+    var i = elements.length, element, uid;
     while (i--) {
       element = elements[i];
       uid = getUniqueElementID(element);
@@ -2139,7 +2139,7 @@
    *      // -> false
   **/
   function descendantOf_DOM(element, ancestor) {
-    element = $(element);
+    element = $(element), ancestor = $(ancestor);
     while (element = element.parentNode)
       if (element === ancestor) return true;
     return false;
@@ -2305,8 +2305,7 @@
    *      // -> 'some info.'
   **/
   function readAttribute(element, name) {
-    element = $(element);
-    return element.getAttribute(name);
+    return $(element).getAttribute(name);
   }
   
   function readAttribute_IE(element, name) {
@@ -2333,7 +2332,7 @@
   
   function readAttribute_Opera(element, name) {
     if (name === 'title') return element.title;
-    return element.getAttribute(attribute);
+    return element.getAttribute(name);
   }
   
   var PROBLEMATIC_ATTRIBUTE_READING = (function() {
@@ -2409,7 +2408,7 @@
   function getRegExpForClassName(className) {
     if (regExpCache[className]) return regExpCache[className];
     
-    re = new RegExp("(^|\\s+)" + className + "(\\s+|$)");
+    var re = new RegExp("(^|\\s+)" + className + "(\\s+|$)");
     regExpCache[className] = re;
     return re;
   }
@@ -2492,7 +2491,7 @@
    *      $('mutsu').removeClassName('food');
    *      // -> Element
    *      
-   *      $('mutsu').classNames;
+   *      $('mutsu').className;
    *      // -> 'apple fruit'
   **/
   function removeClassName(element, className) {
@@ -2538,8 +2537,7 @@
     if (Object.isUndefined(bool))
       bool = !hasClassName(element, className);
       
-    var method = Element[bool ? 'addClassName' : 'removeClassName'];
-    return method(element, className);
+    return bool ? addClassName(element, className) : removeClassName(element, className);
   }
   
   var ATTRIBUTE_TRANSLATIONS = {};
@@ -2849,7 +2847,7 @@
    *  1. Reading and writing the CSS `opacity` property works exactly like
    *     calling [[Element.getOpacity]] and [[Element.setOpacity]]
    *     respectively. This lets us pretend that IE didn't have a
-   *     properietary way to set opacity in versions 6-7.
+   *     proprietary way to set opacity in versions 6-7.
    *  2. Browsers disagree on how to report certain properties of hidden
    *     elements (i.e., `display: none`). Opera, for instance, says that a
    *     hidden element has a `width` of `0px`. It's an arguable point, but
@@ -3021,8 +3019,6 @@
   }
   
   // STORAGE
-  var UID = 0;
-  
   GLOBAL.Element.Storage = { UID: 1 };
   
   function getUniqueElementID(element) {
@@ -3066,6 +3062,7 @@
   
   /**
    *  Element.store(@element, key, value) -> Element
+   *  Element.store(@element, {key: value,...}) -> Element
    *
    *  Stores a key/value pair of custom metadata on the element.
    *
