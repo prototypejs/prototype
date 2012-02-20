@@ -161,8 +161,7 @@
   }
 
   function Str(key, holder, stack) {
-    var value = holder[key],
-        type = typeof value;
+    var value = holder[key];
 
     if (Type(value) === OBJECT_TYPE && typeof value.toJSON === 'function') {
       value = value.toJSON(key);
@@ -183,7 +182,7 @@
       case false: return 'false';
     }
 
-    type = typeof value;
+    var type = typeof value;
     switch (type) {
       case 'string':
         return value.inspect(true);
@@ -192,7 +191,9 @@
       case 'object':
 
         for (var i = 0, length = stack.length; i < length; i++) {
-          if (stack[i] === value) { throw new TypeError(); }
+          if (stack[i] === value) {
+            throw new TypeError("Cyclic reference to '" + value + "' in object");
+          }
         }
         stack.push(value);
 
