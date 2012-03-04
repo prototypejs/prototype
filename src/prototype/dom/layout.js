@@ -111,9 +111,7 @@
       // 50% of its offset parent. If it's `position: fixed` instead, we know
       // it's 50% of the viewport. And so on.
       context = context || element.parentNode;
-      var decimal = toDecimal(value);
-      var whole = null;
-      var position = element.getStyle('position');
+      var decimal = toDecimal(value), whole = null;
       
       var isHorizontal = property.include('left') || property.include('right') ||
        property.include('width');
