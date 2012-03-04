@@ -521,7 +521,7 @@
   var LINK_ELEMENT_INNERHTML_BUGGY = (function() {
     try {
       var el = document.createElement('div');
-      el.innerHTML = "<link>";
+      el.innerHTML = "<link />";
       var isBuggy = (el.childNodes.length === 0);
       el = null;
       return isBuggy;
