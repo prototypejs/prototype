@@ -1125,7 +1125,7 @@
     }
     
     if (workaround) {
-      div.innerHTML = '&nbsp;' + t[0] + html + t[1];
+      div.innerHTML = '&#160;' + t[0] + html + t[1];
       div.removeChild(div.firstChild);
       for (var i = t[2]; i--; )
         div = div.firstChild;
