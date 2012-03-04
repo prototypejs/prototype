@@ -149,7 +149,6 @@
   
   // Shortcut for figuring out if an element is `display: none` or not.
   function isDisplayed(element) {
-    var originalElement = element;    
     while (element && element.parentNode) {
       var display = element.getStyle('display');
       if (display === 'none') {
