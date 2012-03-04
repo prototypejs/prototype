@@ -131,6 +131,7 @@ new Test.Unit.Runner({
   
   testIntersect: function(){
     this.assertEnumEqual([1,3], [1,1,3,5].intersect([1,2,3]));
+    this.assertEnumEqual([0,1], [0,1,2].intersect([0,1]));
     this.assertEnumEqual([1], [1,1].intersect([1,1]));
     this.assertEnumEqual([], [1,1,3,5].intersect([4]));
     this.assertEnumEqual([], [1].intersect(['1']));

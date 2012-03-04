@@ -358,7 +358,7 @@ Array.from = $A;
   **/
   function intersect(array) {
     return this.uniq().findAll(function(item) {
-      return array.detect(function(value) { return item === value });
+      return array.indexOf(item) !== -1;
     });
   }
 
