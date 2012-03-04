@@ -215,6 +215,9 @@ new Test.Unit.Runner({
     this.assertEqual('foo bar', 'foo bar'.stripScripts());
     this.assertEqual('foo bar', ('foo <script>boo();<'+'/script>bar').stripScripts());
     this.assertEqual('foo bar', ('foo <script type="text/javascript">boo();\nmoo();<'+'/script>bar').stripScripts());
+    
+    this.assertEqual('foo bar', ('foo <script>boo();<'+'/script >bar').stripScripts(), 
+     'should properly handle whitespace in closing tag');
   },
   
   testExtractScripts: function() {
