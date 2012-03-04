@@ -161,9 +161,7 @@
   }
 
   function Str(key, holder, stack) {
-    var value = holder[key],
-        type = typeof value;
-
+    var value = holder[key];
     if (Type(value) === OBJECT_TYPE && typeof value.toJSON === 'function') {
       value = value.toJSON(key);
     }
