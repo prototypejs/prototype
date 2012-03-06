@@ -181,7 +181,7 @@
       case false: return 'false';
     }
 
-    type = typeof value;
+    var type = typeof value;
     switch (type) {
       case 'string':
         return value.inspect(true);
