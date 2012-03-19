@@ -1545,6 +1545,18 @@
     return selector.match(element);
   }
   
+  function _recursivelyFind(element, property, expression, index) {
+    element = $(element), expression = expression || 0, index = index || 0;
+    var match;
+    if (Object.isNumber(expression))
+      index = expression, match = function() { return true; };
+    else
+      match = function(element) { return Prototype.Selector.match(element, expression) };
+    while (element = element[property])
+      if (element.nodeType == 1 && match(element) && --index < 0)
+        return Element.extend(element);
+  }
+
   /**
    *  Element.up(@element[, expression[, index = 0]]) -> Element
    *  Element.up(@element[, index = 0]) -> Element
@@ -1648,12 +1660,8 @@
   **/
   function up(element, expression, index) {
     element = $(element);
-    
-    if (arguments.length === 1) return $(element.parentNode);
-    
-    var ancestors = Element.ancestors(element);
-    return Object.isNumber(expression) ? ancestors[expression] :
-     Prototype.Selector.find(ancestors, expression, index);
+    if (arguments.length == 1) return $(element.parentNode);
+    return _recursivelyFind(element, 'parentNode', expression, index);
   }
   
   /**
@@ -1754,38 +1762,12 @@
    *      // -> undefined
   **/
   function down(element, expression, index) {
-    element = $(element);
-    
-    if (arguments.length === 1) return firstDescendant(element);
-    
-    return Object.isNumber(expression) ? Element.descendants(element)[expression] :
-     Element.select(element, expression)[index || 0];
+    element = $(element), expression = expression || 0, index = index || 0;
+    if (Object.isNumber(expression))
+      index = expression, expression = '*';
+    return Element.extend(Prototype.Selector.select(expression, element)[index]);
   }
 
-  
-  function _descendants(element) {
-    var nodes = element.getElementsByTagName('*'), results = [];
-    for (var i = 0, node; node = nodes[i]; i++)
-      if (node.tagName !== "!") // Filter out comment nodes.
-        results.push(node);
-    return results;
-  }
-  
-  // We optimize Element#down for IE so that it does not call
-  // Element#descendants (and therefore extend all nodes).
-  function down_IE(element, expression, index) {
-    element = $(element);
-    if (arguments.length === 1)
-      return Element.firstDescendant(element);
-
-    var node = Object.isNumber(expression) ? _descendants(element)[expression] :
-      Element.select(element, expression)[index || 0];
-    return Element.extend(node);
-  }
-  
-  if (!Prototype.BrowserFeatures.ElementExtensions)
-    down = down_IE;
-  
   /**
    *  Element.previous(@element[, expression[, index = 0]]) -> Element
    *  Element.previous(@element[, index = 0]) -> Element
@@ -1887,15 +1869,7 @@
   **/
   function previous(element, expression, index) {
     element = $(element);
-    if (Object.isNumber(expression))
-      index = expression, expression = false;
-    if (!Object.isNumber(index)) index = 0;
-  
-    if (expression) {
-      return Prototype.Selector.find(previousSiblings(element), expression, index);
-    } else {
-      return recursivelyCollect(element, 'previousSibling', index + 1)[index];
-    }
+    return _recursivelyFind(element, 'previousSibling', expression, index);
   }
   
   /**
@@ -1999,15 +1973,7 @@
   **/
   function next(element, expression, index) {
     element = $(element);
-    if (Object.isNumber(expression))
-      index = expression, expression = false;
-    if (!Object.isNumber(index)) index = 0;
-    
-    if (expression) {
-      return Prototype.Selector.find(nextSiblings(element), expression, index);
-    } else {
-      return recursivelyCollect(element, 'nextSibling', index + 1)[index];
-    }
+    return _recursivelyFind(element, 'nextSibling', expression, index);
   }
     
   /**
