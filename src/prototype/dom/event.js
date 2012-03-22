@@ -220,8 +220,11 @@
    *      });
   **/
   function element(event) {
-    event = Event.extend(event);
+    return Element.extend(_element(event));
+  }
 
+  function _element(event) {
+    event = Event.extend(event);
     var node = event.target, type = event.type,
      currentTarget = event.currentTarget;
 
@@ -239,8 +242,7 @@
     // anchor click rather than the anchor itself.
     if (node.nodeType == Node.TEXT_NODE)
       node = node.parentNode;
-
-    return Element.extend(node);
+    return node;
   }
 
   /**
@@ -268,13 +270,11 @@
    *      });
   **/
   function findElement(event, expression) {
-    var element = Event.element(event);
-    
-    if (!expression) return element;
+    var element = _element(event);
+    if (!expression) return Element.extend(element);
     while (element) {
-      if (Object.isElement(element) && Prototype.Selector.match(element, expression)) {
+      if (Object.isElement(element) && Prototype.Selector.match(element, expression))
         return Element.extend(element);
-      }
       element = element.parentNode;
     }
   }
