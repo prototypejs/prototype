@@ -271,7 +271,7 @@
   **/
   function findElement(event, expression) {
     var element = _element(event);
-    if (!expression) return $(element);
+    if (!expression) return Element.extend(element);
     while (element) {
       if (Object.isElement(element) && Prototype.Selector.match(element, expression))
         return Element.extend(element);
