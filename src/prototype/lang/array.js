@@ -421,9 +421,9 @@ Array.from = $A;
    *
    *      ['1', '2', '3'].indexOf(1);
    *      // -> -1 (not found, 1 !== '1')
-   *      
-   *      [].indexOf(1)
-   *      // -> -1 (unknown empty array should return -1)
+   *       
+   *      [1,2,3,4,5,6,7,8].indexOf($dynamic_item, -11);
+   *      // -> -1 (when the $dynamic_item is undefined, it should return -1)
   **/
   function indexOf(item, i) {
     i || (i = 0);
