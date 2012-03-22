@@ -421,12 +421,15 @@ Array.from = $A;
    *
    *      ['1', '2', '3'].indexOf(1);
    *      // -> -1 (not found, 1 !== '1')
+   *      
+   *      [].indexOf(1)
+   *      // -> -1 (unknown empty array should return -1)
   **/
   function indexOf(item, i) {
     i || (i = 0);
     var length = this.length;
     if (i < 0) i = length + i;
-    for (; i < length; i++)
+    for (; i > 0 && i < length; i++)
       if (this[i] === item) return i;
     return -1;
   }
