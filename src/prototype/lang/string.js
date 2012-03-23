@@ -177,7 +177,7 @@ Object.extend(String.prototype, (function() {
    *  ##### Examples
    *  
    *      'apple, pear & orange'.scan(/\w+/, alert);
-   *      // -> 'apple pear orange' (and displays 'apple', 'pear' and 'orange' in three successive alert dialogs)
+   *      // -> 'apple pear & orange' (and displays 'apple', 'pear' and 'orange' in three successive alert dialogs)
    *  
    *  Can be used to populate an array:
    *  
@@ -382,11 +382,9 @@ Object.extend(String.prototype, (function() {
    *      }
    *
    *  (You can leave off the `window.` part of that, but it's bad form.)   
-   *  Evaluates the content of any `script` block present in the string. Returns
-   *  an array containing the value returned by each script.
   **/
   function evalScripts() {
-    return this.extractScripts().map(function(script) { return eval(script) });
+    return this.extractScripts().map(function(script) { return eval(script); });
   }
 
   /** related to: String#unescapeHTML
@@ -451,7 +449,7 @@ Object.extend(String.prototype, (function() {
    *      'section=blog&id=45'.toQueryParams();
    *      // -> {section: 'blog', id: '45'}
    *      
-   *      'section=blog;id=45'.toQueryParams();
+   *      'section=blog;id=45'.toQueryParams(';');
    *      // -> {section: 'blog', id: '45'}
    *      
    *      'http://www.example.com?section=blog&id=45#comments'.toQueryParams();
