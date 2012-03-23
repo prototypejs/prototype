@@ -220,6 +220,13 @@
    *      });
   **/
   function element(event) {
+    // The public version of `Event.element` is a thin wrapper around the
+    // private `_element` method below. We do this so that we can use it
+    // internally as `_element` without having to extend the node.
+    return Element.extend(_element(event));
+  }
+  
+  function _element(event) {
     event = Event.extend(event);
 
     var node = event.target, type = event.type,
@@ -268,13 +275,11 @@
    *      });
   **/
   function findElement(event, expression) {
-    var element = Event.element(event);
-    
-    if (!expression) return element;
+    var element = _element(event), match = Prototype.Selector.match;
+    if (!expression) return Element.extend(element);
     while (element) {
-      if (Object.isElement(element) && Prototype.Selector.match(element, expression)) {
+      if (Object.isElement(element) && match(element, expression))
         return Element.extend(element);
-      }
       element = element.parentNode;
     }
   }

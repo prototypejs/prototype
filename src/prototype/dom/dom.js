@@ -1545,6 +1545,30 @@
     return selector.match(element);
   }
   
+  
+  // Internal method for optimizing traversal. Works like 
+  // `recursivelyCollect`, except it stops at the first match and doesn't
+  // extend any elements except for the returned element.
+  function _recursivelyFind(element, property, expression, index) {
+    element = $(element), expression = expression || 0, index = index || 0;
+    if (Object.isNumber(expression)) {
+      index = expression, expression = null;
+    }
+    
+    while (element = element[property]) {
+      // Skip any non-element nodes.
+      if (element.nodeType !== 1) continue;
+      // Skip any nodes that don't match the expression, if there is one.
+      if (expression && !Prototype.Selector.match(element, expression))
+        continue;
+      // Skip the first `index` matches we find.
+      if (--index >= 0) continue;
+      
+      return Element.extend(element);
+    }
+  }
+  
+  
   /**
    *  Element.up(@element[, expression[, index = 0]]) -> Element
    *  Element.up(@element[, index = 0]) -> Element
@@ -1648,14 +1672,11 @@
   **/
   function up(element, expression, index) {
     element = $(element);
-    
+
     if (arguments.length === 1) return $(element.parentNode);
-    
-    var ancestors = Element.ancestors(element);
-    return Object.isNumber(expression) ? ancestors[expression] :
-     Prototype.Selector.find(ancestors, expression, index);
+    return _recursivelyFind(element, 'parentNode', expression, index);
   }
-  
+
   /**
    *  Element.down(@element[, expression[, index = 0]]) -> Element
    *  Element.down(@element[, index = 0]) -> Element
@@ -1754,38 +1775,15 @@
    *      // -> undefined
   **/
   function down(element, expression, index) {
-    element = $(element);
+    element = $(element), expression = expression || 0, index = index || 0;
     
-    if (arguments.length === 1) return firstDescendant(element);
+    if (Object.isNumber(expression))
+      index = expression, expression = '*';
     
-    return Object.isNumber(expression) ? Element.descendants(element)[expression] :
-     Element.select(element, expression)[index || 0];
-  }
-
-  
-  function _descendants(element) {
-    var nodes = element.getElementsByTagName('*'), results = [];
-    for (var i = 0, node; node = nodes[i]; i++)
-      if (node.tagName !== "!") // Filter out comment nodes.
-        results.push(node);
-    return results;
-  }
-  
-  // We optimize Element#down for IE so that it does not call
-  // Element#descendants (and therefore extend all nodes).
-  function down_IE(element, expression, index) {
-    element = $(element);
-    if (arguments.length === 1)
-      return Element.firstDescendant(element);
-
-    var node = Object.isNumber(expression) ? _descendants(element)[expression] :
-      Element.select(element, expression)[index || 0];
+    var node = Prototype.Selector.select(expression, element)[index];
     return Element.extend(node);
   }
-  
-  if (!Prototype.BrowserFeatures.ElementExtensions)
-    down = down_IE;
-  
+
   /**
    *  Element.previous(@element[, expression[, index = 0]]) -> Element
    *  Element.previous(@element[, index = 0]) -> Element
@@ -1886,16 +1884,7 @@
    *      // -> undefined
   **/
   function previous(element, expression, index) {
-    element = $(element);
-    if (Object.isNumber(expression))
-      index = expression, expression = false;
-    if (!Object.isNumber(index)) index = 0;
-  
-    if (expression) {
-      return Prototype.Selector.find(previousSiblings(element), expression, index);
-    } else {
-      return recursivelyCollect(element, 'previousSibling', index + 1)[index];
-    }
+    return _recursivelyFind(element, 'previousSibling', expression, index);
   }
   
   /**
@@ -1998,16 +1987,7 @@
    *      // -> undefined   
   **/
   function next(element, expression, index) {
-    element = $(element);
-    if (Object.isNumber(expression))
-      index = expression, expression = false;
-    if (!Object.isNumber(index)) index = 0;
-    
-    if (expression) {
-      return Prototype.Selector.find(nextSiblings(element), expression, index);
-    } else {
-      return recursivelyCollect(element, 'nextSibling', index + 1)[index];
-    }
+    return _recursivelyFind(element, 'nextSibling', expression, index);
   }
     
   /**
