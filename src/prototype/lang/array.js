@@ -423,27 +423,74 @@ Array.from = $A;
    *      // -> -1 (not found, 1 !== '1')
   **/
   function indexOf(item, i) {
-    i || (i = 0);
-    var length = this.length;
-    if (i < 0) i = length + i;
-    for (; i < length; i++)
-      if (this[i] === item) return i;
+    if (this == null) throw new TypeError();
+    
+    var array = Object(this), length = array.length >>> 0;
+    if (length === 0) return -1;
+    
+    // The rules for the `fromIndex` argument are tricky. Let's follow the
+    // spec line-by-line.
+    i = Number(i);
+    if (isNaN(i)) {
+      i = 0;
+    } else if (i !== 0 && isFinite(i)) {
+      // Equivalent to ES5's `ToInteger` operation.
+      i = (i > 0 ? 1 : -1) * Math.floor(Math.abs(i));
+    }
+    
+    // If the search index is greater than the length of the array,
+    // return -1.
+    if (i > length) return -1;
+    
+    // If the search index is negative, take its absolute value, subtract it
+    // from the length, and make that the new search index. If it's still
+    // negative, make it 0.
+    var k = i >= 0 ? i : Math.max(length - Math.abs(i), 0);
+    for (; k < length; k++)
+      if (k in array && array[k] === item) return k;
     return -1;
   }
+  
 
   /** related to: Array#indexOf
    *  Array#lastIndexOf(item[, offset]) -> Number
    *  - item (?): A value that may or may not be in the array.
-   *  - offset (Number): The number of items at the end to skip before beginning
-   *      the search.
+   *  - offset (Number): The number of items at the end to skip before
+   *      beginning the search.
    *
-   *  Returns the position of the last occurrence of `item` within the array &mdash; or
-   *  `-1` if `item` doesn't exist in the array.
+   *  Returns the position of the last occurrence of `item` within the
+   *  array &mdash; or `-1` if `item` doesn't exist in the array.
   **/
   function lastIndexOf(item, i) {
-    i = isNaN(i) ? this.length : (i < 0 ? this.length + i : i) + 1;
-    var n = this.slice(0, i).reverse().indexOf(item);
-    return (n < 0) ? n : i - n - 1;
+    if (this == null) throw new TypeError();
+    
+    var array = Object(this), length = array.length >>> 0;
+    if (length === 0) return -1;
+    
+    // The rules for the `fromIndex` argument are tricky. Let's follow the
+    // spec line-by-line.
+    if (!Object.isUndefined(i)) {
+      i = Number(i);
+      if (isNaN(i)) {
+        i = 0;
+      } else if (i !== 0 && isFinite(i)) {
+        // Equivalent to ES5's `ToInteger` operation.
+        i = (i > 0 ? 1 : -1) * Math.floor(Math.abs(i));
+      }
+    } else {
+      i = length;
+    }
+    
+    // If fromIndex is positive, clamp it to the last index in the array;
+    // if it's negative, subtract its absolute value from the array's length.
+    var k = i >= 0 ? Math.min(i, length - 1) :
+     length - Math.abs(i);
+
+    // (If fromIndex is still negative, it'll bypass this loop altogether and
+    // return -1.)
+    for (; k >= 0; k--)
+      if (k in array && array[k] === item) return k;
+    return -1;
   }
 
   // Replaces a built-in function. No PDoc needed.

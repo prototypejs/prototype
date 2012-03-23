@@ -96,6 +96,21 @@ new Test.Unit.Runner({
     this.assertEqual(0, [1,2,1].indexOf(1));
     this.assertEqual(2, [1,2,1].indexOf(1, -1));
     this.assertEqual(1, [undefined,null].indexOf(null));
+    
+    // ES5 compatibility tests.
+    var undef;
+    var array = [1, 2, 3, 4, 5, undef, 6, 7, 1, 2, 3];
+    
+    this.assertEqual(2, array.indexOf(3, -47),
+     "large negative value for fromIndex");
+    this.assertEqual(10, array.indexOf(3, 4));
+    this.assertEqual(10, array.indexOf(3, -5))
+    this.assertEqual(2, array.indexOf(3, {}),
+     "nonsensical value for fromIndex");
+    this.assertEqual(2, array.indexOf(3, ""),
+     "nonsensical value for fromIndex");
+    this.assertEqual(-1, array.indexOf(3, 41),
+     "fromIndex value larger than the length of the array");
   },
 
   testLastIndexOf: function(){
@@ -188,18 +203,37 @@ new Test.Unit.Runner({
 
     this.assertIdentical(1, Array.prototype.concat.length);
 
-    this.assertEnumEqual([0, 1], [0, 1].concat());
-    this.assertIdentical(2, [0, 1].concat().length);
+    this.assertEnumEqual(
+      [0, 1],
+      [0, 1].concat(),
+      "test 2"
+    );
+    this.assertIdentical(2, [0, 1].concat().length, "test 3");
     
-    this.assertEnumEqual([0, 1, 2, 3, 4], [].concat([0, 1], [2, 3, 4]));
-    this.assertIdentical(5, [].concat([0, 1], [2, 3, 4]).length);
+    this.assertEnumEqual(
+      [0, 1, 2, 3, 4],
+      [].concat([0, 1], [2, 3, 4]),
+      "test 4"
+    );
+    this.assertIdentical(5, [].concat([0, 1], [2, 3, 4]).length, "test 5");
 
-    this.assertEnumEqual([0, x, 1, 2, true, "NaN"], [0].concat(x, [1, 2], true, "NaN"));
-    this.assertIdentical(6, [0].concat(x, [1, 2], true, "NaN").length);
+    this.assertEnumEqual([0, x, 1, 2, true, "NaN"], [0].concat(x, [1, 2], true, "NaN"), "test 6");
+    this.assertIdentical(6, [0].concat(x, [1, 2], true, "NaN").length, "test 7");
     
-    this.assertEnumEqual([undefined, 1, undefined], [,1].concat([], [,]));
-    this.assertIdentical(3, [,1].concat([], [,]).length);
-    this.assertEnumEqual([1], Object.keys([,1].concat([], [,])));
+    // These tests will fail in older IE because of the trailing comma.
+    // Nothing we can do about that, so just skip them and let the user know.
+    if ([,].length === 2) {
+      this.info("NOTE: Old versions of IE don't like trailing commas in " + 
+       "arrays. Skipping some tests.");
+    } else {
+      this.assertEnumEqual([undefined, 1, undefined], [,1].concat([], [,]), 
+       "concatenation behavior with a trailing comma (1)");
+      this.assertIdentical(3, [,1].concat([], [,]).length,
+       "concatenation behavior with a trailing comma (2)");
+    }
+    
+    
+    this.assertEnumEqual([1], Object.keys([,1].concat([], [,])), "test 10");
 
     // Check that Array.prototype.concat can be used in a generic way
     x.concat = Array.prototype.concat;
