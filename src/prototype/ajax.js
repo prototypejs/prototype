@@ -63,6 +63,13 @@
  *  * `requestHeaders` ([[Object]]): A set of key-value pairs, with properties
  *    representing header names.
  *  * `evalJS` ([[Boolean]] | [[String]]; default `true`): Automatically `eval`s
+ *    the content of [[Ajax.Response#responseText]] if the `Content-type` returned
+ *    by the server is set to one of `text/javascript`, `application/ecmascript`
+ *    (matches expression `(text|application)\/(x-)?(java|ecma)script`).
+ *    If the request doesn't obey same-origin policy, the content is not evaluated.
+ *    If you need to force evalutation, pass `'force'`. To prevent it altogether,
+ *    pass `false`.
+ *  * `evalJSON` ([[Boolean]] | [[String]]; default `true`): Automatically `eval`s
  *    the content of [[Ajax.Response#responseText]] and populates
  *    [[Ajax.Response#responseJSON]] with it if the `Content-type` returned by
  *    the server is set to `application/json`. If the request doesn't obey
