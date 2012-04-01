@@ -190,7 +190,9 @@
       case 'object':
 
         for (var i = 0, length = stack.length; i < length; i++) {
-          if (stack[i] === value) { throw new TypeError(); }
+          if (stack[i] === value) {
+            throw new TypeError("Cyclic reference to '" + value + "' in object");
+          }
         }
         stack.push(value);
 
