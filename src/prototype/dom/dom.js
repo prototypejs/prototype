@@ -188,12 +188,12 @@
    *  
    *  ##### Examples
    *  
-   *  Hide the element 
+   *  Hide the element:
    *  
    *      $(element).hide(); 
    *      
    *  Return an [[Enumerable]] of all descendant nodes of the element with the id
-   *  "article"
+   *  "articles":
    *  
    *      $('articles').descendants();
   **/
@@ -246,7 +246,7 @@
   
   methods.inspect = inspect;
   
-  // VISIBLITY
+  // VISIBILITY
   
   /**
    *  Element.visible(@element) -> Boolean
@@ -307,8 +307,8 @@
    *  
    *  ##### Examples
    *  
-   *      <div id="welcome-message"></div>
-   *      <div id="error-message" style="display:none;"></div>
+   *      <div id="welcome-message">Welcome</div>
+   *      <div id="error-message" style="display:none;">Error</div>
    *  
    *      $('welcome-message').toggle();
    *      // -> Element (and hides div#welcome-message)
@@ -316,7 +316,7 @@
    *      $('error-message').toggle();
    *      // -> Element (and displays div#error-message)
    *  
-   *      $('error-message).toggle(true);
+   *      $('error-message').toggle(true);
    *      // -> Element (and displays div#error-message, no matter what its
    *      //    previous state)
    *  
@@ -2472,7 +2472,7 @@
    *      $('mutsu').removeClassName('food');
    *      // -> Element
    *      
-   *      $('mutsu').classNames;
+   *      $('mutsu').className;
    *      // -> 'apple fruit'
   **/
   function removeClassName(element, className) {
@@ -2829,7 +2829,7 @@
    *  1. Reading and writing the CSS `opacity` property works exactly like
    *     calling [[Element.getOpacity]] and [[Element.setOpacity]]
    *     respectively. This lets us pretend that IE didn't have a
-   *     properietary way to set opacity in versions 6-7.
+   *     proprietary way to set opacity in versions 6-7.
    *  2. Browsers disagree on how to report certain properties of hidden
    *     elements (i.e., `display: none`). Opera, for instance, says that a
    *     hidden element has a `width` of `0px`. It's an arguable point, but
@@ -3046,8 +3046,11 @@
   
   /**
    *  Element.store(@element, key, value) -> Element
+   *  Element.store(@element, object) -> Element
    *
-   *  Stores a key/value pair of custom metadata on the element.
+   *  Stores a key/value pair of custom metadata on the element. If it is 
+   *  given one argument instead of two, it treats that argument as an object
+   *  of key/value pairs, and stores _each_ pair as element metadata.
    *
    *  The metadata can later be retrieved with [[Element.retrieve]].
   **/
