@@ -234,7 +234,7 @@
     element = $(element);
     var result = '<' + element.tagName.toLowerCase();
     
-    var attribute;
+    var attribute, value;
     for (var property in INSPECT_ATTRIBUTES) {
       attribute = INSPECT_ATTRIBUTES[property];
       value = (element[property] || '').toString();
@@ -1179,7 +1179,7 @@
   }
   
   function purgeCollection_IE(elements) {
-    var i = elements.length, element, eventName, responders, uid, j;
+    var i = elements.length, element, uid;
     while (i--) {
       element = elements[i];
       uid = getUniqueElementID(element);
@@ -2119,7 +2119,7 @@
    *      // -> false
   **/
   function descendantOf_DOM(element, ancestor) {
-    element = $(element);
+    element = $(element), ancestor = $(ancestor);
     while (element = element.parentNode)
       if (element === ancestor) return true;
     return false;
@@ -2285,8 +2285,7 @@
    *      // -> 'some info.'
   **/
   function readAttribute(element, name) {
-    element = $(element);
-    return element.getAttribute(name);
+    return $(element).getAttribute(name);
   }
   
   function readAttribute_IE(element, name) {
@@ -2313,7 +2312,7 @@
   
   function readAttribute_Opera(element, name) {
     if (name === 'title') return element.title;
-    return element.getAttribute(attribute);
+    return element.getAttribute(name);
   }
   
   var PROBLEMATIC_ATTRIBUTE_READING = (function() {
@@ -2389,7 +2388,7 @@
   function getRegExpForClassName(className) {
     if (regExpCache[className]) return regExpCache[className];
     
-    re = new RegExp("(^|\\s+)" + className + "(\\s+|$)");
+    var re = new RegExp("(^|\\s+)" + className + "(\\s+|$)");
     regExpCache[className] = re;
     return re;
   }
