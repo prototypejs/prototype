@@ -897,11 +897,19 @@
   
   // Stop observing _all_ listeners on an element.
   function stopObservingElement(element) {
-    var registry = getRegistryForElement(element);
-    destroyRegistryForElement(element);
-    
+    // do not get uid twice - for getRegistryForElement and destroyRegistryForElement
+    var CACHE = GLOBAL.Event.cache, uid = getUniqueElementID(element);
+    // do not create registry if not exists
+    var registry = CACHE[uid];
+    if (!registry) return;
+
+    delete CACHE[uid];
+
     var entries, i;
     for (var eventName in registry) {
+      // explicitly skip elements - they may have length property or attribute
+      if (eventName === 'element')
+        continue;
       entries = registry[eventName];
       i = entries.length;
       while (i--)
