@@ -2915,6 +2915,11 @@
     return element;
   }
 
+  // Opacity feature test borrowed from Modernizr.
+  var STANDARD_CSS_OPACITY_SUPPORTED = (function() {
+    DIV.style.cssText = "opacity:.55";
+    return /^0.55/.test(DIV.style.opacity);
+  })();
 
   /** 
    *  Element.setOpacity(@element, opacity) -> [Element...]
@@ -2944,7 +2949,15 @@
     return element;
   }
   
+  // The IE versions of `setOpacity` and `getOpacity` are aware of both
+  // the standard approach (an `opacity` property in CSS) and the old-style
+  // IE approach (a proprietary `filter` property). They are written to
+  // prefer the standard approach unless it isn't supported.
   function setOpacity_IE(element, value) {
+    // Prefer the standard CSS approach unless it's not supported.
+    if (STANDARD_CSS_OPACITY_SUPPORTED)
+      return setOpacity(element, value);
+
     element = hasLayout_IE($(element));
     var filter = Element.getStyle(element, 'filter'),
      style = element.style;     
@@ -2978,6 +2991,10 @@
   }
   
   function getOpacity_IE(element) {
+    // Prefer the standard CSS approach unless it's not supported.
+    if (STANDARD_CSS_OPACITY_SUPPORTED)
+      return getOpacity(element);
+
     var filter = Element.getStyle(element, 'filter');
     if (filter.length === 0) return 1.0;
     var match = (filter || '').match(/alpha\(opacity=(.*)\)/);
@@ -2992,7 +3009,7 @@
     setOpacity: setOpacity,
     getOpacity: getOpacity
   });
-  
+
   if ('styleFloat' in DIV.style) {
     methods.getStyle = getStyle_IE;
     methods.setOpacity = setOpacity_IE;
