@@ -534,15 +534,19 @@
 
   Event._isCustomEvent = isCustomEvent;
 
-  function getRegistryForElement(element) {
+  // These two functions take an optional UID as a second argument so that we
+  // can skip lookup if we've already got the element's UID.
+  function getRegistryForElement(element, uid) {
     var CACHE = GLOBAL.Event.cache;
-    var uid = getUniqueElementID(element);
+    if (Object.isUndefined(uid))
+      uid = getUniqueElementID(element);
     if (!CACHE[uid]) CACHE[uid] = { element: element };
     return CACHE[uid];
   }
   
-  function destroyRegistryForElement(element) {
-    var uid = getUniqueElementID(element);
+  function destroyRegistryForElement(element, uid) {
+    if (Object.isUndefined(uid))
+      uid = getUniqueElementID(element);
     delete GLOBAL.Event.cache[uid];
   }
   
@@ -897,11 +901,17 @@
   
   // Stop observing _all_ listeners on an element.
   function stopObservingElement(element) {
-    var registry = getRegistryForElement(element);
-    destroyRegistryForElement(element);
+    var uid = getUniqueElementID(element),
+     registry = getRegistryForElement(element, uid);
+    
+    destroyRegistryForElement(element, uid);
     
     var entries, i;
     for (var eventName in registry) {
+      // Explicitly skip elements so we don't accidentally find one with a
+      // `length` property.
+      if (eventName === 'element') continue;
+
       entries = registry[eventName];
       i = entries.length;
       while (i--)
