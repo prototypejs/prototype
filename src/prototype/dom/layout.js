@@ -212,7 +212,7 @@
    *  
    *  The following are the CSS-related properties that can be retrieved.
    *  Nearly all of them map directly to their property names in CSS. (The
-   *  only exception is for borders — e.g., `border-width` instead of 
+   *  only exception is for borders — e.g., `border-left` instead of 
    *  `border-left-width`.)
    *  
    *  * `height`
