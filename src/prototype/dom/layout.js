@@ -1143,10 +1143,9 @@
    *  Returns the X/Y coordinates of element relative to the viewport.
   **/
   function viewportOffset(forElement) {
-    element = $(element);
     var valueT = 0, valueL = 0, docBody = document.body;
 
-    var element = forElement;
+    var element = $(forElement);
     do {
       valueT += element.offsetTop  || 0;
       valueL += element.offsetLeft || 0;
