@@ -1,4 +1,3 @@
-
 (function() {
   
   // Converts a CSS percentage value to a decimal.
@@ -1505,20 +1504,24 @@
     // Find page position of source.    
     source  = $(source);
     element = $(element);    
-    var p = Element.viewportOffset(source), delta = [0, 0];
-    
-    // A delta of 0/0 will work for `positioned: fixed` elements, but
-    // for `position: absolute` we need to get the parent's offset.
-    if (Element.getStyle(element, 'position') === 'absolute') {
-      var parent = Element.getOffsetParent(element);
-      if (parent !== document.body) delta = Element.viewportOffset(parent);
+    var p, delta, layout, styles = {};
+
+    if (options.setLeft || options.setTop) {
+      p = Element.viewportOffset(source);
+      delta = [0, 0];
+      // A delta of 0/0 will work for `positioned: fixed` elements, but
+      // for `position: absolute` we need to get the parent's offset.
+      if (Element.getStyle(element, 'position') === 'absolute') {
+        var parent = Element.getOffsetParent(element);
+        if (parent !== document.body) delta = Element.viewportOffset(parent);
+      }
     }
-    
-    var layout = Element.getLayout(source);
-    
+
+    if (options.setWidth || options.setHeight) {
+      layout = Element.getLayout(source);
+    }
+
     // Set position.
-    var styles = {};
-    
     if (options.setLeft)
       styles.left = (p[0] - delta[0] + options.offsetLeft) + 'px';
     if (options.setTop)
