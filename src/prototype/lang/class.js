@@ -167,9 +167,22 @@ var Class = (function() {
         value = (function(m) {
           return function() { return ancestor[m].apply(this, arguments); };
         })(property).wrap(method);
-
-        value.valueOf = method.valueOf.bind(method);
-        value.toString = method.toString.bind(method);
+        
+        // We used to use `bind` to ensure that `toString` and `valueOf`
+        // methods were called in the proper context, but now that we're 
+        // relying on native bind and/or an existing polyfill, we can't rely
+        // on the nuanced behavior of whatever `bind` implementation is on
+        // the page.
+        //
+        // MDC's polyfill, for instance, doesn't like binding methods that
+        // haven't got a `prototype` property defined.
+        value.valueOf = (function(method) {
+          return function() { return method.valueOf.call(method); };
+        })(method);
+        
+        value.toString = (function(method) {
+          return function() { return method.toString.call(method); };
+        })(method);
       }
       this.prototype[property] = value;
     }
