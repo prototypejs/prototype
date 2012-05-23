@@ -33,9 +33,10 @@ new Test.Unit.Runner({
     function methodWithoutArguments() { return this.hi };
     function methodWithArguments()    { return this.hi + ',' + $A(arguments).join(',') };
     var func = Prototype.emptyFunction;
+    
+    // We used to test that `bind` without a `context` argument simply
+    // returns the original function, but this contradicts the ES5 spec.
 
-    this.assertIdentical(func, func.bind());
-    this.assertIdentical(func, func.bind(undefined));
     this.assertNotIdentical(func, func.bind(null));
 
     this.assertEqual('without', methodWithoutArguments.bind({ hi: 'without' })());
