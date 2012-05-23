@@ -392,16 +392,20 @@ Object.extend(Function.prototype, (function() {
       return __method.apply(null, a);
     };
   }
-
-  return {
+  
+  var extensions = {
     argumentNames:       argumentNames,
-    bind:                bind,
     bindAsEventListener: bindAsEventListener,
     curry:               curry,
     delay:               delay,
     defer:               defer,
     wrap:                wrap,
     methodize:           methodize
-  }
+  };
+  
+  if (!Function.prototype.bind)
+    extensions.bind = bind;
+
+  return extensions;
 })());
 
