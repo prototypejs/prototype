@@ -117,12 +117,14 @@ Object.extend(Function.prototype, (function() {
     var __method = this, args = slice.call(arguments, 1);
     
     var bound = function() {
-      var a = merge(args, arguments);
-      var c = this instanceof nop ? this : context || window;
+      var a = merge(args, arguments), c = context;
+      // Ignore the supplied context when the bound function is called with
+      // the "new" keyword.
+      var c = this instanceof bound ? this : context || window;
       return __method.apply(c, a);
-    }
-    
-    nop.prototype = this.prototype;
+    };
+        
+    nop.prototype   = this.prototype;
     bound.prototype = new nop();
     
     return bound;
