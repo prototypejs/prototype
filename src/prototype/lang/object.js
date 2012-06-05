@@ -313,6 +313,12 @@
    *  prescribe an enumeration order. Sort the resulting array if you wish to
    *  normalize the order of the object keys.
    *
+   *  `Object.keys` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the [ES5 specification](http://es5.github.com/#x15.2.3.14) for more
+   *  information.
+   *
    *  ##### Examples
    *  
    *      Object.keys();
