@@ -1,3 +1,8 @@
+-----------------------------------------------------------------------------
+NOTE: This changelog is no longer updated. Consult the commit history for a
+list of changes from version to version.
+-----------------------------------------------------------------------------
+
 *1.7* (November 16, 2010)
 
 * Ensure `Element#update` works with string content that includes a LINK tag in Internet Explorer. [#264 state:resolved] (Tobias H. Michaelsen, Andrew Dupont)
