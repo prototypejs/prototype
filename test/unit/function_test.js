@@ -30,9 +30,11 @@ new Test.Unit.Runner({
   },
 
   testFunctionBind: function() {
-    function methodWithoutArguments() { return this.hi };
-    function methodWithArguments()    { return this.hi + ',' + $A(arguments).join(',') };
+    function methodWithoutArguments() { return this.hi; }
+    function methodWithArguments()    { return this.hi + ',' + $A(arguments).join(','); }
+    function methodReturningContext() { return this; }
     var func = Prototype.emptyFunction;
+    var u;
     
     // We used to test that `bind` without a `context` argument simply
     // returns the original function, but this contradicts the ES5 spec.
@@ -45,6 +47,10 @@ new Test.Unit.Runner({
       methodWithArguments.bind({ hi: 'withBindArgs' }, 'arg1', 'arg2')());
     this.assertEqual('withBindArgsAndArgs,arg1,arg2,arg3,arg4',
       methodWithArguments.bind({ hi: 'withBindArgsAndArgs' }, 'arg1', 'arg2')('arg3', 'arg4'));
+
+    this.assertEqual(window, methodReturningContext.bind(null)(), 'null has window as its context');
+    this.assertEqual(window, methodReturningContext.bind(u)(), 'undefined has window as its context');
+    this.assertEqual('', methodReturningContext.bind('')(), 'other falsy values should not have window as their context');
       
     
     // Ensure that bound functions ignore their `context` when used as
@@ -133,8 +139,35 @@ new Test.Unit.Runner({
       deferredFunction2.defer('test');
       this.wait(50, function() {
         this.assertEqual('test', window.deferredValue);
+        
+        window.deferBoundProperly = false;
+    
+        var obj = { foo: 'bar' };
+        var func = function() {
+          if ('foo' in this) window.deferBoundProperly = true;
+        };
+    
+        func.bind(obj).defer();
+    
+        this.wait(50, function() {
+          this.assert(window.deferBoundProperly,
+           "deferred bound functions should preserve original scope");
+           
+          window.deferBoundProperlyOnString = false;
+          var str = "<script>window.deferBoundProperlyOnString = true;</script>"
+          
+          str.evalScripts.bind(str).defer();
+          
+          this.wait(50, function() {
+            this.assert(window.deferBoundProperlyOnString);
+          });
+          
+        });
+        
       });
     });
+    
+
   },
 
   testFunctionMethodize: function() {
