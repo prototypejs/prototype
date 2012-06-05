@@ -70,7 +70,7 @@ new Test.Unit.Runner({
      'getElementById and $ should return the same element');
 
     this.assertEnumEqual([ $('testdiv'), $('container') ], $('testdiv', 'container'));
-    this.assertEnumEqual([ $('testdiv'), undefined, $('container') ],
+    this.assertEnumEqual([ $('testdiv'), null, $('container') ],
       $('testdiv', 'noWayThisIDExists', 'container'));
     var elt = $('testdiv');
     this.assertIdentical(elt, $(elt));
@@ -1103,10 +1103,10 @@ new Test.Unit.Runner({
   testElementWriteAttributeWithIssues: function() {
     var input = $('write_attribute_input').writeAttribute({maxlength: 90, tabindex: 10}),
       td = $('write_attribute_td').writeAttribute({valign: 'bottom', colspan: 2, rowspan: 2});
-    this.assertEqual(90, input.readAttribute('maxlength'));
-    this.assertEqual(10, input.readAttribute('tabindex'));
-    this.assertEqual(2,  td.readAttribute('colspan'));
-    this.assertEqual(2,  td.readAttribute('rowspan'));
+    this.assertEqual("90", input.readAttribute('maxlength'));
+    this.assertEqual("10", input.readAttribute('tabindex'));
+    this.assertEqual("2",  td.readAttribute('colspan'));
+    this.assertEqual("2",  td.readAttribute('rowspan'));
     this.assertEqual('bottom', td.readAttribute('valign'));
     
     var p = $('write_attribute_para'), label = $('write_attribute_label');
