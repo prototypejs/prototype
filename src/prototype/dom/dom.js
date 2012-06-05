@@ -2891,7 +2891,7 @@
       value = element.currentStyle[style];
     }
     
-    if (style === 'opacity')
+    if (style === 'opacity' && !STANDARD_CSS_OPACITY_SUPPORTED)
       return getOpacity_IE(element);
       
     if (value === 'auto') {

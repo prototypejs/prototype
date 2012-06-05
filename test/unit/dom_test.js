@@ -198,34 +198,35 @@ new Test.Unit.Runner({
       
   testElementMethodInsert: function() {
     $('element-insertions-main').insert({before:'some text before'});
-    this.assert(getInnerHTML('element-insertions-container').startsWith('some text before'));
+    this.assert(getInnerHTML('element-insertions-container').startsWith('some text before'), 'some text before');
     $('element-insertions-main').insert({after:'some text after'});
-    this.assert(getInnerHTML('element-insertions-container').endsWith('some text after'));
+    this.assert(getInnerHTML('element-insertions-container').endsWith('some text after'), 'some text after');
     $('element-insertions-main').insert({top:'some text top'});
-    this.assert(getInnerHTML('element-insertions-main').startsWith('some text top'));
+    this.assert(getInnerHTML('element-insertions-main').startsWith('some text top'), 'some text top');
     $('element-insertions-main').insert({bottom:'some text bottom'});
-    this.assert(getInnerHTML('element-insertions-main').endsWith('some text bottom'));
+    this.assert(getInnerHTML('element-insertions-main').endsWith('some text bottom'), 'some text bottom');
     
     $('element-insertions-main').insert('some more text at the bottom');
-    this.assert(getInnerHTML('element-insertions-main').endsWith('some more text at the bottom'));
+    this.assert(getInnerHTML('element-insertions-main').endsWith('some more text at the bottom'),
+     'some more text at the bottom');
     
     $('element-insertions-main').insert({TOP:'some text uppercase top'});
-    this.assert(getInnerHTML('element-insertions-main').startsWith('some text uppercase top'));
+    this.assert(getInnerHTML('element-insertions-main').startsWith('some text uppercase top'), 'some text uppercase top');
     
     $('element-insertions-multiple-main').insert({
       top:'1', bottom:2, before: new Element('p').update('3'), after:'4'
     });
-    this.assert(getInnerHTML('element-insertions-multiple-main').startsWith('1'));
-    this.assert(getInnerHTML('element-insertions-multiple-main').endsWith('2'));
-    this.assert(getInnerHTML('element-insertions-multiple-container').startsWith('<p>3</p>'));
-    this.assert(getInnerHTML('element-insertions-multiple-container').endsWith('4'));
+    this.assert(getInnerHTML('element-insertions-multiple-main').startsWith('1'), '1');
+    this.assert(getInnerHTML('element-insertions-multiple-main').endsWith('2'), '2');
+    this.assert(getInnerHTML('element-insertions-multiple-container').startsWith('<p>3</p>'), '<p>3</p>');
+    this.assert(getInnerHTML('element-insertions-multiple-container').endsWith('4'), '4');
     
     $('element-insertions-main').update('test');
     $('element-insertions-main').insert(null);
     $('element-insertions-main').insert({bottom:null});
-    this.assertEqual('test', getInnerHTML('element-insertions-main'));
+    this.assertEqual('test', getInnerHTML('element-insertions-main'), 'should insert nothing when called with null');
     $('element-insertions-main').insert(1337);
-    this.assertEqual('test1337', getInnerHTML('element-insertions-main'));
+    this.assertEqual('test1337', getInnerHTML('element-insertions-main'), 'should coerce to string when called with number');
   },
   
   testNewElementInsert: function() {
@@ -988,7 +989,18 @@ new Test.Unit.Runner({
     $('op3').setStyle({opacity: 0});
     this.assertEqual(0, $('op3').getStyle('opacity'), 'get opacity on #op3');
     
-    if(navigator.appVersion.match(/MSIE/)) {
+    // Opacity feature test borrowed from Modernizr.
+    var STANDARD_CSS_OPACITY_SUPPORTED = (function() {
+      var DIV = document.createElement('div');
+      DIV.style.cssText = "opacity:.55";
+      var result = /^0.55/.test(DIV.style.opacity);
+      DIV = null;
+      return result;
+    })();
+    
+    if (!STANDARD_CSS_OPACITY_SUPPORTED) {
+      // Run these tests only on older versions of IE. IE9 and 10 dropped
+      // support for filters and therefore fail these tests.
       this.assertEqual('alpha(opacity=30)', $('op1').getStyle('filter'));
       this.assertEqual('progid:DXImageTransform.Microsoft.Blur(strength=10)alpha(opacity=30)', $('op2').getStyle('filter'));
       $('op2').setStyle({opacity:''});
@@ -996,6 +1008,7 @@ new Test.Unit.Runner({
       this.assertEqual('alpha(opacity=0)', $('op3').getStyle('filter'));
       this.assertEqual(0.3, $('op4-ie').getStyle('opacity'));
     }
+    
     // verify that value is still found when using camelized
     // strings (function previously used getPropertyValue()
     // which expected non-camelized strings)
