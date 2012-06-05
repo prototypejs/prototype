@@ -7,6 +7,8 @@ var createParagraph = function(text) {
   return p;
 }
 
+var RESIZE_DISABLED = false;
+
 function simulateClick(node) {
   var oEvent;
   if (document.createEvent) {
@@ -1473,9 +1475,19 @@ new Test.Unit.Runner({
       window.resizeBy(50, 50);
       this.wait(1000, function() {
         var after  = document.viewport.getDimensions();
+        
+        // Assume that JavaScript window resizing is disabled if before width
+        // and after width are the same.
+        if (before.width === after.width) {
+          RESIZE_DISABLED = true;
+          this.info("SKIPPING REMAINING TESTS (JavaScript window resizing disabled)");
+          return;
+        }
 
-        this.assertEqual(before.width + 50, after.width, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
-        this.assertEqual(before.height + 50, after.height, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
+        this.assertEqual(before.width + 50, after.width,
+         "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
+        this.assertEqual(before.height + 50, after.height,
+         "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
         
         this.wait(1000, function() {
           // Restore original dimensions.
@@ -1512,6 +1524,11 @@ new Test.Unit.Runner({
     window.scrollTo(0, 35);
     this.assertEqual(35, document.viewport.getScrollOffsets().top);
     
+    if (RESIZE_DISABLED) {
+      this.info("SKIPPING REMAINING TESTS (JavaScript window resizing disabled)");
+      return;
+    }
+    
     window.resizeTo(200, 650);
     
     this.wait(1000, function() {
@@ -1519,7 +1536,8 @@ new Test.Unit.Runner({
       var delta = { width: 200 - before.width, height: 650 - before.height };
       
       window.scrollTo(25, 35);
-      this.assertEqual(25, document.viewport.getScrollOffsets().left, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THESE TESTS TO PASS");
+      this.assertEqual(25, document.viewport.getScrollOffsets().left,
+       "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THESE TESTS TO PASS");
       
       this.wait(1000, function() {
         // Restore original dimensions.
