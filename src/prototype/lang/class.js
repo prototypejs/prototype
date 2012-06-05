@@ -174,7 +174,7 @@ var Class = (function() {
         // on the nuanced behavior of whatever `bind` implementation is on
         // the page.
         //
-        // MDC's polyfill, for instance, doesn't like binding methods that
+        // MDC's polyfill, for instance, doesn't like binding functions that
         // haven't got a `prototype` property defined.
         value.valueOf = (function(method) {
           return function() { return method.valueOf.call(method); };
