@@ -52,6 +52,12 @@ Object.extend(Function.prototype, (function() {
    *  function is called, it will call the original ensuring that `this` is set
    *  to `context`. Also optionally curries arguments for the function.
    *
+   *  `Function#bind` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the [ES5 specification](http://es5.github.com/#x15.3.4.5) for more
+   *  information.
+   *
    *  ##### Examples
    *
    *  A typical use of [[Function#bind]] is to ensure that a callback (event

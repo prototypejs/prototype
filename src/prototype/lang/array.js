@@ -411,6 +411,12 @@ Array.from = $A;
    *  or `-1` if `item` doesn't exist in the array. `Array#indexOf` compares
    *  items using *strict equality* (`===`).
    *
+   *  `Array#indexOf` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the [ES5 specification](http://es5.github.com/#x15.4.4.14) for more
+   *  information.
+   *
    *  ##### Examples
    *
    *      [3, 5, 6, 1, 20].indexOf(1)
@@ -460,6 +466,12 @@ Array.from = $A;
    *
    *  Returns the position of the last occurrence of `item` within the
    *  array &mdash; or `-1` if `item` doesn't exist in the array.
+   *  
+   *  `Array#lastIndexOf` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the [ES5 specification](http://es5.github.com/#x15.4.4.15) for more
+   *  information.
   **/
   function lastIndexOf(item, i) {
     if (this == null) throw new TypeError();
@@ -529,6 +541,7 @@ Array.from = $A;
   // methods with our own behavior. This has very little performance impact.
   // It violates the spec by suppressing `TypeError`s for certain methods,
   // but that's an acceptable trade-off.
+  
   function wrapNative(method) {
     return function() {
       if (arguments.length === 0) {
@@ -554,6 +567,24 @@ Array.from = $A;
   //
   // This means that they behave a little differently from other methods in
   // `Enumerable`/`Array` that don't collide with ES5, but that's OK.
+  
+  /**
+   *  Array#map([iterator = Prototype.K[, context]]) -> Array
+   *  - iterator (Function): The iterator function to apply to each element
+   *    in the enumeration.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
+   *
+   *  Returns the result of applying `iterator` to each item in the array. If
+   *  no iterator is provided, the elements are simply copied to the returned
+   *  array.
+   *
+   *  `Array#map` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the [ES5 specification](http://es5.github.com/#x15.4.4.19) for more
+   *  information.
+  **/
   function map(iterator) {
     if (this == null) throw new TypeError();
     iterator = iterator || Prototype.K;
@@ -575,6 +606,22 @@ Array.from = $A;
     map = wrapNative(Array.prototype.map);
   }
   
+  /**
+   *  Array#filter(iterator[, context]) -> Array
+   *  - iterator (Function): An iterator function to use to test the
+   *    elements.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
+   *
+   *  Returns a new array containing all the items in this array for which
+   *  `iterator` returned a truthy value.
+   *
+   *  `Array#filter` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the [ES5 specification](http://es5.github.com/#x15.4.4.20) for more
+   *  information.
+  **/
   function filter(iterator) {
     if (this == null || !Object.isFunction(iterator))
       throw new TypeError();
@@ -599,6 +646,24 @@ Array.from = $A;
     filter = Array.prototype.filter;
   }
 
+  /**
+   *  Array#some([iterator = Prototype.K[, context]]) -> Array
+   *  - iterator (Function): An optional function to use to evaluate each
+   *    element in the enumeration; the function should return the value to
+   *    test. If this is not provided, the element itself is tested.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
+   *
+   *  Returns the result of applying `iterator` to each item in the array. If
+   *  no iterator is provided, the elements are simply copied to the returned
+   *  array.
+   *
+   *  `Array#some` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the [ES5 specification](http://es5.github.com/#x15.4.4.17) for more
+   *  information.
+  **/
   function some(iterator) {
     if (this == null) throw new TypeError();
     iterator = iterator || Prototype.K;
@@ -618,6 +683,25 @@ Array.from = $A;
     var some = wrapNative(Array.prototype.some);
   }
   
+  
+  /**
+   *  Array#every([iterator = Prototype.K[, context]]) -> Boolean
+   *  - iterator (Function): An optional function to use to evaluate each
+   *    element in the enumeration; the function should return the value to
+   *    test. If this is not provided, the element itself is tested.
+   *  - context (Object): An optional object to use as `this` within
+   *    calls to the iterator.
+   *
+   *  Determines whether at least one element is truthy (boolean-equivalent to
+   *  `true`), either directly or through computation by the provided iterator.
+   *
+   *  `Array#every` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the [ES5 specification](http://es5.github.com/#x15.4.4.16) for more
+   *  information.
+   * 
+  **/
   function every(iterator) {
     if (this == null) throw new TypeError();
     iterator = iterator || Prototype.K;
