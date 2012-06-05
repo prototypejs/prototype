@@ -120,7 +120,14 @@ var Form = {
     } else {
       initial = '';
       accumulator = function(result, key, value) {
-        return result + (result ? '&' : '') + encodeURIComponent(key) + '=' + encodeURIComponent(value);
+        // Normalize newlines as \r\n because the HTML spec says newlines should
+        // be encoded as CRLFs.
+        value = value.gsub(/(\r)?\n/, '\r\n');
+        value = encodeURIComponent(value);
+        // Likewise, according to the spec, spaces should be '+' rather than
+        // '%20'.
+        value = value.gsub(/%20/, '+');
+        return result + (result ? '&' : '') + encodeURIComponent(key) + '=' + value;
       }
     }
     

@@ -257,10 +257,10 @@ new Test.Unit.Runner({
     };
 
     // return params
-    this.assertHashEqual(expected, Form.serialize('various', true));
+    this.assertHashEqual(expected, Form.serialize('various', true), "test the whole form (as a hash)");
     // return string
     this.assertEnumEqual(Object.toQueryString(expected).split('&').sort(),
-                    Form.serialize('various').split('&').sort());
+                    Form.serialize('various').split('&').sort(), "test the whole form (as a string)");
     this.assertEqual('string', typeof $('form').serialize({ hash:false }));
 
     // Checks that disabled element is not included in serialized form.
