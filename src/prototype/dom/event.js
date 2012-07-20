@@ -260,8 +260,7 @@
    *  its ancestor chain. If `expression` is not given, the element which fired
    *  the event is returned.
    *  
-   *  *If no matching element is found, the document itself (`HTMLDocument` node)
-   *  is returned.*
+   *  *If no matching element is found, the `undefined` value is returned.*
    *  
    *  ##### Example
    *  
@@ -270,7 +269,7 @@
    *  
    *      document.observe('click', function(event) {
    *        var element = event.findElement('p');
-   *        if (element != document)
+   *        if (element)
    *          $(element).hide();
    *      });
   **/
@@ -784,7 +783,7 @@
     if (element.addEventListener) {
       element.addEventListener('dataavailable', responder, false);
     } else {
-      // We observe two IE-proprietarty events: one for custom events that
+      // We observe two IE-proprietary events: one for custom events that
       // bubble and one for custom events that do not bubble.
       element.attachEvent('ondataavailable', responder);
       element.attachEvent('onlosecapture',   responder);
@@ -1276,7 +1275,7 @@
     stopObserving: stopObserving.methodize(),
     
     /**
-     *  Element.on(@element, eventName[, selector], callback) -> Event.Handler
+     *  document.on(eventName[, selector], callback) -> Event.Handler
      *  
      *  See [[Event.on]].
     **/
@@ -1331,17 +1330,17 @@
       return createMouseEnterLeaveResponder(uid, eventName, handler);
     
     return function(event) {
-      var cacheEntry = Event.cache[uid];
-      var element = cacheEntry.element;
-
-      Event.extend(event, element);
-      handler.call(element, event);
+      if (Event.cache) {
+        var element = Event.cache[uid].element;
+        Event.extend(event, element);
+        handler.call(element, event);
+      }
     };
   }
   
   function createResponderForCustomEvent(uid, eventName, handler) {
     return function(event) {
-      var cacheEntry = Event.cache[uid], element = cacheEntry.element;
+      var element = Event.cache[uid].element;
 
       if (Object.isUndefined(event.eventName))
         return false;
@@ -1356,7 +1355,7 @@
   
   function createMouseEnterLeaveResponder(uid, eventName, handler) {
     return function(event) {
-      var cacheEntry = Event.cache[uid], element = cacheEntry.element;
+      var element = Event.cache[uid].element;
 
       Event.extend(event, element);
       var parent = event.relatedTarget;
@@ -1371,7 +1370,7 @@
       
       if (parent === element) return;      
       handler.call(element, event);
-    }
+    };
   }
   
   GLOBAL.Event._createResponder = createResponder;
