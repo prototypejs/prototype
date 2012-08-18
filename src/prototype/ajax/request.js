@@ -177,7 +177,16 @@ Ajax.Request = Class.create(Ajax.Base, {
   },
 
   request: function(url) {
-    this.url = url;
+    // Make sure the URL is a String; the caller could have used window.location
+    if (typeof(url) == 'string') {
+      this.url = url;
+    } else if (url && typeof(url.href) == 'string') {
+      // Location, Link or A
+      this.url = url.href;
+    } else {
+      // Would it be better to fail here?
+      this.url = url + '';
+    }
     this.method = this.options.method;
     var params = Object.isString(this.options.parameters) ?
           this.options.parameters :
