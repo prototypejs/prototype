@@ -246,6 +246,11 @@ new Test.Unit.Runner({
     this.assertEqual('<p>a paragraph</p>some text', getInnerHTML(element));
   },
   
+  testElementInsertWithOnclickAttribute: function() {
+    $('element-insertions-main').insert({top: '<span onclick="alert(1)">clickme</span>'});
+    this.assert(typeof $('element-insertions-main').down().onclick == 'function');
+  },
+  
   testInsertionBackwardsCompatibility: function() {
     new Insertion.Before('element-insertions-main', 'some backward-compatibility testing before');
     this.assert(getInnerHTML('element-insertions-container').include('some backward-compatibility testing before'));
@@ -430,6 +435,11 @@ new Test.Unit.Runner({
     this.assertNothingRaised(function(){
       el.update('(function(){})');
     })
+  },
+  
+  testElementUpdateWithOnclickAttribute: function() {
+    $('testdiv').update('<span onclick="alert(1)">clickme</span>');
+    this.assert(typeof $('testdiv').down().onclick == 'function');
   },
   
   testElementReplace: function() {
