@@ -1331,9 +1331,9 @@
       return createMouseEnterLeaveResponder(uid, eventName, handler);
     
     return function(event) {
-      var cacheEntry = Event.cache[uid];
-      var element = cacheEntry.element;
-
+      if (!Event.cache) return;
+      
+      var element = Event.cache[uid].element;
       Event.extend(event, element);
       handler.call(element, event);
     };
@@ -1341,7 +1341,7 @@
   
   function createResponderForCustomEvent(uid, eventName, handler) {
     return function(event) {
-      var cacheEntry = Event.cache[uid], element = cacheEntry.element;
+      var element = Event.cache[uid].element;
 
       if (Object.isUndefined(event.eventName))
         return false;
@@ -1356,8 +1356,8 @@
   
   function createMouseEnterLeaveResponder(uid, eventName, handler) {
     return function(event) {
-      var cacheEntry = Event.cache[uid], element = cacheEntry.element;
-
+      var element = Event.cache[uid].element;
+      
       Event.extend(event, element);
       var parent = event.relatedTarget;
       
