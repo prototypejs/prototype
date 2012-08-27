@@ -27,6 +27,13 @@ new Test.Unit.Runner({
     });
 
     this.assertEnumEqual([0, 1, 2, 3], results);
+
+    results = [];
+    $R(2, 4, true).each(function(value, index) {
+      results.push(index);
+    });
+    this.assertEnumEqual([0, 1], results);
+
   },
 
   testAny: function() {
