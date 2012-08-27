@@ -260,8 +260,7 @@
    *  its ancestor chain. If `expression` is not given, the element which fired
    *  the event is returned.
    *  
-   *  *If no matching element is found, the document itself (`HTMLDocument` node)
-   *  is returned.*
+   *  *If no matching element is found, `undefined` is returned.*
    *  
    *  ##### Example
    *  

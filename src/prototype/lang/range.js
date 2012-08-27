@@ -108,9 +108,9 @@ var ObjectRange = Class.create(Enumerable, (function() {
   }
 
   function _each(iterator, context) {
-    var value = this.start;
-    while (this.include(value)) {
-      iterator.call(context, value);
+    var value = this.start, i;
+    for (i = 0; this.include(value); i++) {
+      iterator.call(context, value, i);
       value = value.succ();
     }
   }

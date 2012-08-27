@@ -647,16 +647,15 @@ Array.from = $A;
   }
 
   /**
-   *  Array#some([iterator = Prototype.K[, context]]) -> Array
+   *  Array#some([iterator = Prototype.K[, context]]) -> Boolean
    *  - iterator (Function): An optional function to use to evaluate each
    *    element in the enumeration; the function should return the value to
    *    test. If this is not provided, the element itself is tested.
    *  - context (Object): An optional object to use as `this` within
    *    calls to the iterator.
    *
-   *  Returns the result of applying `iterator` to each item in the array. If
-   *  no iterator is provided, the elements are simply copied to the returned
-   *  array.
+   *  Determines whether at least one element is truthy (boolean-equivalent to
+   *  `true`), either directly or through computation by the provided iterator.
    *
    *  `Array#some` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
    *  It is only defined if not already present in the user's browser, and it
@@ -692,7 +691,7 @@ Array.from = $A;
    *  - context (Object): An optional object to use as `this` within
    *    calls to the iterator.
    *
-   *  Determines whether at least one element is truthy (boolean-equivalent to
+   *  Determines whether all elements are truthy (boolean-equivalent to
    *  `true`), either directly or through computation by the provided iterator.
    *
    *  `Array#every` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
