@@ -270,7 +270,7 @@
    *  
    *      document.observe('click', function(event) {
    *        var element = event.findElement('p');
-   *        if (element != document)
+   *        if (element)
    *          $(element).hide();
    *      });
   **/
@@ -1276,7 +1276,7 @@
     stopObserving: stopObserving.methodize(),
     
     /**
-     *  Element.on(@element, eventName[, selector], callback) -> Event.Handler
+     *  document.on(@element, eventName[, selector], callback) -> Event.Handler
      *  
      *  See [[Event.on]].
     **/
