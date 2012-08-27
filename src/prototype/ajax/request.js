@@ -49,7 +49,7 @@
  *  status-specific callback is defined, it gets invoked. Otherwise, if
  *  `onSuccess` is defined and the response is deemed a success (see below), it
  *  is invoked. Otherwise, if `onFailure` is defined and the response is *not*
- *  deemed a sucess, it is invoked. Only after that potential first callback is
+ *  deemed a success, it is invoked. Only after that potential first callback is
  *  `onComplete` called.
  *  
  *  ##### A note on portability
