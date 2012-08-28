@@ -1356,15 +1356,14 @@
   **/
   function makeClipping(element) {
     element = $(element);
-    
     var storage = Element.getStorage(element),
      madeClipping = storage.get('prototype_made_clipping');
     
     // The "prototype_made_clipping" storage key is meant to hold the
-    // original CSS overflow value. A string value or `null` means that we've
+    // original CSS overflow value. A string value (even empty) means that we've
     // called `makeClipping` already. An `undefined` value means we haven't.
-    if (Object.isUndefined(madeClipping)) {
-      var overflow = Element.getStyle(element, 'overflow');
+    if (Object.isString(madeClipping)) {
+      var overflow = element.style.overflow || '';
       storage.set('prototype_made_clipping', overflow);
       if (overflow !== 'hidden')
         element.style.overflow = 'hidden';
@@ -1425,9 +1424,9 @@
     var storage = Element.getStorage(element),
      overflow = storage.get('prototype_made_clipping');
     
-    if (!Object.isUndefined(overflow)) {
+    if (Object.isString(overflow)) {
       storage.unset('prototype_made_clipping');
-      element.style.overflow = overflow || '';
+      element.style.overflow = overflow;
     }
     
     return element;
