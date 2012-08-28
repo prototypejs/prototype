@@ -244,10 +244,7 @@
 
     // Fix a Safari bug where a text node gets passed as the target of an
     // anchor click rather than the anchor itself.
-    if (node.nodeType == Node.TEXT_NODE)
-      node = node.parentNode;
-
-    return Element.extend(node);
+    return node.nodeType == Node.TEXT_NODE ? node.parentNode : node;
   }
 
   /**
@@ -274,10 +271,10 @@
    *      });
   **/
   function findElement(event, expression) {
-    var element = _element(event), match = Prototype.Selector.match;
+    var element = _element(event), selector = Prototype.Selector;
     if (!expression) return Element.extend(element);
     while (element) {
-      if (Object.isElement(element) && match(element, expression))
+      if (Object.isElement(element) && selector.match(element, expression))
         return Element.extend(element);
       element = element.parentNode;
     }
