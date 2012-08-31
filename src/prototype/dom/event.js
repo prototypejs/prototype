@@ -540,12 +540,6 @@
     return CACHE[uid];
   }
   
-  function destroyRegistryForElement(element, uid) {
-    if (Object.isUndefined(uid))
-      uid = getUniqueElementID(element);
-    delete GLOBAL.Event.cache[uid];
-  }
-  
   // The `register` and `unregister` functions handle creating the responder
   // and managing an event registry. They _don't_ attach and detach the
   // listeners themselves.
@@ -897,11 +891,14 @@
   
   // Stop observing _all_ listeners on an element.
   function stopObservingElement(element) {
-    var uid = getUniqueElementID(element),
-     registry = getRegistryForElement(element, uid);
-    
-    destroyRegistryForElement(element, uid);
-    
+    var CACHE = GLOBAL.Event.cache, uid = getUniqueElementID(element);
+    // do not create registry if it not exists - don't call getRegistryForElement()
+    var registry = CACHE[uid];
+    // do nothing if registry not exists
+    if (!registry) return;
+
+    delete CACHE[uid];
+
     var entries, i;
     for (var eventName in registry) {
       // Explicitly skip elements so we don't accidentally find one with a
