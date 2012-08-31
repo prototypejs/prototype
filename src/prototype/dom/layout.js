@@ -1231,22 +1231,53 @@
    *  Element.scrollTo(@element) -> Element
    *
    *  Scrolls the window so that `element` appears at the top of the viewport.
-   *  
+   *
    *  This has a similar effect than what would be achieved using
    *  [HTML anchors](http://www.w3.org/TR/html401/struct/links.html#h-12.2.3)
    *  (except the browser's history is not modified).
-   *  
+   *
    *  ##### Example
-   *  
+   *
    *      $(element).scrollTo();
    *      // -> Element
   **/
   function scrollTo(element) {
     element = $(element);
-    var pos = Element.cumulativeOffset(element);
-    window.scrollTo(pos.left, pos.top);
+
+    var parent = element.getScrollParent();
+    var x = element.offsetTop || 0;
+    var y = element.offsetLeft || 0;
+
+    //If the parent is body or html, we need to use window.scrollTo
+    if(parent.tagName.match(/^(?:body|html)$/i)){
+      window.scrollTo(x, y);
+    }else{
+      parent.scrollTop = x;
+      parent.scrollLeft = y;
+    }
+
     return element;
-  }
+  },
+
+
+  /**
+   *  Element.getScrollParent(@element) -> Element
+   *
+   *  Get elements parent that we need in scrollTo
+   *
+   *  ##### Example
+   *
+   *      $(element).getScrollParent();
+   *      // -> Element
+  **/
+  function getScrollParent(element){
+    while((element = element.parentNode) && element != document.body){
+      if(Element.getStyle(element, 'overflow') != 'visible')
+        return $(element);
+    }
+
+    return $(document.body);
+  },
   
 
   /**
