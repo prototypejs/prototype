@@ -894,14 +894,17 @@
   // for bulk removal of event listeners. We use them rather than recurse
   // back into `stopObserving` to avoid touching the registry more often than
   // necessary.
-  
+
   // Stop observing _all_ listeners on an element.
   function stopObservingElement(element) {
-    var uid = getUniqueElementID(element),
-     registry = getRegistryForElement(element, uid);
-    
+    // Do a manual registry lookup because we don't want to create a registry
+    // if one doesn't exist.
+    var uid = getUniqueElementID(element), registry = GLOBAL.Event.cache[uid];
+    // This way we can return early if there is no registry.
+    if (!registry) return;
+
     destroyRegistryForElement(element, uid);
-    
+
     var entries, i;
     for (var eventName in registry) {
       // Explicitly skip elements so we don't accidentally find one with a
