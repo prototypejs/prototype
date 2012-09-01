@@ -5,7 +5,7 @@
  *  objects that act as collections of values. It is a cornerstone of
  *  Prototype.
  *
- *  [[Enumerable]] is a _mixin_: a set of methods intended not for standaone
+ *  [[Enumerable]] is a _mixin_: a set of methods intended not for standalone
  *  use, but for incorporation into other objects.
  *
  *  Prototype mixes [[Enumerable]] into several classes. The most visible cases
