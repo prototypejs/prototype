@@ -30,7 +30,42 @@
  *
  *  If there is no `context` argument, the iterator function will execute in
  *  the scope from which the [[Enumerable]] method itself was called.
- *
+ *  
+ *  ##### Flow control
+ *  
+ *  You might find yourself missing the `break` and `continue` keywords that
+ *  are available in ordinary `for` loops. If you need to break out of an
+ *  enumeration before it's done, you can throw a special object named
+ *  `$break`:
+ *  
+ *      var myObject = {};
+ * 
+ *      ['foo', 'bar', 'baz', 'thud'].each( function(name, index) {
+ *        if (name === 'baz') throw $break;
+ *        myObject[name] = index;
+ *      });
+ *  
+ *      myObject;
+ *      // -> { foo: 0, bar: 1 }
+ *  
+ *  Though we're technically throwing an exception, the `each` method knows
+ *  to catch a thrown `$break` object and treat it as a command to stop
+ *  iterating. (_Any_ exception thrown within an iterator will stop
+ *  iteration, but only `$break` will be caught and suppressed.)
+ *  
+ *  If you need `continue`-like behavior, you can simply return early from
+ *  your iterator:
+ *  
+ *      var myObject = {};
+ *  
+ *      ['foo', 'bar', 'baz', 'thud'].each( function(name, index) {
+ *        if (name === 'baz') return;
+ *        myObject[name] = index;
+ *      });
+ *  
+ *      myObject;
+ *      // -> { foo: 0, bar: 1, thud: 3 }
+ *  
  *  ##### Mixing [[Enumerable]] into your own objects
  *
  *  So, let's say you've created your very own collection-like object (say,
