@@ -1407,6 +1407,15 @@
     
     fireContentLoadedEvent();
   }
+
+
+  if (document.readyState === 'complete') {
+    // We must have been loaded asynchronously, because the DOMContentLoaded
+    // event has already fired. We can just fire `dom:loaded` and be done
+    // with it.
+    fireContentLoadedEvent();
+    return;
+  }
   
   if (document.addEventListener) {
     // All browsers that support DOM L2 Events support DOMContentLoaded,
