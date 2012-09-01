@@ -1468,6 +1468,7 @@
   
   /**
    *  Element.siblings(@element) -> [Element...]
+   *
    *  Collects all of element's siblings and returns them as an [[Array]] of
    *  elements.
    *
