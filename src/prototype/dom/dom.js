@@ -1775,6 +1775,7 @@
    *      // -> undefined
   **/
   function down(element, expression, index) {
+    if (arguments.length === 1) return firstDescendant(element);
     element = $(element), expression = expression || 0, index = index || 0;
     
     if (Object.isNumber(expression))
