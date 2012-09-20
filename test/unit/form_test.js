@@ -325,6 +325,11 @@ new Test.Unit.Runner({
     this.assert(!select.anInputMethod);      
     this.assertEqual('select', select.aSelectMethod());
   },
+
+  testFormSerializeMultipleSelectToQueryString: function () {
+    var form = $("form_with_multiple_select");
+    this.assertEqual("peewee=herman&colors=blue&colors=yellow&colors=not+grey&number=2", form.serialize(false));
+  },
   
   testFormRequest: function() {
     var request = $("form").request();

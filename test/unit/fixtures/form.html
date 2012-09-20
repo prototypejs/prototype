@@ -125,3 +125,21 @@
   <input type="text" name="length" value="foo" />
   <input type="text" name="bar"    value="baz" />
 </form>
+
+<form id="form_with_multiple_select">
+  <input type="text" name="peewee" value="herman" />
+  <select name="colors" multiple>
+    <option value="blue" selected>blue</option>
+    <option value="red">red</option>
+    <option value="green">green</option>
+    <option value="yellow" selected>yellow</option>
+    <option value="not grey" selected>grey</option>
+  </select>
+  <select name="number">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2" selected>2</option>
+    <option value="3">3</option>
+  </select>
+  <input type="submit" />
+</form>
