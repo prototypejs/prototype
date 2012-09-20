@@ -326,10 +326,16 @@ new Test.Unit.Runner({
     this.assertEqual('select', select.aSelectMethod());
   },
 
-  testFormSerializeMultipleSelectToQueryString: function () {
+  testFormSerializeMultipleSelect: function () {
     var form = $("form_with_multiple_select");
-    this.assertEqual("peewee=herman&colors=blue&colors=yellow&colors=not+grey&number=2", form.serialize(false));
-  },
+    this.assertEqual("peewee=herman&colors=pink&colors=blue&colors=yellow&colors=not+grey&number=2", form.serialize(false));
+    var hash = {
+      peewee: 'herman',
+      colors: ['pink', 'blue', 'yellow', 'not grey'],
+      number: '2'
+    };
+    this.assertHashEqual(hash, form.serialize(true));
+},
   
   testFormRequest: function() {
     var request = $("form").request();

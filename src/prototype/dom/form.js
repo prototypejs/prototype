@@ -113,7 +113,7 @@ var Form = {
       accumulator = function(result, key, value) {
         if (key in result) {
           if (!Object.isArray(result[key])) result[key] = [result[key]];
-          result[key].push(value);
+          result[key] = result[key].concat(value);
         } else result[key] = value;
         return result;
       };
