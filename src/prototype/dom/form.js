@@ -122,14 +122,14 @@ var Form = {
       accumulator = function(result, key, values) {
         if (!Object.isArray(values)) {values = [values];}
         if (!values.length) {return result;}
-        var encodedKey = encodeURIComponent(key);
+        // According to the spec, spaces should be '+' rather than '%20'.
+        var encodedKey = encodeURIComponent(key).gsub(/%20/, '+');
         return result + (result ? "&" : "") + values.map(function (value) {
           // Normalize newlines as \r\n because the HTML spec says newlines should
           // be encoded as CRLFs.
           value = value.gsub(/(\r)?\n/, '\r\n');
           value = encodeURIComponent(value);
-          // Likewise, according to the spec, spaces should be '+' rather than
-          // '%20'.
+          // According to the spec, spaces should be '+' rather than '%20'.
           value = value.gsub(/%20/, '+');
           return encodedKey + "=" + value;
         }).join("&");

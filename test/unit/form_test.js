@@ -301,7 +301,7 @@ new Test.Unit.Runner({
   },
   
   testFormSerializeURIEncodesInputs: function() {
-    this.assertEqual("user%5Bwristbands%5D%5B%5D%5Bnickname%5D=H%C3%A4sslich", $('form_with_inputs_needing_encoding').serialize(false));
+    this.assertEqual("user%5Bwristbands%5D%5B+%5D%5Bnickname%5D=H%C3%A4sslich", $('form_with_inputs_needing_encoding').serialize(false));
   },
   
   testFormMethodsOnExtendedElements: function() {
