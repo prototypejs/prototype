@@ -547,6 +547,13 @@
     return isBuggy;
   })();
   
+  function updateNodes(element, nodes) {
+    while (element.firstChild)
+      element.removeChild(element.firstChild);
+    for (var i = 0, node; node = nodes[i]; i++)
+      element.appendChild(node);
+  }
+
   /**
    *  Element.update(@element[, newContent]) -> Element
    *
@@ -664,26 +671,15 @@
     
     if (ANY_INNERHTML_BUGGY) {
       if (tagName in INSERTION_TRANSLATIONS.tags) {
-        while (element.firstChild)
-          element.removeChild(element.firstChild);
-        
-        var nodes = getContentFromAnonymousElement(tagName, content.stripScripts());        
-        for (var i = 0, node; node = nodes[i]; i++)
-          element.appendChild(node);
-        
+        updateNodes(element, getContentFromAnonymousElement(tagName,
+          content.stripScripts()));
       } else if (LINK_ELEMENT_INNERHTML_BUGGY && Object.isString(content) && content.indexOf('<link') > -1) {
         // IE barfs when inserting a string that beings with a LINK
         // element. The workaround is to add any content to the beginning
         // of the string; we'll be inserting a text node (see
         // getContentFromAnonymousElement below).
-        while (element.firstChild)
-          element.removeChild(element.firstChild);
-          
-        var nodes = getContentFromAnonymousElement(tagName,
-         content.stripScripts(), true);
-        
-        for (var i = 0, node; node = nodes[i]; i++)
-          element.appendChild(node);
+        updateNodes(element, getContentFromAnonymousElement(tagName,
+          content.stripScripts(), true));
       } else {
         element.innerHTML = content.stripScripts();
       }
