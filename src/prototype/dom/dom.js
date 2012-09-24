@@ -3468,5 +3468,15 @@
   }
 
   Element.addMethods(methods);
-  
+
+  // Prevent IE leaks on DIV and ELEMENT_CACHE
+  DIV = null;
+
+  function destroyCache_IE() {
+    ELEMENT_CACHE = null;
+  }
+
+  if (window.attachEvent)
+    window.attachEvent('onunload', destroyCache_IE);
+
 })(this);
