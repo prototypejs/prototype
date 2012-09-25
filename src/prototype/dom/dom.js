@@ -3470,9 +3470,8 @@
   Element.addMethods(methods);
 
   // Prevent IE leaks on DIV and ELEMENT_CACHE
-  DIV = null;
-
   function destroyCache_IE() {
+    DIV = null;
     ELEMENT_CACHE = null;
   }
 
