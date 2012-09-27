@@ -113,22 +113,27 @@ var Form = {
       accumulator = function(result, key, value) {
         if (key in result) {
           if (!Object.isArray(result[key])) result[key] = [result[key]];
-          result[key].push(value);
+          result[key] = result[key].concat(value);
         } else result[key] = value;
         return result;
       };
     } else {
       initial = '';
-      accumulator = function(result, key, value) {
-        // Normalize newlines as \r\n because the HTML spec says newlines should
-        // be encoded as CRLFs.
-        value = value.gsub(/(\r)?\n/, '\r\n');
-        value = encodeURIComponent(value);
-        // Likewise, according to the spec, spaces should be '+' rather than
-        // '%20'.
-        value = value.gsub(/%20/, '+');
-        return result + (result ? '&' : '') + encodeURIComponent(key) + '=' + value;
-      }
+      accumulator = function(result, key, values) {
+        if (!Object.isArray(values)) {values = [values];}
+        if (!values.length) {return result;}
+        // According to the spec, spaces should be '+' rather than '%20'.
+        var encodedKey = encodeURIComponent(key).gsub(/%20/, '+');
+        return result + (result ? "&" : "") + values.map(function (value) {
+          // Normalize newlines as \r\n because the HTML spec says newlines should
+          // be encoded as CRLFs.
+          value = value.gsub(/(\r)?\n/, '\r\n');
+          value = encodeURIComponent(value);
+          // According to the spec, spaces should be '+' rather than '%20'.
+          value = value.gsub(/%20/, '+');
+          return encodedKey + "=" + value;
+        }).join("&");
+      };
     }
     
     return elements.inject(initial, function(result, element) {
