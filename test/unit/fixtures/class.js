@@ -81,3 +81,30 @@ var Ox = Class.create(Animal, Sellable, Reproduceable, {
     return '#<Ox: #{name}>'.interpolate(this);
   }
 });
+
+//Base class
+var Bird = Class.create({});
+
+//Mixin for Bird
+var Migration = {
+  migration: function() {
+    return this.migrate;
+  }
+};
+
+var Wild = {
+  wild: function() {
+    return this.free;
+  }
+};
+
+
+
+
+
+
+
+
+
+
+

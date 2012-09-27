@@ -57,6 +57,9 @@ var Class = (function() {
       parent = properties.shift();
 
     function klass() {
+      if (this.$setup) 
+        this.$setup.invoke('call', this);
+      
       this.initialize.apply(this, arguments);
     }
 
@@ -81,9 +84,10 @@ var Class = (function() {
   }
 
   /**
-   *  Class#addMethods(methods) -> Class
+   *  Class#addMethods(methods, func) -> Class
    *    - methods (Object): The methods to add to the class.
-   *
+   *    - func (Function): Function will be called with initialize object
+   * 
    *  Adds methods to an existing class.
    *
    *  [[Class#addMethods]] is a method available on classes that have been
@@ -144,11 +148,31 @@ var Class = (function() {
    *      ringneck.speak();
    *      //-> alerts "Ringneck snarls: hissssssss!"
    *      //-> alerts "You should probably run. He looks really mad."
+   *      
+   *      //addMethods with function
+   *      var Goose = Class.create({});
+   *      
+   *      var Migration = {
+   *        migration: function() {
+   *          return this.migrate;
+   *        }
+   *      };
+   *      
+   *      Goose.addMethods(Migration, function() { this.migrate = true; });  
+   *      
+   *      var goose = new Goose();
+   *      goose.migration();
+   *      //-> true
+   *
+   *
   **/
-  function addMethods(source) {
+  function addMethods(source, func) {
     var ancestor   = this.superclass && this.superclass.prototype,
         properties = Object.keys(source);
-
+    
+    //Used to store functions for setup
+    this.prototype.$setup = this.prototype.$setup || [];    
+    
     // IE6 doesn't enumerate `toString` and `valueOf` (among other built-in `Object.prototype`) properties,
     // Force copy if they're not Object.prototype ones.
     // Do not copy other Object.prototype.* for performance reasons
@@ -158,6 +182,10 @@ var Class = (function() {
       if (source.valueOf != Object.prototype.valueOf)
         properties.push("valueOf");
     }
+
+    if(Object.isFunction(func)) 
+      this.prototype.$setup.push(func);    
+    
 
     for (var i = 0, length = properties.length; i < length; i++) {
       var property = properties[i], value = source[property];

@@ -132,5 +132,64 @@ new Test.Unit.Runner({
     this.assertEqual("valueOf", new Foo().valueOf());
     this.assertEqual("toString", new Bar().toString());
     this.assertEqual("myValueOf", new Bar().valueOf());
-  }
+  },
+
+  testClassAddMethodsFunctionSetupBase: function() {
+    var Foo = Class.create({});
+    var Bar = Class.create({});
+    var Baz = Class.create({});
+    var Mix = {};
+
+    var func = function() { this.foo = 'foo'; };
+
+    this.assertEnumEqual((new Foo).$setup, []);
+
+    Bar.addMethods(Mix)
+
+    this.assertEnumEqual((new Bar).$setup, []);
+
+    Baz.addMethods(Mix, func);
+    
+    this.assertEnumEqual((new Baz).$setup, [func]);
+    this.assertEqual((new Baz).$setup.last(), func);
+  },
+
+  testClassAddMethodsFunctionSetup: function() {
+    Bird.addMethods(Migration, function() { this.migrate = true; });
+    Cat.addMethods(Migration, function()  { this.migrate = false;});
+    
+    var goose = new Bird();
+    var cat = new Cat('Jerry');
+    
+    this.assertEqual(goose.migrate, true);
+    this.assertEqual(goose.migration(), true);
+    this.assertEqual(cat.migrate, false);
+    this.assertEqual(cat.migration(), false);
+  },
+
+  testClassAddMethodsFunctionSetupWithSeveralMixins: function() {
+    Bird.addMethods(Migration, function() {this.migrate = false;});
+    Bird.addMethods(Wild, function() { this.free = false;});
+
+    var chicken = new Bird();
+    
+    this.assertEqual(chicken.migrate, false);
+    this.assertEqual(chicken.free, false);
+    this.assertEqual(chicken.migration(), false);
+    this.assertEqual(chicken.wild(), false);
+  },
+
+  testClassAddMethodsFunctionSetupWithSubclasses: function() {
+    Bird.addMethods(Migration, function() {this.migrate = false;});
+    Bird.addMethods(Wild, function() { this.free = false;});
+
+    var Duck = Class.create(Bird, {});
+    var duck = new Duck();
+    
+    this.assertEqual(duck.migrate, false);
+    this.assertEqual(duck.free, false);
+    this.assertEqual(duck.migration(), false);
+    this.assertEqual(duck.wild(), false);
+  } 
+
 });
