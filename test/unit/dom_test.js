@@ -903,7 +903,10 @@ new Test.Unit.Runner({
     this.assert(
       $('style_test_3').setOpacity(0.9999999).getStyle('opacity') > 0.999
     );
-    
+
+    // setting opacity before element was added to DOM
+    this.assertEqual(0.5, new Element('div').setOpacity(0.5).getOpacity());
+
     /*
     
     IE <= 7 needs a `hasLayout` for opacity ("filter") to function properly
@@ -927,10 +930,9 @@ new Test.Unit.Runner({
     
     if (ZOOM_AFFECT_HAS_LAYOUT) {
       this.assert($('style_test_4').setOpacity(0.5).currentStyle.hasLayout);
-      this.assert(2, $('style_test_5').setOpacity(0.5).getStyle('zoom'));
-      this.assert(0.5, new Element('div').setOpacity(0.5).getOpacity());
-      this.assert(2, new Element('div').setOpacity(0.5).setStyle('zoom: 2;').getStyle('zoom'));
-      this.assert(2, new Element('div').setStyle('zoom: 2;').setOpacity(0.5).getStyle('zoom'));
+      this.assertEqual(1, $('style_test_5').setOpacity(0.5).getStyle('zoom'));
+      this.assertEqual(2, new Element('div').setOpacity(0.5).setStyle('zoom: 2;').getStyle('zoom'));
+      this.assertEqual(2, new Element('div').setStyle('zoom: 2;').setOpacity(0.5).getStyle('zoom'));
     }
   },
   
