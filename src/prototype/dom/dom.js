@@ -121,7 +121,7 @@
   }
   
   // IE requires that `name` and `type` attributes be set this way.
-  var HAS_EXTENDED_CREATE_ELEMENT_SYNTAX = (function(){
+  var HAS_EXTENDED_CREATE_ELEMENT_SYNTAX = Prototype.Browser.IE && (function(){
     try {
       var el = document.createElement('<input name="x">');
       return el.tagName.toLowerCase() === 'input' && el.name === 'x';
