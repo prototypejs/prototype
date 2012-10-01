@@ -1211,6 +1211,21 @@
     
     return null;
   }
+
+  /**
+   *  Element.content(@element[, withoutChild]) -> String    
+   *
+  **/
+  function content(element, withoutChild) {
+    var element = $(element);
+
+    if (!element.hasChildNodes())
+      return '';
+
+    return $A(element.childNodes).inject('', function(acc,node) {
+      return acc += node.nodeType == 3? node.nodeValue : withoutChild == true? '' : content(node);
+    });
+  }
   
   Object.extend(methods, {
     remove:  remove,
@@ -1221,7 +1236,8 @@
     cleanWhitespace: cleanWhitespace,
     empty:   empty,
     clone:   clone,
-    purge:   purge
+    purge:   purge,
+    content: content
   });
   
 
