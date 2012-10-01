@@ -105,6 +105,67 @@ var Hash = Class.create(Enumerable, (function() {
   }
 
   /**
+   *  Hash#each_key(iterator[, context]) -> Hash 
+   * 
+   *  Iterates over the keys in the hash.
+   * 
+   *  ##### Example
+   *
+   *      var hash = $H({England: 'London', Poland: 'Warsaw'});
+   *
+   *      h.each_key(function(country) {
+   *        alert(country);
+   *      });
+   *      // Alerts: England
+   *      // Alerts: Poland
+   * 
+  **/
+  function each_key(iterator, context) {
+    this.keys().each(iterator, context);
+  }  
+  
+  /**
+   *  Hash#each_value(iterator[, context]) -> Hash 
+   * 
+   *  Iterates over the values in the hash.
+   * 
+   *  ##### Example
+   *
+   *      var hash = $H({England: 'London', Poland: 'Warsaw'});
+   *
+   *      h.each_value(function(capital) {
+   *        alert(capital);
+   *      });
+   *      // Alerts: London
+   *      // Alerts: Warsaw
+  **/ 
+  function each_value(iterator, context) {
+    this.values().each(iterator, context);
+  }
+  
+  /**
+   *  Hash#each_pair(iterator[, context]) -> Hash 
+   * 
+   *  Iterates over the key/value pairs in the hash.
+   *
+   *  ##### Example
+   *
+   *      var hash = $H({England: 'London', Poland: 'Warsaw'});
+   *
+   *      h.each_pair(function(country, capital) {
+   *        alert(capital + "is the capital of " + country);
+   *      });
+   *      //Alerts: London is the capital of England 
+   *      //Alerts: Warsaw is the capital of Poland
+   * 
+  **/
+  function each_pair(iterator, context) {
+    this.each(function(pair) {
+      iterator.call(context, pair.key, pair.value)
+    });
+  }
+
+  /**
    *  Hash#set(key, value) -> value
    *  - key (String): The key to use for this value.
    *  - value (?): The value to use for this key.
@@ -388,6 +449,9 @@ var Hash = Class.create(Enumerable, (function() {
   return {
     initialize:             initialize,
     _each:                  _each,
+    each_key:               each_key,
+    each_value:             each_value,
+    each_pair:              each_pair,  
     set:                    set,
     get:                    get,
     unset:                  unset,

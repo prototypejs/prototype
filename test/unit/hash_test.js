@@ -191,6 +191,36 @@ new Test.Unit.Runner({
       result.push(i);
     });
    this.assertEnumEqual([0,1], result);
+  },
+
+  testIterationWithEachKey: function() {
+    var hash = $H({a:1, b:2, c:3});
+    var keys = [];
+    hash.each_key(function(key) {
+      keys.push(key);
+    });
+    this.assertEnumEqual(['a', 'b', 'c'], keys);
+  },
+
+  testIterationWithEachValue: function() {
+    var hash = $H({a:1, b:2, c:3});
+    var values = [];
+    hash.each_value(function(value) {
+      values.push(value);
+    });
+    this.assertEnumEqual([1, 2, 3], values);
+  },
+
+  testIterationWithEachPair: function() {
+    var hash = $H({a:1, b:2, c:3});
+    var keys = [];
+    var values = [];
+    hash.each_pair(function(key, value) {
+      keys.push(key);
+      values.push(value);
+    });
+    this.assertEnumEqual([1, 2, 3], values);
+    this.assertEnumEqual(['a', 'b', 'c'], keys);
   }
   
 });
