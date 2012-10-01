@@ -1720,8 +1720,8 @@ new Test.Unit.Runner({
     this.assertEqual(true, Object.isString(content));
     this.assertEnumEqual(['test#a', 'testem', 'zed', 'span', 'test#b'], arr_content);
 
-    var contentWithoutChild = Element.content('testContent', true);
-    var arr = contentWithoutChild = contentWithoutChild.split('\n').findAll(function(a) {
+    var contentWithoutNested = Element.content('testContent', true);
+    var arr = contentWithoutNested.split('\n').findAll(function(a) {
       if (!a.strip().blank())
         return a;
     }).invoke('strip');

@@ -1213,17 +1213,40 @@
   }
 
   /**
-   *  Element.content(@element[, withoutChild]) -> String    
+   *  Element.content(@element[, withoutNested]) -> String    
+   *  - withoutNested (Boolean) 
+   * 
+   *  Returns the text content of the @element and all nested elements. 
+   *  If `withoutNested` set to true (default: false) returns the text content only for @element.
+   *  
+   *  ##### Examples
+   *      
+   *      language: html
+   *      <div id="test">
+   *        Lorem ipsum   
+   *        <p><span>dolor</span> sit amet</p>
+   *      </div>
+   *   
+   *  Get content:
    *
+   *      $('test').content() 
+   *      // => Lorem ipsum
+   *      //    dolor sit amet
+   *
+   *  Get content only from #test
+   *
+   *      $('test').content(true)
+   *      // Lorem ipsum   
+   * 
   **/
-  function content(element, withoutChild) {
+  function content(element, nested) {
     var element = $(element);
 
     if (!element.hasChildNodes())
       return '';
 
     return $A(element.childNodes).inject('', function(acc,node) {
-      return acc += node.nodeType == 3? node.nodeValue : withoutChild == true? '' : content(node);
+      return acc += node.nodeType == 3? node.nodeValue : nested == true? '' : content(node);
     });
   }
   
