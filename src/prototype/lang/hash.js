@@ -105,7 +105,7 @@ var Hash = Class.create(Enumerable, (function() {
   }
 
   /**
-   *  Hash#each_key(iterator[, context]) -> Hash 
+   *  Hash#eachKey(iterator[, context]) -> Hash 
    * 
    *  Iterates over the keys in the hash.
    * 
@@ -113,19 +113,19 @@ var Hash = Class.create(Enumerable, (function() {
    *
    *      var hash = $H({England: 'London', Poland: 'Warsaw'});
    *
-   *      h.each_key(function(country) {
+   *      h.eachKey(function(country) {
    *        alert(country);
    *      });
    *      // Alerts: England
    *      // Alerts: Poland
    * 
   **/
-  function each_key(iterator, context) {
+  function eachKey(iterator, context) {
     this.keys().each(iterator, context);
   }  
   
   /**
-   *  Hash#each_value(iterator[, context]) -> Hash 
+   *  Hash#eachValue(iterator[, context]) -> Hash 
    * 
    *  Iterates over the values in the hash.
    * 
@@ -133,18 +133,18 @@ var Hash = Class.create(Enumerable, (function() {
    *
    *      var hash = $H({England: 'London', Poland: 'Warsaw'});
    *
-   *      h.each_value(function(capital) {
+   *      h.eachValue(function(capital) {
    *        alert(capital);
    *      });
    *      // Alerts: London
    *      // Alerts: Warsaw
   **/ 
-  function each_value(iterator, context) {
+  function eachValue(iterator, context) {
     this.values().each(iterator, context);
   }
   
   /**
-   *  Hash#each_pair(iterator[, context]) -> Hash 
+   *  Hash#eachPair(iterator[, context]) -> Hash 
    * 
    *  Iterates over the key/value pairs in the hash.
    *
@@ -152,14 +152,14 @@ var Hash = Class.create(Enumerable, (function() {
    *
    *      var hash = $H({England: 'London', Poland: 'Warsaw'});
    *
-   *      h.each_pair(function(country, capital) {
+   *      h.eachPair(function(country, capital) {
    *        alert(capital + "is the capital of " + country);
    *      });
    *      //Alerts: London is the capital of England 
    *      //Alerts: Warsaw is the capital of Poland
    * 
   **/
-  function each_pair(iterator, context) {
+  function eachPair(iterator, context) {
     this.each(function(pair) {
       iterator.call(context, pair.key, pair.value)
     });

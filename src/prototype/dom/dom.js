@@ -685,7 +685,8 @@
         for (var i = 0, node; node = nodes[i]; i++)
           element.appendChild(node);
       } else {
-        element.innerHTML = content.stripScripts();
+        element.innerHTML = '';
+        element.appendChild(document.createTextNode(content.stripScripts()));
       }
     } else {
       element.innerHTML = content.stripScripts();

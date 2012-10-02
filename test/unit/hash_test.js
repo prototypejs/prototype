@@ -196,7 +196,7 @@ new Test.Unit.Runner({
   testIterationWithEachKey: function() {
     var hash = $H({a:1, b:2, c:3});
     var keys = [];
-    hash.each_key(function(key) {
+    hash.eachKey(function(key) {
       keys.push(key);
     });
     this.assertEnumEqual(['a', 'b', 'c'], keys);
@@ -205,7 +205,7 @@ new Test.Unit.Runner({
   testIterationWithEachValue: function() {
     var hash = $H({a:1, b:2, c:3});
     var values = [];
-    hash.each_value(function(value) {
+    hash.eachValue(function(value) {
       values.push(value);
     });
     this.assertEnumEqual([1, 2, 3], values);
@@ -215,7 +215,7 @@ new Test.Unit.Runner({
     var hash = $H({a:1, b:2, c:3});
     var keys = [];
     var values = [];
-    hash.each_pair(function(key, value) {
+    hash.eachPair(function(key, value) {
       keys.push(key);
       values.push(value);
     });
