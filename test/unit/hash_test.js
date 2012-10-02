@@ -4,7 +4,6 @@ new Test.Unit.Runner({
 
     this.assertEqual('B', h.set('b', 'B'));
     this.assertHashEqual({a: 'A', b: 'B'}, h);
-    
     this.assertUndefined(h.set('c'));
     this.assertHashEqual({a: 'A', b: 'B', c: undefined}, h);
   },

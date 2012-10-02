@@ -449,9 +449,9 @@ var Hash = Class.create(Enumerable, (function() {
   return {
     initialize:             initialize,
     _each:                  _each,
-    each_key:               each_key,
-    each_value:             each_value,
-    each_pair:              each_pair,  
+    eachKey:                eachKey,
+    eachValue:              eachValue,
+    eachPair:               eachPair,  
     set:                    set,
     get:                    get,
     unset:                  unset,
