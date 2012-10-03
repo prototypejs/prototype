@@ -889,8 +889,8 @@
   }
 
   /**
-   *  Element.insert(@element, content) -> Element
-   *  - content (String | Element | Object): The content to insert.
+   *  Element.insert(@element, *content) -> Element
+   *  - content (String | Element | Object): Collection the content to insert.
    *
    *  Inserts content `above`, `below`, at the `top`, and/or at the `bottom` of
    *  the given element, depending on the option(s) given.
@@ -932,17 +932,31 @@
    *        before: "<hr>",
    *        after: "<hr>"
    *      });
+   *   
+   *  Insert several elements
+   *    
+   *      $('myelement').insert(
+   *         new Element('div'), 
+   *         <span>Lorem ipsum</span> 
+   *         "dolore..." 
+   *       );
+   *
+   *       //Result: <div><div></div><span>Lorem ipsum</span>dolore...
+   * 
   **/
-  function insert(element, insertions) {
-    element = $(element);
+  function insert() {
+    var args = $A(arguments);
     
-    if (isContent(insertions))
-      insertions = { bottom: insertions };
-      
-    for (var position in insertions)
-      insertContentAt(element, insertions[position], position);
+    element = $(args[0]);
     
-    return element;    
+    args.slice(1).each(function(insertions) {
+      if (isContent(insertions))
+        insertions = { bottom: insertions };
+
+      for (var position in insertions)
+        insertContentAt(element, insertions[position], position);
+    });  
+    return element;
   }
   
   /**
