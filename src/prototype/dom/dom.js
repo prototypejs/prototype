@@ -2847,6 +2847,8 @@
    *  
   **/
   function getStyle(element, style) {
+    if (style === 'opacity') return getOpacity(element);
+
     element = $(element);
     style = normalizeStyleName(style);
 
@@ -2858,7 +2860,6 @@
       value = css ? css[style] : null;
     }
     
-    if (style === 'opacity') return value ? parseFloat(value) : 1.0;
     return value === 'auto' ? null : value;
   }
   
@@ -2883,6 +2884,8 @@
   }
   
   function getStyle_IE(element, style) {
+    if (style === 'opacity') return getOpacity_IE(element);
+
     element = $(element);
     style = normalizeStyleName_IE(style);
 
@@ -2893,9 +2896,6 @@
       value = element.currentStyle[style];
     }
     
-    if (style === 'opacity' && !STANDARD_CSS_OPACITY_SUPPORTED)
-      return getOpacity_IE(element);
-      
     if (value === 'auto') {
       // If we need a dimension, return null for hidden elements, but return
       // pixel values for visible elements.
@@ -2955,14 +2955,13 @@
   // the standard approach (an `opacity` property in CSS) and the old-style
   // IE approach (a proprietary `filter` property). They are written to
   // prefer the standard approach unless it isn't supported.
-  function setOpacity_IE(element, value) {
-    // Prefer the standard CSS approach unless it's not supported.
-    if (STANDARD_CSS_OPACITY_SUPPORTED)
-      return setOpacity(element, value);
+  var setOpacity_IE = STANDARD_CSS_OPACITY_SUPPORTED ? setOpacity : function(element, value) {
+    element = $(element);
+    var style = element.style;
+    if (!element.currentStyle || !element.currentStyle.hasLayout)
+      style.zoom = 1;
 
-    element = hasLayout_IE($(element));
-    var filter = Element.getStyle(element, 'filter'),
-     style = element.style;     
+    var filter = Element.getStyle(element, 'filter');
      
     if (value == 1 || value === '') {
       // Remove the `alpha` filter from IE's `filter` CSS property. If there
@@ -2980,7 +2979,7 @@
      'alpha(opacity=' + (value * 100) + ')';
      
     return element;
-  }
+  };
   
   
   /**
@@ -2989,20 +2988,25 @@
    *  Returns the opacity of the element.
   **/
   function getOpacity(element) {
-    return Element.getStyle(element, 'opacity');
+    element = $(element);
+    // Try inline styles first.
+    var value = element.style.opacity;
+    if (!value || value === 'auto') {
+      // Reluctantly retrieve the computed style.
+      var css = document.defaultView.getComputedStyle(element, null);
+      value = css ? css.opacity : null;
+    }
+    return value ? parseFloat(value) : 1.0;
   }
   
-  function getOpacity_IE(element) {
-    // Prefer the standard CSS approach unless it's not supported.
-    if (STANDARD_CSS_OPACITY_SUPPORTED)
-      return getOpacity(element);
-
+  // Prefer the standard CSS approach unless it's not supported.
+  var getOpacity_IE = STANDARD_CSS_OPACITY_SUPPORTED ? getOpacity : function(element) {
     var filter = Element.getStyle(element, 'filter');
     if (filter.length === 0) return 1.0;
     var match = (filter || '').match(/alpha\(opacity=(.*)\)/);
     if (match[1]) return parseFloat(match[1]) / 100;
     return 1.0;
-  }
+  };
   
   
   Object.extend(methods, {
