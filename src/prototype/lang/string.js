@@ -42,7 +42,7 @@ Object.extend(String.prototype, (function() {
   /**
    *  String#gsub(pattern, replacement) -> String
    *
-   *  Returns the string with _every_ occurence of a given pattern replaced by either a
+   *  Returns the string with _every_ occurrence of a given pattern replaced by either a
    *  regular string, the returned value of a function or a [[Template]] string.
    *  The pattern can be a string or a regular expression.
    *  
@@ -100,7 +100,7 @@ Object.extend(String.prototype, (function() {
     }
 
     while (source.length > 0) {
-      match = source.match(pattern)
+      match = source.match(pattern);
       if (match && match[0].length > 0) {
         result += source.slice(0, match.index);
         result += String.interpret(replacement(match));
@@ -431,7 +431,7 @@ Object.extend(String.prototype, (function() {
    *  Parses a URI-like query string and returns an object composed of
    *  parameter/value pairs.
    *  
-   *  This method is realy targeted at parsing query strings (hence the default 
+   *  This method is really targeted at parsing query strings (hence the default 
    *  value of`"&"` for the `separator` argument).
    *  
    *  For this reason, it does _not_ consider anything that is either before a 
