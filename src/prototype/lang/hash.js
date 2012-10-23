@@ -323,6 +323,27 @@ var Hash = Class.create(Enumerable, (function() {
   }
 
   /**
+   *  Hash#mergeWith(object, func) -> Hash
+   *  - object (Object | Hash): The object to merge with this hash to produce
+   *    the resulting hash.
+   *  - func (Function): The function that will be applied to the values of the 
+   *    same keys. Takes two arguments. 
+   *   
+   *  ##### Example
+   *      
+   *      var hash1 = $H({a: 1, b: 2, c: 2});
+   *      var func = function(v1, v2) { return v1 + v2; };
+   *      
+   *      var hash2 = hash.mergeWith({a: 3, b: 4, c: 5, d: 9}, func);
+   *      // -> {a: 4, b: 6, c: 7, d: 9} 
+   *
+   * 
+  **/ 
+  function mergeWith(object, func) {
+    return this.clone().updateWith(object, func);
+  }
+
+  /**
    *  Hash#update(object) -> Hash
    *  - object (Object | Hash): The object to merge with this hash to produce
    *    the resulting hash.
@@ -346,6 +367,35 @@ var Hash = Class.create(Enumerable, (function() {
       result.set(pair.key, pair.value);
       return result;
     });
+  }
+
+  /**
+   *  Hash#updateWith(object, func) -> Hash
+   *  - object (Object | Hash): The object to merge with this hash to produce
+   *    the resulting hash.
+   *  - func (Function): The function that will be applied to the values of the 
+   *    same keys. Takes two arguments. 
+   *   
+   *  ##### Example
+   *      
+   *      var hash = $H({a: 1, b: 2, c: 2});
+   *      var func = function(v1, v2) { return v1 + v2; };
+   *      hash.updateWith({a: 3, b: 4, c: 5, d: 9}, func);
+   *      // -> {a: 4, b: 6, c: 7, d: 9} 
+   *
+   * 
+  **/ 
+  function updateWith(object, func) {
+    if (!Object.isFunction(func))
+      throw new TypeError();
+
+    var keys = this.keys();
+    var newHash = new Hash(object).inject(this, function(result, pair) {
+      var value = keys.include(pair.key)? func(this.get(pair.key), pair.value) : pair.value;
+      result.set(pair.key, value);
+      return result;
+    }.bind(this));
+    return newHash;
   }
 
   // Private. No PDoc necessary.
@@ -461,7 +511,9 @@ var Hash = Class.create(Enumerable, (function() {
     values:                 values,
     index:                  index,
     merge:                  merge,
+    mergeWith:              mergeWith,
     update:                 update,
+    updateWith:             updateWith,
     toQueryString:          toQueryString,
     inspect:                inspect,
     toJSON:                 toObject,

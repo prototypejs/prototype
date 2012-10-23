@@ -101,6 +101,16 @@ new Test.Unit.Runner({
     this.assertHashEqual({a:'A#', b:'B', c:'C', d:'D#' }, h.merge(Fixtures.one));
   },
   
+  testMergeWith: function() {
+    var h1 = $H({a: 1, b: 2, c: 2});
+    var func = function(v1, v2) { return v1 + v2;};
+    var h2 = h1.mergeWith({a: 3, b: 4, c: 5, d: 9}, func);
+    this.assertHashEqual($H({'a': 4, 'b': 6, 'c': 7, 'd': 9}), h2);
+    //this.assertHashEqual($H({'a': 1, 'b': 2, 'c': 2}), h1);
+    /*TypeError when function not defined*/
+    this.assertRaise('TypeError', function(){h1.mergeWith({});});
+  }, 
+
   testUpdate: function() {
     var h = $H(Fixtures.many);
     this.assertIdentical(h, h.update());
@@ -110,6 +120,15 @@ new Test.Unit.Runner({
     this.assertHashEqual(h, h.update($H()));
     this.assertHashEqual({a:'A',  b:'B', c:'C', d:'D#', aaa:'AAA' }, h.update({aaa: 'AAA'}));
     this.assertHashEqual({a:'A#', b:'B', c:'C', d:'D#', aaa:'AAA' }, h.update(Fixtures.one));
+  },
+
+  testUpdateWith: function() {
+    var h = $H({a: 1, b: 2, c: 2});
+    var func = function(v1, v2) { return v1 + v2;};
+    h.updateWith({a: 3, b: 4, c: 5, d: 9}, func);
+    this.assertHashEqual($H({'a': 4, 'b': 6, 'c': 7, 'd': 9}), h);
+    /*TypeError when function not defined*/
+    this.assertRaise('TypeError', function(){h.updateWith({});});
   },
   
   testToQueryString: function() {
