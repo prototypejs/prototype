@@ -722,12 +722,10 @@ Array.from = $A;
   
   // Prototype's `Array#inject` behaves similarly to ES5's `Array#reduce`.
   var _reduce = arrayProto.reduce;
-  function inject(memo, iterator) {
-    iterator = iterator || Prototype.K;
-    var context = arguments[2];
+  function inject(memo, iterator, context) {
     // The iterator must be bound, as `Array#reduce` always binds to
     // `undefined`.
-    return _reduce.call(this, iterator.bind(context), memo);
+    return _reduce.call(this, iterator ? iterator.bind(context) : Prototype.K, memo);
   }
   
   // Piggyback on `Array#reduce` if it exists; otherwise fall back to the
