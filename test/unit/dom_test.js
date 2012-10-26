@@ -1090,9 +1090,7 @@ new Test.Unit.Runner({
   
   testElementWriteAttributeWithBooleans: function() {
     var input = $('write_attribute_input'),
-      select = $('write_attribute_select'),
-      checkbox = $('write_attribute_checkbox'),
-      checkedCheckbox = $('write_attribute_checked_checkbox');
+      select = $('write_attribute_select');
     this.assert( input.          writeAttribute('readonly').            hasAttribute('readonly'));
     this.assert(!input.          writeAttribute('readonly', false).     hasAttribute('readonly'));
     this.assert( input.          writeAttribute('readonly', true).      hasAttribute('readonly'));
@@ -1100,8 +1098,28 @@ new Test.Unit.Runner({
     this.assert( input.          writeAttribute('readonly', 'readonly').hasAttribute('readonly'));
     this.assert( select.         writeAttribute('multiple').            hasAttribute('multiple'));
     this.assert( input.          writeAttribute('disabled').            hasAttribute('disabled'));
+  },
+  testElementWriteAttributeForCheckbox: function() {
+    var checkbox = $('write_attribute_checkbox'),
+      checkedCheckbox = $('write_attribute_checked_checkbox');
     this.assert( checkbox.       writeAttribute('checked').             checked);
+    this.assert( checkbox.       writeAttribute('checked').             hasAttribute('checked'));
+    this.assertEqual('checked', checkbox.writeAttribute('checked').getAttribute('checked'));
+    this.assert(!checkbox.       writeAttribute('checked').             hasAttribute('undefined'));
+    this.assert( checkbox.       writeAttribute('checked', true).       checked);
+    this.assert( checkbox.       writeAttribute('checked', true).       hasAttribute('checked'));
+    this.assert( checkbox.       writeAttribute('checked', 'checked').  checked);
+    this.assert( checkbox.       writeAttribute('checked', 'checked').  hasAttribute('checked'));
+    this.assert(!checkbox.       writeAttribute('checked', null).       checked);
+    this.assert(!checkbox.       writeAttribute('checked', null).       hasAttribute('checked'));
+    this.assert(!checkbox.       writeAttribute('checked', true).       hasAttribute('undefined'));
     this.assert(!checkedCheckbox.writeAttribute('checked', false).      checked);
+    this.assert(!checkbox.       writeAttribute('checked', false).      hasAttribute('checked'));
+  },
+  testElementWriteAttributeForStyle: function() {
+    var element = Element.extend(document.body.appendChild(document.createElement('p')));
+    this.assert( element.        writeAttribute('style', 'color: red'). hasAttribute('style'));
+    this.assert(!element.        writeAttribute('style', 'color: red'). hasAttribute('undefined'));
   },
 
   testElementWriteAttributeWithIssues: function() {
