@@ -2353,8 +2353,8 @@
       name = table.names[attr] || attr;
       value = attributes[attr];
       if (table.values[attr])
-        name = table.values[attr](element, value);
-      if (value === false || value === null)
+        table.values[attr](element, value);
+      else if (value === false || value === null)
         element.removeAttribute(name);
       else if (value === true)
         element.setAttribute(name, name);
