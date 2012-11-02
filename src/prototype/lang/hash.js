@@ -291,7 +291,7 @@ var Hash = Class.create(Enumerable, (function() {
   function toQueryPair(key, value) {
     if (Object.isUndefined(value)) return key;
     
-    var value = String.interpret(value);
+    value = String.interpret(value);
 
     // Normalize newlines as \r\n because the HTML spec says newlines should
     // be encoded as CRLFs.
