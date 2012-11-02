@@ -1104,6 +1104,14 @@ new Test.Unit.Runner({
     this.assert(!checkedCheckbox.writeAttribute('checked', false).      checked);
   },
 
+  testElementWriteAttributeWithTranslation: function() {
+    var checkbox = $('write_attribute_checkbox');
+    checkbox.writeAttribute('checked');
+    this.assert(!checkbox.hasAttribute('undefined'));
+    checkbox.writeAttribute('style');
+    this.assert(!checkbox.hasAttribute('undefined'));
+  },
+
   testElementWriteAttributeWithIssues: function() {
     var input = $('write_attribute_input').writeAttribute({maxlength: 90, tabindex: 10}),
       td = $('write_attribute_td').writeAttribute({valign: 'bottom', colspan: 2, rowspan: 2});
