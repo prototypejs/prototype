@@ -402,8 +402,8 @@ var Enumerable = (function() {
    *      // -> true ('3' == 3)
   **/
   function include(object) {
-    if (Object.isFunction(this.indexOf))
-      if (this.indexOf(object) != -1) return true;
+    if (Object.isFunction(this.indexOf) && this.indexOf(object) != -1)
+      return true;
 
     var found = false;
     this.each(function(value) {
