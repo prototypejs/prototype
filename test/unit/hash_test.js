@@ -17,6 +17,9 @@ new Test.Unit.Runner({
 
     this.assertUndefined($H({}).get('toString'));
     this.assertUndefined($H({}).get('constructor'));
+
+    var def = 'foo';
+    this.assertEqual(def, $H({}).get('a', def));
   },
   
   testUnset: function() {
