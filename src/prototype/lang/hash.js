@@ -128,9 +128,11 @@ var Hash = Class.create(Enumerable, (function() {
   }
 
   /**
-   *  Hash#get(key) -> value
+   *  Hash#get(key, default) -> value
    *
    *  Returns the stored value for the given `key`.
+   *
+   *  If such key is not defined, returns value passed as default value.
    *
    *  ##### Examples
    *
@@ -138,10 +140,12 @@ var Hash = Class.create(Enumerable, (function() {
    *      h.get('a');
    *      // -> 'apple'
   **/
-  function get(key) {
+  function get(key, def) {
     // simulating poorly supported hasOwnProperty
     if (this._object[key] !== Object.prototype[key])
       return this._object[key];
+
+    return def;
   }
 
   /**
