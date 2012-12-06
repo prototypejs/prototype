@@ -3104,7 +3104,7 @@
     return value;
   }
 
-  //simple test for native dataset compability
+  //simple test for native HTML5 dataset existence
   function _testnativedataset(){
    var testelement = new Element("div",{"data-test-this-thing":"test"});
     if(typeof testelement.dataset != 'undefined' && typeof testelement.dataset.testThisThing != 'undefined') return true;
@@ -3127,7 +3127,7 @@
    *  $("dataitem").gethtml5data().oldUrl;
    *  // -> "http://prototypejs.org"
   **/
-  function gethtml5data(element,datakey){
+  function gethtml5data(element,datalabel){
    if(!(element = $(element))) return;
    var returnobject = {};
    if(_testnativedataset())
