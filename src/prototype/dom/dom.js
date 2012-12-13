@@ -3132,12 +3132,12 @@
    var returnobject = {};
    if(_testnativedataset())
    {
-    if(datalabel != undefined) eval("returnobject."+datalabel.camelize()+" = element.dataset."+datalabel);
+    if(datalabel != undefined) returnobject[datalabel.camelize()] = element.dataset[datalabel];
     else returnobject = element.dataset;
    }
    else
    {
-    if(datalabel != undefined) eval("returnobject."+datalabel.camelize()+" = '"+element.readAttribute("data-"+datalabel)+"'");
+    if(datalabel != undefined) returnobject[datalabel.camelize()] = element.readAttribute('data-'+datalabel);
     else
     {
      var label = "";
@@ -3147,7 +3147,7 @@
       if(element.attributes[t].name.match(/^data-.+/))
       {
        label = element.attributes[t].name.replace(/^data-/,'').camelize();
-       eval("returnobject."+label+" = '"+element.attributes[t].value+"'");
+       returnobject[label] = element.attributes[t].value;
       }
      }
     }
@@ -3177,12 +3177,12 @@
   function sethtml5data(element,datalabel,value){
    if(typeof value != undefined)
    {
-    if(_testnativedataset()) eval("element.dataset."+datalabel.camelize()+" = value;");
+    if(_testnativedataset()) element.dataset[datalabel.camelize()] = value;
     element.writeAttribute("data-"+datalabel.underscore().dasherize(),value);
    }
    else
    {
-    eval("delete element.dataset."+datalabel.camelize()+";");
+    delete element.dataset[datalabel.camelize()];
     element.writeAttribute("data-"+datalabel.underscore().dasherize(),null);
    }
   }
