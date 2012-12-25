@@ -889,7 +889,7 @@
   }
 
   /**
-   *  Element.insert(@element, content) -> Element
+   *  Element.insert(@element, content [, content, ...]) -> Element
    *  - content (String | Element | Object): The content to insert.
    *
    *  Inserts content `above`, `below`, at the `top`, and/or at the `bottom` of
@@ -901,6 +901,7 @@
    *  - ...any object with a `toElement` method: The method is called and the resulting element used
    *  - ...any object with a `toHTML` method: The method is called and the resulting HTML string
    *    is parsed and rendered
+   *  - ...an array with any of the above as alements or an array
    *
    *  The `content` argument can be the content to insert, in which case the
    *  implied insertion point is `bottom`, or an object that specifies one or
@@ -935,13 +936,24 @@
   **/
   function insert(element, insertions) {
     element = $(element);
-    
-    if (isContent(insertions))
+
+    if ( arguments.length > 2 ) {
+      insertions = Array.prototype.slice.call( arguments, 1 );
+    }
+
+    if ( Object.isArray( insertions ) ) {
+      for( var i = 0; i < insertions.length; ++i ) {
+        insert( element, insertions[i] );
+      }
+      return element;
+    }
+
+    if ( isContent(insertions) )
       insertions = { bottom: insertions };
-      
+
     for (var position in insertions)
       insertContentAt(element, insertions[position], position);
-    
+
     return element;    
   }
   
