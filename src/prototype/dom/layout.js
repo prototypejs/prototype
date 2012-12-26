@@ -1144,7 +1144,8 @@
   function viewportOffset(forElement) {
     var valueT = 0, valueL = 0, docBody = document.body;
 
-    var element = $(forElement);
+    forElement = $(forElement);
+    var element = forElement;
     do {
       valueT += element.offsetTop  || 0;
       valueL += element.offsetLeft || 0;
