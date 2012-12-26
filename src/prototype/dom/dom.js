@@ -1144,7 +1144,23 @@
    *  Returns a duplicate of `element`.
    *
    *  A wrapper around DOM Level 2 `Node#cloneNode`, [[Element.clone]] cleans up
-   *  any expando properties defined by Prototype.
+   *  any expanded properties defined by Prototype.
+   *
+   *
+   * ##### Example
+   * 
+   * With this HTML
+   *
+   *      <div id="original">
+   *        <div id="original_child"></div>
+   *      </div>
+   *
+   * We can do this
+   * 
+   *      $('original').clone();
+   *      // -> div#original
+   *      $('original').clone(true);
+   *      // -> div#original -> div#original_child
   **/
   function clone(element, deep) {
     if (!(element = $(element))) return;
