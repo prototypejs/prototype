@@ -254,9 +254,9 @@ Ajax.Request = Class.create(Ajax.Base, {
 
       if (Object.isFunction(extras.push))
         for (var i = 0, length = extras.length; i < length; i += 2)
-          headers[extras[i]] = extras[i+1];
+          extras[i+1] != null ? headers[extras[i]] = extras[i+1] : delete headers[extras[i]];
       else
-        $H(extras).each(function(pair) { headers[pair.key] = pair.value });
+        $H(extras).each(function(pair,key) { pair.value != null ? headers[pair.key] = pair.value : delete headers[pair.key] });
     }
 
     for (var name in headers)
