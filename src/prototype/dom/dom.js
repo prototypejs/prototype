@@ -3103,12 +3103,94 @@
     
     return value;
   }
-  
-  
+  //simple test for native HTML5 dataset existence
+  var NATIVEHTML5DATASET = (function (){
+   var testelement = new Element("div",{"data-test-this-thing":"test"});
+    if(typeof testelement.dataset != 'undefined' && typeof testelement.dataset.testThisThing != 'undefined') return true;
+    else return false;
+  }  
+  /**
+   *  Element.gethtml5data(@element[, datakey]) -> Object
+   *
+   *  Retrieves HTML5 data-* attributes set on `element`.
+   *
+   *  This will clear up any problems retreiving these data attributes on browsers
+   *  that don't support them.
+   *
+   *  ##### Example
+   *
+   *  language: html
+   *  <div id="dataitem" data-old-url="http://prototypejs.org"></div>
+   * 
+   *  Then: 
+   *  $("dataitem").gethtml5data().oldUrl;
+   *  // -> "http://prototypejs.org"
+  **/
+  function gethtml5data(element,datalabel){
+   if(!(element = $(element))) return;
+   var returnobject = {};
+   if(NATIVEHTML5DATASET)
+   {
+    if(datalabel != undefined) returnobject[datalabel.camelize()] = element.dataset[datalabel];
+    else returnobject = element.dataset;
+   }
+   else
+   {
+    if(datalabel != undefined) returnobject[datalabel.camelize()] = element.readAttribute('data-'+datalabel);
+    else
+    {
+     var label = "";
+     var numberattributes = element.attributes.length;
+     for(var t = 0; t < numberattributes ; t++)
+     {
+      if(element.attributes[t].name.match(/^data-.+/))
+      {
+       label = element.attributes[t].name.replace(/^data-/,'').camelize();
+       returnobject[label] = element.attributes[t].value;
+      }
+     }
+    }
+   }
+  return returnobject;
+  }
+  /**
+   *  Element.sethtml5data(@element,datakey [,value]) -> Object
+   *
+   *  Sets/Removes HTML5 data-* attributes on `element`. If `value` is not defined or null it will clear the data value on the element.
+   *
+   *  This will clear up any problems setting these data attributes on browsers
+   *  that don't support them.
+   *  
+   *  ##### Example
+   *
+   *  language: html
+   *  <div id="dataitem" data-old-url="http://prototypejs.org"></div>
+   * 
+   *  Then: 
+   *  $("dataitem").sethtml5data('newUrl','http://api.prototypejs.org');
+   *  $("dataitem").sethtml5data('oldUrl',null);
+   *  
+   *  language: html
+   *  <div id="dataitem" data-new-url="http://api.prototypejs.org"></div>
+  **/
+  function sethtml5data(element,datalabel,value){
+   if(typeof value != undefined)
+   {
+    if(NATIVEHTML5DATASET) element.dataset[datalabel.camelize()] = value;
+    element.writeAttribute("data-"+datalabel.underscore().dasherize(),value);
+   }
+   else
+   {
+    delete element.dataset[datalabel.camelize()];
+    element.writeAttribute("data-"+datalabel.underscore().dasherize(),null);
+   }
+  }  
   Object.extend(methods, {
     getStorage: getStorage,
     store:      store,
-    retrieve:   retrieve
+    retrieve:   retrieve,
+    gethtml5data:  gethtml5data,
+    sethtml5data:  sethtml5data    
   });
   
   
