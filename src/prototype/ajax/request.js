@@ -259,8 +259,10 @@ Ajax.Request = Class.create(Ajax.Base, {
         $H(extras).each(function(pair) { headers[pair.key] = pair.value });
     }
 
+    // skip null or undefined values
     for (var name in headers)
-      this.transport.setRequestHeader(name, headers[name]);
+      if (headers[name] != null)
+        this.transport.setRequestHeader(name, headers[name]);
   },
 
   /**
