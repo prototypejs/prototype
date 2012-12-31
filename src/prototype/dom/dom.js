@@ -3106,9 +3106,8 @@
   //simple test for native HTML5 dataset existence
   var NATIVEHTML5DATASET = (function (){
    var testelement = new Element("div",{"data-test-this-thing":"test"});
-    if(typeof testelement.dataset != 'undefined' && typeof testelement.dataset.testThisThing != 'undefined') return true;
-    else return false;
-  }  
+    return (testelement.dataset && testelement.dataset.testThisThing === 'test');
+  });  
   /**
    *  Element.gethtml5data(@element[, datakey]) -> Object
    *
@@ -3142,10 +3141,10 @@
      var label = "";
      var numberattributes = element.attributes.length;
      for(var t = 0; t < numberattributes ; t++)
-     {
-      if(element.attributes[t].name.match(/^data-.+/))
+     
+      if(element.attributes[t].name.startsWith('data-'))
       {
-       label = element.attributes[t].name.replace(/^data-/,'').camelize();
+       label = element.attributes[t].name.substring(4).camelize();
        returnobject[label] = element.attributes[t].value;
       }
      }
@@ -3174,16 +3173,16 @@
    *  <div id="dataitem" data-new-url="http://api.prototypejs.org"></div>
   **/
   function sethtml5data(element,datalabel,value){
-   if(typeof value != undefined)
+   if(typeof value !== 'undefined')
    {
     if(NATIVEHTML5DATASET) element.dataset[datalabel.camelize()] = value;
-    element.writeAttribute("data-"+datalabel.underscore().dasherize(),value);
    }
    else
    {
     delete element.dataset[datalabel.camelize()];
-    element.writeAttribute("data-"+datalabel.underscore().dasherize(),null);
+    value = null;
    }
+   element.writeAttribute("data-"+datalabel.underscore().dasherize(),value);
   }  
   Object.extend(methods, {
     getStorage: getStorage,
