@@ -3141,7 +3141,7 @@
      var label = "";
      var numberattributes = element.attributes.length;
      for(var t = 0; t < numberattributes ; t++)
-     
+     {
       if(element.attributes[t].name.startsWith('data-'))
       {
        label = element.attributes[t].name.substring(4).camelize();
