@@ -3128,22 +3128,16 @@
   function gethtml5data(element,datalabel){
    if(!(element = $(element))) return;
    var returnobject = {};
-   if(NATIVEHTML5DATASET)
-   {
+   if(NATIVEHTML5DATASET){
     if(datalabel != undefined) returnobject[datalabel.camelize()] = element.dataset[datalabel];
     else returnobject = element.dataset;
-   }
-   else
-   {
+   }else{
     if(datalabel != undefined) returnobject[datalabel.camelize()] = element.readAttribute('data-'+datalabel);
-    else
-    {
+    else{
      var label = "";
      var numberattributes = element.attributes.length;
-     for(var t = 0; t < numberattributes ; t++)
-     {
-      if(element.attributes[t].name.startsWith('data-'))
-      {
+     for(var t = 0; t < numberattributes ; t++){
+      if(element.attributes[t].name.startsWith('data-')){
        label = element.attributes[t].name.substring(4).camelize();
        returnobject[label] = element.attributes[t].value;
       }
@@ -3173,12 +3167,9 @@
    *  <div id="dataitem" data-new-url="http://api.prototypejs.org"></div>
   **/
   function sethtml5data(element,datalabel,value){
-   if(typeof value !== 'undefined')
-   {
+   if(typeof value !== 'undefined'){
     if(NATIVEHTML5DATASET) element.dataset[datalabel.camelize()] = value;
-   }
-   else
-   {
+   }else{
     delete element.dataset[datalabel.camelize()];
     value = null;
    }
