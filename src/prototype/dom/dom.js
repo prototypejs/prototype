@@ -2318,7 +2318,7 @@
   }
   
   var PROBLEMATIC_ATTRIBUTE_READING = (function() {
-    DIV.setAttribute('onclick', Prototype.emptyFunction);
+    DIV.setAttribute('onclick', 'Prototype.emptyFunction()');
     var value = DIV.getAttribute('onclick');
     var isFunction = (typeof value === 'function');
     DIV.removeAttribute('onclick');
