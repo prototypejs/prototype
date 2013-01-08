@@ -140,6 +140,8 @@ var Prototype = {
   },
 
   ScriptFragment: '<script[^>]*>([\\S\\s]*?)<\/script\\s*>',
+  ScriptFragmentOne: /<script[^>]*>([\S\s]*?)<\/script\s*>/im,
+  ScriptFragmentAll: /<script[^>]*>([\S\s]*?)<\/script\s*>/img,
   JSONFilter: /^\/\*-secure-([\s\S]*)\*\/\s*$/,
 
   /**
