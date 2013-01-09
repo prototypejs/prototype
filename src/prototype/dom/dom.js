@@ -2318,7 +2318,11 @@
   }
   
   var PROBLEMATIC_ATTRIBUTE_READING = (function() {
-    DIV.setAttribute('onclick', 'Prototype.emptyFunction()');
+    try {
+     DIV.setAttribute('onclick', Prototype.emptyFunction;
+    } catch(e) {
+     return false;
+    }
     var value = DIV.getAttribute('onclick');
     var isFunction = (typeof value === 'function');
     DIV.removeAttribute('onclick');
