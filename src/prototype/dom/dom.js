@@ -2319,7 +2319,7 @@
   
   var PROBLEMATIC_ATTRIBUTE_READING = (function() {
     try {
-     DIV.setAttribute('onclick', Prototype.emptyFunction;
+     DIV.setAttribute('onclick', Prototype.emptyFunction);
     } catch(e) {
      return false;
     }
