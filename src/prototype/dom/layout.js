@@ -949,16 +949,9 @@
     var valueT = 0, valueL = 0;
     if (element.parentNode) {
       do {
-        if (element.getStyle('position') == 'fixed') {
-          Position.prepare();
-          valueT += Position.deltaY + element.offsetTop;
-          valueL += Position.deltaX + element.offsetLeft;
-          element = null;
-        } else {
         valueT += element.offsetTop  || 0;
         valueL += element.offsetLeft || 0;
         element = element.offsetParent;
-        }
       } while (element);
     }
     return new Element.Offset(valueL, valueT);
