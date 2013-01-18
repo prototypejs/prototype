@@ -93,12 +93,14 @@ var Hash = Class.create(Enumerable, (function() {
   **/
 
   // Our _internal_ each
-  function _each(iterator) {
+  function _each(iterator, context) {
+    var i = 0;
     for (var key in this._object) {
       var value = this._object[key], pair = [key, value];
       pair.key = key;
       pair.value = value;
-      iterator(pair);
+      iterator.call(context, pair, i);
+      i++;
     }
   }
 
@@ -288,7 +290,17 @@ var Hash = Class.create(Enumerable, (function() {
   // Private. No PDoc necessary.
   function toQueryPair(key, value) {
     if (Object.isUndefined(value)) return key;
-    return key + '=' + encodeURIComponent(String.interpret(value));
+    
+    value = String.interpret(value);
+
+    // Normalize newlines as \r\n because the HTML spec says newlines should
+    // be encoded as CRLFs.
+    value = value.gsub(/(\r)?\n/, '\r\n');
+    value = encodeURIComponent(value);
+    // Likewise, according to the spec, spaces should be '+' rather than
+    // '%20'.
+    value = value.gsub(/%20/, '+');
+    return key + '=' + value;
   }
 
   /** related to: String#toQueryParams

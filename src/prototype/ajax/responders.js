@@ -69,8 +69,8 @@
 Ajax.Responders = {
   responders: [],
 
-  _each: function(iterator) {
-    this.responders._each(iterator);
+  _each: function(iterator, context) {
+    this.responders._each(iterator, context);
   },
 
   /**

@@ -31,6 +31,15 @@ new Test.Unit.Runner({
     Foo.prototype.foo = 'foo';
     this.assertEnumEqual(['bar'], Object.keys(new Foo()));
     this.assertRaise('TypeError', function(){ Object.keys() });
+    
+    var obj = {
+      foo: 'bar',
+      baz: 'thud',
+      toString: function() { return '1'; }, 
+      valueOf:  function() { return  1;  }
+    };
+    
+    this.assertEqual(4, Object.keys(obj).length, 'DontEnum properties should be included in Object.keys');
   },
 
   testObjectInspect: function() {

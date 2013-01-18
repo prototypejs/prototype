@@ -22,6 +22,7 @@
 (function() {
 
   var _toString = Object.prototype.toString,
+      _hasOwnProperty = Object.prototype.hasOwnProperty,
       NULL_TYPE = 'Null',
       UNDEFINED_TYPE = 'Undefined',
       BOOLEAN_TYPE = 'Boolean',
@@ -39,6 +40,21 @@
         JSON.stringify(0) === '0' &&
         typeof JSON.stringify(Prototype.K) === 'undefined';
         
+  
+  
+  var DONT_ENUMS = ['toString', 'toLocaleString', 'valueOf',
+   'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'constructor'];
+  
+  // Some versions of JScript fail to enumerate over properties, names of which 
+  // correspond to non-enumerable properties in the prototype chain
+  var IS_DONTENUM_BUGGY = (function(){
+    for (var p in { toString: 1 }) {
+      // check actual property name, so that it works with augmented Object.prototype
+      if (p === 'toString') return false;
+    }
+    return true;
+  })();
+        
   function Type(o) {
     switch(o) {
       case null: return NULL_TYPE;
@@ -52,7 +68,7 @@
     }
     return OBJECT_TYPE;
   }
-
+  
   /**
    *  Object.extend(destination, source) -> Object
    *  - destination (Object): The object to receive the new properties.
@@ -145,9 +161,7 @@
   }
 
   function Str(key, holder, stack) {
-    var value = holder[key],
-        type = typeof value;
-
+    var value = holder[key];
     if (Type(value) === OBJECT_TYPE && typeof value.toJSON === 'function') {
       value = value.toJSON(key);
     }
@@ -167,7 +181,7 @@
       case false: return 'false';
     }
 
-    type = typeof value;
+    var type = typeof value;
     switch (type) {
       case 'string':
         return value.inspect(true);
@@ -176,7 +190,9 @@
       case 'object':
 
         for (var i = 0, length = stack.length; i < length; i++) {
-          if (stack[i] === value) { throw new TypeError(); }
+          if (stack[i] === value) {
+            throw new TypeError("Cyclic reference to '" + value + "' in object");
+          }
         }
         stack.push(value);
 
@@ -228,7 +244,7 @@
    *  ##### Examples
    *  
    *      Object.toQueryString({ action: 'ship', order_id: 123, fees: ['f1', 'f2'], 'label': 'a demo' })
-   *      // -> 'action=ship&order_id=123&fees=f1&fees=f2&label=a%20demo'
+   *      // -> 'action=ship&order_id=123&fees=f1&fees=f2&label=a+demo'
   **/
   function toQueryString(object) {
     return $H(object).toQueryString();
@@ -297,6 +313,12 @@
    *  prescribe an enumeration order. Sort the resulting array if you wish to
    *  normalize the order of the object keys.
    *
+   *  `Object.keys` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the [ES5 specification](http://es5.github.com/#x15.2.3.14) for more
+   *  information.
+   *
    *  ##### Examples
    *  
    *      Object.keys();
@@ -309,10 +331,18 @@
     if (Type(object) !== OBJECT_TYPE) { throw new TypeError(); }
     var results = [];
     for (var property in object) {
-      if (object.hasOwnProperty(property)) {
+      if (_hasOwnProperty.call(object, property))
         results.push(property);
+    }
+    
+    // Account for the DontEnum properties in affected browsers.
+    if (IS_DONTENUM_BUGGY) {
+      for (var i = 0; property = DONT_ENUMS[i]; i++) {
+        if (_hasOwnProperty.call(object, property))
+          results.push(property);
       }
     }
+    
     return results;
   }
 

@@ -49,7 +49,7 @@
  *  status-specific callback is defined, it gets invoked. Otherwise, if
  *  `onSuccess` is defined and the response is deemed a success (see below), it
  *  is invoked. Otherwise, if `onFailure` is defined and the response is *not*
- *  deemed a sucess, it is invoked. Only after that potential first callback is
+ *  deemed a success, it is invoked. Only after that potential first callback is
  *  `onComplete` called.
  *  
  *  ##### A note on portability
@@ -259,8 +259,10 @@ Ajax.Request = Class.create(Ajax.Base, {
         $H(extras).each(function(pair) { headers[pair.key] = pair.value });
     }
 
+    // skip null or undefined values
     for (var name in headers)
-      this.transport.setRequestHeader(name, headers[name]);
+      if (headers[name] != null)
+        this.transport.setRequestHeader(name, headers[name]);
   },
 
   /**

@@ -7,6 +7,8 @@ var createParagraph = function(text) {
   return p;
 }
 
+var RESIZE_DISABLED = false;
+
 function simulateClick(node) {
   var oEvent;
   if (document.createEvent) {
@@ -61,12 +63,16 @@ new Test.Unit.Runner({
   testDollarFunction: function() {
     this.assertUndefined($());
     
-    this.assertNull(document.getElementById('noWayThisIDExists'));
-    this.assertNull($('noWayThisIDExists'));
+    this.assertNull(document.getElementById('noWayThisIDExists'),
+     'nonexistent ID should return null from getElementById');
+    this.assertNull($('noWayThisIDExists'),
+     'nonexistent ID should return null from $');
     
-    this.assertIdentical(document.getElementById('testdiv'), $('testdiv'));
+    this.assertIdentical(document.getElementById('testdiv'), $('testdiv'),
+     'getElementById and $ should return the same element');
+
     this.assertEnumEqual([ $('testdiv'), $('container') ], $('testdiv', 'container'));
-    this.assertEnumEqual([ $('testdiv'), undefined, $('container') ],
+    this.assertEnumEqual([ $('testdiv'), null, $('container') ],
       $('testdiv', 'noWayThisIDExists', 'container'));
     var elt = $('testdiv');
     this.assertIdentical(elt, $(elt));
@@ -162,17 +168,26 @@ new Test.Unit.Runner({
   },
 
   testElementInsertInTables: function() {
-    Element.insert('second_row', {after:'<tr id="third_row"><td>Third Row</td></tr>'});
-    this.assert($('second_row').descendantOf('table'));
+    Element.insert('second_row', { after:'<tr id="third_row"><td>Third Row</td></tr>' });
+
+    this.assert($('second_row').parentNode == $('table'),
+     'table rows should be inserted correctly');
     
-    $('a_cell').insert({top:'hello world'});
-    this.assert($('a_cell').innerHTML.startsWith('hello world'));
-    $('a_cell').insert({after:'<td>hi planet</td>'});
-    this.assertEqual('hi planet', $('a_cell').next().innerHTML);
+    $('a_cell').insert({ top: 'hello world' });
+    this.assert($('a_cell').innerHTML.startsWith('hello world'),
+     'content should be inserted into table cells correctly');
+
+    $('a_cell').insert({ after: '<td>hi planet</td>'});
+    this.assertEqual('hi planet', $('a_cell').next().innerHTML,
+     'table cells should be inserted after existing table cells correctly');
+
     $('table_for_insertions').insert('<tr><td>a cell!</td></tr>');
-    this.assert($('table_for_insertions').innerHTML.gsub('\r\n', '').toLowerCase().include('<tr><td>a cell!</td></tr>'));
-    $('row_1').insert({after:'<tr></tr><tr></tr><tr><td>last</td></tr>'});
-    this.assertEqual('last', $A($('table_for_row_insertions').getElementsByTagName('tr')).last().lastChild.innerHTML);
+    this.assert($('table_for_insertions').innerHTML.gsub('\r\n', '').toLowerCase().include('<tr><td>a cell!</td></tr>'),
+     'complex content should be inserted into a table correctly');
+    
+    $('row_1').insert({ after:'<tr></tr><tr></tr><tr><td>last</td></tr>' });
+    this.assertEqual('last', $A($('table_for_row_insertions').getElementsByTagName('tr')).last().lastChild.innerHTML,
+     'complex content should be inserted after a table row correctly');
   },
   
   testElementInsertInSelect: function() {
@@ -185,34 +200,35 @@ new Test.Unit.Runner({
       
   testElementMethodInsert: function() {
     $('element-insertions-main').insert({before:'some text before'});
-    this.assert(getInnerHTML('element-insertions-container').startsWith('some text before'));
+    this.assert(getInnerHTML('element-insertions-container').startsWith('some text before'), 'some text before');
     $('element-insertions-main').insert({after:'some text after'});
-    this.assert(getInnerHTML('element-insertions-container').endsWith('some text after'));
+    this.assert(getInnerHTML('element-insertions-container').endsWith('some text after'), 'some text after');
     $('element-insertions-main').insert({top:'some text top'});
-    this.assert(getInnerHTML('element-insertions-main').startsWith('some text top'));
+    this.assert(getInnerHTML('element-insertions-main').startsWith('some text top'), 'some text top');
     $('element-insertions-main').insert({bottom:'some text bottom'});
-    this.assert(getInnerHTML('element-insertions-main').endsWith('some text bottom'));
+    this.assert(getInnerHTML('element-insertions-main').endsWith('some text bottom'), 'some text bottom');
     
     $('element-insertions-main').insert('some more text at the bottom');
-    this.assert(getInnerHTML('element-insertions-main').endsWith('some more text at the bottom'));
+    this.assert(getInnerHTML('element-insertions-main').endsWith('some more text at the bottom'),
+     'some more text at the bottom');
     
     $('element-insertions-main').insert({TOP:'some text uppercase top'});
-    this.assert(getInnerHTML('element-insertions-main').startsWith('some text uppercase top'));
+    this.assert(getInnerHTML('element-insertions-main').startsWith('some text uppercase top'), 'some text uppercase top');
     
     $('element-insertions-multiple-main').insert({
       top:'1', bottom:2, before: new Element('p').update('3'), after:'4'
     });
-    this.assert(getInnerHTML('element-insertions-multiple-main').startsWith('1'));
-    this.assert(getInnerHTML('element-insertions-multiple-main').endsWith('2'));
-    this.assert(getInnerHTML('element-insertions-multiple-container').startsWith('<p>3</p>'));
-    this.assert(getInnerHTML('element-insertions-multiple-container').endsWith('4'));
+    this.assert(getInnerHTML('element-insertions-multiple-main').startsWith('1'), '1');
+    this.assert(getInnerHTML('element-insertions-multiple-main').endsWith('2'), '2');
+    this.assert(getInnerHTML('element-insertions-multiple-container').startsWith('<p>3</p>'), '<p>3</p>');
+    this.assert(getInnerHTML('element-insertions-multiple-container').endsWith('4'), '4');
     
     $('element-insertions-main').update('test');
     $('element-insertions-main').insert(null);
     $('element-insertions-main').insert({bottom:null});
-    this.assertEqual('test', getInnerHTML('element-insertions-main'));
+    this.assertEqual('test', getInnerHTML('element-insertions-main'), 'should insert nothing when called with null');
     $('element-insertions-main').insert(1337);
-    this.assertEqual('test1337', getInnerHTML('element-insertions-main'));
+    this.assertEqual('test1337', getInnerHTML('element-insertions-main'), 'should coerce to string when called with number');
   },
   
   testNewElementInsert: function() {
@@ -278,13 +294,13 @@ new Test.Unit.Runner({
   
   testElementToggle: function(){
     $('test-toggle-visible').toggle();
-    this.assert(!$('test-toggle-visible').visible());
+    this.assert(!$('test-toggle-visible').visible(), 'test-toggle-visible 1');
     $('test-toggle-visible').toggle();
-    this.assert($('test-toggle-visible').visible());
+    this.assert($('test-toggle-visible').visible()), 'test-toggle-visible 2';
     $('test-toggle-hidden').toggle();
-    this.assert($('test-toggle-hidden').visible());
+    this.assert($('test-toggle-hidden').visible(), 'test-toggle-hidden 1');
     $('test-toggle-hidden').toggle();
-    this.assert(!$('test-toggle-hidden').visible());
+    this.assert(!$('test-toggle-hidden').visible(), 'test-toggle-hidden 2');
   },
   
   testElementShow: function(){
@@ -489,12 +505,17 @@ new Test.Unit.Runner({
   
   testElementIdentify: function() {
     var parent = $('identification');
-    this.assertEqual(parent.down().identify(), 'predefined_id');
-    this.assert(parent.down(1).identify().startsWith('anonymous_element_'));
-    this.assert(parent.down(2).identify().startsWith('anonymous_element_'));
-    this.assert(parent.down(3).identify().startsWith('anonymous_element_'));
+    this.assertEqual(parent.down().identify(), 'predefined_id',
+     "identify should preserve the IDs of elements that already have them");
+    this.assert(parent.down(1).identify().startsWith('anonymous_element_'),
+     "should have #anonymous_element_1");
+    this.assert(parent.down(2).identify().startsWith('anonymous_element_'),
+     "should have #anonymous_element_2");
+    this.assert(parent.down(3).identify().startsWith('anonymous_element_'),
+     "should have #anonymous_element_3");
     
-    this.assert(parent.down(3).id !== parent.down(2).id);
+    this.assert(parent.down(3).id !== parent.down(2).id,
+     "should not assign duplicate IDs");
   },
      
   testElementClassNameMethod: function() {
@@ -747,10 +768,12 @@ new Test.Unit.Runner({
   },
 
   testDescendantOf: function() {
-    this.assert($('child').descendantOf('ancestor'));
-    this.assert($('child').descendantOf($('ancestor')));
-    
-    this.assert(!$('ancestor').descendantOf($('child')));
+    this.assert($('child').descendantOf('ancestor'),
+     '#child should be descendant of #ancestor');
+    this.assert($('child').descendantOf($('ancestor')),
+     '#child should be descendant of #ancestor');    
+    this.assert(!$('ancestor').descendantOf($('child')),
+     '#ancestor should not be descendant of child');
 
     this.assert($('great-grand-child').descendantOf('ancestor'), 'great-grand-child < ancestor');
     this.assert($('grand-child').descendantOf('ancestor'), 'grand-child < ancestor');
@@ -770,18 +793,23 @@ new Test.Unit.Runner({
     this.assert(!$('great-grand-child').descendantOf('not-in-the-family'), 'great-grand-child < not-in-the-family');
     this.assert(!$('child').descendantOf('not-in-the-family'), 'child < not-in-the-family');
     
-    this.assert(!$(document.body).descendantOf('great-grand-child'));
+    this.assert(!$(document.body).descendantOf('great-grand-child'),
+     'BODY should not be descendant of anything within it');
 
     // dynamically-created elements
     $('ancestor').insert(new Element('div', { id: 'weird-uncle' }));
-    this.assert($('weird-uncle').descendantOf('ancestor'));
+    this.assert($('weird-uncle').descendantOf('ancestor'),
+     'dynamically-created element should work properly');
     
     $(document.body).insert(new Element('div', { id: 'impostor' }));
-    this.assert(!$('impostor').descendantOf('ancestor'));
+    this.assert(!$('impostor').descendantOf('ancestor'),
+     'elements inserted elsewhere in the DOM tree should not be descendants');
     
     // test descendantOf document
-    this.assert($(document.body).descendantOf(document));  
-    this.assert($(document.documentElement).descendantOf(document));  
+    this.assert($(document.body).descendantOf(document),
+     'descendantOf(document) should behave predictably');  
+    this.assert($(document.documentElement).descendantOf(document),
+     'descendantOf(document) should behave predictably');
   },  
   
   testChildOf: function() {
@@ -810,17 +838,20 @@ new Test.Unit.Runner({
     $('style_test_3').setStyle({ cssFloat: 'none' });
     this.assertEqual('none', $('style_test_3').getStyle('float'));
     
-    this.assertEqual(1, $('style_test_3').getStyle('opacity'));
+    this.assertEqual(1, $('style_test_3').getStyle('opacity'),
+     '#style_test_3 opacity should be 1');
     
     $('style_test_3').setStyle({ opacity: 0.5 });
     this.assertEqual(0.5, $('style_test_3').getStyle('opacity'));
     
     $('style_test_3').setStyle({ opacity: '' });
-    this.assertEqual(1, $('style_test_3').getStyle('opacity'));
+    this.assertEqual(1, $('style_test_3').getStyle('opacity'),
+     '#style_test_3 opacity should be 1');
     
     $('style_test_3').setStyle({ opacity: 0 });
-    this.assertEqual(0, $('style_test_3').getStyle('opacity'));
-
+    this.assertEqual(0, $('style_test_3').getStyle('opacity'),
+     '#style_test_3 opacity should be 0');
+  
     $('test_csstext_1').setStyle('font-size: 15px');
     this.assertEqual('15px', $('test_csstext_1').getStyle('font-size'));
     
@@ -851,7 +882,7 @@ new Test.Unit.Runner({
   },
   
   testElementSetOpacity: function() {
-    [0,0.1,0.5,0.999].each(function(opacity){
+    [0, 0.1, 0.5, 0.999].each(function(opacity){
       $('style_test_3').setOpacity(opacity);
       
       // b/c of rounding issues on IE special case
@@ -859,7 +890,10 @@ new Test.Unit.Runner({
       
       // opera rounds off to two significant digits, so we check for a
       // ballpark figure
-      this.assert((Number(realOpacity) - opacity) <= 0.002, 'setting opacity to ' + opacity);        
+      this.assert(
+        (Number(realOpacity) - opacity) <= 0.002,
+        'setting opacity to ' + opacity + ' (actual: ' + realOpacity + ')'
+      );        
     }, this);
     
     this.assertEqual(0,
@@ -869,7 +903,10 @@ new Test.Unit.Runner({
     this.assert(
       $('style_test_3').setOpacity(0.9999999).getStyle('opacity') > 0.999
     );
-    
+
+    // setting opacity before element was added to DOM
+    this.assertEqual(0.5, new Element('div').setOpacity(0.5).getOpacity());
+
     /*
     
     IE <= 7 needs a `hasLayout` for opacity ("filter") to function properly
@@ -893,10 +930,9 @@ new Test.Unit.Runner({
     
     if (ZOOM_AFFECT_HAS_LAYOUT) {
       this.assert($('style_test_4').setOpacity(0.5).currentStyle.hasLayout);
-      this.assert(2, $('style_test_5').setOpacity(0.5).getStyle('zoom'));
-      this.assert(0.5, new Element('div').setOpacity(0.5).getOpacity());
-      this.assert(2, new Element('div').setOpacity(0.5).setStyle('zoom: 2;').getStyle('zoom'));
-      this.assert(2, new Element('div').setStyle('zoom: 2;').setOpacity(0.5).getStyle('zoom'));
+      this.assertEqual(1, $('style_test_5').setOpacity(0.5).getStyle('zoom'));
+      this.assertEqual(2, new Element('div').setOpacity(0.5).setStyle('zoom: 2;').getStyle('zoom'));
+      this.assertEqual(2, new Element('div').setStyle('zoom: 2;').setOpacity(0.5).getStyle('zoom'));
     }
   },
   
@@ -930,8 +966,11 @@ new Test.Unit.Runner({
       Element.getStyle('style_test_2','margin-left'));
     
     ['not_floating_none','not_floating_style','not_floating_inline'].each(function(element) {
-      this.assertEqual('none', $(element).getStyle('float'));
-      this.assertEqual('none', $(element).getStyle('cssFloat'));
+      
+      this.assertEqual('none', $(element).getStyle('float'),
+       'float on ' + element);
+      this.assertEqual('none', $(element).getStyle('cssFloat'),
+       'cssFloat on ' + element);
     }, this);
     
     ['floating_style','floating_inline'].each(function(element) {
@@ -939,22 +978,33 @@ new Test.Unit.Runner({
       this.assertEqual('left', $(element).getStyle('cssFloat'));
     }, this);
 
-    this.assertEqual(0.5, $('op1').getStyle('opacity'));
-    this.assertEqual(0.5, $('op2').getStyle('opacity'));
-    this.assertEqual(1.0, $('op3').getStyle('opacity'));
+    this.assertEqual(0.5, $('op1').getStyle('opacity'), 'get opacity on #op1');
+    this.assertEqual(0.5, $('op2').getStyle('opacity'), 'get opacity on #op2');
+    this.assertEqual(1.0, $('op3').getStyle('opacity'), 'get opacity on #op3');
     
     $('op1').setStyle({opacity: '0.3'});
     $('op2').setStyle({opacity: '0.3'});
     $('op3').setStyle({opacity: '0.3'});
     
-    this.assertEqual(0.3, $('op1').getStyle('opacity'));
-    this.assertEqual(0.3, $('op2').getStyle('opacity'));
-    this.assertEqual(0.3, $('op3').getStyle('opacity'));
+    this.assertEqual(0.3, $('op1').getStyle('opacity'), 'get opacity on #op1');
+    this.assertEqual(0.3, $('op2').getStyle('opacity'), 'get opacity on #op2');
+    this.assertEqual(0.3, $('op3').getStyle('opacity'), 'get opacity on #op3');
     
     $('op3').setStyle({opacity: 0});
-    this.assertEqual(0, $('op3').getStyle('opacity'));
+    this.assertEqual(0, $('op3').getStyle('opacity'), 'get opacity on #op3');
     
-    if(navigator.appVersion.match(/MSIE/)) {
+    // Opacity feature test borrowed from Modernizr.
+    var STANDARD_CSS_OPACITY_SUPPORTED = (function() {
+      var DIV = document.createElement('div');
+      DIV.style.cssText = "opacity:.55";
+      var result = /^0.55/.test(DIV.style.opacity);
+      DIV = null;
+      return result;
+    })();
+    
+    if (!STANDARD_CSS_OPACITY_SUPPORTED) {
+      // Run these tests only on older versions of IE. IE9 and 10 dropped
+      // support for filters and therefore fail these tests.
       this.assertEqual('alpha(opacity=30)', $('op1').getStyle('filter'));
       this.assertEqual('progid:DXImageTransform.Microsoft.Blur(strength=10)alpha(opacity=30)', $('op2').getStyle('filter'));
       $('op2').setStyle({opacity:''});
@@ -962,6 +1012,7 @@ new Test.Unit.Runner({
       this.assertEqual('alpha(opacity=0)', $('op3').getStyle('filter'));
       this.assertEqual(0.3, $('op4-ie').getStyle('opacity'));
     }
+    
     // verify that value is still found when using camelized
     // strings (function previously used getPropertyValue()
     // which expected non-camelized strings)
@@ -1039,9 +1090,7 @@ new Test.Unit.Runner({
   
   testElementWriteAttributeWithBooleans: function() {
     var input = $('write_attribute_input'),
-      select = $('write_attribute_select'),
-      checkbox = $('write_attribute_checkbox'),
-      checkedCheckbox = $('write_attribute_checked_checkbox');
+      select = $('write_attribute_select');
     this.assert( input.          writeAttribute('readonly').            hasAttribute('readonly'));
     this.assert(!input.          writeAttribute('readonly', false).     hasAttribute('readonly'));
     this.assert( input.          writeAttribute('readonly', true).      hasAttribute('readonly'));
@@ -1049,17 +1098,37 @@ new Test.Unit.Runner({
     this.assert( input.          writeAttribute('readonly', 'readonly').hasAttribute('readonly'));
     this.assert( select.         writeAttribute('multiple').            hasAttribute('multiple'));
     this.assert( input.          writeAttribute('disabled').            hasAttribute('disabled'));
+  },
+  testElementWriteAttributeForCheckbox: function() {
+    var checkbox = $('write_attribute_checkbox'),
+      checkedCheckbox = $('write_attribute_checked_checkbox');
     this.assert( checkbox.       writeAttribute('checked').             checked);
+    this.assert( checkbox.       writeAttribute('checked').             hasAttribute('checked'));
+    this.assertEqual('checked', checkbox.writeAttribute('checked').getAttribute('checked'));
+    this.assert(!checkbox.       writeAttribute('checked').             hasAttribute('undefined'));
+    this.assert( checkbox.       writeAttribute('checked', true).       checked);
+    this.assert( checkbox.       writeAttribute('checked', true).       hasAttribute('checked'));
+    this.assert( checkbox.       writeAttribute('checked', 'checked').  checked);
+    this.assert( checkbox.       writeAttribute('checked', 'checked').  hasAttribute('checked'));
+    this.assert(!checkbox.       writeAttribute('checked', null).       checked);
+    this.assert(!checkbox.       writeAttribute('checked', null).       hasAttribute('checked'));
+    this.assert(!checkbox.       writeAttribute('checked', true).       hasAttribute('undefined'));
     this.assert(!checkedCheckbox.writeAttribute('checked', false).      checked);
+    this.assert(!checkbox.       writeAttribute('checked', false).      hasAttribute('checked'));
+  },
+  testElementWriteAttributeForStyle: function() {
+    var element = Element.extend(document.body.appendChild(document.createElement('p')));
+    this.assert( element.        writeAttribute('style', 'color: red'). hasAttribute('style'));
+    this.assert(!element.        writeAttribute('style', 'color: red'). hasAttribute('undefined'));
   },
 
   testElementWriteAttributeWithIssues: function() {
     var input = $('write_attribute_input').writeAttribute({maxlength: 90, tabindex: 10}),
       td = $('write_attribute_td').writeAttribute({valign: 'bottom', colspan: 2, rowspan: 2});
-    this.assertEqual(90, input.readAttribute('maxlength'));
-    this.assertEqual(10, input.readAttribute('tabindex'));
-    this.assertEqual(2,  td.readAttribute('colspan'));
-    this.assertEqual(2,  td.readAttribute('rowspan'));
+    this.assertEqual("90", input.readAttribute('maxlength'));
+    this.assertEqual("10", input.readAttribute('tabindex'));
+    this.assertEqual("2",  td.readAttribute('colspan'));
+    this.assertEqual("2",  td.readAttribute('rowspan'));
     this.assertEqual('bottom', td.readAttribute('valign'));
     
     var p = $('write_attribute_para'), label = $('write_attribute_label');
@@ -1433,15 +1502,41 @@ new Test.Unit.Runner({
   },
   
   testViewportDimensions: function() {
-    preservingBrowserDimensions(function() {
-      window.resizeTo(800, 600);
-      var before = document.viewport.getDimensions();
-      window.resizeBy(50, 50);
-      var after  = document.viewport.getDimensions();
+    var original = document.viewport.getDimensions();
     
-      this.assertEqual(before.width + 50, after.width, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
-      this.assertEqual(before.height + 50, after.height, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
-    }.bind(this));
+    window.resizeTo(800, 600);
+    
+    this.wait(1000, function() {
+      var before = document.viewport.getDimensions();
+      
+      var delta = { width: 800 - before.width, height: 600 - before.height };
+      
+      window.resizeBy(50, 50);
+      this.wait(1000, function() {
+        var after  = document.viewport.getDimensions();
+        
+        // Assume that JavaScript window resizing is disabled if before width
+        // and after width are the same.
+        if (before.width === after.width) {
+          RESIZE_DISABLED = true;
+          this.info("SKIPPING REMAINING TESTS (JavaScript window resizing disabled)");
+          return;
+        }
+
+        this.assertEqual(before.width + 50, after.width,
+         "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
+        this.assertEqual(before.height + 50, after.height,
+         "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS");
+        
+        this.wait(1000, function() {
+          // Restore original dimensions.
+          window.resizeTo(
+            original.width  + delta.width,
+            original.height + delta.height
+          );
+        });
+      })
+    });
   },
   
   testElementToViewportDimensionsDoesNotAffectDocumentProperties: function() {
@@ -1460,19 +1555,37 @@ new Test.Unit.Runner({
   },
 
   testViewportScrollOffsets: function() {
-    preservingBrowserDimensions(function() {
-      window.scrollTo(0, 0);
-      this.assertEqual(0, document.viewport.getScrollOffsets().top);
+    var original = document.viewport.getDimensions();
     
-      window.scrollTo(0, 35);
-      this.assertEqual(35, document.viewport.getScrollOffsets().top);
+    window.scrollTo(0, 0);
+    this.assertEqual(0, document.viewport.getScrollOffsets().top);
+  
+    window.scrollTo(0, 35);
+    this.assertEqual(35, document.viewport.getScrollOffsets().top);
     
-      window.resizeTo(200, 650);
+    if (RESIZE_DISABLED) {
+      this.info("SKIPPING REMAINING TESTS (JavaScript window resizing disabled)");
+      return;
+    }
+    
+    window.resizeTo(200, 650);
+    
+    this.wait(1000, function() {
+      var before = document.viewport.getDimensions();
+      var delta = { width: 200 - before.width, height: 650 - before.height };
+      
       window.scrollTo(25, 35);
-      this.assertEqual(25, document.viewport.getScrollOffsets().left, "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THESE TESTS TO PASS");
-    
-      window.resizeTo(850, 650);
-    }.bind(this));
+      this.assertEqual(25, document.viewport.getScrollOffsets().left,
+       "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THESE TESTS TO PASS");
+      
+      this.wait(1000, function() {
+        // Restore original dimensions.
+        window.resizeTo(
+          original.width  + delta.width,
+          original.height + delta.height
+        );
+      });
+    });
   },
   
   testNodeConstants: function() {
@@ -1520,8 +1633,14 @@ new Test.Unit.Runner({
     this.assertEqual("default", element.retrieve('bar', 'default'), "Return default value if undefined key");
     this.assertEqual("default", element.retrieve('bar'), "Makes sure default value has been set properly");
     
+    
+    $('test-empty').store('foo', 'bar');
     var clonedElement = $('test-empty').clone(false);
-    this.assert(Object.isUndefined(clonedElement._prototypeUID), "Cloning a node should not confuse the storage engine");
+    this.assertEqual(
+      clonedElement.retrieve('foo', null),
+      null,
+      "Cloning a node should not confuse the storage engine"
+    );
   },
   
   testElementClone: function() {
@@ -1539,16 +1658,27 @@ new Test.Unit.Runner({
     // add observer on a child
     element.down('span').observe('dblclick', Prototype.emptyFunction);
     
+    element.store('foo', 'bar');
+    element.down('span').store('baz', 'thud');
+
     var shallowClone = element.clone();
     var deepClone = element.clone(true);
     
     var assertCloneTraits = (function(clone) {
-      this.assert(clone); // exists
-      this.assert(clone.show); // is extended
-      this.assertEqual('DIV', clone.nodeName.toUpperCase()); // proper nodeName
-      this.assertEqual('foo', clone.className); // proper attributes
-      this.assertEqual('bar', clone.title);
-      this.assert(!clone._prototypeUID); // _prototypeUID does not exist
+      this.assert(clone, 'clone should exist');
+      this.assert(clone.show, 'clone should be extended');
+      this.assertEqual('DIV', clone.nodeName.toUpperCase(),
+       'clone should have proper tag name');
+      this.assertEqual('foo', clone.className, 
+       'clone should have proper attributes');
+      this.assertEqual('bar', clone.title,
+       'clone should have proper title');
+       
+      this.assertEqual(
+        clone.retrieve('foo', false),
+        false,
+        'clone should not share storage with original'
+      );
     }).bind(this);
     
     // test generic traits of both deep and shallow clones first
@@ -1556,22 +1686,37 @@ new Test.Unit.Runner({
     assertCloneTraits(deepClone);
     
     // test deep clone traits
-    this.assert(deepClone.firstChild);
-    this.assertEqual('SPAN', deepClone.firstChild.nodeName.toUpperCase());
-    this.assert(!deepClone.down('span')._prototypeUID);
+    this.assert(deepClone.firstChild,
+     'deep clone should have children');
+    this.assertEqual('SPAN', deepClone.firstChild.nodeName.toUpperCase(),
+     "deep clone's children should have proper tag name");
+    this.assertEqual(
+      deepClone.down('span').retrieve('baz', false),
+      false,
+      "deep clone's child should not share storage with original's child"
+    );
   },
   
   testElementPurge: function() {
+    function uidForElement(elem) {
+      return elem.uniqueID ? elem.uniqueID : elem._prototypeUID;
+    }
+    
     var element = new Element('div');
     element.store('foo', 'bar');
     
-    var uid = element._prototypeUID;    
+    var uid = uidForElement(element);
     this.assert(uid in Element.Storage, "newly-created element's uid should exist in `Element.Storage`");
 
+    var storageKeysBefore = Object.keys(Element.Storage).length;
     element.purge();
+    var storageKeysAfter = Object.keys(Element.Storage).length;
 
-    this.assert(!(uid in Element.Storage), "purged element's UID should no longer exist in `Element.Storage`");
-    this.assert(!(Object.isNumber(element._prototypeUID)), "purged element's UID should no longer exist as expando on element");
+    this.assertEqual(
+      storageKeysAfter,
+      storageKeysBefore - 1,
+      "purged element's UID should no longer exist in `Element.Storage`"
+    );
     
     // Should purge elements replaced via innerHTML.
     var parent = new Element('div');
@@ -1584,11 +1729,14 @@ new Test.Unit.Runner({
     child.observe('click', function(event) { trigger = true; });
     var childUID = child._prototypeUID;
 
+    storageKeysBefore = Object.keys(Element.Storage).length;
     parent.update("");
-
+    storageKeysAfter = Object.keys(Element.Storage).length;
+    
     // At this point, `child` should have been purged.
-    this.assert(
-      !(childUID in Element.Storage), 
+    this.assertEqual(
+      storageKeysAfter,
+      storageKeysBefore - 1,
       "purged element's UID should no longer exist in `Element.Storage`"
     );
     
@@ -1601,14 +1749,20 @@ new Test.Unit.Runner({
 
 function preservingBrowserDimensions(callback) {
   var original = document.viewport.getDimensions();
+  
   window.resizeTo(640, 480);
+  
   var resized = document.viewport.getDimensions();
   original.width += 640 - resized.width, original.height += 480 - resized.height;
   
   try {
     window.resizeTo(original.width, original.height);
     callback();
-  } finally {
+  } catch(e) {
+    throw e;
+  }finally {
     window.resizeTo(original.width, original.height);
   }
 }
+
+

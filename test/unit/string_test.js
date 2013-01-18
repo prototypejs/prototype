@@ -66,7 +66,6 @@ new Test.Unit.Runner({
   
   testGsubWithTroublesomeCharacters: function() {
     this.assertEqual('ab', 'a|b'.gsub('|', ''));
-    //'ab'.gsub('', ''); // freeze
     this.assertEqual('ab', 'ab(?:)'.gsub('(?:)', ''));
     this.assertEqual('ab', 'ab()'.gsub('()', ''));
     this.assertEqual('ab', 'ab'.gsub('^', ''));
@@ -76,6 +75,12 @@ new Test.Unit.Runner({
     this.assertEqual('ab', 'a{1}b'.gsub('{1}', ''));
     this.assertEqual('ab', 'a.b'.gsub('.', ''));
   },  
+  
+  testGsubWithZeroLengthMatch: function() {
+    this.assertEqual('ab', 'ab'.gsub('', ''));
+    this.assertEqual('a', 'a'.gsub(/b*/, 'c'));
+    this.assertEqual('abc', 'abc'.gsub(/b{0}/, ''));
+  },
   
   testSubWithReplacementFunction: function() {
     var source = 'foo boo boz';
@@ -215,6 +220,9 @@ new Test.Unit.Runner({
     this.assertEqual('foo bar', 'foo bar'.stripScripts());
     this.assertEqual('foo bar', ('foo <script>boo();<'+'/script>bar').stripScripts());
     this.assertEqual('foo bar', ('foo <script type="text/javascript">boo();\nmoo();<'+'/script>bar').stripScripts());
+    
+    this.assertEqual('foo bar', ('foo <script>boo();<'+'/script >bar').stripScripts(), 
+     'should properly handle whitespace in closing tag');
   },
   
   testExtractScripts: function() {

@@ -156,10 +156,10 @@ Element.ClassNames.prototype = {
     this.element = $(element);
   },
 
-  _each: function(iterator) {
+  _each: function(iterator, context) {
     this.element.className.split(/\s+/).select(function(name) {
       return name.length > 0;
-    })._each(iterator);
+    })._each(iterator, context);
   },
 
   set: function(className) {

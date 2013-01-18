@@ -5,7 +5,7 @@
  *  objects that act as collections of values. It is a cornerstone of
  *  Prototype.
  *
- *  [[Enumerable]] is a _mixin_: a set of methods intended not for standaone
+ *  [[Enumerable]] is a _mixin_: a set of methods intended not for standalone
  *  use, but for incorporation into other objects.
  *
  *  Prototype mixes [[Enumerable]] into several classes. The most visible cases
@@ -30,7 +30,42 @@
  *
  *  If there is no `context` argument, the iterator function will execute in
  *  the scope from which the [[Enumerable]] method itself was called.
- *
+ *  
+ *  ##### Flow control
+ *  
+ *  You might find yourself missing the `break` and `continue` keywords that
+ *  are available in ordinary `for` loops. If you need to break out of an
+ *  enumeration before it's done, you can throw a special object named
+ *  `$break`:
+ *  
+ *      var myObject = {};
+ * 
+ *      ['foo', 'bar', 'baz', 'thud'].each( function(name, index) {
+ *        if (name === 'baz') throw $break;
+ *        myObject[name] = index;
+ *      });
+ *  
+ *      myObject;
+ *      // -> { foo: 0, bar: 1 }
+ *  
+ *  Though we're technically throwing an exception, the `each` method knows
+ *  to catch a thrown `$break` object and treat it as a command to stop
+ *  iterating. (_Any_ exception thrown within an iterator will stop
+ *  iteration, but only `$break` will be caught and suppressed.)
+ *  
+ *  If you need `continue`-like behavior, you can simply return early from
+ *  your iterator:
+ *  
+ *      var myObject = {};
+ *  
+ *      ['foo', 'bar', 'baz', 'thud'].each( function(name, index) {
+ *        if (name === 'baz') return;
+ *        myObject[name] = index;
+ *      });
+ *  
+ *      myObject;
+ *      // -> { foo: 0, bar: 1, thud: 3 }
+ *  
  *  ##### Mixing [[Enumerable]] into your own objects
  *
  *  So, let's say you've created your very own collection-like object (say,
@@ -107,11 +142,8 @@ var Enumerable = (function() {
    *  has a method to do that for you.
   **/
   function each(iterator, context) {
-    var index = 0;
     try {
-      this._each(function(value) {
-        iterator.call(context, value, index++);
-      });
+      this._each(iterator, context);
     } catch (e) {
       if (e != $break) throw e;
     }
@@ -186,9 +218,9 @@ var Enumerable = (function() {
     iterator = iterator || Prototype.K;
     var result = true;
     this.each(function(value, index) {
-      result = result && !!iterator.call(context, value, index);
+      result = result && !!iterator.call(context, value, index, this);
       if (!result) throw $break;
-    });
+    }, this);
     return result;
   }
 
@@ -218,9 +250,9 @@ var Enumerable = (function() {
     iterator = iterator || Prototype.K;
     var result = false;
     this.each(function(value, index) {
-      if (result = !!iterator.call(context, value, index))
+      if (result = !!iterator.call(context, value, index, this))
         throw $break;
-    });
+    }, this);
     return result;
   }
 
@@ -251,8 +283,8 @@ var Enumerable = (function() {
     iterator = iterator || Prototype.K;
     var results = [];
     this.each(function(value, index) {
-      results.push(iterator.call(context, value, index));
-    });
+      results.push(iterator.call(context, value, index, this));
+    }, this);
     return results;
   }
 
@@ -274,11 +306,11 @@ var Enumerable = (function() {
   function detect(iterator, context) {
     var result;
     this.each(function(value, index) {
-      if (iterator.call(context, value, index)) {
+      if (iterator.call(context, value, index, this)) {
         result = value;
         throw $break;
       }
-    });
+    }, this);
     return result;
   }
 
@@ -299,9 +331,9 @@ var Enumerable = (function() {
   function findAll(iterator, context) {
     var results = [];
     this.each(function(value, index) {
-      if (iterator.call(context, value, index))
+      if (iterator.call(context, value, index, this))
         results.push(value);
-    });
+    }, this);
     return results;
   }
 
@@ -345,8 +377,8 @@ var Enumerable = (function() {
 
     this.each(function(value, index) {
       if (filter.match(value))
-        results.push(iterator.call(context, value, index));
-    });
+        results.push(iterator.call(context, value, index, this));
+    }, this);
     return results;
   }
 
@@ -370,8 +402,8 @@ var Enumerable = (function() {
    *      // -> true ('3' == 3)
   **/
   function include(object) {
-    if (Object.isFunction(this.indexOf))
-      if (this.indexOf(object) != -1) return true;
+    if (Object.isFunction(this.indexOf) && this.indexOf(object) != -1)
+      return true;
 
     var found = false;
     this.each(function(value) {
@@ -449,8 +481,8 @@ var Enumerable = (function() {
   **/
   function inject(memo, iterator, context) {
     this.each(function(value, index) {
-      memo = iterator.call(context, memo, value, index);
-    });
+      memo = iterator.call(context, memo, value, index, this);
+    }, this);
     return memo;
   }
 
@@ -514,10 +546,10 @@ var Enumerable = (function() {
     iterator = iterator || Prototype.K;
     var result;
     this.each(function(value, index) {
-      value = iterator.call(context, value, index);
+      value = iterator.call(context, value, index, this);
       if (result == null || value >= result)
         result = value;
-    });
+    }, this);
     return result;
   }
 
@@ -554,10 +586,10 @@ var Enumerable = (function() {
     iterator = iterator || Prototype.K;
     var result;
     this.each(function(value, index) {
-      value = iterator.call(context, value, index);
+      value = iterator.call(context, value, index, this);
       if (result == null || value < result)
         result = value;
-    });
+    }, this);
     return result;
   }
 
@@ -592,9 +624,9 @@ var Enumerable = (function() {
     iterator = iterator || Prototype.K;
     var trues = [], falses = [];
     this.each(function(value, index) {
-      (iterator.call(context, value, index) ?
+      (iterator.call(context, value, index, this) ?
         trues : falses).push(value);
-    });
+    }, this);
     return [trues, falses];
   }
 
@@ -636,9 +668,9 @@ var Enumerable = (function() {
   function reject(iterator, context) {
     var results = [];
     this.each(function(value, index) {
-      if (!iterator.call(context, value, index))
+      if (!iterator.call(context, value, index, this))
         results.push(value);
-    });
+    }, this);
     return results;
   }
 
@@ -668,9 +700,9 @@ var Enumerable = (function() {
     return this.map(function(value, index) {
       return {
         value: value,
-        criteria: iterator.call(context, value, index)
+        criteria: iterator.call(context, value, index, this)
       };
-    }).sort(function(left, right) {
+    }, this).sort(function(left, right) {
       var a = left.criteria, b = right.criteria;
       return a < b ? -1 : a > b ? 1 : 0;
     }).pluck('value');

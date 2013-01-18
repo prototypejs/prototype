@@ -257,10 +257,10 @@ new Test.Unit.Runner({
     };
 
     // return params
-    this.assertHashEqual(expected, Form.serialize('various', true));
+    this.assertHashEqual(expected, Form.serialize('various', true), "test the whole form (as a hash)");
     // return string
     this.assertEnumEqual(Object.toQueryString(expected).split('&').sort(),
-                    Form.serialize('various').split('&').sort());
+                    Form.serialize('various').split('&').sort(), "test the whole form (as a string)");
     this.assertEqual('string', typeof $('form').serialize({ hash:false }));
 
     // Checks that disabled element is not included in serialized form.
@@ -301,7 +301,7 @@ new Test.Unit.Runner({
   },
   
   testFormSerializeURIEncodesInputs: function() {
-    this.assertEqual("user%5Bwristbands%5D%5B%5D%5Bnickname%5D=H%C3%A4sslich", $('form_with_inputs_needing_encoding').serialize(false));
+    this.assertEqual("user%5Bwristbands%5D%5B+%5D%5Bnickname%5D=H%C3%A4sslich", $('form_with_inputs_needing_encoding').serialize(false));
   },
   
   testFormMethodsOnExtendedElements: function() {
@@ -325,6 +325,17 @@ new Test.Unit.Runner({
     this.assert(!select.anInputMethod);      
     this.assertEqual('select', select.aSelectMethod());
   },
+
+  testFormSerializeMultipleSelect: function () {
+    var form = $("form_with_multiple_select");
+    this.assertEqual("peewee=herman&colors=pink&colors=blue&colors=yellow&colors=not+grey&number=2", form.serialize(false));
+    var hash = {
+      peewee: 'herman',
+      colors: ['pink', 'blue', 'yellow', 'not grey'],
+      number: '2'
+    };
+    this.assertHashEqual(hash, form.serialize(true));
+},
   
   testFormRequest: function() {
     var request = $("form").request();

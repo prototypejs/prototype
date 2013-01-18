@@ -130,6 +130,15 @@ new Test.Unit.Runner({
     this.assertEqual("stuff%5B%5D=%24&stuff%5B%5D=a&stuff%5B%5D=%3B", $H(Fixtures.multiple_special).toQueryString());
     this.assertHashEqual(Fixtures.multiple_special, $H(Fixtures.multiple_special).toQueryString().toQueryParams());
     this.assertIdentical(Object.toQueryString, Hash.toQueryString);
+    
+    // Serializing newlines and spaces is weird. See:
+    // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#h-17.13.4.1
+    var complex = "an arbitrary line\n\'something in single quotes followed by a newline\'\r\n" +
+     "and more text eventually";
+    var queryString = $H({ val: complex }).toQueryString();
+    var expected = "val=an+arbitrary+line%0D%0A'something+in+single+quotes+followed+by+a+" + 
+     "newline'%0D%0Aand+more+text+eventually";
+    this.assertEqual(expected, queryString, "newlines and spaces should be properly encoded");
   },
   
   testInspect: function() {
@@ -173,6 +182,15 @@ new Test.Unit.Runner({
     var foo = new FooMaker('bar');
     this.assertEqual("key=bar", new Hash(foo).toQueryString());
     this.assertEqual("key=bar", new Hash(new Hash(foo)).toQueryString());
+  },
+
+  testIterationWithEach: function()  {
+    var h = $H({a:1, b:2});
+    var result = []
+    h.each(function(kv, i){
+      result.push(i);
+    });
+   this.assertEnumEqual([0,1], result);
   }
   
 });

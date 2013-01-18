@@ -52,6 +52,12 @@ Object.extend(Function.prototype, (function() {
    *  function is called, it will call the original ensuring that `this` is set
    *  to `context`. Also optionally curries arguments for the function.
    *
+   *  `Function#bind` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the [ES5 specification](http://es5.github.com/#x15.3.4.5) for more
+   *  information.
+   *
    *  ##### Examples
    *
    *  A typical use of [[Function#bind]] is to ensure that a callback (event
@@ -105,13 +111,29 @@ Object.extend(Function.prototype, (function() {
    *
    *  (To curry without binding, see [[Function#curry]].)
   **/
+
   function bind(context) {
-    if (arguments.length < 2 && Object.isUndefined(arguments[0])) return this;
+    if (arguments.length < 2 && Object.isUndefined(arguments[0]))
+      return this;
+
+    if (!Object.isFunction(this))
+      throw new TypeError("The object is not callable.");
+      
+    var nop = function() {};
     var __method = this, args = slice.call(arguments, 1);
-    return function() {
+    
+    var bound = function() {
       var a = merge(args, arguments);
-      return __method.apply(context, a);
-    }
+      // Ignore the supplied context when the bound function is called with
+      // the "new" keyword.
+      var c = this instanceof bound ? this : context;
+      return __method.apply(c, a);
+    };
+        
+    nop.prototype   = this.prototype;
+    bound.prototype = new nop();
+
+    return bound;
   }
 
   /** related to: Function#bind
@@ -376,16 +398,20 @@ Object.extend(Function.prototype, (function() {
       return __method.apply(null, a);
     };
   }
-
-  return {
+  
+  var extensions = {
     argumentNames:       argumentNames,
-    bind:                bind,
     bindAsEventListener: bindAsEventListener,
     curry:               curry,
     delay:               delay,
     defer:               defer,
     wrap:                wrap,
     methodize:           methodize
-  }
+  };
+  
+  if (!Function.prototype.bind)
+    extensions.bind = bind;
+
+  return extensions;
 })());
 

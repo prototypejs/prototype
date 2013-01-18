@@ -94,21 +94,23 @@ var ObjectRange = Class.create(Enumerable, (function() {
   function initialize(start, end, exclusive) {
     /**
      *  ObjectRange#start -> ?
+     *
      *  The lower bounding value of the range.
     **/
     this.start = start;
     /**
      *  ObjectRange#end -> ?
+     *
      *  The upper bounding value of the range.
     **/
     this.end = end;
     this.exclusive = exclusive;
   }
 
-  function _each(iterator) {
-    var value = this.start;
-    while (this.include(value)) {
-      iterator(value);
+  function _each(iterator, context) {
+    var value = this.start, i;
+    for (i = 0; this.include(value); i++) {
+      iterator.call(context, value, i);
       value = value.succ();
     }
   }

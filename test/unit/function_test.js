@@ -30,12 +30,15 @@ new Test.Unit.Runner({
   },
 
   testFunctionBind: function() {
-    function methodWithoutArguments() { return this.hi };
-    function methodWithArguments()    { return this.hi + ',' + $A(arguments).join(',') };
+    function methodWithoutArguments() { return this.hi; }
+    function methodWithArguments()    { return this.hi + ',' + $A(arguments).join(','); }
+    function methodReturningContext() { return this; }
     var func = Prototype.emptyFunction;
+    var u;
+    
+    // We used to test that `bind` without a `context` argument simply
+    // returns the original function, but this contradicts the ES5 spec.
 
-    this.assertIdentical(func, func.bind());
-    this.assertIdentical(func, func.bind(undefined));
     this.assertNotIdentical(func, func.bind(null));
 
     this.assertEqual('without', methodWithoutArguments.bind({ hi: 'without' })());
@@ -44,6 +47,40 @@ new Test.Unit.Runner({
       methodWithArguments.bind({ hi: 'withBindArgs' }, 'arg1', 'arg2')());
     this.assertEqual('withBindArgsAndArgs,arg1,arg2,arg3,arg4',
       methodWithArguments.bind({ hi: 'withBindArgsAndArgs' }, 'arg1', 'arg2')('arg3', 'arg4'));
+
+    this.assertEqual(window, methodReturningContext.bind(null)(), 'null has window as its context');
+    this.assertEqual(window, methodReturningContext.bind(u)(), 'undefined has window as its context');
+    this.assertEqual('', methodReturningContext.bind('')(), 'other falsy values should not have window as their context');
+      
+    
+    // Ensure that bound functions ignore their `context` when used as
+    // constructors. Taken from example at:
+    // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
+    function Point(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+
+    Point.prototype.toString = function() { 
+      return this.x + "," + this.y; 
+    };
+
+    var p = new Point(1, 2);
+    p.toString(); // "1,2"
+
+    var emptyObj = {};
+    var YAxisPoint = Point.bind(emptyObj, 0 /* x */);
+
+    var axisPoint = new YAxisPoint(5);
+    axisPoint.toString(); //  "0,5"
+    
+    this.assertEqual("0,5", axisPoint.toString(),
+     "bound constructor should ignore context and curry properly");
+    
+    this.assert(axisPoint instanceof Point,
+     "should be an instance of Point");
+    this.assert(axisPoint instanceof YAxisPoint,
+     "should be an instance of YAxisPoint");
   },
 
   testFunctionCurry: function() {
@@ -102,8 +139,35 @@ new Test.Unit.Runner({
       deferredFunction2.defer('test');
       this.wait(50, function() {
         this.assertEqual('test', window.deferredValue);
+        
+        window.deferBoundProperly = false;
+    
+        var obj = { foo: 'bar' };
+        var func = function() {
+          if ('foo' in this) window.deferBoundProperly = true;
+        };
+    
+        func.bind(obj).defer();
+    
+        this.wait(50, function() {
+          this.assert(window.deferBoundProperly,
+           "deferred bound functions should preserve original scope");
+           
+          window.deferBoundProperlyOnString = false;
+          var str = "<script>window.deferBoundProperlyOnString = true;</script>"
+          
+          str.evalScripts.bind(str).defer();
+          
+          this.wait(50, function() {
+            this.assert(window.deferBoundProperlyOnString);
+          });
+          
+        });
+        
       });
     });
+    
+
   },
 
   testFunctionMethodize: function() {

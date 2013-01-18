@@ -160,19 +160,23 @@ new Test.Unit.Runner({
     
     span.observe("test:somethingHappened", observer);
     
-    var registry = span.getStorage().get('prototype_event_registry');
+    function uidForElement(elem) {
+      return elem.uniqueID ? elem.uniqueID : elem._prototypeUID;
+    }
     
-    this.assert(registry);
-    this.assert(Object.isArray(registry.get('test:somethingHappened')));
-    this.assertEqual(1, registry.get('test:somethingHappened').length);
+    var registry = Event.cache[uidForElement(span)];
+    
+    this.assert(registry, 'registry should exist');
+    this.assert(Object.isArray(registry['test:somethingHappened']));
+    this.assertEqual(1, registry['test:somethingHappened'].length);
     
     span.stopObserving("test:somethingHappened", observer);
     
-    registry = span.getStorage().get('prototype_event_registry');
+    registry = Event.cache[uidForElement(span)];
     
     this.assert(registry);
-    this.assert(Object.isArray(registry.get('test:somethingHappened')));
-    this.assertEqual(0, registry.get('test:somethingHappened').length);
+    this.assert(Object.isArray(registry['test:somethingHappened']));
+    this.assertEqual(0, registry['test:somethingHappened'].length);
   },
   
   testObserveAndStopObservingAreChainable: function() {
