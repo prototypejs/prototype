@@ -364,7 +364,7 @@
   **/
   function toggle(element, bool) {
     element = $(element);
-    if (Object.isUndefined(bool))
+    if (typeof bool != 'boolean')
       bool = !Element.visible(element);
     Element[bool ? 'show' : 'hide'](element);
 
@@ -2524,7 +2524,7 @@
   function toggleClassName(element, className, bool) {
     if (!(element = $(element))) return;
 
-    if (Object.isUndefined(bool))
+    if (typeof bool != 'boolean')
       bool = !hasClassName(element, className);
 
     var method = Element[bool ? 'addClassName' : 'removeClassName'];
