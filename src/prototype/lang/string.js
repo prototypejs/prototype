@@ -878,8 +878,9 @@ Object.extend(String.prototype, (function() {
     isJSON:         isJSON,
     evalJSON:       NATIVE_JSON_PARSE_SUPPORT ? parseJSON : evalJSON,
     include:        include,
-    startsWith:     startsWith,
-    endsWith:       endsWith,
+    // Firefox 18+ supports String.prototype.startsWith, String.prototype.endsWith
+    startsWith:     String.prototype.startsWith || startsWith,
+    endsWith:       String.prototype.endsWith || endsWith,
     empty:          empty,
     blank:          blank,
     interpolate:    interpolate
