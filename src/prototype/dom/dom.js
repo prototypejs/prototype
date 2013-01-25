@@ -2318,11 +2318,8 @@
   }
   
   var PROBLEMATIC_ATTRIBUTE_READING = (function() {
-    try {
-     DIV.setAttribute('onclick', Prototype.emptyFunction);
-    } catch(e) {
-     return false;
-    }
+    if(Prototype.Browser.IE10) return false;
+    DIV.setAttribute('onclick', Prototype.emptyFunction);
     var value = DIV.getAttribute('onclick');
     var isFunction = (typeof value === 'function');
     DIV.removeAttribute('onclick');
