@@ -3105,9 +3105,10 @@
   }
   //simple test for native HTML5 dataset existence
   var NATIVEHTML5DATASET = (function (){
-   var testelement = new Element("div",{"data-test-this-thing":"test"});
-    return (testelement.dataset && testelement.dataset.testThisThing === 'test');
-  });  
+    DIV.setAttribute('data-test-this-thing','test');
+    return (typeof DIV.dataset !== 'undefined' && DIV.dataset.testThisThing === 'test') ? true : false;
+  })();
+  DIV.removeAttribute('data-test-this-thing');
   /**
    *  Element.gethtml5data(@element[, datakey]) -> Object
    *
@@ -3121,26 +3122,29 @@
    *  language: html
    *  <div id="dataitem" data-old-url="http://prototypejs.org"></div>
    * 
-   *  Then: 
-   *  $("dataitem").gethtml5data().oldUrl;
-   *  // -> "http://prototypejs.org"
+   *   
+   *  $('dataitem').gethtml5data();
+   *  // -> {'oldUrl':'http://prototypejs.org'}
+   *  $('dataitem').gethtml5data('oldUrl');
+   *  // -> 'http://prototypejs.org'
   **/
   function gethtml5data(element,datalabel){
    if(!(element = $(element))) return;
+   if(datalabel != undefined) return element.dataset[datalabel];
+   else return element.dataset;
+  }
+  //if the easy native html5 dataset is not supported do it the hard way
+  function gethtml5data_simulated(element,datalabel){
+   if(!(element = $(element))) return;
    var returnobject = {};
-   if(NATIVEHTML5DATASET){
-    if(datalabel != undefined) returnobject[datalabel.camelize()] = element.dataset[datalabel];
-    else returnobject = element.dataset;
-   }else{
-    if(datalabel != undefined) returnobject[datalabel.camelize()] = element.readAttribute('data-'+datalabel);
-    else{
-     var label = "";
-     var numberattributes = element.attributes.length;
-     for(var t = 0; t < numberattributes ; t++){
-      if(element.attributes[t].name.startsWith('data-')){
-       label = element.attributes[t].name.substring(4).camelize();
-       returnobject[label] = element.attributes[t].value;
-      }
+   if(typeof datalabel !== 'undefined') return element.readAttribute('data-'+datalabel.underscore().dasherize());
+   else{
+    var label = "";
+    var numberattributes = element.attributes.length;
+    for(var t = 0; t < numberattributes ; t++){
+     if(element.attributes[t].name.startsWith('data-')){
+      label = element.attributes[t].name.substring(5).camelize();
+      returnobject[label] = element.attributes[t].value;
      }
     }
    }
@@ -3168,19 +3172,23 @@
   **/
   function sethtml5data(element,datalabel,value){
    if(typeof value !== 'undefined'){
-    if(NATIVEHTML5DATASET) element.dataset[datalabel.camelize()] = value;
+    element.dataset[datalabel.camelize()] = value;
    }else{
     delete element.dataset[datalabel.camelize()];
     value = null;
    }
    element.writeAttribute("data-"+datalabel.underscore().dasherize(),value);
-  }  
+  }
+  function sethtml5data_simulated(element,datalabel,value){
+   value = value || null;
+   element.writeAttribute("data-"+datalabel.underscore().dasherize(),value);
+  }
   Object.extend(methods, {
     getStorage: getStorage,
     store:      store,
     retrieve:   retrieve,
-    gethtml5data:  gethtml5data,
-    sethtml5data:  sethtml5data    
+    gethtml5data:  NATIVEHTML5DATASET ? gethtml5data : gethtml5data_simulated,
+    sethtml5data:  NATIVEHTML5DATASET ? sethtml5data : sethtml5data_simulated
   });
   
   
