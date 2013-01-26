@@ -430,6 +430,11 @@ new Test.Unit.Runner({
     this.assert(!'hello world'.startsWith('bye'));
     this.assert(!''.startsWith('bye'));
     this.assert(!'hell'.startsWith('hello'));
+
+    var str = "To be, or not to be, that is the question";
+    this.assert(str.startsWith("To be"), 'str.startsWith("To be")');
+    this.assert(!str.startsWith("not to be"), 'str.startsWith("not to be")');
+    this.assert(str.startsWith("not to be", 10), 'str.startsWith("not to be", 10)');
   },
   
   testEndsWith: function() {
@@ -439,6 +444,25 @@ new Test.Unit.Runner({
     this.assert(!''.endsWith('planet'));
     this.assert('hello world world'.endsWith(' world'));
     this.assert(!'z'.endsWith('az'));
+
+    var str = "To be, or not to be, that is the question";
+    this.assert(str.endsWith("question"), 'str.endsWith("question")');
+    this.assert(!str.endsWith("to be"), 'str.endsWith("to be")');
+    this.assert(str.endsWith("to be", 19), 'str.endsWith("to be", 19)');
+
+    str = "12345";
+    this.assert(str.endsWith("5"));
+    this.assert(str.endsWith("5", 6));
+    this.assert(str.endsWith("5", 5));
+    this.assert(!str.endsWith("5", 4));
+    this.assert(!str.endsWith("5", 1));
+    this.assert(!str.endsWith("5", 0));
+
+    this.assert(str.endsWith("1", 1));
+    this.assert(!str.endsWith("1", 0));
+    this.assert(!str.endsWith("1", -1));
+
+    this.assert(str.endsWith("", 0));
   },
   
   testBlank: function() {
