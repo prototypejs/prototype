@@ -3414,6 +3414,10 @@
     if (F.ElementExtensions) {
       mergeMethods(ELEMENT_PROTOTYPE, Element.Methods);
       mergeMethods(ELEMENT_PROTOTYPE, Element.Methods.Simulated, true);
+      if(typeof SVGElement !== 'undefined' && typeof SVGElement.prototype !== 'undefined'){
+        mergeMethods(SVGElement.prototype, Element.Methods);
+        mergeMethods(SVGElement.prototype, Element.Methods.Simulated, true);
+      }
     }
     
     if (F.SpecificElementExtensions) {
