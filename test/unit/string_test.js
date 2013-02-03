@@ -390,7 +390,8 @@ new Test.Unit.Runner({
     this.assertHashEqual({a:undefined}, 'a'.toQueryParams(), 'key without value');
     this.assertHashEqual({a:'b'},  'a=b&=c'.toQueryParams(), 'empty key');
     this.assertHashEqual({a:'b', c:''}, 'a=b&c='.toQueryParams(), 'empty value');
-    
+    this.assertHashEqual({a:'  '}, 'a=++'.toQueryParams(), 'value of spaces');
+
     this.assertHashEqual({'a b':'c', d:'e f', g:'h'},
       'a%20b=c&d=e%20f&g=h'.toQueryParams(), 'proper decoding');
     this.assertHashEqual({a:'b=c=d'}, 'a=b=c=d'.toQueryParams(), 'multiple equal signs');
