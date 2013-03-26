@@ -1486,6 +1486,7 @@
   
   /**
    *  Element.siblings(@element) -> [Element...]
+   *
    *  Collects all of element's siblings and returns them as an [[Array]] of
    *  elements.
    *
@@ -1793,6 +1794,7 @@
    *      // -> undefined
   **/
   function down(element, expression, index) {
+    if (arguments.length === 1) return firstDescendant(element);
     element = $(element), expression = expression || 0, index = index || 0;
     
     if (Object.isNumber(expression))
@@ -2369,7 +2371,7 @@
       name = table.names[attr] || attr;
       value = attributes[attr];
       if (table.values[attr])
-        name = table.values[attr](element, value);
+        name = table.values[attr](element, value) || name;
       if (value === false || value === null)
         element.removeAttribute(name);
       else if (value === true)
@@ -2928,7 +2930,7 @@
   }
   
   function hasLayout_IE(element) {
-    if (!element.currentStyle.hasLayout)
+    if (!element.currentStyle || !element.currentStyle.hasLayout)
       element.style.zoom = 1;
     return element;
   }
@@ -3016,7 +3018,7 @@
     var filter = Element.getStyle(element, 'filter');
     if (filter.length === 0) return 1.0;
     var match = (filter || '').match(/alpha\(opacity=(.*)\)/);
-    if (match[1]) return parseFloat(match[1]) / 100;
+    if (match && match[1]) return parseFloat(match[1]) / 100;
     return 1.0;
   }
   
@@ -3484,5 +3486,14 @@
   }
 
   Element.addMethods(methods);
-  
+
+  // Prevent IE leaks on DIV and ELEMENT_CACHE
+  function destroyCache_IE() {
+    DIV = null;
+    ELEMENT_CACHE = null;
+  }
+
+  if (window.attachEvent)
+    window.attachEvent('onunload', destroyCache_IE);
+
 })(this);

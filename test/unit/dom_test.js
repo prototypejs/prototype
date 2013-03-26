@@ -903,7 +903,10 @@ new Test.Unit.Runner({
     this.assert(
       $('style_test_3').setOpacity(0.9999999).getStyle('opacity') > 0.999
     );
-    
+
+    // setting opacity before element was added to DOM
+    this.assertEqual(0.5, new Element('div').setOpacity(0.5).getOpacity());
+
     /*
     
     IE <= 7 needs a `hasLayout` for opacity ("filter") to function properly
@@ -927,10 +930,9 @@ new Test.Unit.Runner({
     
     if (ZOOM_AFFECT_HAS_LAYOUT) {
       this.assert($('style_test_4').setOpacity(0.5).currentStyle.hasLayout);
-      this.assert(2, $('style_test_5').setOpacity(0.5).getStyle('zoom'));
-      this.assert(0.5, new Element('div').setOpacity(0.5).getOpacity());
-      this.assert(2, new Element('div').setOpacity(0.5).setStyle('zoom: 2;').getStyle('zoom'));
-      this.assert(2, new Element('div').setStyle('zoom: 2;').setOpacity(0.5).getStyle('zoom'));
+      this.assertEqual(1, $('style_test_5').setOpacity(0.5).getStyle('zoom'));
+      this.assertEqual(2, new Element('div').setOpacity(0.5).setStyle('zoom: 2;').getStyle('zoom'));
+      this.assertEqual(2, new Element('div').setStyle('zoom: 2;').setOpacity(0.5).getStyle('zoom'));
     }
   },
   
@@ -1088,9 +1090,7 @@ new Test.Unit.Runner({
   
   testElementWriteAttributeWithBooleans: function() {
     var input = $('write_attribute_input'),
-      select = $('write_attribute_select'),
-      checkbox = $('write_attribute_checkbox'),
-      checkedCheckbox = $('write_attribute_checked_checkbox');
+      select = $('write_attribute_select');
     this.assert( input.          writeAttribute('readonly').            hasAttribute('readonly'));
     this.assert(!input.          writeAttribute('readonly', false).     hasAttribute('readonly'));
     this.assert( input.          writeAttribute('readonly', true).      hasAttribute('readonly'));
@@ -1098,8 +1098,28 @@ new Test.Unit.Runner({
     this.assert( input.          writeAttribute('readonly', 'readonly').hasAttribute('readonly'));
     this.assert( select.         writeAttribute('multiple').            hasAttribute('multiple'));
     this.assert( input.          writeAttribute('disabled').            hasAttribute('disabled'));
+  },
+  testElementWriteAttributeForCheckbox: function() {
+    var checkbox = $('write_attribute_checkbox'),
+      checkedCheckbox = $('write_attribute_checked_checkbox');
     this.assert( checkbox.       writeAttribute('checked').             checked);
+    this.assert( checkbox.       writeAttribute('checked').             hasAttribute('checked'));
+    this.assertEqual('checked', checkbox.writeAttribute('checked').getAttribute('checked'));
+    this.assert(!checkbox.       writeAttribute('checked').             hasAttribute('undefined'));
+    this.assert( checkbox.       writeAttribute('checked', true).       checked);
+    this.assert( checkbox.       writeAttribute('checked', true).       hasAttribute('checked'));
+    this.assert( checkbox.       writeAttribute('checked', 'checked').  checked);
+    this.assert( checkbox.       writeAttribute('checked', 'checked').  hasAttribute('checked'));
+    this.assert(!checkbox.       writeAttribute('checked', null).       checked);
+    this.assert(!checkbox.       writeAttribute('checked', null).       hasAttribute('checked'));
+    this.assert(!checkbox.       writeAttribute('checked', true).       hasAttribute('undefined'));
     this.assert(!checkedCheckbox.writeAttribute('checked', false).      checked);
+    this.assert(!checkbox.       writeAttribute('checked', false).      hasAttribute('checked'));
+  },
+  testElementWriteAttributeForStyle: function() {
+    var element = Element.extend(document.body.appendChild(document.createElement('p')));
+    this.assert( element.        writeAttribute('style', 'color: red'). hasAttribute('style'));
+    this.assert(!element.        writeAttribute('style', 'color: red'). hasAttribute('undefined'));
   },
 
   testElementWriteAttributeWithIssues: function() {

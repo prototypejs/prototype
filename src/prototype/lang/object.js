@@ -244,7 +244,7 @@
    *  ##### Examples
    *  
    *      Object.toQueryString({ action: 'ship', order_id: 123, fees: ['f1', 'f2'], 'label': 'a demo' })
-   *      // -> 'action=ship&order_id=123&fees=f1&fees=f2&label=a%20demo'
+   *      // -> 'action=ship&order_id=123&fees=f1&fees=f2&label=a+demo'
   **/
   function toQueryString(object) {
     return $H(object).toQueryString();

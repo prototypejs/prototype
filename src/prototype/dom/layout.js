@@ -1144,7 +1144,8 @@
   function viewportOffset(forElement) {
     var valueT = 0, valueL = 0, docBody = document.body;
 
-    var element = $(forElement);
+    forElement = $(forElement);
+    var element = forElement;
     do {
       valueT += element.offsetTop  || 0;
       valueL += element.offsetLeft || 0;
@@ -1187,10 +1188,11 @@
     var layout = element.getLayout();    
     
     element.store('prototype_absolutize_original_styles', {
-      left:   element.getStyle('left'),
-      top:    element.getStyle('top'),
-      width:  element.getStyle('width'),
-      height: element.getStyle('height')
+      position: element.getStyle('position'),
+      left:     element.getStyle('left'),
+      top:      element.getStyle('top'),
+      width:    element.getStyle('width'),
+      height:   element.getStyle('height')
     });
     
     element.setStyle({

@@ -182,6 +182,15 @@ new Test.Unit.Runner({
     var foo = new FooMaker('bar');
     this.assertEqual("key=bar", new Hash(foo).toQueryString());
     this.assertEqual("key=bar", new Hash(new Hash(foo)).toQueryString());
+  },
+
+  testIterationWithEach: function()  {
+    var h = $H({a:1, b:2});
+    var result = []
+    h.each(function(kv, i){
+      result.push(i);
+    });
+   this.assertEnumEqual([0,1], result);
   }
   
 });

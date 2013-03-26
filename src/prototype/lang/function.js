@@ -123,7 +123,7 @@ Object.extend(Function.prototype, (function() {
     var __method = this, args = slice.call(arguments, 1);
     
     var bound = function() {
-      var a = merge(args, arguments), c = context;
+      var a = merge(args, arguments);
       // Ignore the supplied context when the bound function is called with
       // the "new" keyword.
       var c = this instanceof bound ? this : context;
