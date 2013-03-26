@@ -770,7 +770,9 @@ Object.extend(String.prototype, (function() {
   }
 
   /**
-   *  String#startsWith(substring) -> Boolean
+   *  String#startsWith(substring[, position]) -> Boolean
+   *  - substring (String): The characters to be searched for at the start of this string.
+   *  - [position] (Number): The position in this string at which to begin searching for `substring`; defaults to 0.
    *
    *  Checks if the string starts with `substring`.
    *  
@@ -778,15 +780,21 @@ Object.extend(String.prototype, (function() {
    *  
    *      'Prototype JavaScript'.startsWith('Pro');
    *      //-> true
+   *      'Prototype JavaScript'.startsWith('Java', 10);
+   *      //-> true
   **/
-  function startsWith(pattern) {
+  function startsWith(pattern, position) {
+    position = Object.isNumber(position) ? position : 0;
     // We use `lastIndexOf` instead of `indexOf` to avoid tying execution
     // time to string length when string doesn't start with pattern.
-    return this.lastIndexOf(pattern, 0) === 0;
+    return this.lastIndexOf(pattern, position) === position;
   }
 
   /**
-   *  String#endsWith(substring) -> Boolean
+   *  String#endsWith(substring[, position]) -> Boolean
+   *  - substring (String): The characters to be searched for at the end of this string.
+   *  - [position] (Number): Search within this string as if this string were only this long;
+   *    defaults to this string's actual length, clamped within the range established by this string's length.
    *
    *  Checks if the string ends with `substring`.
    *  
@@ -794,9 +802,15 @@ Object.extend(String.prototype, (function() {
    *  
    *      'slaughter'.endsWith('laughter')
    *      // -> true
+   *      'slaughter'.endsWith('laugh', 6)
+   *      // -> true
   **/
-  function endsWith(pattern) {
-    var d = this.length - pattern.length;
+  function endsWith(pattern, position) {
+    pattern = String(pattern);
+    position = Object.isNumber(position) ? position : this.length;
+    if (position < 0) position = 0;
+    if (position > this.length) position = this.length;
+    var d = position - pattern.length;
     // We use `indexOf` instead of `lastIndexOf` to avoid tying execution
     // time to string length when string doesn't end with pattern.
     return d >= 0 && this.indexOf(pattern, d) === d;
@@ -878,8 +892,9 @@ Object.extend(String.prototype, (function() {
     isJSON:         isJSON,
     evalJSON:       NATIVE_JSON_PARSE_SUPPORT ? parseJSON : evalJSON,
     include:        include,
-    startsWith:     startsWith,
-    endsWith:       endsWith,
+    // Firefox 18+ supports String.prototype.startsWith, String.prototype.endsWith
+    startsWith:     String.prototype.startsWith || startsWith,
+    endsWith:       String.prototype.endsWith || endsWith,
     empty:          empty,
     blank:          blank,
     interpolate:    interpolate
