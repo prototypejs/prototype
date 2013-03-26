@@ -1145,6 +1145,24 @@
    *
    *  A wrapper around DOM Level 2 `Node#cloneNode`, [[Element.clone]] cleans up
    *  any expando properties defined by Prototype.
+   *  
+   *  ##### Example
+   *  
+   *      <div class="original">
+   *        <div class="original_child"></div>
+   *      </div>
+   *  
+   *      var clone = $('original').clone();
+   *      clone.className;
+   *      // -> "original"
+   *      clone.childElements();
+   *      // -> []
+   *  
+   *      var deepClone = $('original').clone(true);
+   *      deepClone.className;
+   *      // -> "original"
+   *      deepClone.childElements();
+   *      // -> [div.original_child]
   **/
   function clone(element, deep) {
     if (!(element = $(element))) return;
