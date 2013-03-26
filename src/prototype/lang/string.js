@@ -771,10 +771,18 @@ Object.extend(String.prototype, (function() {
 
   /**
    *  String#startsWith(substring[, position]) -> Boolean
-   *  - substring (String): The characters to be searched for at the start of this string.
-   *  - [position] (Number): The position in this string at which to begin searching for `substring`; defaults to 0.
+   *  - substring (String): The characters to be searched for at the start of
+   *    this string.
+   *  - [position] (Number): The position in this string at which to begin
+   *    searching for `substring`; defaults to 0.
    *
    *  Checks if the string starts with `substring`.
+   *  
+   *  `String#startsWith` acts as an ECMAScript 6 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the [ES6 specification](http://wiki.ecmascript.org/doku.php?id=harmony%3Aspecification_drafts) for more
+   *  information.
    *  
    *  ##### Example
    *  
@@ -792,11 +800,19 @@ Object.extend(String.prototype, (function() {
 
   /**
    *  String#endsWith(substring[, position]) -> Boolean
-   *  - substring (String): The characters to be searched for at the end of this string.
-   *  - [position] (Number): Search within this string as if this string were only this long;
-   *    defaults to this string's actual length, clamped within the range established by this string's length.
+   *  - substring (String): The characters to be searched for at the end of
+   *    this string.
+   *  - [position] (Number): Search within this string as if this string were
+   *    only this long; defaults to this string's actual length, clamped
+   *    within the range established by this string's length.
    *
    *  Checks if the string ends with `substring`.
+   *  
+   *  `String#endsWith` acts as an ECMAScript 6 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the [ES6 specification](http://wiki.ecmascript.org/doku.php?id=harmony%3Aspecification_drafts) for more
+   *  information.
    *  
    *  ##### Example
    *  
