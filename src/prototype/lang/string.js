@@ -473,8 +473,11 @@ Object.extend(String.prototype, (function() {
       if ((pair = pair.split('='))[0]) {
         var key = decodeURIComponent(pair.shift()),
             value = pair.length > 1 ? pair.join('=') : pair[0];
-            
-        if (value != undefined) value = decodeURIComponent(value);
+
+        if (value != undefined) {
+          value = value.gsub('+', ' ');
+          value = decodeURIComponent(value);
+        }
 
         if (key in hash) {
           if (!Object.isArray(hash[key])) hash[key] = [hash[key]];
