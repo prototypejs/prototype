@@ -2336,9 +2336,12 @@
   }
   
   var PROBLEMATIC_ATTRIBUTE_READING = (function() {
-    DIV.setAttribute('onclick', Prototype.emptyFunction);
+    // This test used to set 'onclick' to `Prototype.emptyFunction`, but that
+    // caused an (uncatchable) error in IE 10. For some reason, switching to
+    // an empty array prevents this issue.
+    DIV.setAttribute('onclick', []);
     var value = DIV.getAttribute('onclick');
-    var isFunction = (typeof value === 'function');
+    var isFunction = Object.isArray(value);
     DIV.removeAttribute('onclick');
     return isFunction;
   })();
