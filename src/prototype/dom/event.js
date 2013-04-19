@@ -593,7 +593,10 @@
     // Remove the entry from the collection;
     var index = entries.indexOf(entry);
     entries.splice(index, 1);
-    
+
+    if (entries.length == 0) {
+      stopObservingEventName(element, eventName);
+    }
     return entry;
   }  
   
@@ -928,6 +931,14 @@
     var i = entries.length;
     while (i--)
       removeEvent(element, eventName, entries[i].responder);
+
+    for (var name in registry) {
+      if (name === 'element') continue;
+      return; // There is another registered event
+    }
+
+    // No other events for the element, destroy the registry:
+    destroyRegistryForElement(element);
   }
 
   

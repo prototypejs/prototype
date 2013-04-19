@@ -159,7 +159,8 @@ new Test.Unit.Runner({
     var span = $("span"), observer = Prototype.emptyFunction, eventID;
     
     span.observe("test:somethingHappened", observer);
-    
+    span.observe("test:somethingHappened", function() {});
+
     function uidForElement(elem) {
       return elem.uniqueID ? elem.uniqueID : elem._prototypeUID;
     }
@@ -168,7 +169,7 @@ new Test.Unit.Runner({
     
     this.assert(registry, 'registry should exist');
     this.assert(Object.isArray(registry['test:somethingHappened']));
-    this.assertEqual(1, registry['test:somethingHappened'].length);
+    this.assertEqual(2, registry['test:somethingHappened'].length);
     
     span.stopObserving("test:somethingHappened", observer);
     
@@ -176,9 +177,27 @@ new Test.Unit.Runner({
     
     this.assert(registry);
     this.assert(Object.isArray(registry['test:somethingHappened']));
-    this.assertEqual(0, registry['test:somethingHappened'].length);
+    this.assertEqual(1, registry['test:somethingHappened'].length);
   },
   
+  testLastStopObservingClearesCache: function() {
+    var span = $("span"), observer = Prototype.emptyFunction, eventID;
+    delete Event.cache[uidForElement(span)];
+
+    span.observe("test:somethingHappened", observer);
+
+    function uidForElement(elem) {
+      return elem.uniqueID ? elem.uniqueID : elem._prototypeUID;
+    }
+
+    span.stopObserving("test:somethingHappened", observer);
+
+    var registry = Event.cache[uidForElement(span)];
+
+    this.assert(!registry);
+//    console.info(registry)
+  },
+
   testObserveAndStopObservingAreChainable: function() {
     var span = $("span"), observer = Prototype.emptyFunction;
 
