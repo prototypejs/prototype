@@ -11,6 +11,12 @@ new Test.Unit.Runner({
     this.assert($R(0, 5, false).include(0));
     this.assert($R(0, 5, false).include(5));
     this.assert(!$R(0, 5, false).include(6));
+
+    var a = new Date(2013, 0, 1);
+    var b = new Date(2014, 1, 1);
+    this.assert($R(a, b).include(b));
+    this.assert($R(a, b).include(new Date(2013, 1, 1)));
+    this.assert(!$R(a, b, true).include(b));
   },
 
   testEach: function() {
