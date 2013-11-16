@@ -736,10 +736,17 @@ Array.from = $A;
     var inject = Enumerable.inject;
   }
 
-  Object.extend(arrayProto, Enumerable);
+  //strip entries method from Enumerable to protect original Array.prototype.entries in ES6
+  var _Enumerable = Object.clone(Enumerable);
+  delete _Enumerable.entries;
 
+  Object.extend(arrayProto, _Enumerable);
+  
   if (!arrayProto._reverse)
     arrayProto._reverse = arrayProto.reverse;
+ 
+  if (!arrayProto.entries)
+    arrayProto.entries = Enumerable.toArray;
 
   Object.extend(arrayProto, {
     _each:     _each,
