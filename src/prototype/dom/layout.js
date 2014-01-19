@@ -1129,9 +1129,10 @@
   function cumulativeScrollOffset(element) {
     var valueT = 0, valueL = 0;
     do {
-      if(element == document.body){
-        valueT += (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop || 0;
-        valueL += (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft || 0;
+      if (element === document.body) {
+        var bodyScrollNode = document.documentElement || document.body.parentNode || document.body;        
+        valueT += !Object.isUndefined(window.pageYOffset) ? window.pageYOffset : bodyScrollNode.scrollTop || 0;
+        valueL += !Object.isUndefined(window.pageXOffset) ? window.pageXOffset : bodyScrollNode.scrollLeft || 0;
         break;
       } else {
         valueT += element.scrollTop  || 0;
