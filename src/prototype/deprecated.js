@@ -87,9 +87,9 @@ var Position = {
 
   // Deprecation layer -- use newer Element methods now (1.5.2).
 
-  cumulativeOffset: Element.Methods.cumulativeOffset,
+  cumulativeOffset: Element.cumulativeOffset,
 
-  positionedOffset: Element.Methods.positionedOffset,
+  positionedOffset: Element.positionedOffset,
 
   absolutize: function(element) {
     Position.prepare();
@@ -101,11 +101,11 @@ var Position = {
     return Element.relativize(element);
   },
 
-  realOffset: Element.Methods.cumulativeScrollOffset,
+  realOffset: Element.cumulativeScrollOffset,
 
-  offsetParent: Element.Methods.getOffsetParent,
+  offsetParent: Element.getOffsetParent,
 
-  page: Element.Methods.viewportOffset,
+  page: Element.viewportOffset,
 
   clone: function(source, target, options) {
     options = options || { };
