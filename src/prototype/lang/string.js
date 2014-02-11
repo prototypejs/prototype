@@ -107,7 +107,7 @@ Object.extend(String.prototype, (function() {
     }
 
     while (source.length > 0) {
-      match = source.match(pattern)
+      match = source.match(pattern);
       if (match && match[0].length > 0) {
         result += source.slice(0, match.index);
         result += String.interpret(replacement(match));
