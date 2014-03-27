@@ -103,7 +103,6 @@ new Test.Unit.Runner({
     this.assertEnumEqual($('chk_1', 'chk_2'), $$('#troubleForm2 input[name="brackets[5][]"]'));
     this.assertEnumEqual([$('chk_1')], $$('#troubleForm2 input[name="brackets[5][]"]:checked'));
     this.assertEnumEqual([$('chk_2')], $$('#troubleForm2 input[name="brackets[5][]"][value=2]'));
-    this.assertEnumEqual([], $$('#troubleForm2 input[name=brackets[5][]]'));
   },
   
   test$$WithNestedAttributeSelectors: function() {
