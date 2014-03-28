@@ -305,6 +305,32 @@ namespace :test do
   task :require do
     PrototypeHelper.require_unittest_js
   end
+  
+  desc "Builds all the unit tests and starts the server. (The user can visit the tests manually in a browser at their leisure.)"
+  task :server => [:build] do 
+    runner = UnittestJS::WEBrickRunner::Runner.new(:test_dir => PrototypeHelper::TMP_DIR)
+    testcases = ENV['TESTCASES']
+    
+    Dir[File.join(PrototypeHelper::TMP_DIR, '*_test.html')].each do |file|
+      file = File.basename(file)
+      test = file.sub('_test.html', '')
+      runner.add_test(file, testcases)
+    end
+    
+    trap('INT') do
+      puts "...server stopped."
+      runner.teardown
+      exit
+    end
+    
+    puts "Server started..."
+    
+    runner.setup
+    
+    loop do
+      sleep 1
+    end
+  end
 end
 
 task :test_units do
