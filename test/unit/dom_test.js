@@ -1104,7 +1104,7 @@ new Test.Unit.Runner({
       checkedCheckbox = $('write_attribute_checked_checkbox');
     this.assert( checkbox.       writeAttribute('checked').             checked);
     this.assert( checkbox.       writeAttribute('checked').             hasAttribute('checked'));
-    this.assertEqual('checked', checkbox.writeAttribute('checked').getAttribute('checked'));
+    this.assertEqual('checked', checkbox.writeAttribute('checked').readAttribute('checked'));
     this.assert(!checkbox.       writeAttribute('checked').             hasAttribute('undefined'));
     this.assert( checkbox.       writeAttribute('checked', true).       checked);
     this.assert( checkbox.       writeAttribute('checked', true).       hasAttribute('checked'));

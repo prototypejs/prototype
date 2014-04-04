@@ -1145,6 +1145,24 @@
    *
    *  A wrapper around DOM Level 2 `Node#cloneNode`, [[Element.clone]] cleans up
    *  any expando properties defined by Prototype.
+   *  
+   *  ##### Example
+   *  
+   *      <div class="original">
+   *        <div class="original_child"></div>
+   *      </div>
+   *  
+   *      var clone = $('original').clone();
+   *      clone.className;
+   *      // -> "original"
+   *      clone.childElements();
+   *      // -> []
+   *  
+   *      var deepClone = $('original').clone(true);
+   *      deepClone.className;
+   *      // -> "original"
+   *      deepClone.childElements();
+   *      // -> [div.original_child]
   **/
   function clone(element, deep) {
     if (!(element = $(element))) return;
@@ -2318,9 +2336,12 @@
   }
   
   var PROBLEMATIC_ATTRIBUTE_READING = (function() {
-    DIV.setAttribute('onclick', Prototype.emptyFunction);
+    // This test used to set 'onclick' to `Prototype.emptyFunction`, but that
+    // caused an (uncatchable) error in IE 10. For some reason, switching to
+    // an empty array prevents this issue.
+    DIV.setAttribute('onclick', []);
     var value = DIV.getAttribute('onclick');
-    var isFunction = (typeof value === 'function');
+    var isFunction = Object.isArray(value);
     DIV.removeAttribute('onclick');
     return isFunction;
   })();
@@ -2364,13 +2385,36 @@
     return element;
   }
   
+  // Test whether checkboxes work properly with `hasAttribute`.
+  var PROBLEMATIC_HAS_ATTRIBUTE_WITH_CHECKBOXES = (function () {
+    if (!HAS_EXTENDED_CREATE_ELEMENT_SYNTAX) {
+      // Only IE browsers are known to exhibit this one, so we'll take a
+      // shortcut.
+      return false;
+    }
+    var checkbox = document.createElement('<input type="checkbox">');
+    checkbox.checked = true;
+    var node = checkbox.getAttributeNode('checked');
+    var buggy = !node.specified;
+    return !node.specified;
+  })();
+  
   function hasAttribute(element, attribute) {
     attribute = ATTRIBUTE_TRANSLATIONS.has[attribute] || attribute;
     var node = $(element).getAttributeNode(attribute);
     return !!(node && node.specified);
   }
   
-  GLOBAL.Element.Methods.Simulated.hasAttribute = hasAttribute;
+  function hasAttribute_IE(element, attribute) {
+    if (attribute === 'checked') {
+      return element.checked;
+    }
+    return hasAttribute(element, attribute);
+  }
+  
+  GLOBAL.Element.Methods.Simulated.hasAttribute = 
+   PROBLEMATIC_HAS_ATTRIBUTE_WITH_CHECKBOXES ? 
+   hasAttribute_IE : hasAttribute;
   
   /** deprecated
    *  Element.classNames(@element) -> [String...]
@@ -3000,7 +3044,7 @@
     var filter = Element.getStyle(element, 'filter');
     if (filter.length === 0) return 1.0;
     var match = (filter || '').match(/alpha\(opacity=(.*)\)/);
-    if (match[1]) return parseFloat(match[1]) / 100;
+    if (match && match[1]) return parseFloat(match[1]) / 100;
     return 1.0;
   }
   

@@ -120,6 +120,7 @@ new Test.Unit.Runner({
     this.assertEqual('a=A&b=B&c=C&d=D%23', $H(Fixtures.many).toQueryString());
     this.assertEqual("a=b&c",              $H(Fixtures.value_undefined).toQueryString());
     this.assertEqual("a=b&c",              $H("a=b&c".toQueryParams()).toQueryString());
+    this.assertEqual("a=b+d&c",            $H("a=b+d&c".toQueryParams()).toQueryString());
     this.assertEqual("a=b&c=",             $H(Fixtures.value_null).toQueryString());
     this.assertEqual("a=b&c=0",            $H(Fixtures.value_zero).toQueryString());
     this.assertEqual("color=r&color=g&color=b", $H(Fixtures.multiple).toQueryString());
