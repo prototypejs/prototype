@@ -2395,8 +2395,7 @@
     var checkbox = document.createElement('<input type="checkbox">');
     checkbox.checked = true;
     var node = checkbox.getAttributeNode('checked');
-    var buggy = !node.specified;
-    return !node.specified;
+    return !node || !node.specified;
   })();
   
   function hasAttribute(element, attribute) {
