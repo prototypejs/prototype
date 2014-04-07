@@ -3170,6 +3170,9 @@
   // Certain oddball element types can't be extended in IE8.
   function checkElementPrototypeDeficiency(tagName) {
     if (typeof window.Element === 'undefined') return false;
+    // Skip newer IEs because creating an OBJECT tag pops up an annoying
+    // "this page uses Java" warning.
+    if (!HAS_EXTENDED_CREATE_ELEMENT_SYNTAX) return false;
     var proto = window.Element.prototype;
     if (proto) {
       var id = '_' + (Math.random() + '').slice(2),
