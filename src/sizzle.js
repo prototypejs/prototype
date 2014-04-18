@@ -810,14 +810,14 @@ var Expr = Sizzle.selectors = {
 			var name = match[1],
 				result = Expr.attrHandle[ name ] ?
 					Expr.attrHandle[ name ]( elem ) :
-					elem[ name ] != null ?
+					elem[ name ] !== null ?
 						elem[ name ] :
 						elem.getAttribute( name ),
 				value = result + "",
 				type = match[2],
 				check = match[4];
 
-			return result == null ?
+			return result === null ?
 				type === "!=" :
 				type === "=" ?
 				value === check :
