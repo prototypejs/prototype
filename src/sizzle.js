@@ -119,7 +119,7 @@ var Sizzle = function( selector, context, results, seed ) {
 					pop = parts.pop();
 				}
 
-				if ( pop == null ) {
+				if ( pop === null ) {
 					pop = context;
 				}
 
@@ -144,14 +144,14 @@ var Sizzle = function( selector, context, results, seed ) {
 			results.push.apply( results, checkSet );
 
 		} else if ( context && context.nodeType === 1 ) {
-			for ( i = 0; checkSet[i] != null; i++ ) {
+			for ( i = 0; checkSet[i] !== null; i++ ) {
 				if ( checkSet[i] && (checkSet[i] === true || checkSet[i].nodeType === 1 && Sizzle.contains(context, checkSet[i])) ) {
 					results.push( set[i] );
 				}
 			}
 
 		} else {
-			for ( i = 0; checkSet[i] != null; i++ ) {
+			for ( i = 0; checkSet[i] !== null; i++ ) {
 				if ( checkSet[i] && checkSet[i].nodeType === 1 ) {
 					results.push( set[i] );
 				}
@@ -214,7 +214,7 @@ Sizzle.find = function( expr, context, isXML ) {
 				match[1] = (match[1] || "").replace( rBackslash, "" );
 				set = Expr.find[ type ]( match, context, isXML );
 
-				if ( set != null ) {
+				if ( set !== null ) {
 					expr = expr.replace( Expr.match[ type ], "" );
 					break;
 				}
@@ -240,7 +240,7 @@ Sizzle.filter = function( expr, set, inplace, not ) {
 
 	while ( expr && set.length ) {
 		for ( var type in Expr.filter ) {
-			if ( (match = Expr.leftMatch[ type ].exec( expr )) != null && match[2] ) {
+			if ( (match = Expr.leftMatch[ type ].exec( expr )) !== null && match[2] ) {
 				var found, item,
 					filter = Expr.filter[ type ],
 					left = match[1];
@@ -269,12 +269,12 @@ Sizzle.filter = function( expr, set, inplace, not ) {
 				}
 
 				if ( match ) {
-					for ( var i = 0; (item = curLoop[i]) != null; i++ ) {
+					for ( var i = 0; (item = curLoop[i]) !== null; i++ ) {
 						if ( item ) {
 							found = filter( item, match, i, curLoop );
 							var pass = not ^ !!found;
 
-							if ( inplace && found != null ) {
+							if ( inplace && found !== null ) {
 								if ( pass ) {
 									anyFound = true;
 
@@ -308,7 +308,7 @@ Sizzle.filter = function( expr, set, inplace, not ) {
 
 		// Improper expression
 		if ( expr === old ) {
-			if ( anyFound == null ) {
+			if ( anyFound === null ) {
 				Sizzle.error( expr );
 
 			} else {
@@ -484,7 +484,7 @@ var Expr = Sizzle.selectors = {
 				return match;
 			}
 
-			for ( var i = 0, elem; (elem = curLoop[i]) != null; i++ ) {
+			for ( var i = 0, elem; (elem = curLoop[i]) !== null; i++ ) {
 				if ( elem ) {
 					if ( not ^ (elem.className && (" " + elem.className + " ").replace(/[\t\n\r]/g, " ").indexOf(match) >= 0) ) {
 						if ( !inplace ) {
