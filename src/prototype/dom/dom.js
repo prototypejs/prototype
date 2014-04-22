@@ -267,27 +267,6 @@
    *      
    *      $('hidden').visible();
    *      // -> false
-   *  
-   *  ##### Notes
-   *  
-   *  Styles applied via a CSS stylesheet are _not_ taken into consideration.
-   *  Note that this is not a Prototype limitation, it is a CSS limitation.
-   *  
-   *      language: html
-   *      <style>
-   *        #hidden-by-css {
-   *          display: none;
-   *        }
-   *      </style>
-   *      
-   *      [...]
-   *      
-   *      <div id="hidden-by-css"></div>
-   *
-   *  And the associated JavaScript:
-   *
-   *      $('hidden-by-css').visible();
-   *      // -> true
   **/
   function visible(element) {
     return $(element).getStyle('display') !== 'none';
