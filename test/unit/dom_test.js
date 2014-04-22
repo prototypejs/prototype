@@ -290,6 +290,10 @@ new Test.Unit.Runner({
   testElementVisible: function(){
     this.assertNotEqual('none', $('test-visible').style.display);
     this.assertEqual('none', $('test-hidden').style.display);
+    
+    this.assert($('test-visible').visible());
+    this.assert(!$('test-invisible').visible());
+    this.assert(!$('test-hidden').visible());
   },
   
   testElementToggle: function(){

@@ -290,7 +290,7 @@
    *      // -> true
   **/
   function visible(element) {
-    return $(element).style.display !== 'none';
+    return $(element).getStyle('display') !== 'none';
   }
   
   /**
