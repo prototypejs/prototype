@@ -1114,8 +1114,8 @@
       }
     } while (element);
     
-    valueL -= layout.get('margin-top');
-    valueT -= layout.get('margin-left');
+    valueL -= layout.get('margin-left');
+    valueT -= layout.get('margin-top');
     
     return new Element.Offset(valueL, valueT);
   }
