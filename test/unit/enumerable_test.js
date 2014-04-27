@@ -271,6 +271,13 @@ new Test.Unit.Runner({
       Fixtures.Primes.inject(0, function(sum, value) {
         return sum + value;
       }));
+      
+    var sum = Fixtures.Primes.inject(0, function(sum, value) {
+      if (value === 5) throw $break;
+      return sum + value;
+    });
+    
+    this.assertEqual(6, sum, 'inject should catch a thrown $break');
   },
   
   "test #inject passes memo, value, index and collection to the iterator": function() {
