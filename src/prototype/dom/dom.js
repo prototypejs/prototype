@@ -3006,7 +3006,7 @@
     if (value < 0.00001) value = 0;
         
     style.filter = stripAlphaFromFilter_IE(filter) + 
-     'alpha(opacity=' + (value * 100) + ')';
+     ' alpha(opacity=' + (value * 100) + ')';
      
     return element;
   }
