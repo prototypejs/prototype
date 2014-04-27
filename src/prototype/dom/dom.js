@@ -472,6 +472,15 @@
    *        <li id="mcintosh">McIntosh</li>
    *        <li id="ida-red">Ida Red</li>
    *      </ul>
+   *
+   *  ##### Warning
+   *
+   *  Using [[Element.remove]] as an instance method (e.g.,
+   *  `$('foo').remove('')`) won't work when the element in question is a
+   *  `select` element, since`select` elements have [an existing `remove` method](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement)
+   *  that behaves differently from this method. As a workaround, use the
+   *  generic version instead (`Element.remove('foo')`).
+   *  
   **/
   function remove(element) {
     element = $(element);
