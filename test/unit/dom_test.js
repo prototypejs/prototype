@@ -1038,7 +1038,9 @@ new Test.Unit.Runner({
   },
   
   testElementGetOpacity: function() {
-    this.assertEqual(0.45, $('op1').setOpacity(0.45).getOpacity());
+    var opacity = $('op1').setOpacity(0.45).getOpacity();
+    this.assertEqual(0.45, opacity);
+    this.assertEqual('number', typeof opacity, 'opacity should be a string, not a number');
   },
   
   testElementReadAttribute: function() {

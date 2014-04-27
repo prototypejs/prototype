@@ -2792,7 +2792,7 @@
   
 
   /**
-   *  Element.getStyle(@element, style) -> String | null
+   *  Element.getStyle(@element, style) -> String | Number | null
    *  - style (String): The property name to be retrieved.
    *
    *  Returns the given CSS property value of `element`. The property can be
@@ -2805,6 +2805,10 @@
    *  (fully transparent) and `1` (fully opaque), position properties
    *  (`left`, `top`, `right` and `bottom`) and when getting the dimensions
    *  (`width` or `height`) of hidden elements.
+   * 
+   *  If a value is present, it will be returned as a string &mdash; except
+   *  for `opacity`, which returns a number between `0` and `1` just as
+   *  [[Element.getOpacity]] does.
    *  
    *  ##### Examples
    *  
@@ -2915,9 +2919,12 @@
       value = element.currentStyle[style];
     }
     
-    if (style === 'opacity' && !STANDARD_CSS_OPACITY_SUPPORTED)
-      return getOpacity_IE(element);
-      
+    if (style === 'opacity') {
+      if (!STANDARD_CSS_OPACITY_SUPPORTED)
+        return getOpacity_IE(element);
+      else return value ? parseFloat(value) : 1.0;
+    }
+
     if (value === 'auto') {
       // If we need a dimension, return null for hidden elements, but return
       // pixel values for visible elements.
@@ -3006,7 +3013,7 @@
   
   
   /**
-   *  Element.getOpacity(@element) -> String | null
+   *  Element.getOpacity(@element) -> Number | null
    *
    *  Returns the opacity of the element.
   **/
