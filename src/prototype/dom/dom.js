@@ -275,7 +275,7 @@
   /**
    *  Element.toggle(@element[, bool]) -> Element
    *  - bool (Boolean): Whether the element should be shown or hidden. If not
-        a boolean, this argument will be ignored.
+   *    a boolean, this argument will be ignored.
    *
    *  Toggles the CSS `display` of `element`. Returns `element`.
    *  
