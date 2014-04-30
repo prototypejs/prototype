@@ -3,6 +3,8 @@ require 'rake/packagetask'
 require 'yaml'
 
 module PrototypeHelper
+  extend Rake::DSL
+  
   ROOT_DIR      = File.expand_path(File.dirname(__FILE__))
   SRC_DIR       = File.join(ROOT_DIR, 'src')
   DIST_DIR      = File.join(ROOT_DIR, 'dist')
@@ -197,7 +199,7 @@ EOF
       # Wait until we notice that a submodule is missing before we bother the
       # user about installing git. (Maybe they brought all the files over
       # from a different machine.)
-      missing_file = e.message.sub('no such file to load -- ', '')
+      missing_file = e.message.sub('no such file to load -- ', '').sub('cannot load such file -- ', '')
       if missing_file == path
         # Missing a git submodule.
         retry if get_submodule(name, path)
