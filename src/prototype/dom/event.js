@@ -32,33 +32,33 @@
    *  The functions you're most likely to use a lot are [[Event.observe]],
    *  [[Event.element]] and [[Event.stop]]. If your web app uses custom events,
    *  you'll also get a lot of mileage out of [[Event.fire]].
-   *  
+   *
    *  ##### Instance methods on event objects
-   *  As of Prototype 1.6, all methods on the `Event` object are now also 
+   *  As of Prototype 1.6, all methods on the `Event` object are now also
    *  available as instance methods on the event object itself:
-   *  
+   *
    *  **Before**
-   *  
+   *
    *      $('foo').observe('click', respondToClick);
-   *      
+   *
    *      function respondToClick(event) {
    *        var element = Event.element(event);
    *        element.addClassName('active');
    *      }
-   *  
+   *
    *  **After**
-   *  
+   *
    *      $('foo').observe('click', respondToClick);
-   *      
+   *
    *      function respondToClick(event) {
    *        var element = event.element();
    *        element.addClassName('active');
    *      }
-   *  
+   *
    *  These methods are added to the event object through [[Event.extend]],
-   *  in the same way that `Element` methods are added to DOM nodes through 
-   *  [[Element.extend]]. Events are extended automatically when handlers are 
-   *  registered with Prototype's [[Event.observe]] method; if you're using a 
+   *  in the same way that `Element` methods are added to DOM nodes through
+   *  [[Element.extend]]. Events are extended automatically when handlers are
+   *  registered with Prototype's [[Event.observe]] method; if you're using a
    *  different method of event registration, for whatever reason,you'll need to
    *  extend these events manually with [[Event.extend]].
   **/
@@ -66,7 +66,7 @@
   var docEl = document.documentElement;
   var MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED = 'onmouseenter' in docEl
    && 'onmouseleave' in docEl;
-  
+
   var Event = {
     KEY_BACKSPACE: 8,
     KEY_TAB:       9,
@@ -83,7 +83,7 @@
     KEY_PAGEDOWN: 34,
     KEY_INSERT:   45
   };
-  
+
   // We need to support three different event "modes":
   //  1. browsers with only DOM L2 Events (WebKit, FireFox);
   //  2. browsers with only IE's legacy events system (IE 6-8);
@@ -108,7 +108,7 @@
       isIELegacyEvent = function(event) { return true; };
     }
   }
-  
+
   // The two systems have different ways of indicating which button was used
   // for a mouse event.
   var _isButton;
@@ -135,7 +135,7 @@
   if (window.attachEvent) {
     if (!window.addEventListener) {
       // Legacy IE events only.
-      _isButton = _isButtonForLegacyEvents;      
+      _isButton = _isButtonForLegacyEvents;
     } else {
       // Both systems are supported; decide at runtime.
       _isButton = function(event, code) {
@@ -148,7 +148,7 @@
   } else {
     _isButton = _isButtonForDOMEvents;
   }
-  
+
   /**
    *  Event.isLeftClick(@event) -> Boolean
    *  - event (Event): An Event object
@@ -183,37 +183,37 @@
    *  report clicks of the _left_ button as "left-clicks."
   **/
   function isRightClick(event)  { return _isButton(event, 2) }
-  
+
   /** deprecated
    *  Event.element(@event) -> Element
    *  - event (Event): An Event object
    *
    *  Returns the DOM element on which the event occurred. This method
    *  is deprecated, use [[Event.findElement]] instead.
-   *  
+   *
    *  ##### Example
-   *  
+   *
    *  Here's a simple bit of code which hides any paragraph when directly clicked.
-   *  
+   *
    *      document.observe('click', function(event) {
    *        var element = Event.element(event);
    *        if ('P' == element.tagName)
    *          element.hide();
    *      });
-   *  
+   *
    *  ##### See also
-   *  
-   *  There is a subtle distinction between this function and 
+   *
+   *  There is a subtle distinction between this function and
    *  [[Event.findElement]].
-   *  
+   *
    *  ##### Note for Prototype 1.5.0
-   *  
+   *
    *  Note that prior to version 1.5.1, if the browser does not support
    *  *native DOM extensions* (see the [[Element]] section for further details),
    *  the element returned by [[Event.element]] might very well
    *  *not be extended*. If you intend to use methods from [[Element.Methods]]
    *  on it, you need to wrap the call in the [[$]] function like so:
-   *  
+   *
    *      document.observe('click', function(event) {
    *        var element = $(Event.element(event));
    *        // ...
@@ -225,7 +225,7 @@
     // internally as `_element` without having to extend the node.
     return Element.extend(_element(event));
   }
-  
+
   function _element(event) {
     event = Event.extend(event);
 
@@ -256,14 +256,14 @@
    *  starting with the element on which the event occurred, then moving up
    *  its ancestor chain. If `expression` is not given, the element which fired
    *  the event is returned.
-   *  
+   *
    *  *If no matching element is found, `undefined` is returned.*
-   *  
+   *
    *  ##### Example
-   *  
+   *
    *  Here's a simple example that lets you click everywhere on the page and
    *  hides the closest-fitting paragraph around your click (if any).
-   *  
+   *
    *      document.observe('click', function(event) {
    *        var element = event.findElement('p');
    *        if (element)
@@ -279,7 +279,7 @@
       element = element.parentNode;
     }
   }
-  
+
   /**
    *  Event.pointer(@event) -> Object
    *
@@ -341,33 +341,33 @@
    *
    *  Stopping an event also sets a `stopped` property on that event for
    *  future inspection.
-   *  
+   *
    *  There are two aspects to how your browser handles an event once it fires up:
-   *  
-   *  1. The browser usually triggers event handlers on the actual element the 
-   *  event occurred on, then on its parent element, and so on and so forth, 
-   *  until the document's root element is reached. This is called 
-   *  *event bubbling*, and is the most common form of event propagation. You 
-   *  may very well want to stop this propagation when you just handled an event, 
+   *
+   *  1. The browser usually triggers event handlers on the actual element the
+   *  event occurred on, then on its parent element, and so on and so forth,
+   *  until the document's root element is reached. This is called
+   *  *event bubbling*, and is the most common form of event propagation. You
+   *  may very well want to stop this propagation when you just handled an event,
    *  and don't want it to keep bubbling up (or see no need for it).
-   *  
-   *  2. Once your code had a chance to process the event, the browser handles 
-   *  it as well, if that event has a *default behavior*. For instance, clicking 
-   *  on links navigates to them; submitting forms sends them over to the server 
-   *  side; hitting the Return key in a single-line form field submits it; etc. 
-   *  You may very well want to prevent this default behavior if you do your own 
+   *
+   *  2. Once your code had a chance to process the event, the browser handles
+   *  it as well, if that event has a *default behavior*. For instance, clicking
+   *  on links navigates to them; submitting forms sends them over to the server
+   *  side; hitting the Return key in a single-line form field submits it; etc.
+   *  You may very well want to prevent this default behavior if you do your own
    *  handling.
-   *  
-   *  Because stopping one of those aspects means, in 99.9% of the cases, 
-   *  preventing the other one as well, Prototype bundles both in this `stop` 
-   *  function. Calling it on an event object, stops propagation *and* prevents 
+   *
+   *  Because stopping one of those aspects means, in 99.9% of the cases,
+   *  preventing the other one as well, Prototype bundles both in this `stop`
+   *  function. Calling it on an event object, stops propagation *and* prevents
    *  the default behavior.
-   *  
+   *
    *  ##### Example
-   *  
-   *  Here's a simple script that prevents a form from being sent to the server 
+   *
+   *  Here's a simple script that prevents a form from being sent to the server
    *  side if certain field is empty.
-   *  
+   *
    *      Event.observe('signinForm', 'submit', function(event) {
    *        var login = $F('login').strip();
    *        if ('' == login) {
@@ -375,7 +375,7 @@
    *          // Display the issue one way or another
    *        }
    *      });
-  **/  
+  **/
   function stop(event) {
     Event.extend(event);
     event.preventDefault();
@@ -438,27 +438,27 @@
     /**
      *  Event.extend(@event) -> Event
      *  - event (Event): An Event object
-     *  
+     *
      *  Extends `event` with all of the methods contained in `Event.Methods`.
-     *  
-     *  Note that all events inside handlers that were registered using 
+     *
+     *  Note that all events inside handlers that were registered using
      *  [[Event.observe]] or [[Element.observe]] will be extended automatically.
-     *  
-     *  You need only call `Event.extend` manually if you register a handler a 
+     *
+     *  You need only call `Event.extend` manually if you register a handler a
      *  different way (e.g., the `onclick` attribute). We really can't encourage
      *  that sort of thing, though.
     **/
     // IE's method for extending events.
     Event.extend = function(event, element) {
       if (!event) return false;
-      
+
       // If it's not a legacy event, it doesn't need extending.
       if (!isIELegacyEvent(event)) return event;
 
       // Mark this event so we know not to extend a second time.
       if (event._extendedByPrototype) return event;
       event._extendedByPrototype = Prototype.emptyFunction;
-      
+
       var pointer = Event.pointer(event);
 
       // The optional `element` argument gives us a fallback value for the
@@ -469,24 +469,24 @@
         pageX:  pointer.x,
         pageY:  pointer.y
       });
-      
+
       Object.extend(event, methods);
       Object.extend(event, additionalMethods);
-      
+
       return event;
     };
   } else {
     // Only DOM events, so no manual extending necessary.
     Event.extend = Prototype.K;
   }
-  
+
   if (window.addEventListener) {
     // In all browsers that support DOM L2 Events, we can augment
     // `Event.prototype` directly.
     Event.prototype = window.Event.prototype || document.createEvent('HTMLEvents').__proto__;
     Object.extend(Event.prototype, methods);
   }
-  
+
   //
   // EVENT REGISTRY
   //
@@ -494,14 +494,14 @@
     mouseenter: 'mouseover',
     mouseleave: 'mouseout'
   };
-  
+
   function getDOMEventName(eventName) {
     return EVENT_TRANSLATIONS[eventName] || eventName;
   }
-  
+
   if (MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED)
     getDOMEventName = Prototype.K;
-  
+
   function getUniqueElementID(element) {
     if (element === window) return 0;
 
@@ -511,7 +511,7 @@
       element._prototypeUID = Element.Storage.UID++;
     return element._prototypeUID;
   }
-  
+
   // In Internet Explorer, DOM nodes have a `uniqueID` property. Saves us
   // from inventing our own.
   function getUniqueElementID_IE(element) {
@@ -520,7 +520,7 @@
     if (element == document) return 1;
     return element.uniqueID;
   }
-  
+
   if ('uniqueID' in DIV)
     getUniqueElementID = getUniqueElementID_IE;
 
@@ -539,17 +539,17 @@
     if (!CACHE[uid]) CACHE[uid] = { element: element };
     return CACHE[uid];
   }
-  
+
   function destroyRegistryForElement(element, uid) {
     if (Object.isUndefined(uid))
       uid = getUniqueElementID(element);
     delete GLOBAL.Event.cache[uid];
   }
-  
+
   // The `register` and `unregister` functions handle creating the responder
   // and managing an event registry. They _don't_ attach and detach the
   // listeners themselves.
-  
+
   // Add an event to the element's event registry.
   function register(element, eventName, handler) {
     var registry = getRegistryForElement(element);
@@ -560,7 +560,7 @@
     var i = entries.length;
     while (i--)
       if (entries[i].handler === handler) return null;
-      
+
     var uid = getUniqueElementID(element);
     var responder = GLOBAL.Event._createResponder(uid, eventName, handler);
     var entry = {
@@ -568,16 +568,16 @@
       handler:   handler
     };
 
-    entries.push(entry);    
+    entries.push(entry);
     return entry;
   }
-  
+
   // Remove an event from the element's event registry.
   function unregister(element, eventName, handler) {
     var registry = getRegistryForElement(element);
     var entries = registry[eventName];
     if (!entries) return;
-    
+
     var i = entries.length, entry;
     while (i--) {
       if (entries[i].handler === handler) {
@@ -585,7 +585,7 @@
         break;
       }
     }
-    
+
     // This handler wasn't in the collection, so it doesn't need to be
     // unregistered.
     if (!entry) return;
@@ -593,11 +593,20 @@
     // Remove the entry from the collection;
     var index = entries.indexOf(entry);
     entries.splice(index, 1);
-    
+
+    if (entries.length === 0) {
+      // We can destroy the registry's entry for this event name...
+      delete registry[eventName];
+      // ...and we we should destroy the whole registry if there are no other
+      // events.
+      if (Object.keys(registry).length === 1 && ('element' in registry))
+        destroyRegistryForElement(element);
+    }
+
     return entry;
-  }  
-  
-  
+  }
+
+
   //
   // EVENT OBSERVING
   //
@@ -751,22 +760,22 @@
    *  1.6 also introduced setting the `this` context to the element being
    *  observed, automatically extending the [[Event]] object, and the
    *  [[Event#findElement]] method.
-  **/  
+  **/
   function observe(element, eventName, handler) {
     element = $(element);
     var entry = register(element, eventName, handler);
-    
+
     if (entry === null) return element;
 
-    var responder = entry.responder;    
+    var responder = entry.responder;
     if (isCustomEvent(eventName))
       observeCustomEvent(element, eventName, responder);
     else
       observeStandardEvent(element, eventName, responder);
-      
+
     return element;
   }
-  
+
   function observeStandardEvent(element, eventName, responder) {
     var actualEventName = getDOMEventName(eventName);
     if (element.addEventListener) {
@@ -775,7 +784,7 @@
       element.attachEvent('on' + actualEventName, responder);
     }
   }
-  
+
   function observeCustomEvent(element, eventName, responder) {
     if (element.addEventListener) {
       element.addEventListener('dataavailable', responder, false);
@@ -786,7 +795,7 @@
       element.attachEvent('onlosecapture',   responder);
     }
   }
-  
+
   /**
    *  Event.stopObserving(element[, eventName[, handler]]) -> Element
    *  - element (Element | String): The element to stop observing, or its ID.
@@ -848,38 +857,38 @@
    *  ...and then to remove:
    *
    *      $('foo').stopObserving('click', this.boundHandlerMethod); // <== Right
-  **/  
+  **/
   function stopObserving(element, eventName, handler) {
     element = $(element);
     var handlerGiven = !Object.isUndefined(handler),
      eventNameGiven = !Object.isUndefined(eventName);
-     
+
     if (!eventNameGiven && !handlerGiven) {
       stopObservingElement(element);
       return element;
     }
-    
+
     if (!handlerGiven) {
       stopObservingEventName(element, eventName);
       return element;
     }
-    
+
     var entry = unregister(element, eventName, handler);
-    
-    if (!entry) return element; 
+
+    if (!entry) return element;
     removeEvent(element, eventName, entry.responder);
     return element;
   }
-  
+
   function stopObservingStandardEvent(element, eventName, responder) {
     var actualEventName = getDOMEventName(eventName);
     if (element.removeEventListener) {
-      element.removeEventListener(actualEventName, responder, false);      
+      element.removeEventListener(actualEventName, responder, false);
     } else {
       element.detachEvent('on' + actualEventName, responder);
     }
   }
-  
+
   function stopObservingCustomEvent(element, eventName, responder) {
     if (element.removeEventListener) {
       element.removeEventListener('dataavailable', responder, false);
@@ -888,7 +897,7 @@
       element.detachEvent('onlosecapture',   responder);
     }
   }
-  
+
 
   // The `stopObservingElement` and `stopObservingEventName` functions are
   // for bulk removal of event listeners. We use them rather than recurse
@@ -917,29 +926,29 @@
         removeEvent(element, eventName, entries[i].responder);
     }
   }
-  
+
   // Stop observing all listeners of a certain event name on an element.
   function stopObservingEventName(element, eventName) {
     var registry = getRegistryForElement(element);
     var entries = registry[eventName];
     if (!entries) return;
     delete registry[eventName];
-    
+
     var i = entries.length;
     while (i--)
       removeEvent(element, eventName, entries[i].responder);
   }
 
-  
+
   function removeEvent(element, eventName, handler) {
     if (isCustomEvent(eventName))
       stopObservingCustomEvent(element, eventName, handler);
     else
       stopObservingStandardEvent(element, eventName, handler);
   }
-  
-  
-  
+
+
+
   // FIRING CUSTOM EVENTS
   function getFireTarget(element) {
     if (element !== document) return element;
@@ -947,7 +956,7 @@
       return document.documentElement;
     return element;
   }
-  
+
   /**
    *  Event.fire(element, eventName[, memo[, bubble = true]]) -> Event
    *  - memo (?): Metadata for the event. Will be accessible to event
@@ -960,50 +969,50 @@
   **/
   function fire(element, eventName, memo, bubble) {
     element = getFireTarget($(element));
-    if (Object.isUndefined(bubble)) bubble = true;      
+    if (Object.isUndefined(bubble)) bubble = true;
     memo = memo || {};
-      
+
     var event = fireEvent(element, eventName, memo, bubble);
     return Event.extend(event);
   }
-  
+
   function fireEvent_DOM(element, eventName, memo, bubble) {
     var event = document.createEvent('HTMLEvents');
     event.initEvent('dataavailable', bubble, true);
-    
+
     event.eventName = eventName;
     event.memo = memo;
-    
+
     element.dispatchEvent(event);
     return event;
   }
-  
+
   function fireEvent_IE(element, eventName, memo, bubble) {
     var event = document.createEventObject();
     event.eventType = bubble ? 'ondataavailable' : 'onlosecapture';
-    
+
     event.eventName = eventName;
     event.memo = memo;
-    
-    element.fireEvent(event.eventType, event);    
+
+    element.fireEvent(event.eventType, event);
     return event;
   }
-  
+
   var fireEvent = document.createEvent ? fireEvent_DOM : fireEvent_IE;
-  
-  
+
+
   // EVENT DELEGATION
-  
+
   /**
    *  class Event.Handler
-   *  
+   *
    *  Creates an observer on an element that listens for a particular event on
    *  that element's descendants, optionally filtering by a CSS selector.
-   *  
+   *
    *  This class simplifies the common "event delegation" pattern, in which one
    *  avoids adding an observer to a number of individual elements and instead
    *  listens on a _common ancestor_ element.
-   *  
+   *
    *  For more information on usage, see [[Event.on]].
   **/
   Event.Handler = Class.create({
@@ -1021,7 +1030,7 @@
      *    event. (If `selector` was given, this element will be the one that
      *    satisfies the criteria described just above; if not, it will be the
      *    one specified in the `element` argument).
-     *  
+     *
      *  Instantiates an `Event.Handler`. **Will not** begin observing until
      *  [[Event.Handler#start]] is called.
     **/
@@ -1032,34 +1041,34 @@
       this.callback  = callback;
       this.handler   = this.handleEvent.bind(this);
     },
-    
+
 
     /**
      *  Event.Handler#start -> Event.Handler
-     *  
+     *
      *  Starts listening for events. Returns itself.
     **/
     start: function() {
       Event.observe(this.element, this.eventName, this.handler);
       return this;
     },
-    
+
     /**
      *  Event.Handler#stop -> Event.Handler
-     *  
+     *
      *  Stops listening for events. Returns itself.
     **/
     stop: function() {
       Event.stopObserving(this.element, this.eventName, this.handler);
       return this;
     },
-    
+
     handleEvent: function(event) {
       var element = Event.findElement(event, this.selector);
       if (element) this.callback.call(this.element, event, element);
     }
   });
-  
+
   /**
    *  Event.on(element, eventName[, selector], callback) -> Event.Handler
    *  - element (Element | String): The DOM element to observe, or its ID.
@@ -1075,53 +1084,53 @@
    *    satisfies the criteria described just above; if not, it will be the
    *    one specified in the `element` argument). This function is **always**
    *    bound to `element`.
-   *  
+   *
    *  Listens for events on an element's descendants, optionally filtering
    *  to match a given CSS selector.
-   *  
+   *
    *  Creates an instance of [[Event.Handler]], calls [[Event.Handler#start]],
    *  then returns that instance. Keep a reference to this returned instance if
    *  you later want to unregister the observer.
-   *  
+   *
    *  ##### Usage
-   *  
+   *
    *  `Event.on` can be used to set up event handlers with or without event
    *  delegation. In its simplest form, it works just like [[Event.observe]]:
-   *  
+   *
    *      $("messages").on("click", function(event) {
    *        // ...
    *      });
-   *  
+   *
    *  An optional second argument lets you specify a CSS selector for event
    *  delegation. This encapsulates the pattern of using [[Event#findElement]]
    *  to retrieve the first ancestor element matching a specific selector.
-   *  
+   *
    *      $("messages").on("click", "a.comment", function(event, element) {
    *         // ...
    *      });
-   *  
+   *
    *  Note the second argument in the handler above: it references the
    *  element matched by the selector (in this case, an `a` tag with a class
    *  of `comment`). This argument is important to use because within the
    *  callback, the `this` keyword **will always refer to the original
    *  element** (in this case, the element with the id of `messages`).
-   *  
+   *
    *  `Event.on` differs from `Event.observe` in one other important way:
    *  its return value is an instance of [[Event.Handler]]. This instance
    *  has a `stop` method that will remove the event handler when invoked
    *  (and a `start` method that will attach the event handler again after
    *  it's been removed).
-   *  
+   *
    *      // Register the handler:
    *      var handler = $("messages").on("click", "a.comment",
    *       this.click.bind(this));
-   *  
+   *
    *      // Unregister the handler:
    *      handler.stop();
-   *  
+   *
    *      // Re-register the handler:
    *      handler.start();
-   *  
+   *
    *  This means that, unlike `Event.stopObserving`, there's no need to
    *  retain a reference to the handler function.
   **/
@@ -1130,10 +1139,10 @@
     if (Object.isFunction(selector) && Object.isUndefined(callback)) {
       callback = selector, selector = null;
     }
-    
+
     return new Event.Handler(element, eventName, selector, callback).start();
   }
-  
+
   Object.extend(Event, Event.Methods);
 
   Object.extend(Event, {
@@ -1150,41 +1159,41 @@
      *  See [[Event.fire]].
      *
      *  Fires a custom event with the current element as its target.
-     *  
+     *
      *  [[Element.fire]] creates a custom event with the given name, then triggers
      *  it on the given element. The custom event has all the same properties
      *  and methods of native events. Like a native event, it will bubble up
      *  through the DOM unless its propagation is explicitly stopped.
-     *  
+     *
      *  The optional second argument will be assigned to the `memo` property of
      *  the event object so that it can be read by event handlers.
-     *  
+     *
      *  Custom events are dispatched synchronously: [[Element.fire]] waits until
      *  the event finishes its life cycle, then returns the event itself.
-     *  
+     *
      *  ##### Note
-     *  
+     *
      *  [[Element.fire]] does not support firing native events. All custom event
      *  names _must_ be namespaced (using a colon). This is to avoid custom
      *  event names conflicting with non-standard native DOM events such as
      *  `mousewheel` and `DOMMouseScroll`.
-     *  
+     *
      *  ##### Examples
-     *  
+     *
      *      document.observe("widget:frobbed", function(event) {
      *        console.log("Element with ID (" + event.target.id +
      *         ") frobbed widget #" + event.memo.widgetNumber + ".");
      *      });
-     *        
+     *
      *      var someNode = $('foo');
      *      someNode.fire("widget:frobbed", { widgetNumber: 19 });
-     *      
+     *
      *      //-> "Element with ID (foo) frobbed widget #19."
-     *  
+     *
      *  ##### Tip
-     *  
+     *
      *  Events that have been stopped with [[Event.stop]] will have a boolean
-     *  `stopped` property set to true. Since [[Element.fire]] returns the custom 
+     *  `stopped` property set to true. Since [[Element.fire]] returns the custom
      *  event, you can inspect this property to determine whether the event was
      *  stopped.
     **/
@@ -1203,7 +1212,7 @@
      *  See [[Event.stopObserving]].
     **/
     stopObserving: stopObserving,
-    
+
     /**
      *  Element.on(@element, eventName[, selector], callback) -> Element
      *
@@ -1238,13 +1247,13 @@
      *
      *  Listens for the given event over the entire document. Can also be used
      *  for listening to `"dom:loaded"` event.
-     *  
+     *
      *  [[document.observe]] is the document-wide version of [[Element#observe]].
      *  Using [[document.observe]] is equivalent to
      *  `Event.observe(document, eventName, handler)`.
-     *  
+     *
      *  ##### The `"dom:loaded"` event
-     *  
+     *
      *  One really useful event generated by Prototype that you might want to
      *  observe on the document is `"dom:loaded"`. On supporting browsers it
      *  fires on `DOMContentLoaded` and on unsupporting browsers it simulates it
@@ -1254,9 +1263,9 @@
      *  fully loaded. The `load` event on `window` only fires after all page
      *  images are loaded, making it unsuitable for some initialization purposes
      *  like hiding page elements (so they can be shown later).
-     *  
+     *
      *  ##### Example
-     *  
+     *
      *      document.observe("dom:loaded", function() {
      *        // initially hide all containers for tab content
      *        $$('div.tabcontent').invoke('hide');
@@ -1268,15 +1277,15 @@
      *  document.stopObserving([eventName[, handler]]) -> Element
      *
      *  Unregisters an event handler from the document.
-     *  
+     *
      *  [[document.stopObserving]] is the document-wide version of
      *  [[Element.stopObserving]].
     **/
     stopObserving: stopObserving.methodize(),
-    
+
     /**
      *  document.on(@element, eventName[, selector], callback) -> Event.Handler
-     *  
+     *
      *  See [[Event.on]].
     **/
     on:            on.methodize(),
@@ -1292,74 +1301,74 @@
   // Export to the global scope.
   if (GLOBAL.Event) Object.extend(window.Event, Event);
   else GLOBAL.Event = Event;
-  
+
   GLOBAL.Event.cache = {};
-    
+
   function destroyCache_IE() {
     GLOBAL.Event.cache = null;
   }
-  
+
   if (window.attachEvent)
     window.attachEvent('onunload', destroyCache_IE);
-    
+
   DIV = null;
   docEl = null;
 })(this);
 
-(function(GLOBAL) {  
+(function(GLOBAL) {
   /* Code for creating leak-free event responders is based on work by
    John-David Dalton. */
-  
+
   var docEl = document.documentElement;
   var MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED = 'onmouseenter' in docEl
     && 'onmouseleave' in docEl;
-    
+
   function isSimulatedMouseEnterLeaveEvent(eventName) {
     return !MOUSEENTER_MOUSELEAVE_EVENTS_SUPPORTED &&
      (eventName === 'mouseenter' || eventName === 'mouseleave');
   }
-  
+
   // The functions for creating responders accept the element's UID rather
   // than the element itself. This way, there are _no_ DOM objects inside the
   // closure we create, meaning there's no need to unregister event listeners
   // on unload.
-  function createResponder(uid, eventName, handler) {    
+  function createResponder(uid, eventName, handler) {
     if (Event._isCustomEvent(eventName))
-      return createResponderForCustomEvent(uid, eventName, handler);      
+      return createResponderForCustomEvent(uid, eventName, handler);
     if (isSimulatedMouseEnterLeaveEvent(eventName))
       return createMouseEnterLeaveResponder(uid, eventName, handler);
-    
+
     return function(event) {
       if (!Event.cache) return;
-      
+
       var element = Event.cache[uid].element;
       Event.extend(event, element);
       handler.call(element, event);
     };
   }
-  
+
   function createResponderForCustomEvent(uid, eventName, handler) {
     return function(event) {
       var element = Event.cache[uid].element;
 
       if (Object.isUndefined(event.eventName))
         return false;
-        
+
       if (event.eventName !== eventName)
         return false;
-        
+
       Event.extend(event, element);
       handler.call(element, event);
     };
   }
-  
+
   function createMouseEnterLeaveResponder(uid, eventName, handler) {
     return function(event) {
       var element = Event.cache[uid].element;
-      
+
       Event.extend(event, element);
       var parent = event.relatedTarget;
-      
+
       // Walk up the DOM tree to see if the related target is a descendant of
       // the original element. If it is, we ignore the event to match the
       // behavior of mouseenter/mouseleave.
@@ -1367,12 +1376,12 @@
         try { parent = parent.parentNode; }
         catch(e) { parent = element; }
       }
-      
-      if (parent === element) return;      
+
+      if (parent === element) return;
       handler.call(element, event);
     }
   }
-  
+
   GLOBAL.Event._createResponder = createResponder;
   docEl = null;
 })(this);
@@ -1380,23 +1389,23 @@
 (function(GLOBAL) {
   /* Support for the DOMContentLoaded event is based on work by Dan Webb,
      Matthias Miller, Dean Edwards, John Resig, and Diego Perini. */
-  
+
   var TIMER;
-  
+
   function fireContentLoadedEvent() {
     if (document.loaded) return;
     if (TIMER) window.clearTimeout(TIMER);
     document.loaded = true;
     document.fire('dom:loaded');
   }
-  
+
   function checkReadyState() {
     if (document.readyState === 'complete') {
       document.detachEvent('onreadystatechange', checkReadyState);
       fireContentLoadedEvent();
     }
   }
-  
+
   function pollDoScroll() {
     try {
       document.documentElement.doScroll('left');
@@ -1404,7 +1413,7 @@
       TIMER = pollDoScroll.defer();
       return;
     }
-    
+
     fireContentLoadedEvent();
   }
 
@@ -1416,7 +1425,7 @@
     fireContentLoadedEvent();
     return;
   }
-  
+
   if (document.addEventListener) {
     // All browsers that support DOM L2 Events support DOMContentLoaded,
     // including IE 9.
@@ -1425,7 +1434,7 @@
     document.attachEvent('onreadystatechange', checkReadyState);
     if (window == top) TIMER = pollDoScroll.defer();
   }
-  
+
   // Worst-case fallback.
   Event.observe(window, 'load', fireContentLoadedEvent);
 })(this);
