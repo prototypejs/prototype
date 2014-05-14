@@ -1,0 +1,2 @@
+require './app'
+run UnitTests
