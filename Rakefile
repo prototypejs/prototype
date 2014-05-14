@@ -99,6 +99,16 @@ EOF
     })
   end
   
+  def self.require_package(name)
+    begin
+      require name
+    rescue LoadError => e
+      puts "You need the #{name} package. Try installing it with:\n"
+      puts "  $ gem install #{name}"
+      exit
+    end
+  end
+  
   def self.syntax_highlighter
     if ENV['SYNTAX_HIGHLIGHTER']
       highlighter = ENV['SYNTAX_HIGHLIGHTER'].to_sym
@@ -345,6 +355,31 @@ end
 
 task :clean_tmp do
   puts '"rake clean_tmp" is deprecated. Please use "rake test:clean" instead.'
+end
+
+namespace :test_new do
+  desc 'Starts the test server.'
+  task :start => [:require] do
+    path_to_app = File.join(PrototypeHelper::ROOT_DIR, 'test.new', 'server.rb')
+    require path_to_app
+    
+    puts "Unit tests available at <http://127.0.0.1:4567/test/>"
+    UnitTests.run!
+  end
+  
+  task :require do
+    PrototypeHelper.require_package('sinatra')
+  end
+  
+  desc "Opens the test suite in several different browsers. (Does not start or stop the server; you should do that separately.)"
+  task :run => [:require] do
+    browsers, tests, grep = ENV['BROWSERS'], ENV['TESTS'], ENV['GREP']
+    path_to_runner = File.join(PrototypeHelper::ROOT_DIR, 'test.new', 'runner.rb')
+    require path_to_runner
+    
+    Runner::run(browsers, tests, grep)
+  end
+  
 end
 
 namespace :caja do
