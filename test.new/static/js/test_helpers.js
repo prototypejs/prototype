@@ -12,7 +12,10 @@
   }
   window.info = info;
 
-  // A function that acts like setTimeout, except with arguments reversed. This
+  var CONSOLE_GROUP_SUPPORTED = ('console' in window) && console.group &&
+   console.groupEnd;
+
+   // A function that acts like setTimeout, except with arguments reversed. This
   // is far more readable within tests.
   function wait(duration, fn) {
     return setTimeout(fn, duration);
@@ -206,7 +209,10 @@
     },
 
     startSuite: function (suite) {
-      console.group('Suite:', suite);
+      if (CONSOLE_GROUP_SUPPORTED) {
+        console.group('Suite:', suite);
+      }
+
       if (this.currentFixtures && this.currentFixtures.parentNode) {
         this.currentFixtures.remove();
       }
@@ -218,7 +224,9 @@
     },
 
     endSuite: function (suite) {
-      console.groupEnd();
+      if (CONSOLE_GROUP_SUPPORTED) {
+        console.groupEnd();
+      }
     }
   };
 
