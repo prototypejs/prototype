@@ -2,6 +2,7 @@ require 'pathname'
 require 'sinatra/base'
 require 'cgi'
 require 'json'
+require 'rbconfig'
 
 # A barebones runner for testing across multiple browsers quickly.
 #
@@ -41,7 +42,20 @@ require 'json'
 # rake test:run BROWSERS=chrome GREP=gsub
 # # (will run all tests whose names contain "gsub" in only Chrome)
 
+# TODO:
+#
+# - Figure out a better way to manage the Sinatra app. Forking is the best
+#   way to separate its stdout and stderr, but that doesn't work on Windows.
+# - Allow the user to specify paths to browser executables via a YAML file or
+#   something. Especially crucial on Windows.
+# - Get the test server to report more stuff about failures so that the
+#   runner's output can be more specific about what failed and why.
+#
+
 module Runner
+
+  host = RbConfig::CONFIG['host']
+  IS_WINDOWS = host.include?('mswin') || host.include?('mingw32')
 
   module Browsers
 
@@ -58,7 +72,6 @@ module Runner
       end
 
       def host
-        require 'rbconfig'
         RbConfig::CONFIG['host']
       end
 
@@ -67,7 +80,7 @@ module Runner
       end
 
       def windows?
-        host.include?('mswin')
+        host.include?('mswin') || host.include?('mingw32')
       end
 
       def linux?
@@ -76,20 +89,16 @@ module Runner
 
       def visit(url)
         if windows?
-          system("#{path} #{url}")
+          system(%Q["#{path}" "#{url}"])
         elsif macos?
           system("open -g -a '#{path}' '#{url}'")
         elsif linux?
-          system("#{name} #{url}")
+          system(%Q["#{name}" "#{url}"])
         end
       end
 
       def installed?
-        if macos?
-          installed = File.exists?(path)
-        else
-          true # TODO
-        end
+        path && File.exists?(path)
       end
 
       def name
@@ -105,7 +114,7 @@ module Runner
         if macos?
           File.expand_path("/Applications/#{name}.app")
         else
-          @path
+          @path || nil
         end
       end
     end
@@ -120,15 +129,6 @@ module Runner
         true
       end
 
-      def path
-        if windows?
-          Pathname.new('C:\Program Files').join(
-            'Mozilla Firefox', 'firefox.exe')
-        else
-          super
-        end
-      end
-
     end
 
     class IE < Abstract
@@ -141,7 +141,11 @@ module Runner
         windows?
       end
 
-      def visit
+      def installed?
+        windows?
+      end
+
+      def visit(url)
         ie = WIN32OLE.new('InternetExplorer.Application')
         ie.visible = true
         ie.Navigate(url)
@@ -158,6 +162,10 @@ module Runner
     end
 
     class Chrome < Abstract
+
+      def initialize(path=nil)
+        @path = path || 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+      end
 
       def name
         'Google Chrome'
@@ -188,17 +196,22 @@ module Runner
   # page will make a JSONP call when all the tests have been run.
   class ResultsListener < Sinatra::Base
     set :port, 4568
+    set :logging, false
 
     get '/results' do
       results = {
-        :tests    => params[:tests].to_i,
-        :passes   => params[:passes].to_i,
-        :failures => params[:failures].to_i,
-        :duration => params[:duration].to_f
+        "tests"    => params[:tests].to_i,
+        "passes"   => params[:passes].to_i,
+        "failures" => params[:failures].to_i,
+        "duration" => params[:duration].to_f
       }
 
-      pipe = Runner::write_pipe
-      pipe.write(JSON.dump(results) + "\n")
+      if IS_WINDOWS
+        Runner::queue.push(results)
+      else
+        pipe = Runner::write_pipe
+        pipe.write(JSON.dump(results) + "\n")
+      end
 
       # We don't even need to render anything; the test page doesn't care
       # about a response.
@@ -208,6 +221,10 @@ module Runner
   class << self
 
     attr_accessor :read_pipe, :write_pipe
+
+    def queue
+      @queue ||= Queue.new
+    end
 
     def run(browsers=nil, tests=nil, grep=nil)
       @browsers = browsers.nil? ? BROWSERS.keys :
@@ -223,25 +240,37 @@ module Runner
         @url << "&grep=#{CGI::escape(@grep)}"
       end
 
-      Runner::read_pipe, Runner::write_pipe = IO.pipe
+      # If we're on Linux/OS X, we want to fork off a process here, because
+      # it gives us better control over stdout/stderr. But Windows doesn't
+      # support forking, so we have to fall back to threads.
+      if IS_WINDOWS
+        thread_id = Thread.new do
+          # I don't see an easy way to turn off WEBrick's annoying logging,
+          # so let's just ignore it.
+          $stderr = StringIO.new
+          ResultsListener.run!
+        end
+      else
+        Runner::read_pipe, Runner::write_pipe = IO.pipe
 
-      # Start up the Sinatra app to listen for test results, but do it in a
-      # fork because it sends some output to stdout and stderr that is
-      # irrelevant and annoying.
-      pid = fork do
-        Runner::read_pipe.close
-        STDOUT.reopen('/dev/null', 'w')
-        STDERR.reopen('/dev/null', 'w')
+        # Start up the Sinatra app to listen for test results, but do it in a
+        # fork because it sends some output to stdout and stderr that is
+        # irrelevant and annoying.
+        pid = fork do
+          Runner::read_pipe.close
+          STDOUT.reopen('/dev/null', 'w')
+          STDERR.reopen('/dev/null', 'w')
 
-        ResultsListener.run!
-      end
+          ResultsListener.run!
+        end
 
-      Runner::write_pipe.close
+        Runner::write_pipe.close
 
-      # Make sure we clean up the forked process when we're done.
-      at_exit do
-        Process.kill(9, pid)
-        Process.wait(pid)
+        # Make sure we clean up the forked process when we're done.
+        at_exit do
+          Process.kill(9, pid)
+          Process.wait(pid)
+        end
       end
 
       trap('INT') { exit }
@@ -263,11 +292,16 @@ module Runner
         browser.visit(@url)
         browser.teardown
 
-        message = Runner::read_pipe.gets
-        results = JSON.parse(message)
-        results_table[browser.name] = results
-
+        if IS_WINDOWS
+          # On Windows we need to slow down a bit. I don't know why.
+          sleep 2
+          results = Runner::queue.pop
+        else
+          message = Runner::read_pipe.gets
+          results = JSON.parse(message)
+        end
         puts "done."
+        results_table[browser.name] = results
       end
 
       puts "\n\n"
