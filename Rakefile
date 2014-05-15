@@ -160,18 +160,12 @@ EOF
   
   def self.get_selector_engine(name)
     return if !name
-    # If the submodule exists, we should use it, even if we're using the
-    # default engine; the user might have fetched it manually, and thus would
-    # want to build a distributable with the most recent version of that
-    # engine.
+    # If the submodule exists, we should use it.
     submodule_path = File.join(ROOT_DIR, "vendor", name)
     return submodule_path if File.exist?(File.join(submodule_path, "repository", ".git"))
     return submodule_path if name === "legacy_selector"
     
-    # If it doesn't exist, we should fetch it, _unless_ it's the default
-    # engine. We've already got a known version of the default engine in our
-    # load path.
-    return if name == DEFAULT_SELECTOR_ENGINE
+    # If it doesn't exist, we should fetch it.
     get_submodule('the required selector engine', "#{name}/repository")
     unless File.exist?(submodule_path)
       puts "The selector engine you required isn't available at vendor/#{name}.\n\n"
