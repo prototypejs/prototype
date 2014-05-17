@@ -4,7 +4,10 @@ suite('Form', function () {
   this.name = 'form';
 
   setup(function () {
-    $$('div.form-tests form').invoke('reset');
+    // $$('div.form-tests form').invoke('reset');
+    $$('div.form-tests form').each(function (f) {
+      Form.reset(f);
+    });
     // for some reason, hidden value does not reset
     $('form-test-bigform')['tf_hidden'].value = '';
   });

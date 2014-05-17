@@ -390,7 +390,12 @@ suite("Layout",function(){
     test('#getDimensions', function () {
       var original = document.viewport.getDimensions();
 
-      window.resizeTo(800, 600);
+      try {
+        window.resizeTo(800, 600);
+      } catch (e) {
+        info("Can't resize.");
+        return;
+      }
 
       wait(1000, function() {
         var before = document.viewport.getDimensions();
