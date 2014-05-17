@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html charset="utf-8">
+
+<head>
+
+  <link rel="stylesheet" href="/css/mocha.css" type="text/css" media="screen">
+
+  <style type="text/css" media="screen">
+    #mocha {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40%;
+      background: #fff;
+      padding-bottom: 20px;
+      border: 2px solid #eee;
+    }
+
+    #mocha-stats {
+      background: #fff;
+    }
+
+    /* Force test error messages to wrap. */
+    #mocha .test pre {
+      white-space: pre-wrap;       /* css-3 */
+      white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+      white-space: -pre-wrap;      /* Opera 4-6 */
+      white-space: -o-pre-wrap;    /* Opera 7 */
+      word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    }
+  </style>
+
+  <script src="/prototype.js" type="text/javascript"></script>
+  <script src="/js/mocha.js" type="text/javascript"></script>
+  <script src="/js/proclaim.js" type="text/javascript"></script>
+  <script src="/js/test_helpers.js" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    var eventResults = {};
+    var Fixtures = {};
+  </script>
+
+  <script type="text/javascript">
+    mocha.setup('tdd');
+    mocha.reporter(Test.Reporter);
+  </script>
+
+  <% @suites.each do |suite| %>
+  <script src="/js/tests/<%= suite %>.test.js" type="text/javascript"></script>
+  <% end %>
+
+</head>
+
+<body data-suites="<%= suites.join(',') %>">
+  <div id="mocha"></div>
+
+  <div id="current_fixtures"></div>
+
+  <div id="other_fixtures">
+    <%= yield %>
+  </div>
+
+  <script type="text/javascript">
+    Test.setup();
+    mocha.run();
+
+    mocha.suite.suites.each(function (suite) {
+      suite.beforeAll(function () {
+        Test.startSuite(suite.name);
+      });
+
+      suite.afterAll(function () {
+        Test.endSuite(suite.name);
+      });
+    });
+  </script>
+
+  <script type="text/javascript">
+    eventResults.endOfDocument = true;
+  </script>
+
+</body>
+
+
+</html>
