@@ -11,6 +11,10 @@ class UnitTests < Sinatra::Application
   set :root, PWD
   set :public_folder, PWD.join('static')
 
+  # By default, the server is only reachable locally. We change this so that
+  # we can start the server on one machine and then run tests from another.
+  set :bind, '0.0.0.0'
+
   PATH_TO_PROTOTYPE = PWD.join('..', 'dist', 'prototype.js')
 
   unless PATH_TO_PROTOTYPE.file?
@@ -18,7 +22,6 @@ class UnitTests < Sinatra::Application
   end
 
   PATH_TO_TEST_JS = PWD.join('tests')
-
 
   SUITES = []
 
@@ -35,6 +38,10 @@ class UnitTests < Sinatra::Application
     next if e.directory?
     basename = e.basename('.*').to_s
     SUITES_WITH_VIEWS << basename
+  end
+
+  after do
+    headers('X-UA-Compatible' => 'IE=edge')
   end
 
 
