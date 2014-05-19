@@ -1,19 +1,30 @@
 
 (function () {
 
-  function info() {
-    console.log.apply(console, arguments);
-  }
-
-  // Fall back when we don't have the console.
-  // TODO: Find a different way of logging in old IEs.
-  if (!('console' in window) || !console.log) {
-    info = function () {};
-  }
-  window.info = info;
-
+  var CONSOLE_LOG_SUPPORTED = ('console' in window) && console.log;
   var CONSOLE_GROUP_SUPPORTED = ('console' in window) && console.group &&
    console.groupEnd;
+  var CONSOLE_LOG_APPLY = true;
+
+  function info() {
+    if (CONSOLE_LOG_APPLY) {
+      console.log.apply(console, arguments);
+    } else {
+      console.log(arguments);
+    }
+  }
+
+  if (!CONSOLE_LOG_SUPPORTED) {
+    info = Prototype.emptyFunction;
+  } else {
+    try {
+      console.log.apply(console, [""]);
+    } catch (e) {
+      CONSOLE_LOG_APPLY = false;
+    }
+  }
+
+  window.info = info;
 
    // A function that acts like setTimeout, except with arguments reversed. This
   // is far more readable within tests.
@@ -193,6 +204,7 @@
   // tests run, then detach them all from the document. Then, before a suite
   // runs, its fixtures are reattached, then removed again before the next
   // suite runs.
+  //
   window.Test = {
     setup: function () {
       var body = $(document.body);
@@ -211,6 +223,8 @@
     startSuite: function (suite) {
       if (CONSOLE_GROUP_SUPPORTED) {
         console.group('Suite:', suite);
+      } else if (CONSOLE_LOG_SUPPORTED) {
+        console.log('Suite:', suite);
       }
 
       if (this.currentFixtures && this.currentFixtures.parentNode) {
