@@ -388,7 +388,7 @@ suite("Layout",function(){
   suite('document.viewport', function () {
 
     test('#getDimensions', function (done) {
-      this.timeout(60000);
+      this.timeout(5000);
       var original = document.viewport.getDimensions();
 
       try {
