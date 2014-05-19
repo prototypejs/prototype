@@ -8,6 +8,8 @@ class UnitTests < Sinatra::Application
 
   PWD = Pathname.new( File.expand_path( File.dirname(__FILE__) ) )
 
+  UNIQUE_ASSET_STRING = Time.new.to_i
+
   set :root, PWD
   set :public_folder, PWD.join('static')
 
@@ -21,7 +23,8 @@ class UnitTests < Sinatra::Application
     raise "You must run `rake dist` before starting the server."
   end
 
-  PATH_TO_TEST_JS = PWD.join('tests')
+  PATH_TO_TEST_JS  = PWD.join('tests')
+  PATH_TO_FIXTURES = PWD.join('fixtures')
 
   SUITES = []
 
@@ -41,7 +44,12 @@ class UnitTests < Sinatra::Application
   end
 
   after do
-    headers('X-UA-Compatible' => 'IE=edge')
+    headers({
+      'X-UA-Compatible' => 'IE=edge',
+      'Cache-Control'   => 'no-cache, no-store, must-revalidate',
+      'Pragma'          => 'no-cache',
+      'Expires'         => '0'
+    })
   end
 
 
@@ -50,9 +58,14 @@ class UnitTests < Sinatra::Application
     post(url, &block)
   end
 
+  get '/test' do
+    redirect to('/test/')
+  end
+
   get '/test/:names?' do
     names = params[:names]
     @suites = names.nil? ? SUITES : names.split(/,/).uniq
+    @unique_asset_string = UNIQUE_ASSET_STRING.to_s
     erb :tests, :locals => { :suites => @suites }
   end
 
@@ -60,6 +73,12 @@ class UnitTests < Sinatra::Application
     content_type 'text/javascript'
     send_file PATH_TO_PROTOTYPE
   end
+
+
+  # We don't put either of these in the /static directory because
+  # (a) they should be more prominent in the directory structure;
+  # (b) they should never, ever get cached, and we want to enforce that
+  #     aggressively.
 
   get '/js/tests/:filename' do
     filename = params[:filename]
@@ -70,6 +89,11 @@ class UnitTests < Sinatra::Application
     else
       status 404
     end
+  end
+
+  get '/fixtures/:filename' do
+    filename = params[:filename]
+    send_file PATH_TO_FIXTURES.join(filename)
   end
 
 
