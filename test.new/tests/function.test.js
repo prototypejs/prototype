@@ -111,7 +111,7 @@ suite('Function', function () {
     assert.strictEqual(split, split.curry());
   });
 
-  test('#delay', function () {
+  test('#delay', function (done) {
     window.delayed = undefined;
     var delayedFunction = function() { window.delayed = true; };
     var delayedFunctionWithArgs = function() { window.delayedWithArgs = $A(arguments).join(' '); };
@@ -121,6 +121,7 @@ suite('Function', function () {
     wait(1000, function() {
       assert(window.delayed);
       assert.equal('hello world', window.delayedWithArgs);
+      done();
     });
   });
 
@@ -146,7 +147,7 @@ suite('Function', function () {
     String.prototype.capitalize = temp;
   });
 
-  test('#defer', function () {
+  test('#defer', function (done) {
     window.deferred = undefined;
     var deferredFunction = function() { window.deferred = true; };
     deferredFunction.defer();
@@ -180,6 +181,7 @@ suite('Function', function () {
 
           wait(50, function() {
             assert(window.deferBoundProperlyOnString);
+            done();
           });
         });
       });

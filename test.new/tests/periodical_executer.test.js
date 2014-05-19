@@ -2,7 +2,7 @@
 suite('PeriodicalExecuter', function () {
   this.name = 'periodical_executer';
 
-  test('#stop', function () {
+  test('#stop', function (done) {
     var peEventCount = 0;
     function peEventFired(pe) {
       if (++peEventCount > 2) pe.stop();
@@ -13,6 +13,7 @@ suite('PeriodicalExecuter', function () {
 
     wait(600, function() {
       assert.equal(3, peEventCount);
+      done();
     });
   });
 

@@ -387,7 +387,8 @@ suite("Layout",function(){
 
   suite('document.viewport', function () {
 
-    test('#getDimensions', function () {
+    test('#getDimensions', function (done) {
+      this.timeout(5000);
       var original = document.viewport.getDimensions();
 
       try {
@@ -404,13 +405,14 @@ suite("Layout",function(){
 
         window.resizeBy(50, 50);
         wait(1000, function() {
-          var after  = document.viewport.getDimensions();
+          var after = document.viewport.getDimensions();
 
           // Assume that JavaScript window resizing is disabled if before width
           // and after width are the same.
           if (before.width === after.width) {
             RESIZE_DISABLED = true;
             info("SKIPPING REMAINING TESTS (JavaScript window resizing disabled)");
+            done();
             return;
           }
 
@@ -429,6 +431,7 @@ suite("Layout",function(){
               original.width  + delta.width,
               original.height + delta.height
             );
+            done();
           });
         });
       });
@@ -449,7 +452,8 @@ suite("Layout",function(){
       });
     });
 
-    test('#getScrollOffsets', function () {
+    test('#getScrollOffsets', function (done) {
+      this.timeout(5000);
       var original = document.viewport.getDimensions();
 
       window.scrollTo(0, 0);
@@ -479,6 +483,7 @@ suite("Layout",function(){
             original.width  + delta.width,
             original.height + delta.height
           );
+          done();
         });
       });
     });
