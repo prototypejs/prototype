@@ -87,7 +87,11 @@
 
   <script type="text/javascript">
     Test.setup();
-    mocha.run();
+    if (window.mochaPhantomJS) {
+      mochaPhantomJS.run();
+    } else {
+      mocha.run();
+    }
 
     mocha.suite.suites.each(function (suite) {
       suite.beforeAll(function () {

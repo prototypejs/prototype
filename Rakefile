@@ -109,6 +109,15 @@ EOF
     end
   end
   
+  def self.require_phantomjs
+    success = system("phantomjs -v > /dev/null 2>&1")
+    if !success
+      puts "\nYou need phantomjs installed to run this task. Find out how at:"
+      puts "  http://phantomjs.org/download.html"
+      exit
+    end
+  end
+  
   def self.syntax_highlighter
     if ENV['SYNTAX_HIGHLIGHTER']
       highlighter = ENV['SYNTAX_HIGHLIGHTER'].to_sym
@@ -372,6 +381,14 @@ namespace :test_new do
     require path_to_runner
     
     Runner::run(browsers, tests, grep)
+  end
+  
+  task :phantom => [:require] do
+    PrototypeHelper.require_phantomjs
+    tests, grep = ENV['TESTS'], ENV['GREP']
+    url = "http://127.0.0.1:4567/test/#{tests}"
+    url << "?grep=#{grep}" if grep
+    system(%Q[phantomjs ./test.new/phantomjs/mocha-phantomjs.js "#{url}"])
   end
   
 end
