@@ -118,7 +118,7 @@ suite('Function', function () {
     delayedFunction.delay(0.8);
     delayedFunctionWithArgs.delay(0.8, 'hello', 'world');
     assert.isUndefined(window.delayed);
-    wait(1000, function() {
+    wait(1000, done, function() {
       assert(window.delayed);
       assert.equal('hello world', window.delayedWithArgs);
       done();
@@ -152,13 +152,13 @@ suite('Function', function () {
     var deferredFunction = function() { window.deferred = true; };
     deferredFunction.defer();
     assert.isUndefined(window.deferred);
-    wait(50, function() {
+    wait(50, done, function() {
       assert(window.deferred);
 
       window.deferredValue = 0;
       var deferredFunction2 = function(arg) { window.deferredValue = arg; };
       deferredFunction2.defer('test');
-      wait(50, function() {
+      wait(50, done, function() {
         assert.equal('test', window.deferredValue);
 
         window.deferBoundProperly = false;
@@ -170,7 +170,7 @@ suite('Function', function () {
 
         func.bind(obj).defer();
 
-        wait(50, function() {
+        wait(50, done, function() {
           assert(window.deferBoundProperly,
            "deferred bound functions should preserve original scope");
 
@@ -179,7 +179,7 @@ suite('Function', function () {
 
           str.evalScripts.bind(str).defer();
 
-          wait(50, function() {
+          wait(50, done, function() {
             assert(window.deferBoundProperlyOnString);
             done();
           });

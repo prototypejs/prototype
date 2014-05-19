@@ -1,6 +1,8 @@
 
 (function () {
 
+  var IS_IE6 = (navigator.userAgent.indexOf('MSIE 6.0') > -1);
+  var IS_IE7 = (navigator.userAgent.indexOf('MSIE 7.0') > -1);
   var CONSOLE_LOG_SUPPORTED = ('console' in window) && console.log;
   var CONSOLE_GROUP_SUPPORTED = ('console' in window) && console.group &&
    console.groupEnd;
@@ -26,10 +28,33 @@
 
   window.info = info;
 
-   // A function that acts like setTimeout, except with arguments reversed. This
+  // A function that acts like setTimeout, except with arguments reversed. This
   // is far more readable within tests.
-  function wait(duration, fn) {
-    return setTimeout(fn, duration);
+  function wait(duration, done, fn) {
+    var handler = function () {
+      try {
+        fn();
+      } catch (e) {
+        // In IE6, manually throwing errors doesn't trigger window.onerror.
+        // Instead, we'll pass an actual error to the `done` callback.
+        if (IS_IE6) {
+          if (Object.isFunction(done)) {
+            return done(new Error(e.message));
+          }
+        }
+
+        // In IE7, window.onerror will get triggered, but with a generic
+        // error message. Instead we need to throw an actual Error object
+        // because it does not grok this whole custom error thing.
+        if (IS_IE7) {
+          throw new Error(e.message);
+        }
+
+        // In other browsers, we can just re-throw it and be fine.
+        throw e;
+      }
+    };
+    return setTimeout(handler, duration);
   }
   window.wait = wait;
 

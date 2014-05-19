@@ -388,23 +388,23 @@ suite("Layout",function(){
   suite('document.viewport', function () {
 
     test('#getDimensions', function (done) {
-      this.timeout(5000);
+      this.timeout(60000);
       var original = document.viewport.getDimensions();
 
       try {
         window.resizeTo(800, 600);
       } catch (e) {
         info("Can't resize.");
-        return;
-      }
 
-      wait(1000, function() {
+        return done();
+      }
+      wait(1000, done, function() {
         var before = document.viewport.getDimensions();
 
         var delta = { width: 800 - before.width, height: 600 - before.height };
 
         window.resizeBy(50, 50);
-        wait(1000, function() {
+        wait(1000, done, function() {
           var after = document.viewport.getDimensions();
 
           // Assume that JavaScript window resizing is disabled if before width
@@ -412,9 +412,9 @@ suite("Layout",function(){
           if (before.width === after.width) {
             RESIZE_DISABLED = true;
             info("SKIPPING REMAINING TESTS (JavaScript window resizing disabled)");
-            done();
-            return;
+            return done();
           }
+
 
           assert.equal(
             before.width + 50, after.width,
@@ -425,7 +425,7 @@ suite("Layout",function(){
            "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THIS TEST TO PASS"
          );
 
-          wait(1000, function() {
+          wait(1000, done, function() {
             // Restore original dimensions.
             window.resizeTo(
               original.width  + delta.width,
@@ -464,12 +464,13 @@ suite("Layout",function(){
 
       if (RESIZE_DISABLED) {
         info("SKIPPING REMAINING TESTS (JavaScript window resizing disabled)");
+        done();
         return;
       }
 
       window.resizeTo(200, 650);
 
-      wait(1000, function() {
+      wait(1000, done, function() {
         var before = document.viewport.getDimensions();
         var delta = { width: 200 - before.width, height: 650 - before.height };
 
@@ -477,7 +478,7 @@ suite("Layout",function(){
         assert.equal(25, document.viewport.getScrollOffsets().left,
          "NOTE: YOU MUST ALLOW JAVASCRIPT TO RESIZE YOUR WINDOW FOR THESE TESTS TO PASS");
 
-        wait(1000, function() {
+        wait(1000, done, function() {
           // Restore original dimensions.
           window.resizeTo(
             original.width  + delta.width,

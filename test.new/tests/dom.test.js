@@ -429,7 +429,7 @@ suite('DOM', function () {
     $('testdiv').update('hello from div!<script>\ntestVar="hello!";\n</'+'script>');
     assert.equal('hello from div!', $('testdiv').innerHTML);
 
-    wait(100, function () {
+    wait(100, done, function () {
       assert.equal('hello!', testVar);
 
       Element.update('testdiv','another hello from div!\n<script>testVar="another hello!"</'+'script>\nhere it goes');
@@ -441,19 +441,19 @@ suite('DOM', function () {
         /^another hello from div!\s+here it goes$/
       );
 
-      wait(100, function() {
+      wait(100, done, function() {
         assert.equal('another hello!', testVar);
 
         Element.update('testdiv',
          'a\n<script>testVar="a"\ntestVar="b"</'+'script>');
 
-        wait(100, function () {
+        wait(100, done, function () {
           assert.equal('b', testVar);
 
           Element.update('testdiv',
             'x<script>testVar2="a"</'+'script>\nblah\n'+
             'x<script>testVar2="b"</'+'script>');
-          wait(100, function () {
+          wait(100, done, function () {
             assert.equal('b', testVar2);
             done();
           });
@@ -560,7 +560,7 @@ suite('DOM', function () {
   test('#replace (with script)', function (done) {
     $('testdiv-replace-4').replace('hello from div!<script>testVarReplace="hello!"</'+'script>');
     assert.equal('hello from div!', $('testdiv-replace-container-4').innerHTML);
-    wait(100, function(){
+    wait(100, done, function(){
       assert.equal('hello!', testVarReplace);
 
       $('testdiv-replace-5').replace('another hello from div!\n<script>testVarReplace="another hello!"</'+'script>\nhere it goes');
@@ -570,7 +570,7 @@ suite('DOM', function () {
         $('testdiv-replace-container-5').innerHTML,
         /^another hello from div!\s+here it goes$/
       );
-      wait(100, function(){
+      wait(100, done, function(){
         assert.equal('another hello!', testVarReplace);
         done();
       });

@@ -111,17 +111,17 @@ suite('Form', function () {
     assert.equal(0, timedCounter);
 
     // Test it doesn't change on first check.
-    wait(550, function () {
+    wait(550, done, function () {
       assert.equal(0, timedCounter, 'callbacks should be 0');
 
       // Change it, ensure it hasn't changed immediately.
       $('input_enabled').value = 'yowza!';
       assert.equal(0, timedCounter, 'callbacks should be 0 still');
 
-      wait(550, function () {
+      wait(550, done, function () {
         assert.equal(1, timedCounter, 'callbacks should be 1');
 
-        wait(550, function () {
+        wait(550, done, function () {
           assert.equal(1, timedCounter, 'callbacks should be 1 still');
           observer.stop();
           done();

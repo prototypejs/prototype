@@ -11,7 +11,7 @@ suite('PeriodicalExecuter', function () {
     // peEventFired will stop the PeriodicalExecuter after 3 callbacks
     new PeriodicalExecuter(peEventFired, 0.05);
 
-    wait(600, function() {
+    wait(600, done, function() {
       assert.equal(3, peEventCount);
       done();
     });
