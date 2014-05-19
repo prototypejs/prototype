@@ -36,10 +36,10 @@
     }
   </style>
 
-  <script src="/prototype.js" type="text/javascript"></script>
-  <script src="/js/mocha.js" type="text/javascript"></script>
-  <script src="/js/proclaim.js" type="text/javascript"></script>
-  <script src="/js/test_helpers.js" type="text/javascript"></script>
+  <script src="/prototype.js?<%= @unique_asset_string %>" type="text/javascript"></script>
+  <script src="/js/mocha.js?<%= @unique_asset_string %>" type="text/javascript"></script>
+  <script src="/js/proclaim.js?<%= @unique_asset_string %>" type="text/javascript"></script>
+  <script src="/js/test_helpers.js?<%= @unique_asset_string %>" type="text/javascript"></script>
 
   <script type="text/javascript">
     var eventResults = {};
@@ -52,7 +52,7 @@
   </script>
 
   <% @suites.each do |suite| %>
-  <script src="/js/tests/<%= suite %>.test.js" type="text/javascript"></script>
+  <script src="/js/tests/<%= suite %>.test.js?<%= @unique_asset_string %>" type="text/javascript"></script>
   <% end %>
 
 </head>
