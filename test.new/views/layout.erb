@@ -17,6 +17,11 @@
       border: 2px solid #eee;
     }
 
+    /* Older IEs don't support CANVAS, so we need something other than the progress indicator to show that we're done. */
+    #mocha.done {
+      border-color: #090;
+    }
+
     #mocha-stats {
       background: #fff;
     }
@@ -35,6 +40,20 @@
       clear: both;
     }
   </style>
+
+  <!--[if lt IE 8]>
+  <style type="text/css" media="screen">
+
+    #mocha-stats {
+      position: static;
+    }
+
+    #mocha-stats li {
+      float: left;
+    }
+
+  </style>
+  <![endif]-->
 
   <script src="/prototype.js?<%= @unique_asset_string %>" type="text/javascript"></script>
   <script src="/js/mocha.js?<%= @unique_asset_string %>" type="text/javascript"></script>

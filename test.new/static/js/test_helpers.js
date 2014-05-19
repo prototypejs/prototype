@@ -1,11 +1,17 @@
 
 (function () {
+  // Needed because Mocha's HTML test runner assumes the presence of
+  // String#trim.
+  if (!String.prototype.trim) {
+    String.prototype.trim = String.prototype.strip;
+  }
 
   var CONSOLE_LOG_SUPPORTED = ('console' in window) && console.log;
   var CONSOLE_GROUP_SUPPORTED = ('console' in window) && console.group &&
    console.groupEnd;
   var CONSOLE_LOG_APPLY = true;
 
+  // TODO: Find a different way to log info in IE6.
   function info() {
     if (CONSOLE_LOG_APPLY) {
       console.log.apply(console, arguments);
@@ -273,6 +279,8 @@
       if (!suite.root) {
         return;
       }
+
+      $('mocha').addClassName('done');
 
       if (!resultsUrl) {
         return;
