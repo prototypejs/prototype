@@ -1,8 +1,6 @@
 
 (function () {
 
-  var IS_IE6 = (navigator.userAgent.indexOf('MSIE 6.0') > -1);
-  var IS_IE7 = (navigator.userAgent.indexOf('MSIE 7.0') > -1);
   var CONSOLE_LOG_SUPPORTED = ('console' in window) && console.log;
   var CONSOLE_GROUP_SUPPORTED = ('console' in window) && console.group &&
    console.groupEnd;
