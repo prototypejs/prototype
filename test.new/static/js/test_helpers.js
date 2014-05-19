@@ -240,11 +240,13 @@
       if (CONSOLE_GROUP_SUPPORTED) {
         console.group('Suite:', suite);
       } else if (CONSOLE_LOG_SUPPORTED) {
-        console.log('Suite:', suite);
+        console.log('Suite: ', suite);
       }
 
-      if (this.currentFixtures && this.currentFixtures.parentNode) {
-        this.currentFixtures.remove();
+      // Calling `remove` on this node has been known to crash the tests in
+      // IE6-7.
+      if (this.currentFixtures) {
+        $('current_fixtures').update();
       }
 
       if (this.fixtures[suite]) {
