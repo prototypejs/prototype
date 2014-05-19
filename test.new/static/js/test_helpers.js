@@ -35,23 +35,10 @@
       try {
         fn();
       } catch (e) {
-        // In IE6, manually throwing errors doesn't trigger window.onerror.
-        // Instead, we'll pass an actual error to the `done` callback.
-        if (IS_IE6) {
-          if (Object.isFunction(done)) {
-            return done(new Error(e.message));
-          }
-        }
-
-        // In IE7, window.onerror will get triggered, but with a generic
-        // error message. Instead we need to throw an actual Error object
-        // because it does not grok this whole custom error thing.
-        if (IS_IE7) {
-          throw new Error(e.message);
-        }
-
-        // In other browsers, we can just re-throw it and be fine.
-        throw e;
+        // Instead of relying on window.onerror to detect an error was
+        // thrown (which is problematic in IE6-7), we invoke the callback
+        // with an error the way Mocha expects.
+        return done(e);
       }
     };
     return setTimeout(handler, duration);
