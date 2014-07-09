@@ -775,6 +775,22 @@ suite('DOM', function () {
     assert(typeof $(dummy.childNodes[0]).next().setStyle == 'function');
   });
 
+  test('#index', function() {
+    assert.equal($("indexTest-div").index(), 0);
+    assert.equal($("indexTest-li1").index(), 1);
+    assert.equal($("indexTest-li2").index(), 2);
+    assert.equal($("indexTest-subspan").index(), 0);
+    assert.equal($("indexTest-span").index(), 5);
+  });
+
+  test("#indexOfType", function() {
+    assert.equal($("indexTest-div").indexOfType(), 0);
+    assert.equal($("indexTest-li1").indexOfType(), 0);
+    assert.equal($("indexTest-li2").indexOfType(), 1);
+    assert.equal($("indexTest-subspan").indexOfType(), 0);
+    assert.equal($("indexTest-span").indexOfType(), 0);
+  });
+
   test('#inspect', function () {
     assert.equal('<ul id="navigation_test">', $('navigation_test').inspect());
     assert.equal('<li class="first">', $('navigation_test').down().inspect());
