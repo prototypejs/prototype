@@ -1555,10 +1555,21 @@
     if (options.setTop)
       styles.top  = (p[1] + pageXY.y - delta[1] + options.offsetTop)  + 'px';
     
-    if (options.setWidth)
-      styles.width  = layout.get('border-box-width')  + 'px';
-    if (options.setHeight)
-      styles.height = layout.get('border-box-height') + 'px';
+    var currentLayout = element.getLayout();  
+    if (options.setWidth) {
+      if (currentLayout.get('border-box-width') != layout.get('border-box-width')) {
+        styles.width  = layout.get('border-box-width')  + 'px';
+      } else {
+        delete styles.width;
+      }
+    }
+    if (options.setHeight) {
+      if (currentLayout.get('border-box-height') != layout.get('border-box-height')) {
+        styles.height = layout.get('border-box-height') + 'px';
+      } else {
+        delete styles.height;
+      }
+    }
     
     return Element.setStyle(element, styles);
   }
