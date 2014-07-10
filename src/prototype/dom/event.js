@@ -787,12 +787,12 @@
 
   function observeCustomEvent(element, eventName, responder) {
     if (element.addEventListener) {
-      element.addEventListener('dataavailable', responder, false);
+      element.addEventListener(eventName, responder, false);
     } else {
       // We observe two IE-proprietarty events: one for custom events that
       // bubble and one for custom events that do not bubble.
-      element.attachEvent('ondataavailable', responder);
-      element.attachEvent('onlosecapture',   responder);
+      element.attachEvent(eventName, responder);
+      element.attachEvent(eventName, responder);
     }
   }
 
@@ -891,10 +891,10 @@
 
   function stopObservingCustomEvent(element, eventName, responder) {
     if (element.removeEventListener) {
-      element.removeEventListener('dataavailable', responder, false);
+      element.removeEventListener(eventName, responder, false);
     } else {
-      element.detachEvent('ondataavailable', responder);
-      element.detachEvent('onlosecapture',   responder);
+      element.detachEvent(eventName, responder);
+      element.detachEvent(eventName,   responder);
     }
   }
 
@@ -978,9 +978,8 @@
 
   function fireEvent_DOM(element, eventName, memo, bubble) {
     var event = document.createEvent('HTMLEvents');
-    event.initEvent('dataavailable', bubble, true);
+    event.initEvent(eventName, bubble, true);
 
-    event.eventName = eventName;
     event.memo = memo;
 
     element.dispatchEvent(event);
@@ -991,10 +990,9 @@
     var event = document.createEventObject();
     event.eventType = bubble ? 'ondataavailable' : 'onlosecapture';
 
-    event.eventName = eventName;
     event.memo = memo;
 
-    element.fireEvent(event.eventType, event);
+    element.fireEvent(eventName, event);
     return event;
   }
 
@@ -1349,12 +1347,13 @@
 
   function createResponderForCustomEvent(uid, eventName, handler) {
     return function(event) {
-      var element = Event.cache[uid].element;
-
-      if (Object.isUndefined(event.eventName))
+      var element = Event.cache[uid].element,
+          name = event.eventName || event.type || event.eventType;
+      
+      if (Object.isUndefined(name))
         return false;
 
-      if (event.eventName !== eventName)
+      if (name !== eventName)
         return false;
 
       Event.extend(event, element);
