@@ -64,9 +64,15 @@ suite('Position', function () {
   });
 
   test('clonePosition, when element have the same size', function() {
+    var src = $('clone-position-source');
+    var trg = $('clone-position-target');
     
+    trg.clonePosition(src, {
+      setHeight: false,
+      offsetTop: src.offsetHeight
+    });
+
+    assert.equal(src.getWidth(), trg.getWidth());
+    assert.equal(src.getHeight(), trg.getHeight());
   });
-
-
-
 });
