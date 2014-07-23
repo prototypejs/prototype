@@ -603,7 +603,13 @@ Form.Element.Methods = {
    *        }
   **/
   clear: function(element) {
-    $(element).value = '';
+    var elementType = $(element).type;
+
+    if(elementType === "checkbox" || elementType === "radio")
+        element.checked = false;
+    else
+        $(element).value = '';
+
     return element;
   },
 
