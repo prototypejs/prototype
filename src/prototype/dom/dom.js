@@ -2371,7 +2371,7 @@
       name = table.names[attr] || attr;
       value = attributes[attr];
       if (table.values[attr])
-        name = table.values[attr](element, value) || name;
+        value = table.values[attr](element, value);
       if (value === false || value === null)
         element.removeAttribute(name);
       else if (value === true)
@@ -2659,11 +2659,11 @@
     
     values: {
       checked: function(element, value) {
-        element.checked = !!value;
+        return element.checked = !!value;
       },
       
       style: function(element, value) {
-        element.style.cssText = value ? value : '';
+        return element.style.cssText = value ? value : '';
       }
     }
   };
