@@ -127,7 +127,7 @@ suite('DOM', function () {
   test('getElementsByClassName', function () {
 
     if (document.getElementsByClassName.toString().include('[native code]')) {
-      console.log("browser uses native getElementsByClassName; skipping tests");
+      info("browser uses native getElementsByClassName; skipping tests");
       return;
     }
 

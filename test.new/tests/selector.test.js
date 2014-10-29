@@ -297,14 +297,6 @@ suite('Selector', function () {
     );
   });
 
-  test(':empty', function () {
-    $('level3_1').innerHTML = "";
-    assert.enumEqual($('level3_1', 'level3_2', 'level2_3'),
-     $$('#level1 *:empty'), '#level1 *:empty');
-    assert.enumEqual([], $$('#level_only_child:empty'),
-     'newlines count as content!');
-  });
-
   test('identical results from equivalent selectors', function () {
     assert.enumEqual($$('div.brothers'), $$('div[class~=brothers]'));
     assert.enumEqual($$('div.brothers'), $$('div[class~=brothers].brothers'));
