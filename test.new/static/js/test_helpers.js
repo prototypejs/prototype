@@ -20,8 +20,24 @@
     }
   }
 
+  function info_IE6() {
+    var log = $('log');
+    log.show();
+    var results = [];
+    for (var i = 0, len = arguments.length; i < len; i++) {
+      results.push(arguments[i].toString());
+    }
+    var html = results.join(' ');
+    var p = new Element('p', { 'class': 'log-item' });
+    p.update(html);
+
+    log.insert(p);
+    // Force the log to scroll to the bottom whenever new stuff happens.
+    log.scrollTop = log.offsetHeight;
+  }
+
   if (!CONSOLE_LOG_SUPPORTED) {
-    info = Prototype.emptyFunction;
+    info = info_IE6;
   } else {
     try {
       console.log.apply(console, [""]);
@@ -246,7 +262,7 @@
       // Calling `remove` on this node has been known to crash the tests in
       // IE6-7.
       if (this.currentFixtures) {
-        $('current_fixtures').update();
+        document.getElementById('current_fixtures').innerHTML = '';
       }
 
       if (this.fixtures[suite]) {
@@ -258,6 +274,35 @@
     endSuite: function (suite) {
       if (CONSOLE_GROUP_SUPPORTED) {
         console.groupEnd();
+      }
+    },
+
+    configureRunner: function (runner) {
+      var failedTests = [];
+      runner.on('end', function(){
+        window.mochaResults = runner.stats;
+        window.mochaResults.reports = failedTests;
+      });
+
+      runner.on('fail', logFailure);
+
+      function logFailure (test, err) {
+        function flattenTitles (test) {
+          var titles = [];
+          while (test.parent.title) {
+            titles.push(test.parent.title);
+            test = test.parent;
+          }
+          return titles.reverse();
+        }
+
+        failedTests.push({
+          name:    test.title,
+          result:  false,
+          message: err.message,
+          stack:   err.stack,
+          titles:  flattenTitles(test)
+        });
       }
     }
   };

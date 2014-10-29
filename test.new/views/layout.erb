@@ -39,6 +39,17 @@
     #mocha li.test {
       clear: both;
     }
+
+    #log {
+      width: 350px;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      height: 500px;
+      overflow-y: auto;
+      background: #fff;
+      border: 2px solid #eee;
+    }
   </style>
 
   <!--[if lt IE 8]>
@@ -77,6 +88,9 @@
 </head>
 
 <body data-suites="<%= suites.join(',') %>">
+
+  <!-- A DIV that we log into whenever console.log isn't available. -->
+  <div id="log" style="display: none"></div>
   <div id="mocha"></div>
 
   <div id="current_fixtures"></div>
@@ -90,8 +104,10 @@
     if (window.mochaPhantomJS) {
       mochaPhantomJS.run();
     } else {
-      mocha.run();
+      var runner = mocha.run();
     }
+
+    Test.configureRunner(runner);
 
     mocha.suite.suites.each(function (suite) {
       suite.beforeAll(function () {
