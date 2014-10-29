@@ -62,6 +62,10 @@ class UnitTests < Sinatra::Application
     redirect to('/test/')
   end
 
+  get '/test/:names/' do
+    redirect to("/test/#{params[:names]}")
+  end
+
   get '/test/:names?' do
     names = params[:names]
     @suites = names.nil? ? SUITES : names.split(/,/).uniq
