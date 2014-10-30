@@ -223,17 +223,22 @@ suite('Event', function () {
   });
 
   test('document.loaded', function () {
-    assert(!documentLoaded);
-    assert(document.loaded);
+    setTimeout(function() {
+      assert(!documentLoaded);
+      assert(document.loaded);
+    }, 100);
+    
   });
 
   test('document contentLoaded event fires before window load', function () {
-    assert(eventResults.contentLoaded, "contentLoaded");
-    assert(eventResults.contentLoaded.endOfDocument, "contentLoaded.endOfDocument");
-    assert(!eventResults.contentLoaded.windowLoad, "!contentLoaded.windowLoad");
-    assert(eventResults.windowLoad, "windowLoad");
-    assert(eventResults.windowLoad.endOfDocument, "windowLoad.endOfDocument");
-    assert(eventResults.windowLoad.contentLoaded, "windowLoad.contentLoaded");
+    setTimeout(function() {
+      assert(eventResults.contentLoaded, "contentLoaded");
+      assert(eventResults.contentLoaded.endOfDocument, "contentLoaded.endOfDocument");
+      assert(!eventResults.contentLoaded.windowLoad, "!contentLoaded.windowLoad");
+      assert(eventResults.windowLoad, "windowLoad");
+      assert(eventResults.windowLoad.endOfDocument, "windowLoad.endOfDocument");
+      assert(eventResults.windowLoad.contentLoaded, "windowLoad.contentLoaded");
+    }, 100);
   });
 
   test('event.stopped', function () {
@@ -275,6 +280,19 @@ suite('Event', function () {
     $('event-container').down().observe("test:somethingHappened", Prototype.emptyFunction);
     $('event-container').innerHTML += $('event-container').innerHTML;
     assert.isUndefined($('event-container').down(1)._prototypeEventID);
+  });
+
+  test("custom event from outside library", function() {
+    function triggerEvent(eName, data) {
+      var event = document.createEvent("Events");
+      event.data = data;
+      event.initEvent(eName, true, true);
+      document.dispatchEvent(event);
+    }  
+    $(document).observe("custom:outside", function(e) {
+      assert.equal(e.data.data, 123);  
+    });
+    triggerEvent("custom:outside", {"data": 123});
   });
 
 });
