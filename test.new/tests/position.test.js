@@ -14,6 +14,7 @@ suite('Position', function () {
     Position.includeScrollOffsets = false;
   });
 
+
   test('.prepare', function () {
     Position.prepare();
     assert.equal(0, Position.deltaX);
@@ -42,6 +43,36 @@ suite('Position', function () {
     assert(!Position.within($('position_test_body_absolute'), 10, 20), 'outside bottom');
   });
 
+  test('clonePosition, when scroll page', function() {
+    var opts = { offsetTop: 20, offsetLeft: 0, setWidth: false, setHeight: false };
+    //position before scroll
+    $('SubMenu').clonePosition($('MainMenu'), opts);
+    var before = $('SubMenu').viewportOffset()['top'] - $('MainMenu').viewportOffset()['top'];
+    //offset not changed
+    //after scroll
+    //original
+    
+    $('SubMenu').setStyle({position: "absolute", 
+                           top: "250px",
+                           left: "250px"
+                        });
+    scrollTo(0, 300);
+    $('SubMenu').clonePosition($('MainMenu'), opts);
+    var after = $('SubMenu').viewportOffset()['top'] - $('MainMenu').viewportOffset()['top'];
+    
+    assert.equal(before, after);
+  });
 
+  test('clonePosition, when element have the same size', function() {
+    var src = $('clone-position-source');
+    var trg = $('clone-position-target');
+    
+    trg.clonePosition(src, {
+      setHeight: false,
+      offsetTop: src.offsetHeight
+    });
 
+    assert.equal(src.getWidth(), trg.getWidth());
+    assert.equal(src.getHeight(), trg.getHeight());
+  });
 });

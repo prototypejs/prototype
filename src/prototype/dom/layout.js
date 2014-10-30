@@ -1525,20 +1525,51 @@
       }
     }
 
+    //When we scroll page, then should calculate this offset
+    function pageScrollXY() {
+      var x = 0, y = 0;
+      //For modern browsers
+      if(Object.isNumber(window.pageXOffset)) {
+        x = window.pageXOffset;
+        y = window.pageYOffset;
+      } else if(document.body && (document.body.scrollLeft || document.body.scrollTop)) {
+        x = document.body.scrollLeft;
+        y = document.body.scrollTop;
+      } else if(document.documentElement && (document.documentElement.scrollLeft || document.documentElement.scrollTop)) {
+        //IE6 
+        x = document.documentElement.scrollLeft;
+        y = document.documentElement.scrollTop;
+      }
+      return {x: x, y: y};
+    }
+
+    var pageXY = pageScrollXY(); //only for relative?
+
     if (options.setWidth || options.setHeight) {
       layout = Element.getLayout(source);
     }
 
     // Set position.
     if (options.setLeft)
-      styles.left = (p[0] - delta[0] + options.offsetLeft) + 'px';
+      styles.left = (p[0] + pageXY.x - delta[0] + options.offsetLeft) + 'px';
     if (options.setTop)
-      styles.top  = (p[1] - delta[1] + options.offsetTop)  + 'px';
+      styles.top  = (p[1] + pageXY.y - delta[1] + options.offsetTop)  + 'px';
     
-    if (options.setWidth)
-      styles.width  = layout.get('border-box-width')  + 'px';
-    if (options.setHeight)
-      styles.height = layout.get('border-box-height') + 'px';
+    var currentLayout = element.getLayout();  
+    if (options.setWidth) {
+      if (currentLayout.get('border-box-width') != layout.get('border-box-width')) {
+        styles.width  = layout.get('border-box-width')  + 'px';
+      } else {
+        delete styles.width;
+      }
+    }
+    if (options.setHeight) {
+      if (currentLayout.get('border-box-height') != layout.get('border-box-height')) {
+        styles.height = layout.get('border-box-height') + 'px';
+      } else {
+        delete styles.height;
+      }
+    }
     
     return Element.setStyle(element, styles);
   }
