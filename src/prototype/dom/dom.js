@@ -2006,6 +2006,87 @@
   function next(element, expression, index) {
     return _recursivelyFind(element, 'nextSibling', expression, index);
   }
+
+  /**
+   *  Element.index(@element) -> Number
+   *
+   *  Return index of `@element` in siblings.
+   *
+   *  ##### Example
+   *
+   *      language: html
+   *      <ul>
+   *        <div id="div"></div>
+   *        <li id="first"></li>
+   *        <li id="second"></li>
+   *        <li id="third"></li>
+   *        <span id="span">
+   *           <span id="subspan"></span>
+   *        </span>
+   *       </ul>
+   *
+   *  Then:
+   *
+   *      $('div').index();
+   *      // -> 0
+   *
+   *      $('subspan').index();
+   *      // -> 0
+   *
+   *      $('first').index(); 
+   *      // -> 1 
+   *
+  **/
+  function index(element) {
+    var element = $(element);
+    return (element.siblings().length - element.nextSiblings().length);
+  }
+
+  /**
+   *  Element.indexOfType(@element) -> Number
+   *
+   *  Return index of `@element` in siblings based on `tag` of `@element`.
+   *
+   *  ##### Example
+   *
+   *      language: html
+   *      <ul>
+   *        <div id="div"></div>
+   *        <li id="first"></li>
+   *        <li id="second"></li>
+   *        <li id="third"></li>
+   *        <span id="span">
+   *           <span id="subspan"></span>
+   *        </span>
+   *       </ul>
+   *
+   *  Then:
+   *
+   *      $('div').indexOfType();
+   *      // -> 0
+   *
+   *      $('first').indexOfType(); 
+   *      // -> 0
+   *      
+   *      $('second').indexOfType(); 
+   *      // -> 1
+   *      
+  **/
+  function indexOfType(element) {
+    var element = $(element),
+        tagName = element.tagName;
+    
+    function match(array, tagName) {
+      return array.pluck('tagName').inject(0, function(n, tag) {
+        if (tag == tagName) {
+          n++ ;
+        }
+        return n;
+      });
+    }
+
+    return (match(element.siblings(), tagName) - match(element.nextSiblings(), tagName)); 
+  }
     
   /**
    *  Element.select(@element, expression...) -> [Element...]
@@ -2178,6 +2259,8 @@
     down:                 down,
     previous:             previous,
     next:                 next,
+    index:                index,
+    indexOfType:          indexOfType,
     select:               select,
     adjacent:             adjacent,
     descendantOf:         descendantOf,
