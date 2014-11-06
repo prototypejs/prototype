@@ -1,3 +1,6 @@
+// TODO: Ideally, none of the stuff in this file should use Prototype, so
+// that a broken method inside Prototype does not end up affecting the test
+// reporting.
 
 (function () {
   // Needed because Mocha's HTML test runner assumes the presence of

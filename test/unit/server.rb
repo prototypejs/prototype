@@ -2,8 +2,6 @@ require 'sinatra/base'
 require 'pathname'
 require 'json'
 
-require 'pp'
-
 class UnitTests < Sinatra::Application
 
   PWD = Pathname.new( File.expand_path( File.dirname(__FILE__) ) )
@@ -66,6 +64,8 @@ class UnitTests < Sinatra::Application
     redirect to("/test/#{params[:names]}")
   end
 
+  # /test/ will run all tests;
+  # /test/foo,bar will run just "foo" and "bar" tests.
   get '/test/:names?' do
     names = params[:names]
     @suites = names.nil? ? SUITES : names.split(/,/).uniq
@@ -73,6 +73,8 @@ class UnitTests < Sinatra::Application
     erb :tests, :locals => { :suites => @suites }
   end
 
+  # Will read from disk each time. No server restart necessary when the
+  # distributable is updated.
   get '/prototype.js' do
     content_type 'text/javascript'
     send_file PATH_TO_PROTOTYPE
@@ -83,7 +85,6 @@ class UnitTests < Sinatra::Application
   # (a) they should be more prominent in the directory structure;
   # (b) they should never, ever get cached, and we want to enforce that
   #     aggressively.
-
   get '/js/tests/:filename' do
     filename = params[:filename]
     path = PATH_TO_TEST_JS.join(filename)
@@ -109,8 +110,6 @@ class UnitTests < Sinatra::Application
       :method  => request.request_method,
       :body    => request.body.read
     }
-
-    pp response[:headers]
 
     content_type 'application/json'
     JSON.dump(response)
