@@ -17,7 +17,7 @@ class UnitTests < Sinatra::Application
   # we can start the server on one machine and then run tests from another.
   set :bind, '0.0.0.0'
 
-  PATH_TO_PROTOTYPE = PWD.join('..', 'dist', 'prototype.js')
+  PATH_TO_PROTOTYPE = PWD.join('..', '..', 'dist', 'prototype.js')
 
   unless PATH_TO_PROTOTYPE.file?
     raise "You must run `rake dist` before starting the server."

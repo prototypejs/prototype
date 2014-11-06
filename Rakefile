@@ -276,97 +276,15 @@ task :clean_package_source do
   rm_rf File.join(PrototypeHelper::PKG_DIR, "prototype-#{PrototypeHelper::VERSION}")
 end
 
-task :test => ['test:build', 'test:run']
+task :test => ['test:require', 'test:start']
 namespace :test do
-  desc 'Runs all the JavaScript unit tests and collects the results'
-  task :run => [:require] do
-    testcases        = ENV['TESTCASES']
-    browsers_to_test = ENV['BROWSERS'] && ENV['BROWSERS'].split(',')
-    tests_to_run     = ENV['TESTS'] && ENV['TESTS'].split(',')
-    runner           = UnittestJS::WEBrickRunner::Runner.new(:test_dir => PrototypeHelper::TMP_DIR)
-
-    Dir[File.join(PrototypeHelper::TMP_DIR, '*_test.html')].each do |file|
-      file = File.basename(file)
-      test = file.sub('_test.html', '')
-      unless tests_to_run && !tests_to_run.include?(test)
-        runner.add_test(file, testcases)
-      end
-    end
-    
-    UnittestJS::Browser::SUPPORTED.each do |browser|
-      unless browsers_to_test && !browsers_to_test.include?(browser)
-        runner.add_browser(browser.to_sym)
-      end
-    end
-    
-    trap('INT') { runner.teardown; exit }
-    runner.run
-  end
-  
-  task :build => [:clean, :dist] do
-    builder = UnittestJS::Builder::SuiteBuilder.new({
-      :input_dir  => PrototypeHelper::TEST_UNIT_DIR,
-      :assets_dir => PrototypeHelper::DIST_DIR
-    })
-    selected_tests = (ENV['TESTS'] || '').split(',')
-    builder.collect(*selected_tests)
-    builder.render
-  end
-  
-  task :clean => [:require] do
-    UnittestJS::Builder.empty_dir!(PrototypeHelper::TMP_DIR)
-  end
-  
-  task :require do
-    PrototypeHelper.require_unittest_js
-  end
-  
-  desc "Builds all the unit tests and starts the server. (The user can visit the tests manually in a browser at their leisure.)"
-  task :server => [:build] do 
-    runner = UnittestJS::WEBrickRunner::Runner.new(:test_dir => PrototypeHelper::TMP_DIR)
-    testcases = ENV['TESTCASES']
-    
-    Dir[File.join(PrototypeHelper::TMP_DIR, '*_test.html')].each do |file|
-      file = File.basename(file)
-      test = file.sub('_test.html', '')
-      runner.add_test(file, testcases)
-    end
-    
-    trap('INT') do
-      puts "...server stopped."
-      runner.teardown
-      exit
-    end
-    
-    puts "Server started..."
-    
-    runner.setup
-    
-    loop do
-      sleep 1
-    end
-  end
-end
-
-task :test_units do
-  puts '"rake test_units" is deprecated. Please use "rake test" instead.'
-end
-
-task :build_unit_tests do
-  puts '"rake test_units" is deprecated. Please use "rake test:build" instead.'
-end
-
-task :clean_tmp do
-  puts '"rake clean_tmp" is deprecated. Please use "rake test:clean" instead.'
-end
-
-namespace :test_new do
   desc 'Starts the test server.'
   task :start => [:require] do
-    path_to_app = File.join(PrototypeHelper::ROOT_DIR, 'test.new', 'server.rb')
+    path_to_app = File.join(PrototypeHelper::ROOT_DIR, 'test', 'unit', 'server.rb')
     require path_to_app
     
-    puts "Unit tests available at <http://127.0.0.1:4567/test/>"
+    puts "Starting unit test server..."
+    puts "Unit tests available at <http://127.0.0.1:4567/test/>\n\n"
     UnitTests.run!
   end
   
@@ -377,7 +295,7 @@ namespace :test_new do
   desc "Opens the test suite in several different browsers. (Does not start or stop the server; you should do that separately.)"
   task :run => [:require] do
     browsers, tests, grep = ENV['BROWSERS'], ENV['TESTS'], ENV['GREP']
-    path_to_runner = File.join(PrototypeHelper::ROOT_DIR, 'test.new', 'runner.rb')
+    path_to_runner = File.join(PrototypeHelper::ROOT_DIR, 'test', 'unit', 'runner.rb')
     require path_to_runner
     
     Runner::run(browsers, tests, grep)
@@ -389,29 +307,5 @@ namespace :test_new do
     url = "http://127.0.0.1:4567/test/#{tests}"
     url << "?grep=#{grep}" if grep
     system(%Q[phantomjs ./test.new/phantomjs/mocha-phantomjs.js "#{url}"])
-  end
-  
-end
-
-namespace :caja do
-  task :test => ['test:build', 'test:run']
-  
-  namespace :test do
-    task :run => ['rake:test:run']
-
-    task :build => [:require, 'rake:test:clean', :dist] do 
-      builder = UnittestJS::CajaBuilder::SuiteBuilder.new({
-        :input_dir          => PrototypeHelper::TEST_UNIT_DIR,
-        :assets_dir         => PrototypeHelper::DIST_DIR,
-        :whitelist_dir      => File.join(PrototypeHelper::TEST_DIR, 'unit', 'caja_whitelists'),
-        :html_attrib_schema => 'html_attrib.json'
-      })
-      selected_tests = (ENV['TESTS'] || '').split(',')
-      builder.collect(*selected_tests)
-      builder.render
-    end
-  end
-  task :require => ['rake:test:require'] do
-    PrototypeHelper.require_caja_builder
   end
 end
