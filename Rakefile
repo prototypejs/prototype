@@ -306,7 +306,8 @@ namespace :test do
     Runner::run(browsers, tests, grep)
   end
 
-  task :phantom => [:require] do
+  desc "Runs the tests in PhantomJS. (Does not start or stop the server; you should do that separately.)"
+  task :phantom do
     PrototypeHelper.require_phantomjs
     tests, grep = ENV['TESTS'], ENV['GREP']
     url = "http://127.0.0.1:4567/test/#{tests}"
