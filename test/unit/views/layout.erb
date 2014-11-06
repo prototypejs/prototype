@@ -100,15 +100,6 @@
   </div>
 
   <script type="text/javascript">
-    Test.setup();
-    if (window.mochaPhantomJS) {
-      mochaPhantomJS.run();
-    } else {
-      var runner = mocha.run();
-    }
-
-    Test.configureRunner(runner);
-
     mocha.suite.suites.each(function (suite) {
       suite.beforeAll(function () {
         Test.startSuite(suite.name);
@@ -118,6 +109,15 @@
         Test.endSuite(suite.name);
       });
     });
+
+    Test.setup();
+    if (window.mochaPhantomJS) {
+      mochaPhantomJS.run();
+    } else {
+      var runner = mocha.run();
+    }
+
+    Test.configureRunner(runner);
   </script>
 
   <script type="text/javascript">
