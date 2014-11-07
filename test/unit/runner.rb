@@ -3,6 +3,7 @@ require 'sinatra/base'
 require 'cgi'
 require 'json'
 require 'rbconfig'
+require 'yaml'
 
 # A barebones runner for testing across multiple browsers quickly.
 #
@@ -57,6 +58,26 @@ module Runner
   host = RbConfig::CONFIG['host']
   IS_WINDOWS = host.include?('mswin') || host.include?('mingw32')
 
+  class << self
+    PWD = Pathname.new(File.dirname(__FILE__))
+    CONFIG_FILE = PWD.join('browsers.yml')
+
+    unless CONFIG_FILE.exist?
+      # Copy the sample config file to an actual config file.
+      sample = PWD.join('browsers.sample.yml')
+      File.open(CONFIG_FILE, 'w') do |file|
+        file.write( File.read(sample) )
+      end
+    end
+
+    CONFIG = YAML::load_file(CONFIG_FILE)
+
+    def config
+      CONFIG
+    end
+  end
+
+
   module Browsers
 
     class Abstract
@@ -87,6 +108,15 @@ module Runner
         host.include?('linux')
       end
 
+      def configured_path
+        browsers = Runner::config['browsers']
+        browsers[short_name.to_s]
+      end
+
+      def default_path
+        nil
+      end
+
       def visit(url)
         if windows?
           system(%Q["#{path}" "#{url}"])
@@ -106,6 +136,10 @@ module Runner
         linux? ? n.downcase : n
       end
 
+      def short_name
+        nil
+      end
+
       def escaped_name
         name.gsub(' ', '\ ')
       end
@@ -114,15 +148,19 @@ module Runner
         if macos?
           File.expand_path("/Applications/#{name}.app")
         else
-          @path || nil
+          configured_path || default_path || nil
         end
       end
     end
 
     class Firefox < Abstract
 
-      def initialize(path=File.join(ENV['ProgramFiles'] || 'c:\Program Files', '\Mozilla Firefox\firefox.exe'))
-        @path = path
+      def short_name
+        :firefox
+      end
+
+      def default_path
+        'C:\Program Files\Mozilla Firefox\firefox.exe'
       end
 
       def supported?
@@ -132,6 +170,10 @@ module Runner
     end
 
     class IE < Abstract
+
+      def short_name
+        :ie
+      end
 
       def setup
         require 'win32ole' if windows?
@@ -155,6 +197,10 @@ module Runner
 
     class Safari < Abstract
 
+      def short_name
+        :safari
+      end
+
       def supported?
         macos?
       end
@@ -163,8 +209,12 @@ module Runner
 
     class Chrome < Abstract
 
-      def initialize(path=nil)
-        @path = path || 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+      def short_name
+        :chrome
+      end
+
+      def default_path
+        'C:\Program Files\Google\Chrome\Application\chrome.exe'
       end
 
       def name
@@ -175,8 +225,12 @@ module Runner
 
     class Opera < Abstract
 
-      def initialize(path='C:\Program Files\Opera\Opera.exe')
-        @path = path
+      def short_name
+        :opera
+      end
+
+      def default_path
+        'C:\Program Files\Opera\launcher.exe'
       end
 
     end
@@ -284,6 +338,7 @@ module Runner
         end
         if !browser.installed?
           puts "Skipping #{browser.name} (not installed on this OS)"
+          puts "  (edit test/unit/browsers.yml if this is in error)"
           next
         end
         print "Running in #{browser.name}... "
