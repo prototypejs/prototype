@@ -1735,7 +1735,27 @@ new Test.Unit.Runner({
     // unregistered.
     simulateClick(child);
     this.assert(!trigger, "fired event should not have triggered handler");
-  }
+  },
+
+  testElementContent: function() {
+    var content = $('testContent').content(); 
+    var arr_content = content.split('\n').findAll(function(a) {
+      if (!a.strip().blank()){
+        return a;
+      }
+    }).invoke('strip');
+    
+    this.assertEqual(true, Object.isString(content));
+    this.assertEnumEqual(['test#a', 'testem', 'zed', 'span', 'test#b'], arr_content);
+
+    var contentWithoutNested = Element.content('testContent', true);
+    var arr = contentWithoutNested.split('\n').findAll(function(a) {
+      if (!a.strip().blank())
+        return a;
+    }).invoke('strip');
+    
+    this.assertEnumEqual(['test#a', 'test#b'], arr);
+  }   
 });
 
 function preservingBrowserDimensions(callback) {
