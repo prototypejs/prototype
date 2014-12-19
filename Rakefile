@@ -39,7 +39,7 @@ module PrototypeHelper
     puts "\nPrototype requires Git in order to load its dependencies."
     puts "\nMake sure you've got Git installed and in your path."
     puts "\nFor more information, visit:\n\n"
-    puts "  http://book.git-scm.com/2_installing_git.html"
+    puts "  http://git-scm.com/book/en/v2/Getting-Started-Installing-Git"
     exit
   end
 
