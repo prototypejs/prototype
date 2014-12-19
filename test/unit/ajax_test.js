@@ -387,5 +387,31 @@ new Test.Unit.Runner({
     } else {
       this.info(message);
     }
+  },
+
+  testReportConnectionBroken: function() {
+    if (this.isRunningFromRake) {
+      var successTriggered = false,
+	  failureTriggered = false,
+	  exceptionTriggered = false;
+
+      new Ajax.Request("/down", extendDefault({
+	onSuccess: function(transport) {
+	  successTriggered = true;
+	}.bind(this),
+	onFailure: function(transport) {
+	  failureTriggered = true;
+	}.bind(this),
+	onException: function() {
+	  // onException will not trigger for asynchronous
+	  // requests
+	  exceptionTriggered = true;
+	}
+      }));
+
+      this.assertEqual(successTriggered, false, 'a request timeout is no success');
+      this.assertEqual(failureTriggered, true, 'a request timeout is a failure');
+      this.assertEqual(exceptionTriggered, true, 'a synchronous request timeout throws an exception');
+    }
   }
 });

@@ -272,6 +272,10 @@ Ajax.Request = Class.create(Ajax.Base, {
   **/
   success: function() {
     var status = this.getStatus();
+    // status = 0 is also returned upon timeout and connection
+    // close
+    if (!status && ('' == this.transport.getAllResponseHeaders()))
+      return false;
     return !status || (status >= 200 && status < 300) || status == 304;
   },
 
