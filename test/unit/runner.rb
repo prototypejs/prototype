@@ -25,7 +25,7 @@ require 'yaml'
 #
 # As with the old `rake test`, the `BROWSERS` and `TESTS` environment
 # variables determine which browsers and tests you want to run. Multiple
-# values should be space-separated.
+# values should be comma-separated.
 #
 # Additionally, the test runner supports a `GREP` environment variable that
 # will be passed along to Mocha. Give it a pattern (with standard regex
