@@ -4,7 +4,7 @@ require 'yaml'
 
 module PrototypeHelper
   extend Rake::DSL
-  
+
   ROOT_DIR      = File.expand_path(File.dirname(__FILE__))
   SRC_DIR       = File.join(ROOT_DIR, 'src')
   DIST_DIR      = File.join(ROOT_DIR, 'dist')
@@ -15,9 +15,9 @@ module PrototypeHelper
   TEST_UNIT_DIR = File.join(TEST_DIR, 'unit')
   TMP_DIR       = File.join(TEST_UNIT_DIR, 'tmp')
   VERSION       = YAML.load(IO.read(File.join(SRC_DIR, 'constants.yml')))['PROTOTYPE_VERSION']
-  
+
   DEFAULT_SELECTOR_ENGINE = 'sizzle'
-  
+
   # Possible options for PDoc syntax highlighting, in order of preference.
   SYNTAX_HIGHLIGHTERS = [:pygments, :coderay, :none]
 
@@ -33,7 +33,7 @@ module PrototypeHelper
       return false
     end
   end
-  
+
   def self.require_git
     return if has_git?
     puts "\nPrototype requires Git in order to load its dependencies."
@@ -42,30 +42,30 @@ module PrototypeHelper
     puts "  http://book.git-scm.com/2_installing_git.html"
     exit
   end
-    
+
   def self.sprocketize(options = {})
     options = {
       :destination    => File.join(DIST_DIR, options[:source]),
       :strip_comments => true
     }.merge(options)
-    
+
     require_sprockets
     load_path = [SRC_DIR]
-    
+
     if selector_path = get_selector_engine(options[:selector_engine])
       load_path << selector_path
     end
-    
+
     secretary = Sprockets::Secretary.new(
       :root           => File.join(ROOT_DIR, options[:path]),
       :load_path      => load_path,
       :source_files   => [options[:source]],
       :strip_comments => options[:strip_comments]
     )
-    
+
     secretary.concatenation.save_to(options[:destination])
   end
-  
+
   def self.build_doc_for(file)
     rm_rf(DOC_DIR)
     mkdir_p(DOC_DIR)
@@ -98,17 +98,17 @@ EOF
       :assets => 'doc_assets'
     })
   end
-  
+
   def self.syntax_highlighter
     if ENV['SYNTAX_HIGHLIGHTER']
       highlighter = ENV['SYNTAX_HIGHLIGHTER'].to_sym
       require_highlighter(highlighter, true)
       return highlighter
     end
-    
+
     SYNTAX_HIGHLIGHTERS.detect { |n| require_highlighter(n) }
   end
-  
+
   def self.require_highlighter(name, verbose=false)
     case name
     when :pygments
@@ -141,30 +141,30 @@ EOF
       exit
     end
   end
-  
+
   def self.require_sprockets
     require_submodule('Sprockets', 'sprockets')
   end
-  
+
   def self.require_pdoc
     require_submodule('PDoc', 'pdoc')
   end
-  
+
   def self.require_unittest_js
     require_submodule('UnittestJS', 'unittest_js')
   end
-  
+
   def self.require_caja_builder
     require_submodule('CajaBuilder', 'caja_builder')
   end
-  
+
   def self.get_selector_engine(name)
     return if !name
     # If the submodule exists, we should use it.
     submodule_path = File.join(ROOT_DIR, "vendor", name)
     return submodule_path if File.exist?(File.join(submodule_path, "repository", ".git"))
     return submodule_path if name === "legacy_selector"
-    
+
     # If it doesn't exist, we should fetch it.
     get_submodule('the required selector engine', "#{name}/repository")
     unless File.exist?(submodule_path)
@@ -172,11 +172,11 @@ EOF
       exit
     end
   end
-  
+
   def self.get_submodule(name, path)
     require_git
     puts "\nYou seem to be missing #{name}. Obtaining it via git...\n\n"
-    
+
     Kernel.system("git submodule init")
     return true if Kernel.system("git submodule update vendor/#{path}")
     # If we got this far, something went wrong.
@@ -185,16 +185,18 @@ EOF
     puts "  $ git submodule update vendor/#{path}"
     false
   end
-  
+
   def self.require_submodule(name, path)
     begin
-      require path
+      full_path = File.join(PrototypeHelper::ROOT_DIR, 'vendor', path, 'lib', path)
+      # We need to require the explicit version in the submodule.
+      require full_path
     rescue LoadError => e
       # Wait until we notice that a submodule is missing before we bother the
       # user about installing git. (Maybe they brought all the files over
       # from a different machine.)
       missing_file = e.message.sub('no such file to load -- ', '').sub('cannot load such file -- ', '')
-      if missing_file == path
+      if missing_file == full_path
         # Missing a git submodule.
         retry if get_submodule(name, path)
       else
@@ -206,7 +208,7 @@ EOF
       exit
     end
   end
-  
+
   def self.current_head
     `git show-ref --hash HEAD`.chomp[0..6]
   end
@@ -228,7 +230,7 @@ namespace :doc do
   task :build => [:require] do
     PrototypeHelper.build_doc_for(ENV['SECTION'] ? "#{ENV['SECTION']}.js" : 'prototype.js')
   end
-  
+
   task :require do
     PrototypeHelper.require_pdoc
   end
@@ -273,17 +275,17 @@ namespace :test do
         runner.add_test(file, testcases)
       end
     end
-    
+
     UnittestJS::Browser::SUPPORTED.each do |browser|
       unless browsers_to_test && !browsers_to_test.include?(browser)
         runner.add_browser(browser.to_sym)
       end
     end
-    
+
     trap('INT') { runner.teardown; exit }
     runner.run
   end
-  
+
   task :build => [:clean, :dist] do
     builder = UnittestJS::Builder::SuiteBuilder.new({
       :input_dir  => PrototypeHelper::TEST_UNIT_DIR,
@@ -293,36 +295,36 @@ namespace :test do
     builder.collect(*selected_tests)
     builder.render
   end
-  
+
   task :clean => [:require] do
     UnittestJS::Builder.empty_dir!(PrototypeHelper::TMP_DIR)
   end
-  
+
   task :require do
     PrototypeHelper.require_unittest_js
   end
-  
+
   desc "Builds all the unit tests and starts the server. (The user can visit the tests manually in a browser at their leisure.)"
-  task :server => [:build] do 
+  task :server => [:build] do
     runner = UnittestJS::WEBrickRunner::Runner.new(:test_dir => PrototypeHelper::TMP_DIR)
     testcases = ENV['TESTCASES']
-    
+
     Dir[File.join(PrototypeHelper::TMP_DIR, '*_test.html')].each do |file|
       file = File.basename(file)
       test = file.sub('_test.html', '')
       runner.add_test(file, testcases)
     end
-    
+
     trap('INT') do
       puts "...server stopped."
       runner.teardown
       exit
     end
-    
+
     puts "Server started..."
-    
+
     runner.setup
-    
+
     loop do
       sleep 1
     end
@@ -343,11 +345,11 @@ end
 
 namespace :caja do
   task :test => ['test:build', 'test:run']
-  
+
   namespace :test do
     task :run => ['rake:test:run']
 
-    task :build => [:require, 'rake:test:clean', :dist] do 
+    task :build => [:require, 'rake:test:clean', :dist] do
       builder = UnittestJS::CajaBuilder::SuiteBuilder.new({
         :input_dir          => PrototypeHelper::TEST_UNIT_DIR,
         :assets_dir         => PrototypeHelper::DIST_DIR,
