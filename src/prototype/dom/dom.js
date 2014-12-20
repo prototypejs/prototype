@@ -1113,8 +1113,12 @@
   // tags. So we wrap the string with enclosing HTML (if necessary), stick it
   // in a DIV, then grab the DOM nodes.
   function getContentFromAnonymousElement(tagName, html, force) {
-    var t = INSERTION_TRANSLATIONS.tags[tagName], div = DIV;
-    
+    var t = INSERTION_TRANSLATIONS.tags[tagName], div = DIV, addedDiv = div;
+    // Workaround for IE not correctly handling on* attributes
+    // Make the temporary div invisible and append it to the document
+    div.style.display = 'none';
+    document.documentElement.appendChild(div);
+
     var workaround = !!t;
     if (!workaround && force) {
       workaround = true;
@@ -1130,6 +1134,9 @@
       div.innerHTML = html;
     }
     
+    // Reset the style and remove it from the document
+    document.documentElement.removeChild(addedDiv);
+    addedDiv.style.display = '';
     return $A(div.childNodes);
     //return SLICE.call(div.childNodes, 0);
   }
