@@ -48,9 +48,20 @@
   function toJSON() {
     return this.toISOString();
   }
+
+  /**
+   *  Date#succ() -> Date
+   *
+   *  Returns the successor of the current [[Date]], as defined by current + one day.
+   *  Used to make dates compatible with [[ObjectRange]].
+  **/
+  function succ() {
+    return new Date(this.getTime() + 86400000);
+  }
   
   if (!proto.toISOString) proto.toISOString = toISOString;
   if (!proto.toJSON) proto.toJSON = toJSON;
+  if (!proto.succ) proto.succ = succ;
   
 })(Date.prototype);
 
