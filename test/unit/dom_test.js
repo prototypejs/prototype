@@ -687,14 +687,24 @@ new Test.Unit.Runner({
     this.assertEqual(chained, chained.undoClipping());
     this.assertEqual(chained, chained.undoClipping().makeClipping());
     
-    ['hidden','visible','scroll'].each( function(overflowValue) {
-      var element = $('element_with_'+overflowValue+'_overflow');
-      
-      this.assertEqual(overflowValue, element.getStyle('overflow'));
+    var items = [
+      {id: 'hidden', inline: 'hidden', computed: 'hidden'},
+      {id: 'visible', inline: 'visible', computed: 'visible'},
+      {id: 'scroll', inline: 'scroll', computed: 'scroll'},
+      {id: 'auto', inline: 'auto', computed: null},
+      {id: 'empty', inline: '', computed: 'visible'}
+    ];
+
+    items.each(function(item) {
+      var element = $('element_with_' + item.id + '_overflow');
+      this.assertEqual(item.inline, element.style.overflow, 'inline style');
+      this.assertEqual(item.computed, element.getStyle('overflow'), 'computed style');
       element.makeClipping();
+      this.assertEqual('hidden', element.style.overflow);
       this.assertEqual('hidden', element.getStyle('overflow'));
       element.undoClipping();
-      this.assertEqual(overflowValue, element.getStyle('overflow'));
+      this.assertEqual(item.inline, element.style.overflow, 'restored inline style');
+      this.assertEqual(item.computed, element.getStyle('overflow'), 'restored computed style');
     }, this);
   },
   
