@@ -132,5 +132,26 @@ new Test.Unit.Runner({
     this.assertEqual("valueOf", new Foo().valueOf());
     this.assertEqual("toString", new Bar().toString());
     this.assertEqual("myValueOf", new Bar().valueOf());
+  },
+
+  testClassInheritsProperties: function() {
+    if (! this.__defineGetter__)
+      return;
+    var Foo = Class.create({
+      get prop() { return "foo get "+this.p; },
+      set prop(val) { this.p = "foo set "+val; }
+    });
+    var Bar1 = Class.create(Foo, {});
+    var Bar2 = Class.create(Foo, {
+      get prop() { return "bar get "+this.p; },
+      set prop(val) { this.p = "bar set "+val; }
+    });
+
+    var b = new Bar1();
+    b.prop = 1;
+    this.assertEqual("foo get foo set 1", b.prop);
+    b = new Bar2();
+    b.prop = 2;
+    this.assertEqual("bar get bar set 2", b.prop);
   }
 });
