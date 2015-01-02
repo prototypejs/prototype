@@ -4,7 +4,6 @@ new Test.Unit.Runner({
 
     this.assertEqual('B', h.set('b', 'B'));
     this.assertHashEqual({a: 'A', b: 'B'}, h);
-    
     this.assertUndefined(h.set('c'));
     this.assertHashEqual({a: 'A', b: 'B', c: undefined}, h);
   },
@@ -102,6 +101,16 @@ new Test.Unit.Runner({
     this.assertHashEqual({a:'A#', b:'B', c:'C', d:'D#' }, h.merge(Fixtures.one));
   },
   
+  testMergeWith: function() {
+    var h1 = $H({a: 1, b: 2, c: 2});
+    var func = function(v1, v2) { return v1 + v2;};
+    var h2 = h1.mergeWith({a: 3, b: 4, c: 5, d: 9}, func);
+    this.assertHashEqual($H({'a': 4, 'b': 6, 'c': 7, 'd': 9}), h2);
+    //this.assertHashEqual($H({'a': 1, 'b': 2, 'c': 2}), h1);
+    /*TypeError when function not defined*/
+    this.assertRaise('TypeError', function(){h1.mergeWith({});});
+  }, 
+
   testUpdate: function() {
     var h = $H(Fixtures.many);
     this.assertIdentical(h, h.update());
@@ -111,6 +120,15 @@ new Test.Unit.Runner({
     this.assertHashEqual(h, h.update($H()));
     this.assertHashEqual({a:'A',  b:'B', c:'C', d:'D#', aaa:'AAA' }, h.update({aaa: 'AAA'}));
     this.assertHashEqual({a:'A#', b:'B', c:'C', d:'D#', aaa:'AAA' }, h.update(Fixtures.one));
+  },
+
+  testUpdateWith: function() {
+    var h = $H({a: 1, b: 2, c: 2});
+    var func = function(v1, v2) { return v1 + v2;};
+    h.updateWith({a: 3, b: 4, c: 5, d: 9}, func);
+    this.assertHashEqual($H({'a': 4, 'b': 6, 'c': 7, 'd': 9}), h);
+    /*TypeError when function not defined*/
+    this.assertRaise('TypeError', function(){h.updateWith({});});
   },
   
   testToQueryString: function() {
@@ -192,6 +210,36 @@ new Test.Unit.Runner({
       result.push(i);
     });
    this.assertEnumEqual([0,1], result);
+  },
+
+  testIterationWithEachKey: function() {
+    var hash = $H({a:1, b:2, c:3});
+    var keys = [];
+    hash.eachKey(function(key) {
+      keys.push(key);
+    });
+    this.assertEnumEqual(['a', 'b', 'c'], keys);
+  },
+
+  testIterationWithEachValue: function() {
+    var hash = $H({a:1, b:2, c:3});
+    var values = [];
+    hash.eachValue(function(value) {
+      values.push(value);
+    });
+    this.assertEnumEqual([1, 2, 3], values);
+  },
+
+  testIterationWithEachPair: function() {
+    var hash = $H({a:1, b:2, c:3});
+    var keys = [];
+    var values = [];
+    hash.eachPair(function(key, value) {
+      keys.push(key);
+      values.push(value);
+    });
+    this.assertEnumEqual([1, 2, 3], values);
+    this.assertEnumEqual(['a', 'b', 'c'], keys);
   }
   
 });
