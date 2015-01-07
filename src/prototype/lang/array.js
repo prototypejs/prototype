@@ -187,7 +187,8 @@ Array.from = $A;
 (function() {
   var arrayProto = Array.prototype,
       slice = arrayProto.slice,
-      _each = arrayProto.forEach; // use native browser JS 1.6 implementation if available
+      _each = arrayProto.forEach,
+      _entries = arrayProto.entries; // use native browser JS 1.6 implementation if available
 
   function each(iterator, context) {
     for (var i = 0, length = this.length >>> 0; i < length; i++) {
@@ -719,6 +720,32 @@ Array.from = $A;
   if (arrayProto.every) {
     var every = wrapNative(Array.prototype.every);
   }
+ /**
+   *  Array#entries() -> Array
+   *
+   *  Returns an array of arrays of index, value pairs from the original array
+   *
+   *  `Array#entries` acts as an ECMAScript 6 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
+   *  It is only defined if not already present in the user's browser, and it
+   *  is meant to behave like the native version as much as possible. Consult
+   *  the ES6 specification for more information.
+   *
+   *  ##### Examples
+   *
+   *      [3, 5, 6, 1, 20].entries()
+   *      // -> [[0, 3], [1, 5], [2, 6], [3, 1], [4, 20]] 
+   *
+   *      ['a', 'b', 'c'].entries()
+   *      // -> [[0, 'a'], [1, 'b'], [2, 'c']] 
+  **/
+
+  function entries() {
+    if (this == null) throw new TypeError();
+
+    return this.map(function(i,index) {
+        return [index,i];
+    });
+  }
   
   // We used to define an `inject` method here that relied on ES5's
   // `Array#reduce` (if present), but using `reduce` prevents us from
@@ -726,10 +753,10 @@ Array.from = $A;
   // `Enumerable.inject` like they did previously.
   
   Object.extend(arrayProto, Enumerable);
-
+  
   if (!arrayProto._reverse)
     arrayProto._reverse = arrayProto.reverse;
-
+ 
   Object.extend(arrayProto, {
     _each:     _each,
     
@@ -755,7 +782,8 @@ Array.from = $A;
     clone:     clone,
     toArray:   clone,
     size:      size,
-    inspect:   inspect
+    inspect:   inspect,
+    entries:   _entries || entries
   });
 
   // fix for opera

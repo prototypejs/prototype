@@ -66,6 +66,11 @@ new Test.Unit.Runner({
     this.assertEqual(1, [1].first());
     this.assertEqual(1, [1,2].first());
   },
+
+  testEntries: function(){
+    this.assertEnumEqual([[0, 3], [1, 5], [2, 6], [3, 1], [4, 20]],[3, 5, 6, 1, 20].entries(),"[3, 5, 6, 1, 20].entries() != [[0, 3], [1, 5], [2, 6], [3, 1], [4, 20]]");
+    this.assertEnumEqual([[0, 'a'], [1, 'b'], [2, 'c']],['a', 'b', 'c'].entries(),"['a', 'b', 'c'].entries() != [[0, 'a'], [1, 'b'], [2, 'c']]");
+  },
   
   testLast: function(){
     this.assertUndefined([].last());
