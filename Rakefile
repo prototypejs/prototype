@@ -33,7 +33,7 @@ module PrototypeHelper
     begin
       `git --version`
       return true
-    rescue Error => e
+    rescue Error
       return false
     end
   end
@@ -43,7 +43,7 @@ module PrototypeHelper
     puts "\nPrototype requires Git in order to load its dependencies."
     puts "\nMake sure you've got Git installed and in your path."
     puts "\nFor more information, visit:\n\n"
-    puts "  http://book.git-scm.com/2_installing_git.html"
+    puts "  http://git-scm.com/book/en/v2/Getting-Started-Installing-Git"
     exit
   end
 
@@ -106,7 +106,7 @@ EOF
   def self.require_package(name)
     begin
       require name
-    rescue LoadError => e
+    rescue LoadError
       puts "You need the #{name} package. Try installing it with:\n"
       puts "  $ gem install #{name}"
       exit
@@ -147,7 +147,7 @@ EOF
     when :coderay
       begin
         require 'coderay'
-      rescue LoadError => e
+      rescue LoadError
         if verbose
           puts "\nYou asked to use CodeRay, but I can't find the 'coderay' gem. Just run:\n\n"
           puts "  $ gem install coderay"
@@ -212,13 +212,15 @@ EOF
 
   def self.require_submodule(name, path)
     begin
-      require path
+      full_path = File.join(PrototypeHelper::ROOT_DIR, 'vendor', path, 'lib', path)
+      # We need to require the explicit version in the submodule.
+      require full_path
     rescue LoadError => e
       # Wait until we notice that a submodule is missing before we bother the
       # user about installing git. (Maybe they brought all the files over
       # from a different machine.)
       missing_file = e.message.sub('no such file to load -- ', '').sub('cannot load such file -- ', '')
-      if missing_file == path
+      if missing_file == full_path
         # Missing a git submodule.
         retry if get_submodule(name, path)
       else
@@ -291,10 +293,6 @@ namespace :test do
     puts "Starting unit test server..."
     puts "Unit tests available at <http://127.0.0.1:4567/test/>\n\n"
     UnitTests.run!
-  end
-
-  task :require do
-    PrototypeHelper.require_package('sinatra')
   end
 
   desc "Opens the test suite in several different browsers. (Does not start or stop the server; you should do that separately.)"
