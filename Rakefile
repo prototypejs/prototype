@@ -295,6 +295,10 @@ namespace :test do
     UnitTests.run!
   end
 
+  task :require do
+    PrototypeHelper.require_package('sinatra')
+  end
+
   desc "Opens the test suite in several different browsers. (Does not start or stop the server; you should do that separately.)"
   task :run => [:require] do
     browsers, tests, grep = ENV['BROWSERS'], ENV['TESTS'], ENV['GREP']
