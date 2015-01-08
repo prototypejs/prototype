@@ -1,2 +1,2 @@
-require './app'
+require './server'
 run UnitTests

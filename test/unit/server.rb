@@ -10,6 +10,7 @@ class UnitTests < Sinatra::Application
 
   set :root, PWD
   set :public_folder, PWD.join('static')
+  set :logging, false
 
   # By default, the server is only reachable locally. We change this so that
   # we can start the server on one machine and then run tests from another.
