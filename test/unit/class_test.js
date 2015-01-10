@@ -132,5 +132,53 @@ new Test.Unit.Runner({
     this.assertEqual("valueOf", new Foo().valueOf());
     this.assertEqual("toString", new Bar().toString());
     this.assertEqual("myValueOf", new Bar().valueOf());
+  },
+  
+  testProperties: function() {
+    var IS_DEFPROP_BUGGY = (function(){
+      try {
+        var x = {};
+        Object.defineProperty(x, 'prop', {
+          get: function()  {},
+          set: function(y) {},
+          configurable: false,
+          enumerable:   true
+        });
+        
+        return false;
+      } catch(e) {
+        return true;
+      }
+    })();
+    
+    // This test will be ignored on older browsers (such as IE<9)!
+    if(Object.getOwnPropertyDescriptor && Object.defineProperty && !IS_DEFPROP_BUGGY) {
+      // Note: we cannot use the `get prop() { ... }` and `set prop(value) { ... }` style property declarations here
+      //       because they would cause a syntax error in browsers that do not support them. We work around this by
+      //       by creating the class base prototype first, then add the property using `Object.defineProperty` and
+      //       finally convert it to a Prototype class.
+      var Foo_base = {
+        value1: false,
+        value2: false
+      };
+      Object.defineProperty(Foo_base, 'prop', {
+        get: function()      { return this.value1;  },
+        set: function(value) { this.value2 = value; },
+        configurable: true,
+        enumerable:   true
+      });
+      var Foo = Class.create(Foo_base);
+      
+      // Create object from class
+      var foo = new Foo();
+      
+      // The value returned by the property `prop` should always be the same as the value of `value1`
+      foo.value1 = true;
+      this.assertEqual(true, foo.prop);
+      
+      // The value set using the property `prop` should always update the value of `value2`
+      foo.prop = true;
+      this.assertEqual(true, foo.value2);
+    }
   }
 });

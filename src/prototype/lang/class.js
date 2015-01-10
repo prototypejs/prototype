@@ -20,6 +20,25 @@ var Class = (function() {
     return true;
   })();
   
+  // IE8 provides a version of `Object.defineProperty` but it only works on DOM
+  // elements and when some other conditions are met, we therefore cannot use it
+  // @see http://msdn.microsoft.com/en-us/library/dd229916%28VS.85%29.aspx
+  var IS_DEFPROP_BUGGY = (function(){
+    try {
+      var x = {};
+      Object.defineProperty(x, 'prop', {
+        get: function()  {},
+        set: function(y) {},
+        configurable: false,
+        enumerable:   true
+      });
+      
+      return false;
+    } catch(e) {
+      return true;
+    }
+  })();
+  
   /**
    *  Class.create([superclass][, methods...]) -> Class
    *    - superclass (Class): The optional superclass to inherit methods from.
@@ -158,12 +177,10 @@ var Class = (function() {
       if (source.valueOf != Object.prototype.valueOf)
         properties.push("valueOf");
     }
-
-    for (var i = 0, length = properties.length; i < length; i++) {
-      var property = properties[i], value = source[property];
-      if (ancestor && Object.isFunction(value) &&
-          value.argumentNames()[0] == "$super") {
-        var method = value;
+    
+    function wrap_function(property, method)
+    {
+      if (method.argumentNames()[0] == "$super") {
         value = (function(m) {
           return function() { return ancestor[m].apply(this, arguments); };
         })(property).wrap(method);
@@ -183,8 +200,38 @@ var Class = (function() {
         value.toString = (function(method) {
           return function() { return method.toString.call(method); };
         })(method);
+        
+        return value;
+      } else {
+        return method;
       }
-      this.prototype[property] = value;
+    }
+    
+    // Checking for `Object.defineProperty` will work in IE8 but the provided implementation only works in some
+    // very specfic configurations and only on DOM elements - its therefore not reliable enough to use in practice.
+    if(Object.getOwnPropertyDescriptor && Object.defineProperty && !IS_DEFPROP_BUGGY) { // Dynamic property support
+      for (var i = 0, length = properties.length; i < length; i++) {
+        var property = properties[i], descriptor = Object.getOwnPropertyDescriptor(source, property);
+        
+        if (ancestor && Object.isFunction(descriptor.value)) {
+          descriptor.value = wrap_function(property, descriptor.value);
+        }
+        if (ancestor && Object.isFunction(descriptor.get)) {
+          descriptor.get = wrap_function(property, descriptor.get);
+        }
+        if (ancestor && Object.isFunction(descriptor.set)) {
+          descriptor.set = wrap_function(property, descriptor.set);
+        }
+        Object.defineProperty(this.prototype, property, descriptor);
+      }
+    } else {
+      for (var i = 0, length = properties.length; i < length; i++) {
+        var property = properties[i], value = source[property];
+        if (ancestor && Object.isFunction(value)) {
+          value = wrap_function(property, value);
+        }
+        this.prototype[property] = value;
+      }
     }
 
     return this;
