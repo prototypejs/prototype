@@ -139,11 +139,9 @@ var Class = (function() {
     var ancestor   = this.superclass && this.superclass.prototype,
         properties = Object.keys(source);
 
-    for (var i = 0, length = properties.length; i < length; i++) {
-      var property = properties[i], value = source[property];
-      if (ancestor && Object.isFunction(value) &&
-          value.argumentNames()[0] == "$super") {
-        var method = value;
+    function wrap_function(property, method)
+    {
+      if (method.argumentNames()[0] == "$super") {
         value = (function(m) {
           return function() { return ancestor[m].apply(this, arguments); };
         })(property).wrap(method);
@@ -163,8 +161,27 @@ var Class = (function() {
         value.toString = (function(method) {
           return function() { return method.toString.call(method); };
         })(method);
+
+        return value;
+      } else {
+        return method;
       }
-      this.prototype[property] = value;
+    }
+
+    // Copy the object properties, wrapping its descriptors as necessary
+    for (var i = 0, length = properties.length; i < length; i++) {
+      var property = properties[i], descriptor = Object.getOwnPropertyDescriptor(source, property);
+
+      if (ancestor && Object.isFunction(descriptor.value)) {
+        descriptor.value = wrap_function(property, descriptor.value);
+      }
+      if (ancestor && Object.isFunction(descriptor.get)) {
+        descriptor.get = wrap_function(property, descriptor.get);
+      }
+      if (ancestor && Object.isFunction(descriptor.set)) {
+        descriptor.set = wrap_function(property, descriptor.set);
+      }
+      Object.defineProperty(this.prototype, property, descriptor);
     }
 
     return this;
@@ -177,3 +194,4 @@ var Class = (function() {
     }
   };
 })();
+

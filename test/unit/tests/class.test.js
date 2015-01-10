@@ -220,4 +220,32 @@ suite("Class", function () {
     assert.equal("myValueOf", new Bar().valueOf() );
   });
 
+  test('test defined properties', function () {
+    // Note: we cannot use the `get prop() { ... }` and `set prop(value) { ... }` style property declarations here
+    //       because they would cause a syntax error in browsers that do not support them. We work around this by
+    //       by creating the class base prototype first, then add the property using `Object.defineProperty` and
+    //       finally convert it to a Prototype class.
+    var Foo_base = {
+      value1: false,
+      value2: false
+    };
+    Object.defineProperty(Foo_base, 'prop', {
+      get: function()      { return this.value1;  },
+      set: function(value) { this.value2 = value; },
+      configurable: true,
+      enumerable:   true
+    });
+    var Foo = Class.create(Foo_base);
+
+    // Create object from class
+    var foo = new Foo();
+
+    // The value returned by the property `prop` should always be the same as the value of `value1`
+    foo.value1 = true;
+    assert.equal(true, foo.prop);
+
+    // The value set using the property `prop` should always update the value of `value2`
+    foo.prop = true;
+    assert.equal(true, foo.value2);
+  });
 });
