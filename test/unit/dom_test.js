@@ -85,7 +85,7 @@ new Test.Unit.Runner({
       this.info("browser uses native getElementsByClassName; skipping tests");
       return;
     } 
-
+ 
     
     var div = $('class_names'), list = $('class_names_ul');
     
@@ -257,6 +257,27 @@ new Test.Unit.Runner({
     this.assert(getInnerHTML('element-insertions-main').endsWith('some backward-compatibility testing bottom'));
   },
   
+  testInsertionWithSeveralElements: function() {
+    var main = new Element('div');
+    var container = new Element('div');
+    main.insert(container);
+
+    container.insert(new Element('p').update('paragraph'), 
+                     new Element('span').update('span'),
+                     "simple text",
+                     new Element('div').update('div'),
+                    {top: new Element('h1').update('h1')},
+                     "<em>test</em>",
+                     {
+                        before: "<hr>",
+                        after: "<hr>"
+                      }
+                    );
+    this.assertEqual('<hr><div><h1>h1</h1><p>paragraph</p><span>span</span>simple text<div>div</div><em>test</em></div><hr>', 
+                      getInnerHTML(main));
+
+  },
+
   testElementWrap: function() {
     var element = $('wrap'), parent = document.createElement('div');
     element.wrap();
