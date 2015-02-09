@@ -38,12 +38,12 @@ the `src/` directory. To build Prototype, you'll need:
 * Rake--Ruby Make (<http://rake.rubyforge.org/>)
 * RDoc, if your Ruby distribution does not include it
 
-From the root Prototype directory,
+From the root Prototype directory:
 
 * `rake dist` will preprocess the Prototype source using Sprockets and 
-  generate the composite `dist/prototype.js`.
+  generate the composite `dist/prototype.js`
 * `rake package` will create a distribution tarball in the 
-  `pkg/` directory.
+  `pkg/` directory
 
 Contributing to Prototype
 -------------------------
