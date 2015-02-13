@@ -1,0 +1,9 @@
+#
+# If the test runner doesn't know where your browsers are, you can define
+# them here.
+#
+
+browsers:
+  firefox: C:\Program Files\Mozilla Firefox\firefox.exe
+  opera: C:\Program Files\Opera\launcher.exe
+  chrome: C:\Program Files\Google\Chrome\Application\chrome.exe

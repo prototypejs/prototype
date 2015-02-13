@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html charset="utf-8">
+
+<head>
+
+  <link rel="stylesheet" href="/css/mocha.css" type="text/css" media="screen">
+
+  <style type="text/css" media="screen">
+    #mocha {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40%;
+      background: #fff;
+      padding-bottom: 20px;
+      border: 2px solid #eee;
+    }
+
+    /* Older IEs don't support CANVAS, so we need something other than the progress indicator to show that we're done. */
+    #mocha.done {
+      border-color: #090;
+    }
+
+    #mocha-stats {
+      background: #fff;
+    }
+
+    /* Force test error messages to wrap. */
+    #mocha .test pre {
+      white-space: pre-wrap;       /* css-3 */
+      white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+      white-space: -pre-wrap;      /* Opera 4-6 */
+      white-space: -o-pre-wrap;    /* Opera 7 */
+      word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    }
+
+    #mocha .suite h1,
+    #mocha li.test {
+      clear: both;
+    }
+
+    #log {
+      width: 350px;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      height: 500px;
+      overflow-y: auto;
+      background: #fff;
+      border: 2px solid #eee;
+    }
+  </style>
+
+  <!--[if lt IE 8]>
+  <style type="text/css" media="screen">
+
+    #mocha-stats {
+      position: static;
+    }
+
+    #mocha-stats li {
+      float: left;
+    }
+
+  </style>
+  <![endif]-->
+
+  <script src="/prototype.js?<%= @unique_asset_string %>" type="text/javascript"></script>
+  <script src="/js/mocha.js?<%= @unique_asset_string %>" type="text/javascript"></script>
+  <script src="/js/proclaim.js?<%= @unique_asset_string %>" type="text/javascript"></script>
+  <script src="/js/test_helpers.js?<%= @unique_asset_string %>" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    var eventResults = {};
+    var Fixtures = {};
+  </script>
+
+  <script type="text/javascript">
+    mocha.setup('tdd');
+    mocha.reporter(Test.Reporter);
+  </script>
+
+  <% @suites.each do |suite| %>
+  <script src="/js/tests/<%= suite %>.test.js?<%= @unique_asset_string %>" type="text/javascript"></script>
+  <% end %>
+
+</head>
+
+<body data-suites="<%= suites.join(',') %>">
+
+  <!-- A DIV that we log into whenever console.log isn't available. -->
+  <div id="log" style="display: none"></div>
+  <div id="mocha"></div>
+
+  <div id="current_fixtures"></div>
+
+  <div id="other_fixtures">
+    <%= yield %>
+  </div>
+
+  <script type="text/javascript">
+    mocha.suite.suites.each(function (suite) {
+      suite.beforeAll(function () {
+        Test.startSuite(suite.name);
+      });
+
+      suite.afterAll(function () {
+        Test.endSuite(suite.name);
+      });
+    });
+
+    Test.setup();
+    if (window.mochaPhantomJS) {
+      mochaPhantomJS.run();
+    } else {
+      var runner = mocha.run();
+    }
+
+    Test.configureRunner(runner);
+  </script>
+
+  <script type="text/javascript">
+    eventResults.endOfDocument = true;
+  </script>
+
+</body>
+
+
+</html>

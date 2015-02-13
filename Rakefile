@@ -1,5 +1,6 @@
 require 'rake'
 require 'rake/packagetask'
+require 'rbconfig'
 require 'yaml'
 
 module PrototypeHelper
@@ -18,6 +19,9 @@ module PrototypeHelper
 
   DEFAULT_SELECTOR_ENGINE = 'sizzle'
 
+  host = RbConfig::CONFIG['host']
+  IS_WINDOWS = host.include?('mswin') || host.include?('mingw32')
+
   # Possible options for PDoc syntax highlighting, in order of preference.
   SYNTAX_HIGHLIGHTERS = [:pygments, :coderay, :none]
 
@@ -29,7 +33,7 @@ module PrototypeHelper
     begin
       `git --version`
       return true
-    rescue Error => e
+    rescue Error
       return false
     end
   end
@@ -99,6 +103,26 @@ EOF
     })
   end
 
+  def self.require_package(name)
+    begin
+      require name
+    rescue LoadError
+      puts "You need the #{name} package. Try installing it with:\n"
+      puts "  $ gem install #{name}"
+      exit
+    end
+  end
+
+  def self.require_phantomjs
+    cmd = IS_WINDOWS ? "phantomjs.cmd -v" : "phantomjs -v > /dev/null 2>&1"
+    success = system(cmd)
+    if !success
+      puts "\nYou need phantomjs installed to run this task. Find out how at:"
+      puts "  http://phantomjs.org/download.html"
+      exit
+    end
+  end
+
   def self.syntax_highlighter
     if ENV['SYNTAX_HIGHLIGHTER']
       highlighter = ENV['SYNTAX_HIGHLIGHTER'].to_sym
@@ -123,7 +147,7 @@ EOF
     when :coderay
       begin
         require 'coderay'
-      rescue LoadError => e
+      rescue LoadError
         if verbose
           puts "\nYou asked to use CodeRay, but I can't find the 'coderay' gem. Just run:\n\n"
           puts "  $ gem install coderay"
@@ -259,109 +283,37 @@ task :clean_package_source do
   rm_rf File.join(PrototypeHelper::PKG_DIR, "prototype-#{PrototypeHelper::VERSION}")
 end
 
-task :test => ['test:build', 'test:run']
+task :test => ['test:require', 'test:start']
 namespace :test do
-  desc 'Runs all the JavaScript unit tests and collects the results'
-  task :run => [:require] do
-    testcases        = ENV['TESTCASES']
-    browsers_to_test = ENV['BROWSERS'] && ENV['BROWSERS'].split(',')
-    tests_to_run     = ENV['TESTS'] && ENV['TESTS'].split(',')
-    runner           = UnittestJS::WEBrickRunner::Runner.new(:test_dir => PrototypeHelper::TMP_DIR)
+  desc 'Starts the test server.'
+  task :start => [:require] do
+    path_to_app = File.join(PrototypeHelper::ROOT_DIR, 'test', 'unit', 'server.rb')
+    require path_to_app
 
-    Dir[File.join(PrototypeHelper::TMP_DIR, '*_test.html')].each do |file|
-      file = File.basename(file)
-      test = file.sub('_test.html', '')
-      unless tests_to_run && !tests_to_run.include?(test)
-        runner.add_test(file, testcases)
-      end
-    end
-
-    UnittestJS::Browser::SUPPORTED.each do |browser|
-      unless browsers_to_test && !browsers_to_test.include?(browser)
-        runner.add_browser(browser.to_sym)
-      end
-    end
-
-    trap('INT') { runner.teardown; exit }
-    runner.run
-  end
-
-  task :build => [:clean, :dist] do
-    builder = UnittestJS::Builder::SuiteBuilder.new({
-      :input_dir  => PrototypeHelper::TEST_UNIT_DIR,
-      :assets_dir => PrototypeHelper::DIST_DIR
-    })
-    selected_tests = (ENV['TESTS'] || '').split(',')
-    builder.collect(*selected_tests)
-    builder.render
-  end
-
-  task :clean => [:require] do
-    UnittestJS::Builder.empty_dir!(PrototypeHelper::TMP_DIR)
+    puts "Starting unit test server..."
+    puts "Unit tests available at <http://127.0.0.1:4567/test/>\n\n"
+    UnitTests.run!
   end
 
   task :require do
-    PrototypeHelper.require_unittest_js
+    PrototypeHelper.require_package('sinatra')
   end
 
-  desc "Builds all the unit tests and starts the server. (The user can visit the tests manually in a browser at their leisure.)"
-  task :server => [:build] do
-    runner = UnittestJS::WEBrickRunner::Runner.new(:test_dir => PrototypeHelper::TMP_DIR)
-    testcases = ENV['TESTCASES']
+  desc "Opens the test suite in several different browsers. (Does not start or stop the server; you should do that separately.)"
+  task :run => [:require] do
+    browsers, tests, grep = ENV['BROWSERS'], ENV['TESTS'], ENV['GREP']
+    path_to_runner = File.join(PrototypeHelper::ROOT_DIR, 'test', 'unit', 'runner.rb')
+    require path_to_runner
 
-    Dir[File.join(PrototypeHelper::TMP_DIR, '*_test.html')].each do |file|
-      file = File.basename(file)
-      test = file.sub('_test.html', '')
-      runner.add_test(file, testcases)
-    end
-
-    trap('INT') do
-      puts "...server stopped."
-      runner.teardown
-      exit
-    end
-
-    puts "Server started..."
-
-    runner.setup
-
-    loop do
-      sleep 1
-    end
+    Runner::run(browsers, tests, grep)
   end
-end
 
-task :test_units do
-  puts '"rake test_units" is deprecated. Please use "rake test" instead.'
-end
-
-task :build_unit_tests do
-  puts '"rake test_units" is deprecated. Please use "rake test:build" instead.'
-end
-
-task :clean_tmp do
-  puts '"rake clean_tmp" is deprecated. Please use "rake test:clean" instead.'
-end
-
-namespace :caja do
-  task :test => ['test:build', 'test:run']
-
-  namespace :test do
-    task :run => ['rake:test:run']
-
-    task :build => [:require, 'rake:test:clean', :dist] do
-      builder = UnittestJS::CajaBuilder::SuiteBuilder.new({
-        :input_dir          => PrototypeHelper::TEST_UNIT_DIR,
-        :assets_dir         => PrototypeHelper::DIST_DIR,
-        :whitelist_dir      => File.join(PrototypeHelper::TEST_DIR, 'unit', 'caja_whitelists'),
-        :html_attrib_schema => 'html_attrib.json'
-      })
-      selected_tests = (ENV['TESTS'] || '').split(',')
-      builder.collect(*selected_tests)
-      builder.render
-    end
-  end
-  task :require => ['rake:test:require'] do
-    PrototypeHelper.require_caja_builder
+  desc "Runs the tests in PhantomJS. (Does not start or stop the server; you should do that separately.)"
+  task :phantom do
+    PrototypeHelper.require_phantomjs
+    tests, grep = ENV['TESTS'], ENV['GREP']
+    url = "http://127.0.0.1:4567/test/#{tests}"
+    url << "?grep=#{grep}" if grep
+    system(%Q[phantomjs ./test/unit/phantomjs/mocha-phantomjs.js "#{url}"])
   end
 end
