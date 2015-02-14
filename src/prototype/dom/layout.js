@@ -1059,7 +1059,7 @@
 
     // IE reports offset parent incorrectly for inline elements.
     var isInline = (Element.getStyle(element, 'display') === 'inline');
-    if (!isInline && element.offsetParent) return $(element.offsetParent);
+    if (!isInline && element.offsetParent) return isHtml(element.offsetParent) ? $(document.body) : $(element.offsetParent);
     
     while ((element = element.parentNode) && element !== document.body) {
       if (Element.getStyle(element, 'position') !== 'static') {
