@@ -182,8 +182,8 @@ Ajax.Request = Class.create(Ajax.Base, {
     var params = Object.isString(this.options.parameters) ?
           this.options.parameters :
           Object.toQueryString(this.options.parameters);
-
-    if (!['get', 'post'].include(this.method)) {
+    
+    if (!Ajax.Request.supportedHTTPMethods.include(this.method)) {
       // simulate other verbs over post
       params += (params ? '&' : '') + "_method=" + this.method;
       this.method = 'post';
@@ -355,3 +355,5 @@ Ajax.Request = Class.create(Ajax.Base, {
 
 Ajax.Request.Events =
   ['Uninitialized', 'Loading', 'Loaded', 'Interactive', 'Complete'];
+
+Ajax.Request.supportedHTTPMethods = ['get','post'];
