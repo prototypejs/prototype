@@ -3150,12 +3150,92 @@
     
     return value;
   }
-  
-  
+  //simple test for native HTML5 dataset existence
+  var NATIVEHTML5DATASET = (function (){
+    DIV.setAttribute('data-test-this-thing','test');
+    return (typeof DIV.dataset !== 'undefined' && DIV.dataset.testThisThing === 'test') ? true : false;
+  })();
+  DIV.removeAttribute('data-test-this-thing');
+  /**
+   *  Element.gethtml5data(@element[, datakey]) -> Object
+   *
+   *  Retrieves HTML5 data-* attributes set on `element`.
+   *
+   *  This will clear up any problems retreiving these data attributes on browsers
+   *  that don't support them.
+   *
+   *  ##### Example
+   *
+   *  language: html
+   *  <div id="dataitem" data-old-url="http://prototypejs.org"></div>
+   * 
+   *   
+   *  $('dataitem').gethtml5data();
+   *  // -> {'oldUrl':'http://prototypejs.org'}
+   *  $('dataitem').gethtml5data('oldUrl');
+   *  // -> 'http://prototypejs.org'
+  **/
+  function gethtml5data(element,datalabel){
+   if(!(element = $(element))) return;
+   if(datalabel != undefined) return element.dataset[datalabel];
+   else return element.dataset;
+  }
+  //if the easy native html5 dataset is not supported do it the hard way
+  function gethtml5data_simulated(element,datalabel){
+   if(!(element = $(element))) return;
+   var returnobject = {};
+   if(typeof datalabel !== 'undefined') return element.readAttribute('data-'+datalabel.underscore().dasherize());
+   else{
+    var label = "";
+    var numberattributes = element.attributes.length;
+    for(var t = 0; t < numberattributes ; t++){
+     if(element.attributes[t].name.startsWith('data-')){
+      label = element.attributes[t].name.substring(5).camelize();
+      returnobject[label] = element.attributes[t].value;
+     }
+    }
+   }
+  return returnobject;
+  }
+  /**
+   *  Element.sethtml5data(@element,datakey [,value]) -> Object
+   *
+   *  Sets/Removes HTML5 data-* attributes on `element`. If `value` is not defined or null it will clear the data value on the element.
+   *
+   *  This will clear up any problems setting these data attributes on browsers
+   *  that don't support them.
+   *  
+   *  ##### Example
+   *
+   *  language: html
+   *  <div id="dataitem" data-old-url="http://prototypejs.org"></div>
+   * 
+   *  Then: 
+   *  $("dataitem").sethtml5data('newUrl','http://api.prototypejs.org');
+   *  $("dataitem").sethtml5data('oldUrl',null);
+   *  
+   *  language: html
+   *  <div id="dataitem" data-new-url="http://api.prototypejs.org"></div>
+  **/
+  function sethtml5data(element,datalabel,value){
+   if(typeof value !== 'undefined'){
+    element.dataset[datalabel.camelize()] = value;
+   }else{
+    delete element.dataset[datalabel.camelize()];
+    value = null;
+   }
+   element.writeAttribute("data-"+datalabel.underscore().dasherize(),value);
+  }
+  function sethtml5data_simulated(element,datalabel,value){
+   value = value || null;
+   element.writeAttribute("data-"+datalabel.underscore().dasherize(),value);
+  }
   Object.extend(methods, {
     getStorage: getStorage,
     store:      store,
-    retrieve:   retrieve
+    retrieve:   retrieve,
+    gethtml5data:  NATIVEHTML5DATASET ? gethtml5data : gethtml5data_simulated,
+    sethtml5data:  NATIVEHTML5DATASET ? sethtml5data : sethtml5data_simulated
   });
   
   
