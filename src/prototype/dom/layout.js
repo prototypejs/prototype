@@ -55,7 +55,8 @@
     return boxWidth - bl - br - pl - pr;
   }
   
-  if ('currentStyle' in document.documentElement) {
+  //old opera also has currentStyle
+  if (!Object.isUndefined(document.documentElement.currentStyle) && !Prototype.Browser.Opera) {
     getRawStyle = getRawStyle_IE;
   }
   
