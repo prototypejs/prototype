@@ -267,34 +267,15 @@
    *      
    *      $('hidden').visible();
    *      // -> false
-   *  
-   *  ##### Notes
-   *  
-   *  Styles applied via a CSS stylesheet are _not_ taken into consideration.
-   *  Note that this is not a Prototype limitation, it is a CSS limitation.
-   *  
-   *      language: html
-   *      <style>
-   *        #hidden-by-css {
-   *          display: none;
-   *        }
-   *      </style>
-   *      
-   *      [...]
-   *      
-   *      <div id="hidden-by-css"></div>
-   *
-   *  And the associated JavaScript:
-   *
-   *      $('hidden-by-css').visible();
-   *      // -> true
   **/
   function visible(element) {
-    return $(element).style.display !== 'none';
+    return $(element).getStyle('display') !== 'none';
   }
   
   /**
    *  Element.toggle(@element[, bool]) -> Element
+   *  - bool (Boolean): Whether the element should be shown or hidden. If not
+   *    a boolean, this argument will be ignored.
    *
    *  Toggles the CSS `display` of `element`. Returns `element`.
    *  
@@ -304,6 +285,13 @@
    *  By default, `toggle` will switch the display to the opposite of its
    *  current state, but will use the `bool` argument instead if it's
    *  provided (`true` to show the element, `false` to hide it).
+   *  
+   *  If the `bool` argument is not a boolean, **it will be ignored**. This
+   *  preserves the ability to toggle elements through comparisons (e.g.,
+   *  `errorElement.toggle(errors > 0)`) while also letting a user do
+   *  `someElements.each(Element.toggle)` without falling victim to 
+   *  JavaScript's famous [problems with variadic arguments](http://www.wirfs-brock.com/allen/posts/166).
+   *  
    *  
    *  ##### Examples
    *  
@@ -356,7 +344,7 @@
   **/
   function toggle(element, bool) {
     element = $(element);
-    if (Object.isUndefined(bool))
+    if (typeof bool !== 'boolean')
       bool = !Element.visible(element);
     Element[bool ? 'show' : 'hide'](element);
     
@@ -484,6 +472,15 @@
    *        <li id="mcintosh">McIntosh</li>
    *        <li id="ida-red">Ida Red</li>
    *      </ul>
+   *
+   *  ##### Warning
+   *
+   *  Using [[Element.remove]] as an instance method (e.g.,
+   *  `$('foo').remove('')`) won't work when the element in question is a
+   *  `select` element, since`select` elements have [an existing `remove` method](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement)
+   *  that behaves differently from this method. As a workaround, use the
+   *  generic version instead (`Element.remove('foo')`).
+   *  
   **/
   function remove(element) {
     element = $(element);
@@ -2385,13 +2382,35 @@
     return element;
   }
   
+  // Test whether checkboxes work properly with `hasAttribute`.
+  var PROBLEMATIC_HAS_ATTRIBUTE_WITH_CHECKBOXES = (function () {
+    if (!HAS_EXTENDED_CREATE_ELEMENT_SYNTAX) {
+      // Only IE browsers are known to exhibit this one, so we'll take a
+      // shortcut.
+      return false;
+    }
+    var checkbox = document.createElement('<input type="checkbox">');
+    checkbox.checked = true;
+    var node = checkbox.getAttributeNode('checked');
+    return !node || !node.specified;
+  })();
+  
   function hasAttribute(element, attribute) {
     attribute = ATTRIBUTE_TRANSLATIONS.has[attribute] || attribute;
     var node = $(element).getAttributeNode(attribute);
     return !!(node && node.specified);
   }
   
-  GLOBAL.Element.Methods.Simulated.hasAttribute = hasAttribute;
+  function hasAttribute_IE(element, attribute) {
+    if (attribute === 'checked') {
+      return element.checked;
+    }
+    return hasAttribute(element, attribute);
+  }
+  
+  GLOBAL.Element.Methods.Simulated.hasAttribute = 
+   PROBLEMATIC_HAS_ATTRIBUTE_WITH_CHECKBOXES ? 
+   hasAttribute_IE : hasAttribute;
   
   /** deprecated
    *  Element.classNames(@element) -> [String...]
@@ -2791,7 +2810,7 @@
   
 
   /**
-   *  Element.getStyle(@element, style) -> String | null
+   *  Element.getStyle(@element, style) -> String | Number | null
    *  - style (String): The property name to be retrieved.
    *
    *  Returns the given CSS property value of `element`. The property can be
@@ -2804,6 +2823,10 @@
    *  (fully transparent) and `1` (fully opaque), position properties
    *  (`left`, `top`, `right` and `bottom`) and when getting the dimensions
    *  (`width` or `height`) of hidden elements.
+   * 
+   *  If a value is present, it will be returned as a string &mdash; except
+   *  for `opacity`, which returns a number between `0` and `1` just as
+   *  [[Element.getOpacity]] does.
    *  
    *  ##### Examples
    *  
@@ -2914,9 +2937,12 @@
       value = element.currentStyle[style];
     }
     
-    if (style === 'opacity' && !STANDARD_CSS_OPACITY_SUPPORTED)
-      return getOpacity_IE(element);
-      
+    if (style === 'opacity') {
+      if (!STANDARD_CSS_OPACITY_SUPPORTED)
+        return getOpacity_IE(element);
+      else return value ? parseFloat(value) : 1.0;
+    }
+
     if (value === 'auto') {
       // If we need a dimension, return null for hidden elements, but return
       // pixel values for visible elements.
@@ -2998,14 +3024,14 @@
     if (value < 0.00001) value = 0;
         
     style.filter = stripAlphaFromFilter_IE(filter) + 
-     'alpha(opacity=' + (value * 100) + ')';
+     ' alpha(opacity=' + (value * 100) + ')';
      
     return element;
   }
   
   
   /**
-   *  Element.getOpacity(@element) -> String | null
+   *  Element.getOpacity(@element) -> Number | null
    *
    *  Returns the opacity of the element.
   **/
@@ -3148,6 +3174,9 @@
   // Certain oddball element types can't be extended in IE8.
   function checkElementPrototypeDeficiency(tagName) {
     if (typeof window.Element === 'undefined') return false;
+    // Skip newer IEs because creating an OBJECT tag pops up an annoying
+    // "this page uses Java" warning.
+    if (!HAS_EXTENDED_CREATE_ELEMENT_SYNTAX) return false;
     var proto = window.Element.prototype;
     if (proto) {
       var id = '_' + (Math.random() + '').slice(2),

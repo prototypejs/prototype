@@ -1,8 +1,11 @@
 require 'rake'
 require 'rake/packagetask'
+require 'rbconfig'
 require 'yaml'
 
 module PrototypeHelper
+  extend Rake::DSL
+
   ROOT_DIR      = File.expand_path(File.dirname(__FILE__))
   SRC_DIR       = File.join(ROOT_DIR, 'src')
   DIST_DIR      = File.join(ROOT_DIR, 'dist')
@@ -13,9 +16,12 @@ module PrototypeHelper
   TEST_UNIT_DIR = File.join(TEST_DIR, 'unit')
   TMP_DIR       = File.join(TEST_UNIT_DIR, 'tmp')
   VERSION       = YAML.load(IO.read(File.join(SRC_DIR, 'constants.yml')))['PROTOTYPE_VERSION']
-  
+
   DEFAULT_SELECTOR_ENGINE = 'sizzle'
-  
+
+  host = RbConfig::CONFIG['host']
+  IS_WINDOWS = host.include?('mswin') || host.include?('mingw32')
+
   # Possible options for PDoc syntax highlighting, in order of preference.
   SYNTAX_HIGHLIGHTERS = [:pygments, :coderay, :none]
 
@@ -27,43 +33,43 @@ module PrototypeHelper
     begin
       `git --version`
       return true
-    rescue Error => e
+    rescue Error
       return false
     end
   end
-  
+
   def self.require_git
     return if has_git?
     puts "\nPrototype requires Git in order to load its dependencies."
     puts "\nMake sure you've got Git installed and in your path."
     puts "\nFor more information, visit:\n\n"
-    puts "  http://book.git-scm.com/2_installing_git.html"
+    puts "  http://git-scm.com/book/en/v2/Getting-Started-Installing-Git"
     exit
   end
-    
+
   def self.sprocketize(options = {})
     options = {
       :destination    => File.join(DIST_DIR, options[:source]),
       :strip_comments => true
     }.merge(options)
-    
+
     require_sprockets
     load_path = [SRC_DIR]
-    
+
     if selector_path = get_selector_engine(options[:selector_engine])
       load_path << selector_path
     end
-    
+
     secretary = Sprockets::Secretary.new(
       :root           => File.join(ROOT_DIR, options[:path]),
       :load_path      => load_path,
       :source_files   => [options[:source]],
       :strip_comments => options[:strip_comments]
     )
-    
+
     secretary.concatenation.save_to(options[:destination])
   end
-  
+
   def self.build_doc_for(file)
     rm_rf(DOC_DIR)
     mkdir_p(DOC_DIR)
@@ -96,17 +102,37 @@ EOF
       :assets => 'doc_assets'
     })
   end
-  
+
+  def self.require_package(name)
+    begin
+      require name
+    rescue LoadError
+      puts "You need the #{name} package. Try installing it with:\n"
+      puts "  $ gem install #{name}"
+      exit
+    end
+  end
+
+  def self.require_phantomjs
+    cmd = IS_WINDOWS ? "phantomjs.cmd -v" : "phantomjs -v > /dev/null 2>&1"
+    success = system(cmd)
+    if !success
+      puts "\nYou need phantomjs installed to run this task. Find out how at:"
+      puts "  http://phantomjs.org/download.html"
+      exit
+    end
+  end
+
   def self.syntax_highlighter
     if ENV['SYNTAX_HIGHLIGHTER']
       highlighter = ENV['SYNTAX_HIGHLIGHTER'].to_sym
       require_highlighter(highlighter, true)
       return highlighter
     end
-    
+
     SYNTAX_HIGHLIGHTERS.detect { |n| require_highlighter(n) }
   end
-  
+
   def self.require_highlighter(name, verbose=false)
     case name
     when :pygments
@@ -121,7 +147,7 @@ EOF
     when :coderay
       begin
         require 'coderay'
-      rescue LoadError => e
+      rescue LoadError
         if verbose
           puts "\nYou asked to use CodeRay, but I can't find the 'coderay' gem. Just run:\n\n"
           puts "  $ gem install coderay"
@@ -139,48 +165,42 @@ EOF
       exit
     end
   end
-  
+
   def self.require_sprockets
     require_submodule('Sprockets', 'sprockets')
   end
-  
+
   def self.require_pdoc
     require_submodule('PDoc', 'pdoc')
   end
-  
+
   def self.require_unittest_js
     require_submodule('UnittestJS', 'unittest_js')
   end
-  
+
   def self.require_caja_builder
     require_submodule('CajaBuilder', 'caja_builder')
   end
-  
+
   def self.get_selector_engine(name)
     return if !name
-    # If the submodule exists, we should use it, even if we're using the
-    # default engine; the user might have fetched it manually, and thus would
-    # want to build a distributable with the most recent version of that
-    # engine.
+    # If the submodule exists, we should use it.
     submodule_path = File.join(ROOT_DIR, "vendor", name)
     return submodule_path if File.exist?(File.join(submodule_path, "repository", ".git"))
     return submodule_path if name === "legacy_selector"
-    
-    # If it doesn't exist, we should fetch it, _unless_ it's the default
-    # engine. We've already got a known version of the default engine in our
-    # load path.
-    return if name == DEFAULT_SELECTOR_ENGINE
+
+    # If it doesn't exist, we should fetch it.
     get_submodule('the required selector engine', "#{name}/repository")
     unless File.exist?(submodule_path)
       puts "The selector engine you required isn't available at vendor/#{name}.\n\n"
       exit
     end
   end
-  
+
   def self.get_submodule(name, path)
     require_git
     puts "\nYou seem to be missing #{name}. Obtaining it via git...\n\n"
-    
+
     Kernel.system("git submodule init")
     return true if Kernel.system("git submodule update vendor/#{path}")
     # If we got this far, something went wrong.
@@ -189,16 +209,18 @@ EOF
     puts "  $ git submodule update vendor/#{path}"
     false
   end
-  
+
   def self.require_submodule(name, path)
     begin
-      require path
+      full_path = File.join(PrototypeHelper::ROOT_DIR, 'vendor', path, 'lib', path)
+      # We need to require the explicit version in the submodule.
+      require full_path
     rescue LoadError => e
       # Wait until we notice that a submodule is missing before we bother the
       # user about installing git. (Maybe they brought all the files over
       # from a different machine.)
-      missing_file = e.message.sub('no such file to load -- ', '')
-      if missing_file == path
+      missing_file = e.message.sub('no such file to load -- ', '').sub('cannot load such file -- ', '')
+      if missing_file == full_path
         # Missing a git submodule.
         retry if get_submodule(name, path)
       else
@@ -210,7 +232,7 @@ EOF
       exit
     end
   end
-  
+
   def self.current_head
     `git show-ref --hash HEAD`.chomp[0..6]
   end
@@ -232,7 +254,7 @@ namespace :doc do
   task :build => [:require] do
     PrototypeHelper.build_doc_for(ENV['SECTION'] ? "#{ENV['SECTION']}.js" : 'prototype.js')
   end
-  
+
   task :require do
     PrototypeHelper.require_pdoc
   end
@@ -261,83 +283,37 @@ task :clean_package_source do
   rm_rf File.join(PrototypeHelper::PKG_DIR, "prototype-#{PrototypeHelper::VERSION}")
 end
 
-task :test => ['test:build', 'test:run']
+task :test => ['test:require', 'test:start']
 namespace :test do
-  desc 'Runs all the JavaScript unit tests and collects the results'
-  task :run => [:require] do
-    testcases        = ENV['TESTCASES']
-    browsers_to_test = ENV['BROWSERS'] && ENV['BROWSERS'].split(',')
-    tests_to_run     = ENV['TESTS'] && ENV['TESTS'].split(',')
-    runner           = UnittestJS::WEBrickRunner::Runner.new(:test_dir => PrototypeHelper::TMP_DIR)
+  desc 'Starts the test server.'
+  task :start => [:require] do
+    path_to_app = File.join(PrototypeHelper::ROOT_DIR, 'test', 'unit', 'server.rb')
+    require path_to_app
 
-    Dir[File.join(PrototypeHelper::TMP_DIR, '*_test.html')].each do |file|
-      file = File.basename(file)
-      test = file.sub('_test.html', '')
-      unless tests_to_run && !tests_to_run.include?(test)
-        runner.add_test(file, testcases)
-      end
-    end
-    
-    UnittestJS::Browser::SUPPORTED.each do |browser|
-      unless browsers_to_test && !browsers_to_test.include?(browser)
-        runner.add_browser(browser.to_sym)
-      end
-    end
-    
-    trap('INT') { runner.teardown; exit }
-    runner.run
+    puts "Starting unit test server..."
+    puts "Unit tests available at <http://127.0.0.1:4567/test/>\n\n"
+    UnitTests.run!
   end
-  
-  task :build => [:clean, :dist] do
-    builder = UnittestJS::Builder::SuiteBuilder.new({
-      :input_dir  => PrototypeHelper::TEST_UNIT_DIR,
-      :assets_dir => PrototypeHelper::DIST_DIR
-    })
-    selected_tests = (ENV['TESTS'] || '').split(',')
-    builder.collect(*selected_tests)
-    builder.render
-  end
-  
-  task :clean => [:require] do
-    UnittestJS::Builder.empty_dir!(PrototypeHelper::TMP_DIR)
-  end
-  
+
   task :require do
-    PrototypeHelper.require_unittest_js
+    PrototypeHelper.require_package('sinatra')
   end
-end
 
-task :test_units do
-  puts '"rake test_units" is deprecated. Please use "rake test" instead.'
-end
+  desc "Opens the test suite in several different browsers. (Does not start or stop the server; you should do that separately.)"
+  task :run => [:require] do
+    browsers, tests, grep = ENV['BROWSERS'], ENV['TESTS'], ENV['GREP']
+    path_to_runner = File.join(PrototypeHelper::ROOT_DIR, 'test', 'unit', 'runner.rb')
+    require path_to_runner
 
-task :build_unit_tests do
-  puts '"rake test_units" is deprecated. Please use "rake test:build" instead.'
-end
-
-task :clean_tmp do
-  puts '"rake clean_tmp" is deprecated. Please use "rake test:clean" instead.'
-end
-
-namespace :caja do
-  task :test => ['test:build', 'test:run']
-  
-  namespace :test do
-    task :run => ['rake:test:run']
-
-    task :build => [:require, 'rake:test:clean', :dist] do 
-      builder = UnittestJS::CajaBuilder::SuiteBuilder.new({
-        :input_dir          => PrototypeHelper::TEST_UNIT_DIR,
-        :assets_dir         => PrototypeHelper::DIST_DIR,
-        :whitelist_dir      => File.join(PrototypeHelper::TEST_DIR, 'unit', 'caja_whitelists'),
-        :html_attrib_schema => 'html_attrib.json'
-      })
-      selected_tests = (ENV['TESTS'] || '').split(',')
-      builder.collect(*selected_tests)
-      builder.render
-    end
+    Runner::run(browsers, tests, grep)
   end
-  task :require => ['rake:test:require'] do
-    PrototypeHelper.require_caja_builder
+
+  desc "Runs the tests in PhantomJS. (Does not start or stop the server; you should do that separately.)"
+  task :phantom do
+    PrototypeHelper.require_phantomjs
+    tests, grep = ENV['TESTS'], ENV['GREP']
+    url = "http://127.0.0.1:4567/test/#{tests}"
+    url << "?grep=#{grep}" if grep
+    system(%Q[phantomjs ./test/unit/phantomjs/mocha-phantomjs.js "#{url}"])
   end
 end

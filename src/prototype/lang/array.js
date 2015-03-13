@@ -720,22 +720,11 @@ Array.from = $A;
     var every = wrapNative(Array.prototype.every);
   }
   
-  // Prototype's `Array#inject` behaves similarly to ES5's `Array#reduce`.
-  var _reduce = arrayProto.reduce;
-  function inject(memo, iterator) {
-    iterator = iterator || Prototype.K;
-    var context = arguments[2];
-    // The iterator must be bound, as `Array#reduce` always binds to
-    // `undefined`.
-    return _reduce.call(this, iterator.bind(context), memo);
-  }
+  // We used to define an `inject` method here that relied on ES5's
+  // `Array#reduce` (if present), but using `reduce` prevents us from
+  // catching a thrown `$break`. So arrays now use the standard
+  // `Enumerable.inject` like they did previously.
   
-  // Piggyback on `Array#reduce` if it exists; otherwise fall back to the
-  // standard `Enumerable.inject`.
-  if (!arrayProto.reduce) {
-    var inject = Enumerable.inject;
-  }
-
   Object.extend(arrayProto, Enumerable);
 
   if (!arrayProto._reverse)
@@ -753,7 +742,6 @@ Array.from = $A;
     any:       some,
     every:     every,
     all:       every,
-    inject:    inject,
     
     clear:     clear,
     first:     first,
