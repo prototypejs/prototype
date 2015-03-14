@@ -185,7 +185,7 @@ suite('Event', function () {
   });
 
   test('last #stopObserving clears cache', function () {
-    var span = $("span"), observer = Prototype.emptyFunction, eventID;
+    var span = $("span"), observer = Prototype.emptyFunction;
     delete Event.cache[uidForElement(span)];
 
     span.observe("test:somethingHappened", observer);
@@ -200,6 +200,25 @@ suite('Event', function () {
     registry = Event.cache[uidForElement(span)];
 
     assert(!registry, 'registry');
+  });
+
+  test('double #stopObserving - cache should be kept empty', function () {
+    var span = $("span"), observer = Prototype.emptyFunction;
+    delete Event.cache[uidForElement(span)];
+
+    span.observe("test:somethingHappened", observer);
+    span.stopObserving("test:somethingHappened", observer);
+    span.stopObserving("test:somethingHappened", observer);
+
+    assert(!Event.cache[uidForElement(span)], 'registry should be clear after 2 stopObserving');
+
+    span.stopObserving("test:somethingHappened");
+    
+    assert(!Event.cache[uidForElement(span)], 'registry should be clear after stopObserving with no handler');
+    
+    span.stopObserving();
+    
+    assert(!Event.cache[uidForElement(span)], 'registry should be clear after stopObserving with no eventName');
   });
 
   test('#observe and #stopObserving are chainable', function () {
