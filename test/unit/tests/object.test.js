@@ -143,6 +143,19 @@ suite('Object', function () {
     assert.strictEqual(false, Object.isElement(undefined));
   });
 
+  test('.isObject', function () {
+    assert(Object.isObject({}));
+    assert(Object.isObject(new Object()));
+
+    assert(!Object.isObject("a string"));
+    assert(!Object.isObject($(document.createElement('div'))));
+    assert(!Object.isObject([]));
+    assert(!Object.isObject(0));
+    assert(!Object.isObject(false));
+    assert(!Object.isObject(undefined));
+    assert(!Object.isObject(/xyz/));
+  });
+
   test('.isFunction', function () {
     assert(Object.isFunction(function() { }));
     assert(Object.isFunction(Class.create()));
