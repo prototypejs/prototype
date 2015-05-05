@@ -218,6 +218,9 @@ suite('String', function () {
     assert.equal('hello world', 'h<b><em>e</em></b>l<i>l</i>o w<span class="moo" id="x"><b>o</b></span>rld'.stripTags());
     assert.equal('1\n2', '1\n2'.stripTags());
     assert.equal('one < two blah baz', 'one < two <a href="#" title="foo > bar">blah</a> <input disabled>baz'.stripTags());
+    assert.equal('hello world abc', 'hello world <br/>abc'.stripTags());
+    assert.equal('hello world abc', 'hello world <br />abc'.stripTags());
+    assert.equal('hello world abc', 'hello<br/> <p>world</p><br /> <hr/>abc'.stripTags());
   });
 
   test('#stripScripts', function () {
