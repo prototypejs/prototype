@@ -1,56 +1,56 @@
 /** section: Language, related to: Array
  *  $A(iterable) -> Array
- *  
+ *
  *  Accepts an array-like collection (anything with numeric indices) and returns
  *  its equivalent as an actual [[Array]] object. This method is a convenience
  *  alias of [[Array.from]], but is the preferred way of casting to an [[Array]].
- *  
+ *
  *  The primary use of [[$A]] is to obtain an actual [[Array]] object based on
  *  anything that could pass as an array (e.g. the `NodeList` or
  *  `HTMLCollection` objects returned by numerous DOM methods, or the predefined
  *  `arguments` reference within your functions).
- *  
+ *
  *  The reason you would want an actual [[Array]] is simple:
  *  [[Array Prototype extends Array]] to equip it with numerous extra methods,
  *  and also mixes in the [[Enumerable]] module, which brings in another
  *  boatload of nifty methods. Therefore, in Prototype, actual [[Array]]s trump
  *  any other collection type you might otherwise get.
- *  
+ *
  *  The conversion performed is rather simple: `null`, `undefined` and `false` become
  *  an empty array; any object featuring an explicit `toArray` method (as many Prototype
  *  objects do) has it invoked; otherwise, we assume the argument "looks like an array"
  *  (e.g. features a `length` property and the `[]` operator), and iterate over its components
  *  in the usual way.
- *  
+ *
  *  When passed an array, [[$A]] _makes a copy_ of that array and returns it.
- *  
+ *
  *  ##### Examples
- *  
+ *
  *  The well-known DOM method [`document.getElementsByTagName()`](http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-A6C9094)
  *  doesn't return an [[Array]], but a `NodeList` object that implements the basic array
  *  "interface." Internet Explorer does not allow us to extend `Enumerable` onto `NodeList.prototype`,
  *  so instead we cast the returned `NodeList` to an [[Array]]:
- *  
+ *
  *      var paras = $A(document.getElementsByTagName('p'));
  *      paras.each(Element.hide);
  *      $(paras.last()).show();
- *  
+ *
  *  Notice we had to use [[Enumerable#each each]] and [[Element.hide]] because
  *  [[$A]] doesn't perform DOM extensions, since the array could contain
  *  anything (not just DOM elements). To use the [[Element#hide]] instance
  *  method we first must make sure all the target elements are extended:
- *  
+ *
  *      $A(document.getElementsByTagName('p')).map(Element.extend).invoke('hide');
- *  
+ *
  *  Want to display your arguments easily? [[Array]] features a `join` method, but the `arguments`
  *  value that exists in all functions *does not* inherit from [[Array]]. So, the tough
  *  way, or the easy way?
- *  
+ *
  *      // The hard way...
  *      function showArgs() {
  *        alert(Array.prototype.join.call(arguments, ', '));
  *      }
- *      
+ *
  *      // The easy way...
  *      function showArgs() {
  *        alert($A(arguments).join(', '));
@@ -69,26 +69,26 @@ function $A(iterable) {
 
 /** section: Language, related to: Array
  *  $w(String) -> Array
- *  
+ *
  *  Splits a string into an [[Array]], treating all whitespace as delimiters. Equivalent
  *  to Ruby's `%w{foo bar}` or Perl's `qw(foo bar)`.
- *  
+ *
  *  This is one of those life-savers for people who just hate commas in literal arrays :-)
- *  
+ *
  *  ### Examples
- *  
+ *
  *      $w('apples bananas kiwis')
  *      // -> ['apples', 'bananas', 'kiwis']
- *  
+ *
  *  This can slightly shorten code when writing simple iterations:
- *  
+ *
  *      $w('apples bananas kiwis').each(function(fruit){
  *        var message = 'I like ' + fruit
  *        // do something with the message
  *      })
- *  
+ *
  *  This also becomes sweet when combined with [[Element]] functions:
- *  
+ *
  *      $w('ads navbar funkyLinks').each(Element.hide);
 **/
 
@@ -195,7 +195,7 @@ Array.from = $A;
     }
   }
   if (!_each) _each = each;
-  
+
   /**
    *  Array#clear() -> Array
    *
@@ -430,10 +430,10 @@ Array.from = $A;
   **/
   function indexOf(item, i) {
     if (this == null) throw new TypeError();
-    
+
     var array = Object(this), length = array.length >>> 0;
     if (length === 0) return -1;
-    
+
     // The rules for the `fromIndex` argument are tricky. Let's follow the
     // spec line-by-line.
     i = Number(i);
@@ -443,11 +443,11 @@ Array.from = $A;
       // Equivalent to ES5's `ToInteger` operation.
       i = (i > 0 ? 1 : -1) * Math.floor(Math.abs(i));
     }
-    
+
     // If the search index is greater than the length of the array,
     // return -1.
     if (i > length) return -1;
-    
+
     // If the search index is negative, take its absolute value, subtract it
     // from the length, and make that the new search index. If it's still
     // negative, make it 0.
@@ -456,7 +456,7 @@ Array.from = $A;
       if (k in array && array[k] === item) return k;
     return -1;
   }
-  
+
 
   /** related to: Array#indexOf
    *  Array#lastIndexOf(item[, offset]) -> Number
@@ -466,7 +466,7 @@ Array.from = $A;
    *
    *  Returns the position of the last occurrence of `item` within the
    *  array &mdash; or `-1` if `item` doesn't exist in the array.
-   *  
+   *
    *  `Array#lastIndexOf` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
    *  It is only defined if not already present in the user's browser, and it
    *  is meant to behave like the native version as much as possible. Consult
@@ -475,10 +475,10 @@ Array.from = $A;
   **/
   function lastIndexOf(item, i) {
     if (this == null) throw new TypeError();
-    
+
     var array = Object(this), length = array.length >>> 0;
     if (length === 0) return -1;
-    
+
     // The rules for the `fromIndex` argument are tricky. Let's follow the
     // spec line-by-line.
     if (!Object.isUndefined(i)) {
@@ -492,7 +492,7 @@ Array.from = $A;
     } else {
       i = length;
     }
-    
+
     // If fromIndex is positive, clamp it to the last index in the array;
     // if it's negative, subtract its absolute value from the array's length.
     var k = i >= 0 ? Math.min(i, length - 1) :
@@ -526,22 +526,22 @@ Array.from = $A;
     array.length = n;
     return array;
   }
-  
+
   // Certain ES5 array methods have the same names as Prototype array methods
   // and perform the same functions.
   //
   // Prototype's implementations of these methods differ from the ES5 spec in
-  // the way a missing iterator function is handled. Prototype uses 
+  // the way a missing iterator function is handled. Prototype uses
   // `Prototype.K` as a default iterator, while ES5 specifies that a
-  // `TypeError` must be thrown. Implementing the ES5 spec completely would 
+  // `TypeError` must be thrown. Implementing the ES5 spec completely would
   // break backward compatibility and would force users to pass `Prototype.K`
-  // manually. 
+  // manually.
   //
   // Instead, if native versions of these methods exist, we wrap the existing
   // methods with our own behavior. This has very little performance impact.
   // It violates the spec by suppressing `TypeError`s for certain methods,
   // but that's an acceptable trade-off.
-  
+
   function wrapNative(method) {
     return function() {
       if (arguments.length === 0) {
@@ -559,7 +559,7 @@ Array.from = $A;
       }
     };
   }
-  
+
   // Note that #map, #filter, #some, and #every take some extra steps for
   // ES5 compliance: the context in which they're called is coerced to an
   // object, and that object's `length` property is coerced to a finite
@@ -567,7 +567,7 @@ Array.from = $A;
   //
   // This means that they behave a little differently from other methods in
   // `Enumerable`/`Array` that don't collide with ES5, but that's OK.
-  
+
   /**
    *  Array#map([iterator = Prototype.K[, context]]) -> Array
    *  - iterator (Function): The iterator function to apply to each element
@@ -601,11 +601,11 @@ Array.from = $A;
     results.length = n;
     return results;
   }
-  
+
   if (arrayProto.map) {
     map = wrapNative(Array.prototype.map);
   }
-  
+
   /**
    *  Array#filter(iterator[, context]) -> Array
    *  - iterator (Function): An iterator function to use to test the
@@ -625,7 +625,7 @@ Array.from = $A;
   function filter(iterator) {
     if (this == null || !Object.isFunction(iterator))
       throw new TypeError();
-    
+
     var object = Object(this);
     var results = [], context = arguments[1], value;
 
@@ -674,15 +674,14 @@ Array.from = $A;
         return true;
       }
     }
-      
+
     return false;
   }
-  
+
   if (arrayProto.some) {
-    var some = wrapNative(Array.prototype.some);
+    some = wrapNative(Array.prototype.some);
   }
-  
-  
+
   /**
    *  Array#every([iterator = Prototype.K[, context]]) -> Boolean
    *  - iterator (Function): An optional function to use to evaluate each
@@ -699,7 +698,7 @@ Array.from = $A;
    *  is meant to behave like the native version as much as possible. Consult
    *  the [ES5 specification](http://es5.github.com/#x15.4.4.16) for more
    *  information.
-   * 
+   *
   **/
   function every(iterator) {
     if (this == null) throw new TypeError();
@@ -712,27 +711,34 @@ Array.from = $A;
         return false;
       }
     }
-      
+
     return true;
   }
-  
+
   if (arrayProto.every) {
-    var every = wrapNative(Array.prototype.every);
+    every = wrapNative(Array.prototype.every);
   }
-  
+
   // We used to define an `inject` method here that relied on ES5's
   // `Array#reduce` (if present), but using `reduce` prevents us from
   // catching a thrown `$break`. So arrays now use the standard
   // `Enumerable.inject` like they did previously.
-  
+
   Object.extend(arrayProto, Enumerable);
+
+  // Enumerable's `entries` method is no longer safe to mixin to arrays, as
+  // it conflicts with an ES6 method. But it can still be mixed into other
+  // things.
+  if (arrayProto.entries === Enumerable.entries) {
+    delete arrayProto.entries;
+  }
 
   if (!arrayProto._reverse)
     arrayProto._reverse = arrayProto.reverse;
 
   Object.extend(arrayProto, {
     _each:     _each,
-    
+
     map:       map,
     collect:   map,
     select:    filter,
@@ -742,7 +748,7 @@ Array.from = $A;
     any:       some,
     every:     every,
     all:       every,
-    
+
     clear:     clear,
     first:     first,
     last:      last,

@@ -356,4 +356,8 @@ suite('Array', function () {
     assert(!Array.prototype.all.call({ 0:false, 1:true, length:2 }));
   });
 
+  test('#entries (should be either nonexistent or native)', function () {
+    assert(Array.prototype.entries !== Enumerable.entries);
+  });
+
 });
