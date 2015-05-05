@@ -477,6 +477,28 @@ suite("Ajax", function () {
 
     Ajax.Request.prototype.isSameOrigin = isSameOrigin;
   });
+  //
+  // Commented out because I'm not sure how to make WEBRICK and Sinatra handle this JSONP request
+  //
+  // test("JSONP with Same Origin",function(done){
+  //     new Ajax.Request("/jsonp",extendDefault({
+  //       parameters: "handlejsonp=1",
+  //       jsonpparametername:'callback',
+  //       onSuccess: function(transport) {
+  //         assert.equal(transport.responseJSONP.handlejsonp,"1");
+  //         done();
+  //       }
+  //     }))
+  // })
+  test("JSONP with Different Origin",function(done){
+      new Ajax.Request("http://echo.jsontest.com/key/value/one/two",extendDefault({
+        jsonpparametername:'callback',
+        onSuccess: function(transport) {
+          assert.deepEqual(transport.responseJSONP,{"one": "two","key": "value"});
+          done();
+        }
+      }))
+  })
 
 });
 

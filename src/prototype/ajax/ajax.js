@@ -17,5 +17,6 @@ var Ajax = {
    *  Represents the number of active XHR requests triggered through
    *  [[Ajax.Request]], [[Ajax.Updater]], or [[Ajax.PeriodicalUpdater]].
   **/
-  activeRequestCount: 0
+  activeRequestCount: 0,
+  _jsonpfunctions: []
 };
