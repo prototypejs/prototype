@@ -2137,6 +2137,7 @@
   **/
   function descendantOf_DOM(element, ancestor) {
     element = $(element), ancestor = $(ancestor);
+    if (!element || !ancestor) return false;
     while (element = element.parentNode)
       if (element === ancestor) return true;
     return false;
@@ -2144,6 +2145,7 @@
 
   function descendantOf_contains(element, ancestor) {
     element = $(element), ancestor = $(ancestor);
+    if (!element || !ancestor) return false;
     // Some nodes, like `document`, don't have the "contains" method.
     if (!ancestor.contains) return descendantOf_DOM(element, ancestor);
     return ancestor.contains(element) && ancestor !== element;
@@ -2151,6 +2153,7 @@
 
   function descendantOf_compareDocumentPosition(element, ancestor) {
     element = $(element), ancestor = $(ancestor);
+    if (!element || !ancestor) return false;
     return (element.compareDocumentPosition(ancestor) & 8) === 8;
   }
 

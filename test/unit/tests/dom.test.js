@@ -867,6 +867,9 @@ suite('DOM', function () {
     assert(!$('ancestor').descendantOf($('child')),
      '#ancestor should not be descendant of child');
 
+    assert(!$('child').descendantOf($('non-existent-thing')), 'cannot be a descendant of a non-element');
+    assert(!Element.descendantOf('non-existent-thing', $('ancestor')), 'non-element cannot be a descendant of anything');
+
     assert($('great-grand-child').descendantOf('ancestor'), 'great-grand-child < ancestor');
     assert($('grand-child').descendantOf('ancestor'), 'grand-child < ancestor');
     assert($('great-grand-child').descendantOf('grand-child'), 'great-grand-child < grand-child');
