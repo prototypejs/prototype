@@ -755,6 +755,7 @@ Object.extend(String.prototype, (function() {
     try {
       if (!sanitize || json.isJSON()) return eval('(' + json + ')');
     } catch (e) { }
+    // If we get this far, the string is not valid JSON.
     throw new SyntaxError('Badly formed JSON string: ' + this.inspect());
   }
 
