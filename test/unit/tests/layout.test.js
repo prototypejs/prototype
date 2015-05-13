@@ -17,7 +17,7 @@ var documentViewportProperties = null;
 
 var RESIZE_DISABLED = false;
 
-suite("Layout",function(){
+suite("Layout", function(){
   this.name = 'layout';
 
   setup(function () {
@@ -381,6 +381,41 @@ suite("Layout",function(){
       var element = $('absolute_fixed_undefined').setStyle({
        position: 'relative' });
       assert.equal(element, element.relativize());
+    });
+
+    test('#clonePosition (when scrolling the page)', function() {
+      var opts = { offsetTop: 20, offsetLeft: 0, setWidth: false, setHeight: false };
+
+      // Before scroll.
+      $('sub_menu').clonePosition($('main_menu'), opts);
+      var before = $('sub_menu').viewportOffset().top - $('main_menu').viewportOffset().top;
+
+      // Reset to original position.
+      $('sub_menu').setStyle({
+        position: "absolute",
+        top: "250px",
+        left: "250px"
+      });
+      scrollTo(0, 300);
+
+      // After scroll.
+      $('sub_menu').clonePosition($('main_menu'), opts);
+      var after = $('sub_menu').viewportOffset()['top'] - $('main_menu').viewportOffset()['top'];
+
+      assert.equal(before, after);
+    });
+
+    test('#clonePosition (when elements have the same size)', function() {
+      var source = $('clone_position_source');
+      var target = $('clone_position_target');
+
+      target.clonePosition(source, {
+        setHeight: false,
+        offsetTop: source.offsetHeight
+      });
+
+      assert.equal(source.getWidth(),  target.getWidth());
+      assert.equal(source.getHeight(), target.getHeight());
     });
 
   }); // Element

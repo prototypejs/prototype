@@ -801,7 +801,7 @@ suite('DOM', function () {
     assert.respondsTo('show', element);
 
     var XHTML_TAGS = $w(
-      'a abbr acronym address applet area '+
+      'a abbr acronym address area '+
       'b bdo big blockquote br button caption '+
       'cite code col colgroup dd del dfn div dl dt '+
       'em fieldset form h1 h2 h3 h4 h5 h6 hr '+
@@ -866,6 +866,9 @@ suite('DOM', function () {
      '#child should be descendant of #ancestor');
     assert(!$('ancestor').descendantOf($('child')),
      '#ancestor should not be descendant of child');
+
+    assert(!$('child').descendantOf($('non-existent-thing')), 'cannot be a descendant of a non-element');
+    assert(!Element.descendantOf('non-existent-thing', $('ancestor')), 'non-element cannot be a descendant of anything');
 
     assert($('great-grand-child').descendantOf('ancestor'), 'great-grand-child < ancestor');
     assert($('grand-child').descendantOf('ancestor'), 'grand-child < ancestor');
@@ -1177,31 +1180,31 @@ suite('DOM', function () {
   test('#writeAttribute (with booleans)', function () {
     var input = $('write_attribute_input'),
       select = $('write_attribute_select');
-    assert( input.          writeAttribute('readonly').            hasAttribute('readonly'));
-    assert(!input.          writeAttribute('readonly', false).     hasAttribute('readonly'));
-    assert( input.          writeAttribute('readonly', true).      hasAttribute('readonly'));
-    assert(!input.          writeAttribute('readonly', null).      hasAttribute('readonly'));
-    assert( input.          writeAttribute('readonly', 'readonly').hasAttribute('readonly'));
-    assert( select.         writeAttribute('multiple').            hasAttribute('multiple'));
-    assert( input.          writeAttribute('disabled').            hasAttribute('disabled'));
+    assert( input.          writeAttribute('readonly').            hasAttribute('readonly'), '1');
+    assert(!input.          writeAttribute('readonly', false).     hasAttribute('readonly'), '2');
+    assert( input.          writeAttribute('readonly', true).      hasAttribute('readonly'), '3');
+    assert(!input.          writeAttribute('readonly', null).      hasAttribute('readonly'), '4');
+    assert( input.          writeAttribute('readonly', 'readonly').hasAttribute('readonly'), '5');
+    assert( select.         writeAttribute('multiple').            hasAttribute('multiple'), '6');
+    assert( input.          writeAttribute('disabled').            hasAttribute('disabled'), '7');
   });
 
   test('#writeAttribute (for checkbox)', function () {
     var checkbox = $('write_attribute_checkbox'),
       checkedCheckbox = $('write_attribute_checked_checkbox');
-    assert( checkbox.       writeAttribute('checked').             checked);
-    assert( checkbox.       writeAttribute('checked').             hasAttribute('checked'));
-    assert.equal('checked', checkbox.writeAttribute('checked').readAttribute('checked'));
-    assert(!checkbox.       writeAttribute('checked').             hasAttribute('undefined'));
-    assert( checkbox.       writeAttribute('checked', true).       checked);
-    assert( checkbox.       writeAttribute('checked', true).       hasAttribute('checked'));
-    assert( checkbox.       writeAttribute('checked', 'checked').  checked);
-    assert( checkbox.       writeAttribute('checked', 'checked').  hasAttribute('checked'));
-    assert(!checkbox.       writeAttribute('checked', null).       checked);
-    assert(!checkbox.       writeAttribute('checked', null).       hasAttribute('checked'));
-    assert(!checkbox.       writeAttribute('checked', true).       hasAttribute('undefined'));
-    assert(!checkedCheckbox.writeAttribute('checked', false).      checked);
-    assert(!checkbox.       writeAttribute('checked', false).      hasAttribute('checked'));
+    assert( checkbox.       writeAttribute('checked').             checked,                   '1');
+    assert( checkbox.       writeAttribute('checked').             hasAttribute('checked'),   '2');
+    assert.equal('checked', checkbox.writeAttribute('checked').readAttribute('checked'),      '3');
+    assert(!checkbox.       writeAttribute('checked').             hasAttribute('undefined'), '4');
+    assert( checkbox.       writeAttribute('checked', true).       checked,                   '5');
+    assert( checkbox.       writeAttribute('checked', true).       hasAttribute('checked'),   '6');
+    assert( checkbox.       writeAttribute('checked', 'checked').  checked,                   '7');
+    assert( checkbox.       writeAttribute('checked', 'checked').  hasAttribute('checked'),   '8');
+    assert(!checkbox.       writeAttribute('checked', null).       checked,                   '9');
+    assert(!checkbox.       writeAttribute('checked', null).       hasAttribute('checked'),   '10');
+    assert(!checkbox.       writeAttribute('checked', true).       hasAttribute('undefined'), '11');
+    assert(!checkedCheckbox.writeAttribute('checked', false).      checked,                   '12');
+    assert(!checkbox.       writeAttribute('checked', false).      hasAttribute('checked'),   '13');
   });
 
   test('#writeAttribute (for style)', function () {
@@ -1327,6 +1330,10 @@ suite('DOM', function () {
 
     var radio2 = new Element('input', { type: 'radio', value: 'test2' });
     assert(radio2.value === 'test2', 'value of a dynamically-created radio button');
+
+    var checkbox = new Element('input', { type : 'checkbox', checked : false });
+    assert(!checkbox.checked);
+
   });
 
   // TODO: Move getHeight, getWidth, getDimensions to layout
