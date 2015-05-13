@@ -1052,6 +1052,11 @@
   function getOffsetParent(element) {
     element = $(element);
 
+    // Ensure we never return the root HTML tag.
+    function selfOrBody(element) {
+      return isHtml(element) ? $(document.body) : $(element);
+    }
+
     // For unusual cases like these, we standardize on returning the BODY
     // element as the offset parent.
     if (isDocument(element) || isDetached(element) || isBody(element) || isHtml(element))
@@ -1059,11 +1064,11 @@
 
     // IE reports offset parent incorrectly for inline elements.
     var isInline = (Element.getStyle(element, 'display') === 'inline');
-    if (!isInline && element.offsetParent) return $(element.offsetParent);
+    if (!isInline && element.offsetParent) return selfOrBody(element.offsetParent);
 
     while ((element = element.parentNode) && element !== document.body) {
       if (Element.getStyle(element, 'position') !== 'static') {
-        return isHtml(element) ? $(document.body) : $(element);
+        return selfOrBody(element);
       }
     }
 
@@ -1559,7 +1564,6 @@
 
     var currentLayout = element.getLayout();
 
-    console.log('this far?');
     // Use content box when setting width/height. If padding/border are
     // different between source and target, that's for the user to fix;
     // there's no good option for us.
