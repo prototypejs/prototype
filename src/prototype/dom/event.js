@@ -1359,7 +1359,8 @@
 
   function createResponderForCustomEvent(uid, eventName, handler) {
     return function(event) {
-      var element = Event.cache[uid].element;
+      var cache = Event.cache[uid];
+      var element =  cache && cache.element;
 
       if (Object.isUndefined(event.eventName))
         return false;
