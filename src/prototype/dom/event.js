@@ -532,7 +532,7 @@
 
   // These two functions take an optional UID as a second argument so that we
   // can skip lookup if we've already got the element's UID.
-  function getRegistryForElement(element, uid) {
+  function getOrCreateRegistryFor(element, uid) {
     var CACHE = GLOBAL.Event.cache;
     if (Object.isUndefined(uid))
       uid = getUniqueElementID(element);
@@ -552,7 +552,7 @@
 
   // Add an event to the element's event registry.
   function register(element, eventName, handler) {
-    var registry = getRegistryForElement(element);
+    var registry = getOrCreateRegistryFor(element);
     if (!registry[eventName]) registry[eventName] = [];
     var entries = registry[eventName];
 
@@ -574,10 +574,10 @@
 
   // Remove an event from the element's event registry.
   function unregister(element, eventName, handler) {
-    var registry = getRegistryForElement(element);
-    var entries = registry[eventName];
-    if (!entries) return;
+    var registry = getOrCreateRegistryFor(element);
+    var entries = registry[eventName] || [];
 
+    // Looking for entry:
     var i = entries.length, entry;
     while (i--) {
       if (entries[i].handler === handler) {
@@ -586,14 +586,13 @@
       }
     }
 
-    // This handler wasn't in the collection, so it doesn't need to be
-    // unregistered.
-    if (!entry) return;
+    if (entry) {
+      // Remove the entry from the collection;
+      var index = entries.indexOf(entry);
+      entries.splice(index, 1);
+    }
 
-    // Remove the entry from the collection;
-    var index = entries.indexOf(entry);
-    entries.splice(index, 1);
-
+    // Last entry for given event was deleted?
     if (entries.length === 0) {
       // We can destroy the registry's entry for this event name...
       delete registry[eventName];
@@ -929,14 +928,25 @@
 
   // Stop observing all listeners of a certain event name on an element.
   function stopObservingEventName(element, eventName) {
-    var registry = getRegistryForElement(element);
+    var registry = getOrCreateRegistryFor(element);
     var entries = registry[eventName];
-    if (!entries) return;
-    delete registry[eventName];
+    if (entries) {
+      delete registry[eventName];
+    }
+    
+    entries = entries || [];
 
     var i = entries.length;
     while (i--)
       removeEvent(element, eventName, entries[i].responder);
+
+    for (var name in registry) {
+      if (name === 'element') continue;
+      return; // There is another registered event
+    }
+
+    // No other events for the element, destroy the registry:
+    destroyRegistryForElement(element);
   }
 
 
@@ -1349,7 +1359,8 @@
 
   function createResponderForCustomEvent(uid, eventName, handler) {
     return function(event) {
-      var element = Event.cache[uid].element;
+      var cache = Event.cache[uid];
+      var element =  cache && cache.element;
 
       if (Object.isUndefined(event.eventName))
         return false;
