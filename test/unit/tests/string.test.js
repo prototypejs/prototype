@@ -139,7 +139,6 @@ suite('String', function () {
       assert(false, 'this iterator should never get called');
     }));
     assert(typeof str == 'string');
-    window.debug = false;
   });
 
   test('#toArray', function () {
