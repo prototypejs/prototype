@@ -305,7 +305,7 @@ Object.extend(Function.prototype, (function() {
    *  specifying before and after behavior, transforming the return value, or
    *  even preventing the original function from being called.
    *
-   *  The wraper function is called with this signature:
+   *  The wrapper function is called with this signature:
    *
    *      function wrapper(callOriginal[, args...])
    *
