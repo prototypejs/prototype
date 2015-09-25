@@ -14,39 +14,44 @@ suite('Base', function () {
 
     info('User agent string is: ' + navigator.userAgent);
 
-    assert(trues.size() === 0 || trues.size() === 1,
-     'There should be only one or no browser detected.');
+    // It's OK for there to be two true values if we're on MobileSafari,
+    // since it's also a WebKit browser.
+    if (Prototype.Browser.MobileSafari) {
+      assert(trues.size() === 2, 'MobileSafari should also identify as WebKit.');
+    } else {
+      assert(trues.size() === 0 || trues.size() === 1,
+       'There should be only one or no browser detected.');
+    }
 
-     // we should have definite trues or falses here
-     trues.each(function(result) {
-       assert(result[1] === true);
-     }, this);
-     falses.each(function(result) {
-       assert(result[1] === false);
-     }, this);
+    // we should have definite trues or falses here
+    trues.each(function(result) {
+      assert(result[1] === true);
+    }, this);
+    falses.each(function(result) {
+      assert(result[1] === false);
+    }, this);
 
-     var ua = navigator.userAgent;
+    var ua = navigator.userAgent;
 
-     if (ua.indexOf('AppleWebKit/') > -1) {
-       info('Running on WebKit');
-       assert(Prototype.Browser.WebKit);
-     }
+    if (ua.indexOf('AppleWebKit/') > -1) {
+      info('Running on WebKit');
+      assert(Prototype.Browser.WebKit);
+    }
 
-     if (Object.prototype.toString.call(window.opera) === '[object Opera]') {
-       info('Running on Opera');
-       assert(Prototype.Browser.Opera);
-     }
+    if (Object.prototype.toString.call(window.opera) === '[object Opera]') {
+      info('Running on Opera');
+      assert(Prototype.Browser.Opera);
+    }
 
-     if (ua.indexOf('MSIE') > -1) {
-       info('Running on IE');
-       assert(Prototype.Browser.IE);
-     }
+    if (ua.indexOf('MSIE') > -1) {
+      info('Running on IE');
+      assert(Prototype.Browser.IE);
+    }
 
-     if (ua.indexOf('Gecko') > -1 && ua.indexOf('KHTML') === -1) {
-       info('Running on Gecko');
-       assert(Prototype.Browser.Gecko);
-     }
-
+    if (ua.indexOf('Gecko') > -1 && ua.indexOf('KHTML') === -1) {
+      info('Running on Gecko');
+      assert(Prototype.Browser.Gecko);
+    }
   });
 
 });

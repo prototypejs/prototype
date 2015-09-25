@@ -14,8 +14,14 @@ suite('Prototype', function () {
 
     info('User agent string is: ' + ua);
 
-    assert(trues.size() == 0 || trues.size() == 1,
-     'There should be only one or no browser detected.');
+    // It's OK for there to be two true values if we're on MobileSafari,
+    // since it's also a WebKit browser.
+    if (Prototype.Browser.MobileSafari) {
+      assert(trues.size() === 2, 'MobileSafari should also identify as WebKit.');
+    } else {
+      assert(trues.size() === 0 || trues.size() === 1,
+       'There should be only one or no browser detected.');
+    }
 
     // we should have definite trues or falses here
     trues.each(function(result) {
