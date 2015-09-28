@@ -29,6 +29,7 @@
       NUMBER_TYPE = 'Number',
       STRING_TYPE = 'String',
       OBJECT_TYPE = 'Object',
+      OBJECT_CLASS = '[object Object]';
       FUNCTION_CLASS = '[object Function]',
       BOOLEAN_CLASS = '[object Boolean]',
       NUMBER_CLASS = '[object Number]',
@@ -487,6 +488,24 @@
   }
 
   /**
+   *  Object.isObject(object) -> Boolean
+   *  - object (Object): The object to test.
+   *
+   *  Returns `true` if `object` is of type [[Object]]; `false` otherwise.
+   *  
+   *  ##### Examples
+   *  
+   *      Object.isObject({});
+   *      //-> true
+   *      
+   *      Object.isObject('str');
+   *      //-> false
+  **/
+  function isObject(object) {
+    return _toString.call(object) === OBJECT_CLASS;
+  }
+
+  /**
    *  Object.isFunction(object) -> Boolean
    *  - object (Object): The object to test.
    *
@@ -603,6 +622,7 @@
     keys:          Object.keys || keys,
     values:        values,
     clone:         clone,
+    isObject:      isObject,
     isElement:     isElement,
     isArray:       isArray,
     isHash:        isHash,
