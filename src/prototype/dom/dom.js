@@ -3075,7 +3075,10 @@
     getOpacity: getOpacity
   });
 
-  if ('styleFloat' in DIV.style) {
+  if (Prototype.Browser.Opera) {
+    // Opera also has 'styleFloat' in DIV.style
+    methods.getStyle = getStyle_Opera;
+  } else if ('styleFloat' in DIV.style) {
     methods.getStyle = getStyle_IE;
     methods.setOpacity = setOpacity_IE;
     methods.getOpacity = getOpacity_IE;
