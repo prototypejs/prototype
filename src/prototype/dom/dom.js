@@ -3535,10 +3535,12 @@
 
   Element.addMethods(methods);
 
-  // Prevent IE leaks on DIV and ELEMENT_CACHE
+  // Prevent IE leaks on DIV, ELEMENT_CACHE and Element
   function destroyCache_IE() {
     DIV = null;
     ELEMENT_CACHE = null;
+    // Prevent leak invisible to sIEve in IE8 Standards mode in IE8
+    Element = null;
   }
 
   if (window.attachEvent)
