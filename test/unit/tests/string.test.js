@@ -250,6 +250,19 @@ suite('String', function () {
     (3).times(function(){ stringWithScripts += 'foo <script>evalScriptsCounter++<'+'/script>bar' });
     stringWithScripts.evalScripts();
     assert.equal(4, evalScriptsCounter);
+
+	// other executable mime types
+	('foo <script type="text/javascript">evalScriptsCounter++<'+'/script>bar').evalScripts();
+	('foo <script type="application/javascript">evalScriptsCounter++<'+'/script>bar').evalScripts();
+	('foo <script type="application/x-javascript">evalScriptsCounter++<'+'/script>bar').evalScripts();
+	('foo <script type="text/x-javascript">evalScriptsCounter++<'+'/script>bar').evalScripts();
+	('foo <script type="application/ecmascript">evalScriptsCounter++<'+'/script>bar').evalScripts();
+	('foo <script type="text/ecmascript">evalScriptsCounter++<'+'/script>bar').evalScripts();
+	assert.equal(10, evalScriptsCounter);
+
+	// a wrong one
+	('foo <script type="text/x-dot-template">evalScriptsCounter++<'+'/script>bar').evalScripts();
+	assert.equal(10, evalScriptsCounter);
   });
 
   test('#escapeHTML', function () {

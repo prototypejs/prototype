@@ -139,7 +139,8 @@ var Prototype = {
     })()
   },
 
-  ScriptFragment: '<script[^>]*>([\\S\\s]*?)<\/script\\s*>',
+  ScriptFragment: '<script([^>]*)>([\\S\\s]*?)<\/script\\s*>',
+  ExecutableScript: /(?:text|application)\/(?:x-)?(?:java|ecma)script/i,
   JSONFilter: /^\/\*-secure-([\s\S]*)\*\/\s*$/,
 
   /**
