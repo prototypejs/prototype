@@ -11,8 +11,6 @@ function isDisplayed(element) {
   return true;
 }
 
-var IE8 = Prototype.Browser.IE && navigator.userAgent.indexOf('MSIE 8');
-
 var documentViewportProperties = null;
 
 var RESIZE_DISABLED = false;
@@ -157,14 +155,7 @@ suite("Layout", function(){
     var layout = $('box6').getLayout();
 
     assert.equal(0, layout.get('top'), 'top');
-    if(IE8)
-    {
-      assert($('box6_parent') === $('box6').getOffsetParent());
-    }
-    else
-    {
-      assert.strictEqual($('box6_parent'), $('box6').getOffsetParent());
-    }
+    assert.strictEqual($('box6_parent'), $('box6').getOffsetParent());
   });
 
   test("layout on statically-positioned element with percentage width", function() {
@@ -182,8 +173,6 @@ suite("Layout", function(){
   test("layout on fixed-position element with percentage width", function() {
     var viewportWidth = document.viewport.getWidth();
     var layout = $('box9').getLayout();
-
-    info("NOTE: IE6 WILL fail these tests because it doesn't support position: fixed. This is expected.");
 
     function assertNear(v1, v2, message) {
       var abs = Math.abs(v1 - v2);
@@ -233,7 +222,7 @@ suite("Layout", function(){
   suite('Element', function () {
 
     test('#makeClipping, #undoClipping', function () {
-      var chained = Element.extend(document.createElement('DIV'));
+      var chained = document.createElement('DIV');
       assert.equal(chained, chained.makeClipping());
       assert.equal(chained, chained.makeClipping());
       assert.equal(chained, chained.makeClipping().makeClipping());

@@ -84,69 +84,8 @@
     KEY_INSERT:   45
   };
 
-  // We need to support three different event "modes":
-  //  1. browsers with only DOM L2 Events (WebKit, FireFox);
-  //  2. browsers with only IE's legacy events system (IE 6-8);
-  //  3. browsers with _both_ systems (IE 9 and arguably Opera).
-  //
-  // Groups 1 and 2 are easy; group three is trickier.
-
-  var isIELegacyEvent = function(event) { return false; };
-
-  if (window.attachEvent) {
-    if (window.addEventListener) {
-      // Both systems are supported. We need to decide at runtime.
-      // (Though Opera supports both systems, the event object appears to be
-      // the same no matter which system is used. That means that this function
-      // will always return `true` in Opera, but that's OK; it keeps us from
-      // having to do a browser sniff.)
-      isIELegacyEvent = function(event) {
-        return !(event instanceof window.Event);
-      };
-    } else {
-      // No support for DOM L2 events. All events will be legacy.
-      isIELegacyEvent = function(event) { return true; };
-    }
-  }
-
-  // The two systems have different ways of indicating which button was used
-  // for a mouse event.
-  var _isButton;
-
-  function _isButtonForDOMEvents(event, code) {
+  function _isButton(event, code) {
     return event.which ? (event.which === code + 1) : (event.button === code);
-  }
-
-  var legacyButtonMap = { 0: 1, 1: 4, 2: 2 };
-  function _isButtonForLegacyEvents(event, code) {
-    return event.button === legacyButtonMap[code];
-  }
-
-  // In WebKit we have to account for when the user holds down the "meta" key.
-  function _isButtonForWebKit(event, code) {
-    switch (code) {
-      case 0: return event.which == 1 && !event.metaKey;
-      case 1: return event.which == 2 || (event.which == 1 && event.metaKey);
-      case 2: return event.which == 3;
-      default: return false;
-    }
-  }
-
-  if (window.attachEvent) {
-    if (!window.addEventListener) {
-      // Legacy IE events only.
-      _isButton = _isButtonForLegacyEvents;
-    } else {
-      // Both systems are supported; decide at runtime.
-      _isButton = function(event, code) {
-        return isIELegacyEvent(event) ? _isButtonForLegacyEvents(event, code) :
-         _isButtonForDOMEvents(event, code);
-      }
-    }
-  } else if (Prototype.Browser.WebKit) {
-    _isButton = _isButtonForWebKit;
-  } else {
-    _isButton = _isButtonForDOMEvents;
   }
 
   /**
@@ -223,12 +162,10 @@
     // The public version of `Event.element` is a thin wrapper around the
     // private `_element` method below. We do this so that we can use it
     // internally as `_element` without having to extend the node.
-    return Element.extend(_element(event));
+    return _element(event);
   }
 
   function _element(event) {
-    event = Event.extend(event);
-
     var node = event.target, type = event.type,
      currentTarget = event.currentTarget;
 
@@ -272,10 +209,10 @@
   **/
   function findElement(event, expression) {
     var element = _element(event), selector = Prototype.Selector;
-    if (!expression) return Element.extend(element);
+    if (!expression) return element;
     while (element) {
       if (Object.isElement(element) && selector.match(element, expression))
-        return Element.extend(element);
+        return element;
       element = element.parentNode;
     }
   }
@@ -377,7 +314,6 @@
    *      });
   **/
   function stop(event) {
-    Event.extend(event);
     event.preventDefault();
     event.stopPropagation();
 
@@ -408,84 +344,25 @@
     return m;
   });
 
-  if (window.attachEvent) {
-    // For IE's event system, we need to do some work to make the event
-    // object behave like a standard event object.
-    function _relatedTarget(event) {
-      var element;
-      switch (event.type) {
-        case 'mouseover':
-        case 'mouseenter':
-          element = event.fromElement;
-          break;
-        case 'mouseout':
-        case 'mouseleave':
-          element = event.toElement;
-          break;
-        default:
-          return null;
-      }
-      return Element.extend(element);
-    }
+ /**
+  *  Event.extend(@event) -> Event
+  *  - event (Event): An Event object
+  *
+  *  Extends `event` with all of the methods contained in `Event.Methods`.
+  *
+  *  Note that all events inside handlers that were registered using
+  *  [[Event.observe]] or [[Element.observe]] will be extended automatically.
+  *
+  *  You need only call `Event.extend` manually if you register a handler a
+  *  different way (e.g., the `onclick` attribute). We really can't encourage
+  *  that sort of thing, though.
+ **/
+  Event.extend = Prototype.K;
 
-    // These methods should be added _only_ to legacy IE event objects.
-    var additionalMethods = {
-      stopPropagation: function() { this.cancelBubble = true },
-      preventDefault:  function() { this.returnValue = false },
-      inspect: function() { return '[object Event]' }
-    };
-
-    /**
-     *  Event.extend(@event) -> Event
-     *  - event (Event): An Event object
-     *
-     *  Extends `event` with all of the methods contained in `Event.Methods`.
-     *
-     *  Note that all events inside handlers that were registered using
-     *  [[Event.observe]] or [[Element.observe]] will be extended automatically.
-     *
-     *  You need only call `Event.extend` manually if you register a handler a
-     *  different way (e.g., the `onclick` attribute). We really can't encourage
-     *  that sort of thing, though.
-    **/
-    // IE's method for extending events.
-    Event.extend = function(event, element) {
-      if (!event) return false;
-
-      // If it's not a legacy event, it doesn't need extending.
-      if (!isIELegacyEvent(event)) return event;
-
-      // Mark this event so we know not to extend a second time.
-      if (event._extendedByPrototype) return event;
-      event._extendedByPrototype = Prototype.emptyFunction;
-
-      var pointer = Event.pointer(event);
-
-      // The optional `element` argument gives us a fallback value for the
-      // `target` property in case IE doesn't give us through `srcElement`.
-      Object.extend(event, {
-        target: event.srcElement || element,
-        relatedTarget: _relatedTarget(event),
-        pageX:  pointer.x,
-        pageY:  pointer.y
-      });
-
-      Object.extend(event, methods);
-      Object.extend(event, additionalMethods);
-
-      return event;
-    };
-  } else {
-    // Only DOM events, so no manual extending necessary.
-    Event.extend = Prototype.K;
-  }
-
-  if (window.addEventListener) {
-    // In all browsers that support DOM L2 Events, we can augment
-    // `Event.prototype` directly.
-    Event.prototype = window.Event.prototype || document.createEvent('HTMLEvents').__proto__;
-    Object.extend(Event.prototype, methods);
-  }
+  // In all browsers that support DOM L2 Events, we can augment
+  // `Event.prototype` directly.
+  Event.prototype = window.Event.prototype;
+  Object.extend(Event.prototype, methods);
 
   //
   // EVENT REGISTRY
@@ -511,18 +388,6 @@
       element._prototypeUID = Element.Storage.UID++;
     return element._prototypeUID;
   }
-
-  // In Internet Explorer, DOM nodes have a `uniqueID` property. Saves us
-  // from inventing our own.
-  function getUniqueElementID_IE(element) {
-    if (element === window) return 0;
-    // The document object's `uniqueID` property changes each time you read it.
-    if (element == document) return 1;
-    return element.uniqueID;
-  }
-
-  if ('uniqueID' in DIV)
-    getUniqueElementID = getUniqueElementID_IE;
 
   function isCustomEvent(eventName) {
     return eventName.include(':');
@@ -933,7 +798,7 @@
     if (entries) {
       delete registry[eventName];
     }
-    
+
     entries = entries || [];
 
     var i = entries.length;
@@ -982,8 +847,7 @@
     if (Object.isUndefined(bubble)) bubble = true;
     memo = memo || {};
 
-    var event = fireEvent(element, eventName, memo, bubble);
-    return Event.extend(event);
+    return fireEvent(element, eventName, memo, bubble);
   }
 
   function fireEvent_DOM(element, eventName, memo, bubble) {
@@ -1314,13 +1178,6 @@
 
   GLOBAL.Event.cache = {};
 
-  function destroyCache_IE() {
-    GLOBAL.Event.cache = null;
-  }
-
-  if (window.attachEvent)
-    window.attachEvent('onunload', destroyCache_IE);
-
   DIV = null;
   docEl = null;
 })(this);
@@ -1352,7 +1209,6 @@
       if (!Event.cache) return;
 
       var element = Event.cache[uid].element;
-      Event.extend(event, element);
       handler.call(element, event);
     };
   }
@@ -1368,17 +1224,14 @@
       if (event.eventName !== eventName)
         return false;
 
-      Event.extend(event, element);
       handler.call(element, event);
     };
   }
 
   function createMouseEnterLeaveResponder(uid, eventName, handler) {
     return function(event) {
-      var element = Event.cache[uid].element;
-
-      Event.extend(event, element);
-      var parent = event.relatedTarget;
+      var element = Event.cache[uid].element,
+          parent = event.relatedTarget;
 
       // Walk up the DOM tree to see if the related target is a descendant of
       // the original element. If it is, we ignore the event to match the
@@ -1397,10 +1250,7 @@
   docEl = null;
 })(this);
 
-(function(GLOBAL) {
-  /* Support for the DOMContentLoaded event is based on work by Dan Webb,
-     Matthias Miller, Dean Edwards, John Resig, and Diego Perini. */
-
+(function() {
   var TIMER;
 
   function fireContentLoadedEvent() {
@@ -1410,25 +1260,6 @@
     document.fire('dom:loaded');
   }
 
-  function checkReadyState() {
-    if (document.readyState === 'complete') {
-      document.detachEvent('onreadystatechange', checkReadyState);
-      fireContentLoadedEvent();
-    }
-  }
-
-  function pollDoScroll() {
-    try {
-      document.documentElement.doScroll('left');
-    } catch (e) {
-      TIMER = pollDoScroll.defer();
-      return;
-    }
-
-    fireContentLoadedEvent();
-  }
-
-
   if (document.readyState === 'complete') {
     // We must have been loaded asynchronously, because the DOMContentLoaded
     // event has already fired. We can just fire `dom:loaded` and be done
@@ -1437,14 +1268,7 @@
     return;
   }
 
-  if (document.addEventListener) {
-    // All browsers that support DOM L2 Events support DOMContentLoaded,
-    // including IE 9.
-    document.addEventListener('DOMContentLoaded', fireContentLoadedEvent, false);
-  } else {
-    document.attachEvent('onreadystatechange', checkReadyState);
-    if (window == top) TIMER = pollDoScroll.defer();
-  }
+  document.addEventListener('DOMContentLoaded', fireContentLoadedEvent, false);
 
   // Worst-case fallback.
   Event.observe(window, 'load', fireContentLoadedEvent);

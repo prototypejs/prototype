@@ -222,18 +222,10 @@ suite('Array', function () {
     assert.enumEqual([0, x, 1, 2, true, "NaN"], [0].concat(x, [1, 2], true, "NaN"), "test 6");
     assert.strictEqual(6, [0].concat(x, [1, 2], true, "NaN").length, "test 7");
 
-    // These tests will fail in older IE because of the trailing comma.
-    // Nothing we can do about that, so just skip them and let the user know.
-    if ([,].length === 2) {
-      info("NOTE: Old versions of IE don't like trailing commas in " +
-       "arrays. Skipping some tests.");
-    } else {
-      assert.enumEqual([undefined, 1, undefined], [,1].concat([], [,]),
-       "concatenation behavior with a trailing comma (1)");
-      assert.strictEqual(3, [,1].concat([], [,]).length,
-       "concatenation behavior with a trailing comma (2)");
-    }
-
+    assert.enumEqual([undefined, 1, undefined], [,1].concat([], [,]),
+     "concatenation behavior with a trailing comma (1)");
+    assert.strictEqual(3, [,1].concat([], [,]).length,
+     "concatenation behavior with a trailing comma (2)");
 
     assert.enumEqual([1], Object.keys([,1].concat([], [,])), "test 10");
 

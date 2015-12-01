@@ -2,7 +2,6 @@
 //= require "lang/class"
 //= require "lang/object"
 //= require "lang/function"
-//= require "lang/date"
 //= require "lang/regexp"
 //= require "lang/periodical_executer"
 //= require "lang/string"
@@ -42,7 +41,7 @@ var Abstract = { };
  *  approach to obtaining a given feature.
  *
  *  In this example from Prototype's [[Ajax section]] internals, we want to get an
- *  `XMLHttpRequest` object. Internet Explorer 6 and earlier, however, does not
+ *  `XMLHttpRequest` object. Internet Explorer 8 and earlier, however, does not
  *  provide it as a vanilla JavaScript object, and will throw an error if we
  *  attempt a simple instantiation. Also, over time, its proprietary way
  *  evolved, changing COM interface names.

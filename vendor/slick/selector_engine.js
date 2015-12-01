@@ -3,12 +3,10 @@ Prototype._original_property = window.Slick;
 //= require "repository/Source/Slick.Finder.js"
 
 ;(function(engine) {
-  var extendElements = Prototype.Selector.extendElements;
-  
   function select(selector, scope) {
-    return extendElements(engine.search(scope || document, selector));
+    return engine.search(scope || document, selector);
   }
-  
+
   Prototype.Selector.engine = engine;
   Prototype.Selector.select = select;
   Prototype.Selector.match = engine.match;

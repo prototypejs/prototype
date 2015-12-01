@@ -124,56 +124,6 @@ suite('DOM', function () {
   });
 
 
-  test('getElementsByClassName', function () {
-
-    if (document.getElementsByClassName.toString().include('[native code]')) {
-      info("browser uses native getElementsByClassName; skipping tests");
-      return;
-    }
-
-    var div = $('class_names'), list = $('class_names_ul');
-
-    assert.elementsMatch(
-      document.getElementsByClassName('A'),
-      'p.A', 'ul#class_names_ul.A', 'li.A.C'
-    );
-
-    var isElementPrototypeSupported = (function(){
-      var el = document.createElement('div');
-      var result = typeof el.show != 'undefined';
-      el = null;
-      return result;
-    })();
-
-    if (!isElementPrototypeSupported) {
-      assert.isUndefined(document.getElementById('unextended').show);
-    }
-
-    assert.elementsMatch(div.getElementsByClassName('B'), 'ul#class_names_ul.A.B', 'div.B.C.D');
-    assert.elementsMatch(div.getElementsByClassName('D C B'), 'div.B.C.D');
-    assert.elementsMatch(div.getElementsByClassName(' D\nC\tB '), 'div.B.C.D');
-    assert.elementsMatch(div.getElementsByClassName($w('D C B')));
-    assert.elementsMatch(list.getElementsByClassName('A'), 'li.A.C');
-    assert.elementsMatch(list.getElementsByClassName(' A '), 'li.A.C');
-    assert.elementsMatch(list.getElementsByClassName('C A'), 'li.A.C');
-    assert.elementsMatch(list.getElementsByClassName("C\nA "), 'li.A.C');
-    assert.elementsMatch(list.getElementsByClassName('B'));
-    assert.elementsMatch(list.getElementsByClassName('1'), 'li.1');
-    assert.elementsMatch(list.getElementsByClassName([1]), 'li.1');
-    assert.elementsMatch(list.getElementsByClassName(['1 junk']));
-    assert.elementsMatch(list.getElementsByClassName(''));
-    assert.elementsMatch(list.getElementsByClassName(' '));
-    assert.elementsMatch(list.getElementsByClassName(['']));
-    assert.elementsMatch(list.getElementsByClassName([' ', '']));
-    assert.elementsMatch(list.getElementsByClassName({}));
-
-    // those lookups shouldn't have extended all nodes in document
-    if (!isElementPrototypeSupported) {
-      assert.isUndefined(document.getElementById('unextended')['show']);
-    }
-
-  });
-
   test('.insert (with HTML)', function () {
 
     Element.insert('insertions-main', {
@@ -640,9 +590,9 @@ suite('DOM', function () {
       'div#nav_tests_isolator', 'div', 'div', 'body', 'html');
     assert.elementsMatch(ancestors.last().ancestors());
 
-    var dummy = $(document.createElement('DIV'));
+    var dummy = document.createElement('DIV');
     dummy.innerHTML = '<div></div>'.times(3);
-    assert(typeof $(dummy.childNodes[0]).ancestors()[0]['setStyle'] == 'function');
+    assert(typeof dummy.childNodes[0].ancestors()[0]['setStyle'] == 'function');
   });
 
   test('#descendants', function () {
@@ -651,7 +601,7 @@ suite('DOM', function () {
       'em.dim', 'li#navigation_test_f', 'em', 'li', 'em');
     assert.elementsMatch($('navigation_test_f').descendants(), 'em');
 
-    var dummy = $(document.createElement('DIV'));
+    var dummy = document.createElement('DIV');
     dummy.innerHTML = '<div></div>'.times(3);
     assert(typeof dummy.descendants()[0].setStyle == 'function');
   });
@@ -667,7 +617,7 @@ suite('DOM', function () {
     assert.notEqual(0, $('navigation_test_next_sibling').childNodes.length);
     assert.enumEqual([], $('navigation_test_next_sibling').childElements());
 
-    var dummy = $(document.createElement('DIV'));
+    var dummy = document.createElement('DIV');
     dummy.innerHTML = '<div></div>'.times(3);
     assert(typeof dummy.childElements()[0].setStyle === 'function');
   });
@@ -686,9 +636,9 @@ suite('DOM', function () {
     );
     assert.elementsMatch($('navigation_test_f').previousSiblings(), 'li');
 
-    var dummy = $(document.createElement('DIV'));
+    var dummy = document.createElement('DIV');
     dummy.innerHTML = '<div></div>'.times(3);
-    assert(typeof $(dummy.childNodes[1]).previousSiblings()[0].setStyle == 'function');
+    assert(typeof dummy.childNodes[1].previousSiblings()[0].setStyle == 'function');
   });
 
   test('#nextSiblings', function () {
@@ -696,9 +646,9 @@ suite('DOM', function () {
       'div#navigation_test_next_sibling', 'p');
     assert.elementsMatch($('navigation_test_f').nextSiblings());
 
-    var dummy = $(document.createElement('DIV'));
+    var dummy = document.createElement('DIV');
     dummy.innerHTML = '<div></div>'.times(3);
-    assert(typeof $(dummy.childNodes[0]).nextSiblings()[0].setStyle == 'function');
+    assert(typeof dummy.childNodes[0].nextSiblings()[0].setStyle == 'function');
   });
 
   test('#siblings', function () {
@@ -706,9 +656,9 @@ suite('DOM', function () {
       'div#nav_test_first_sibling', 'div', 'p.test',
       'span#nav_test_prev_sibling', 'div#navigation_test_next_sibling', 'p');
 
-    var dummy = $(document.createElement('DIV'));
+    var dummy = document.createElement('DIV');
     dummy.innerHTML = '<div></div>'.times(3);
-    assert(typeof $(dummy.childNodes[0]).siblings()[0].setStyle == 'function');
+    assert(typeof dummy.childNodes[0].siblings()[0].setStyle == 'function');
   });
 
   test('#up', function () {
@@ -723,9 +673,9 @@ suite('DOM', function () {
     assert.equal(undefined, element.up(8));
     assert.elementMatches(element.up('.non-existant, ul'), 'ul');
 
-    var dummy = $(document.createElement('DIV'));
+    var dummy = document.createElement('DIV');
     dummy.innerHTML = '<div></div>'.times(3);
-    assert(typeof $(dummy.childNodes[0]).up().setStyle == 'function');
+    assert(typeof dummy.childNodes[0].up().setStyle == 'function');
   });
 
   test('#down', function () {
@@ -737,7 +687,7 @@ suite('DOM', function () {
     assert.elementMatches(element.down('ul').down('li', 1), 'li#navigation_test_f');
     assert.elementMatches(element.down('.non-existant, .first'), 'li.first');
 
-    var dummy = $(document.createElement('DIV'));
+    var dummy = document.createElement('DIV');
     dummy.innerHTML = '<div></div>'.times(3);
     assert(typeof dummy.down().setStyle == 'function');
 
@@ -755,9 +705,9 @@ suite('DOM', function () {
     assert.equal(undefined, $('navigation_test').down().previous());
     assert.elementMatches(element.previous('.non-existant, .first'), 'li.first');
 
-    var dummy = $(document.createElement('DIV'));
+    var dummy = document.createElement('DIV');
     dummy.innerHTML = '<div></div>'.times(3);
-    assert(typeof $(dummy.childNodes[1]).previous().setStyle == 'function');
+    assert(typeof dummy.childNodes[1].previous().setStyle == 'function');
   });
 
   test('#next', function () {
@@ -770,9 +720,9 @@ suite('DOM', function () {
     assert.equal(undefined, element.next(2).next());
     assert.elementMatches(element.next('.non-existant, .last'), 'li.last');
 
-    var dummy = $(document.createElement('DIV'));
+    var dummy = document.createElement('DIV');
     dummy.innerHTML = '<div></div>'.times(3);
-    assert(typeof $(dummy.childNodes[0]).next().setStyle == 'function');
+    assert(typeof dummy.childNodes[0].next().setStyle == 'function');
   });
 
   test('#inspect', function () {
@@ -888,7 +838,7 @@ suite('DOM', function () {
     assert(!$('great-grand-child').descendantOf('not-in-the-family'), 'great-grand-child < not-in-the-family');
     assert(!$('child').descendantOf('not-in-the-family'), 'child < not-in-the-family');
 
-    assert(!$(document.body).descendantOf('great-grand-child'),
+    assert(!document.body.descendantOf('great-grand-child'),
      'BODY should not be descendant of anything within it');
 
     // dynamically-created elements
@@ -896,14 +846,14 @@ suite('DOM', function () {
     assert($('weird-uncle').descendantOf('ancestor'),
      'dynamically-created element should work properly');
 
-    $(document.body).insert(new Element('div', { id: 'impostor' }));
+    document.body.insert(new Element('div', { id: 'impostor' }));
     assert(!$('impostor').descendantOf('ancestor'),
      'elements inserted elsewhere in the DOM tree should not be descendants');
 
     // test descendantOf document
-    assert($(document.body).descendantOf(document),
+    assert(document.body.descendantOf(document),
      'descendantOf(document) should behave predictably');
-    assert($(document.documentElement).descendantOf(document),
+    assert(document.documentElement.descendantOf(document),
      'descendantOf(document) should behave predictably');
   });
 
@@ -993,7 +943,7 @@ suite('DOM', function () {
       Element.getStyle('style_test_2','display'));
 
     // we should always get something for width (if displayed)
-    // firefox and safari automatically send the correct value,
+    // Firefox and Safari automatically send the correct value,
     // IE is special-cased to do the same
     assert.equal($('style_test_2').offsetWidth+'px', Element.getStyle('style_test_2','width'));
 
@@ -1098,28 +1048,6 @@ suite('DOM', function () {
 
     // setting opacity before element was added to DOM
     assert.equal(0.5, new Element('div').setOpacity(0.5).getOpacity());
-
-    // IE <= 7 needs a `hasLayout` for opacity ("filter") to function properly.
-    // `hasLayout` is triggered by setting `zoom` style to `1`,
-    //
-    // In IE8 setting `zoom` does not affect `hasLayout`and IE8 does not even
-    // need `hasLayout` for opacity to work.
-
-    var ZOOM_AFFECTS_HAS_LAYOUT = (function(){
-      // IE7
-      var el = document.createElement('div');
-      el.style.zoom = 1;
-      var result = el.hasLayout;
-      el = null;
-      return result;
-    })();
-
-    if (ZOOM_AFFECTS_HAS_LAYOUT) {
-      assert($('style_test_4').setOpacity(0.5).currentStyle.hasLayout);
-      assert.equal(1, $('style_test_5').setOpacity(0.5).getStyle('zoom'));
-      assert.equal(2, new Element('div').setOpacity(0.5).setStyle('zoom: 2;').getStyle('zoom'));
-      assert.equal(2, new Element('div').setStyle('zoom: 2;').setOpacity(0.5).getStyle('zoom'));
-    }
   });
 
   test('#getOpacity', function () {
@@ -1162,7 +1090,7 @@ suite('DOM', function () {
   });
 
   test('#writeAttribute', function () {
-    var element = Element.extend(document.body.appendChild(document.createElement('p')));
+    var element = document.body.appendChild(document.createElement('p'));
     assert.respondsTo('writeAttribute', element);
     assert.equal(element, element.writeAttribute('id', 'write_attribute_test'));
     assert.equal('write_attribute_test', element.id);
@@ -1170,7 +1098,7 @@ suite('DOM', function () {
       writeAttribute({href: 'http://prototypejs.org/', title: 'Home of Prototype'}).href);
     assert.equal('Home of Prototype', $('write_attribute_link').title);
 
-    var element2 = Element.extend(document.createElement('p'));
+    var element2 = document.createElement('p');
     element2.writeAttribute('id', 'write_attribute_without_hash');
     assert.equal('write_attribute_without_hash', element2.id);
     element2.writeAttribute('animal', 'cat');
@@ -1208,7 +1136,7 @@ suite('DOM', function () {
   });
 
   test('#writeAttribute (for style)', function () {
-    var element = Element.extend(document.body.appendChild(document.createElement('p')));
+    var element = document.body.appendChild(document.createElement('p'));
     assert( element.        writeAttribute('style', 'color: red'). hasAttribute('style'));
     assert(!element.        writeAttribute('style', 'color: red'). hasAttribute('undefined'));
   });
@@ -1290,22 +1218,6 @@ suite('DOM', function () {
     });
 
     assert.respondsTo('cheeseCake', new Element('div'));
-
-    /* window.ElementOld = function(tagName, attributes) {
-      if (Prototype.Browser.IE && attributes && attributes.name) {
-        tagName = '<' + tagName + ' name="' + attributes.name + '">';
-        delete attributes.name;
-      }
-      return Element.extend(document.createElement(tagName)).writeAttribute(attributes || {});
-    };
-
-    this.benchmark(function(){
-      XHTML_TAGS.each(function(tagName) { new Element(tagName) });
-    }, 5);
-
-    this.benchmark(function(){
-      XHTML_TAGS.each(function(tagName) { new ElementOld(tagName) });
-    }, 5); */
 
     assert.equal('foobar', new Element('a', {custom: 'foobar'}).readAttribute('custom'));
     var input = document.body.appendChild(new Element('input',
@@ -1571,7 +1483,7 @@ suite('DOM', function () {
 
   test('#purge', function () {
     function uidForElement(elem) {
-      return elem.uniqueID ? elem.uniqueID : elem._prototypeUID;
+      return elem._prototypeUID;
     }
 
     var element = new Element('div');

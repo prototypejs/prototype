@@ -8,65 +8,14 @@ Prototype.LegacySelector = Class.create({
 
     if (this.shouldUseSelectorsAPI()) {
       this.mode = 'selectorsAPI';
-    } else if (this.shouldUseXPath()) {
-      this.mode = 'xpath';
-      this.compileXPathMatcher();
     } else {
       this.mode = "normal";
       this.compileMatcher();
     }
-
   },
-
-  shouldUseXPath: (function() {
-
-    // Some versions of Opera 9.x produce incorrect results when using XPath
-    // with descendant combinators.
-    // see: http://opera.remcol.ath.cx/bugs/index.php?action=bug&id=652
-    var IS_DESCENDANT_SELECTOR_BUGGY = (function(){
-      var isBuggy = false;
-      if (document.evaluate && window.XPathResult) {
-        var el = document.createElement('div');
-        el.innerHTML = '<ul><li></li></ul><div><ul><li></li></ul></div>';
-
-        var xpath = ".//*[local-name()='ul' or local-name()='UL']" +
-          "//*[local-name()='li' or local-name()='LI']";
-
-        var result = document.evaluate(xpath, el, null,
-          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-
-        isBuggy = (result.snapshotLength !== 2);
-        el = null;
-      }
-      return isBuggy;
-    })();
-
-    return function() {
-      if (!Prototype.BrowserFeatures.XPath) return false;
-
-      var e = this.expression;
-
-      // Safari 3 chokes on :*-of-type and :empty
-      if (Prototype.Browser.WebKit &&
-       (e.include("-of-type") || e.include(":empty")))
-        return false;
-
-      // XPath can't do namespaced attributes, nor can it read
-      // the "checked" property from DOM nodes
-      if ((/(\[[\w-]*?:|:checked)/).test(e))
-        return false;
-
-      if (IS_DESCENDANT_SELECTOR_BUGGY) return false;
-
-      return true;
-    }
-
-  })(),
 
   shouldUseSelectorsAPI: function() {
     if (!Prototype.BrowserFeatures.SelectorsAPI) return false;
-
-    if (Prototype.LegacySelector.CASE_INSENSITIVE_CLASS_NAMES) return false;
 
     if (!Prototype.LegacySelector._div) Prototype.LegacySelector._div = new Element('div');
 
@@ -154,7 +103,7 @@ Prototype.LegacySelector = Class.create({
           e = "#" + id + " " + e;
         }
 
-        results = $A(root.querySelectorAll(e)).map(Element.extend);
+        results = $A(root.querySelectorAll(e));
         root.id = oldId;
 
         return results;
@@ -211,23 +160,7 @@ Prototype.LegacySelector = Class.create({
   }
 });
 
-if (Prototype.BrowserFeatures.SelectorsAPI &&
- document.compatMode === 'BackCompat') {
-  // Versions of Safari 3 before 3.1.2 treat class names case-insensitively in
-  // quirks mode. If we detect this behavior, we should use a different
-  // approach.
-  Prototype.LegacySelector.CASE_INSENSITIVE_CLASS_NAMES = (function(){
-    var div = document.createElement('div'),
-     span = document.createElement('span');
-
-    div.id = "prototype_test_id";
-    span.className = 'Test';
-    div.appendChild(span);
-    var isIgnored = (div.querySelector('#prototype_test_id .test') !== null);
-    div = span = null;
-    return isIgnored;
-  })();
-}
+Prototype.LegacySelector.CASE_INSENSITIVE_CLASS_NAMES = false;
 
 Object.extend(Prototype.LegacySelector, {
   _cache: { },
@@ -464,7 +397,7 @@ Object.extend(Prototype.LegacySelector, {
         // use `typeof` operator to prevent errors
         if (typeof (n = nodes[i])._countedByPrototype == 'undefined') {
           n._countedByPrototype = Prototype.emptyFunction;
-          results.push(Element.extend(n));
+          results.push(n);
         }
       return Prototype.LegacySelector.handlers.unmark(results);
     },
@@ -788,16 +721,3 @@ Object.extend(Prototype.LegacySelector, {
     return (l > 1) ? h.unique(results) : results;
   }
 });
-
-if (Prototype.Browser.IE) {
-  Object.extend(Prototype.LegacySelector.handlers, {
-    // IE returns comment nodes on getElementsByTagName("*").
-    // Filter them out.
-    concat: function(a, b) {
-      for (var i = 0, node; node = b[i]; i++)
-        if (node.tagName !== "!") a.push(node);
-      return a;
-    }
-  });
-}
-

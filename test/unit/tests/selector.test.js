@@ -85,7 +85,7 @@ suite('Selector', function () {
   });
 
   test('attr ([href])', function () {
-    assert.enumEqual($(document.body).select('a[href]'), $(document.body).select('[href]'));
+    assert.enumEqual(document.body.select('a[href]'), document.body.select('[href]'));
     assert.enumEqual($$('a[class~="internal"]'), $$('[class~=internal]'));
     assert.enumEqual($$('*[id]'), $$('[id]'));
     assert.enumEqual($('checked_radio', 'unchecked_radio'), $$('[type=radio]'));

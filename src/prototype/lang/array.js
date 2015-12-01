@@ -28,8 +28,7 @@
  *
  *  The well-known DOM method [`document.getElementsByTagName()`](http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-A6C9094)
  *  doesn't return an [[Array]], but a `NodeList` object that implements the basic array
- *  "interface." Internet Explorer does not allow us to extend `Enumerable` onto `NodeList.prototype`,
- *  so instead we cast the returned `NodeList` to an [[Array]]:
+ *  "interface.":
  *
  *      var paras = $A(document.getElementsByTagName('p'));
  *      paras.each(Element.hide);
@@ -59,9 +58,7 @@
 
 function $A(iterable) {
   if (!iterable) return [];
-  // Safari <2.0.4 crashes when accessing property of a node list with property accessor.
-  // It nevertheless works fine with `in` operator, which is why we use it here
-  if ('toArray' in Object(iterable)) return iterable.toArray();
+  if (iterable.toArray) return iterable.toArray();
   var length = iterable.length || 0, results = new Array(length);
   while (length--) results[length] = iterable[length];
   return results;
@@ -189,12 +186,18 @@ Array.from = $A;
       slice = arrayProto.slice,
       _each = arrayProto.forEach; // use native browser JS 1.6 implementation if available
 
-  function each(iterator, context) {
-    for (var i = 0, length = this.length >>> 0; i < length; i++) {
-      if (i in this) iterator.call(context, this[i], i, this);
-    }
-  }
-  if (!_each) _each = each;
+  // Note that #map, #filter, #some, and #every take some extra steps for
+  // ES5 compliance: the context in which they're called is coerced to an
+  // object, and that object's `length` property is coerced to a finite
+  // integer. This makes it easier to use the methods as generics.
+  //
+  // This means that they behave a little differently from other methods in
+  // `Enumerable`/`Array` that don't collide with ES5, but that's OK.
+
+  var filter = arrayProto.filter,
+      map = wrapNative(arrayProto.map),
+      some = wrapNative(arrayProto.some),
+      every = wrapNative(arrayProto.every);
 
   /**
    *  Array#clear() -> Array
@@ -401,132 +404,6 @@ Array.from = $A;
     return '[' + this.map(Object.inspect).join(', ') + ']';
   }
 
-  /**
-   *  Array#indexOf(item[, offset = 0]) -> Number
-   *  - item (?): A value that may or may not be in the array.
-   *  - offset (Number): The number of initial items to skip before beginning
-   *      the search.
-   *
-   *  Returns the index of the first occurrence of `item` within the array,
-   *  or `-1` if `item` doesn't exist in the array. `Array#indexOf` compares
-   *  items using *strict equality* (`===`).
-   *
-   *  `Array#indexOf` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
-   *  It is only defined if not already present in the user's browser, and it
-   *  is meant to behave like the native version as much as possible. Consult
-   *  the [ES5 specification](http://es5.github.com/#x15.4.4.14) for more
-   *  information.
-   *
-   *  ##### Examples
-   *
-   *      [3, 5, 6, 1, 20].indexOf(1)
-   *      // -> 3
-   *
-   *      [3, 5, 6, 1, 20].indexOf(90)
-   *      // -> -1 (not found)
-   *
-   *      ['1', '2', '3'].indexOf(1);
-   *      // -> -1 (not found, 1 !== '1')
-  **/
-  function indexOf(item, i) {
-    if (this == null) throw new TypeError();
-
-    var array = Object(this), length = array.length >>> 0;
-    if (length === 0) return -1;
-
-    // The rules for the `fromIndex` argument are tricky. Let's follow the
-    // spec line-by-line.
-    i = Number(i);
-    if (isNaN(i)) {
-      i = 0;
-    } else if (i !== 0 && isFinite(i)) {
-      // Equivalent to ES5's `ToInteger` operation.
-      i = (i > 0 ? 1 : -1) * Math.floor(Math.abs(i));
-    }
-
-    // If the search index is greater than the length of the array,
-    // return -1.
-    if (i > length) return -1;
-
-    // If the search index is negative, take its absolute value, subtract it
-    // from the length, and make that the new search index. If it's still
-    // negative, make it 0.
-    var k = i >= 0 ? i : Math.max(length - Math.abs(i), 0);
-    for (; k < length; k++)
-      if (k in array && array[k] === item) return k;
-    return -1;
-  }
-
-
-  /** related to: Array#indexOf
-   *  Array#lastIndexOf(item[, offset]) -> Number
-   *  - item (?): A value that may or may not be in the array.
-   *  - offset (Number): The number of items at the end to skip before
-   *      beginning the search.
-   *
-   *  Returns the position of the last occurrence of `item` within the
-   *  array &mdash; or `-1` if `item` doesn't exist in the array.
-   *
-   *  `Array#lastIndexOf` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
-   *  It is only defined if not already present in the user's browser, and it
-   *  is meant to behave like the native version as much as possible. Consult
-   *  the [ES5 specification](http://es5.github.com/#x15.4.4.15) for more
-   *  information.
-  **/
-  function lastIndexOf(item, i) {
-    if (this == null) throw new TypeError();
-
-    var array = Object(this), length = array.length >>> 0;
-    if (length === 0) return -1;
-
-    // The rules for the `fromIndex` argument are tricky. Let's follow the
-    // spec line-by-line.
-    if (!Object.isUndefined(i)) {
-      i = Number(i);
-      if (isNaN(i)) {
-        i = 0;
-      } else if (i !== 0 && isFinite(i)) {
-        // Equivalent to ES5's `ToInteger` operation.
-        i = (i > 0 ? 1 : -1) * Math.floor(Math.abs(i));
-      }
-    } else {
-      i = length;
-    }
-
-    // If fromIndex is positive, clamp it to the last index in the array;
-    // if it's negative, subtract its absolute value from the array's length.
-    var k = i >= 0 ? Math.min(i, length - 1) :
-     length - Math.abs(i);
-
-    // (If fromIndex is still negative, it'll bypass this loop altogether and
-    // return -1.)
-    for (; k >= 0; k--)
-      if (k in array && array[k] === item) return k;
-    return -1;
-  }
-
-  // Replaces a built-in function. No PDoc needed.
-  //
-  // Used instead of the broken version of Array#concat in some versions of
-  // Opera. Made to be ES5-compliant.
-  function concat(_) {
-    var array = [], items = slice.call(arguments, 0), item, n = 0;
-    items.unshift(this);
-    for (var i = 0, length = items.length; i < length; i++) {
-      item = items[i];
-      if (Object.isArray(item) && !('callee' in item)) {
-        for (var j = 0, arrayLength = item.length; j < arrayLength; j++) {
-          if (j in item) array[n] = item[j];
-          n++;
-        }
-      } else {
-        array[n++] = item;
-      }
-    }
-    array.length = n;
-    return array;
-  }
-
   // Certain ES5 array methods have the same names as Prototype array methods
   // and perform the same functions.
   //
@@ -560,165 +437,6 @@ Array.from = $A;
     };
   }
 
-  // Note that #map, #filter, #some, and #every take some extra steps for
-  // ES5 compliance: the context in which they're called is coerced to an
-  // object, and that object's `length` property is coerced to a finite
-  // integer. This makes it easier to use the methods as generics.
-  //
-  // This means that they behave a little differently from other methods in
-  // `Enumerable`/`Array` that don't collide with ES5, but that's OK.
-
-  /**
-   *  Array#map([iterator = Prototype.K[, context]]) -> Array
-   *  - iterator (Function): The iterator function to apply to each element
-   *    in the enumeration.
-   *  - context (Object): An optional object to use as `this` within
-   *    calls to the iterator.
-   *
-   *  Returns the result of applying `iterator` to each item in the array. If
-   *  no iterator is provided, the elements are simply copied to the returned
-   *  array.
-   *
-   *  `Array#map` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
-   *  It is only defined if not already present in the user's browser, and it
-   *  is meant to behave like the native version as much as possible. Consult
-   *  the [ES5 specification](http://es5.github.com/#x15.4.4.19) for more
-   *  information.
-  **/
-  function map(iterator) {
-    if (this == null) throw new TypeError();
-    iterator = iterator || Prototype.K;
-
-    var object = Object(this);
-    var results = [], context = arguments[1], n = 0;
-
-    for (var i = 0, length = object.length >>> 0; i < length; i++) {
-      if (i in object) {
-        results[n] = iterator.call(context, object[i], i, object);
-      }
-      n++;
-    }
-    results.length = n;
-    return results;
-  }
-
-  if (arrayProto.map) {
-    map = wrapNative(Array.prototype.map);
-  }
-
-  /**
-   *  Array#filter(iterator[, context]) -> Array
-   *  - iterator (Function): An iterator function to use to test the
-   *    elements.
-   *  - context (Object): An optional object to use as `this` within
-   *    calls to the iterator.
-   *
-   *  Returns a new array containing all the items in this array for which
-   *  `iterator` returned a truthy value.
-   *
-   *  `Array#filter` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
-   *  It is only defined if not already present in the user's browser, and it
-   *  is meant to behave like the native version as much as possible. Consult
-   *  the [ES5 specification](http://es5.github.com/#x15.4.4.20) for more
-   *  information.
-  **/
-  function filter(iterator) {
-    if (this == null || !Object.isFunction(iterator))
-      throw new TypeError();
-
-    var object = Object(this);
-    var results = [], context = arguments[1], value;
-
-    for (var i = 0, length = object.length >>> 0; i < length; i++) {
-      if (i in object) {
-        value = object[i];
-        if (iterator.call(context, value, i, object)) {
-          results.push(value);
-        }
-      }
-    }
-    return results;
-  }
-
-  if (arrayProto.filter) {
-    // `Array#filter` requires an iterator by nature, so we don't need to
-    // wrap it.
-    filter = Array.prototype.filter;
-  }
-
-  /**
-   *  Array#some([iterator = Prototype.K[, context]]) -> Boolean
-   *  - iterator (Function): An optional function to use to evaluate each
-   *    element in the enumeration; the function should return the value to
-   *    test. If this is not provided, the element itself is tested.
-   *  - context (Object): An optional object to use as `this` within
-   *    calls to the iterator.
-   *
-   *  Determines whether at least one element is truthy (boolean-equivalent to
-   *  `true`), either directly or through computation by the provided iterator.
-   *
-   *  `Array#some` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
-   *  It is only defined if not already present in the user's browser, and it
-   *  is meant to behave like the native version as much as possible. Consult
-   *  the [ES5 specification](http://es5.github.com/#x15.4.4.17) for more
-   *  information.
-  **/
-  function some(iterator) {
-    if (this == null) throw new TypeError();
-    iterator = iterator || Prototype.K;
-    var context = arguments[1];
-
-    var object = Object(this);
-    for (var i = 0, length = object.length >>> 0; i < length; i++) {
-      if (i in object && iterator.call(context, object[i], i, object)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  if (arrayProto.some) {
-    some = wrapNative(Array.prototype.some);
-  }
-
-  /**
-   *  Array#every([iterator = Prototype.K[, context]]) -> Boolean
-   *  - iterator (Function): An optional function to use to evaluate each
-   *    element in the enumeration; the function should return the value to
-   *    test. If this is not provided, the element itself is tested.
-   *  - context (Object): An optional object to use as `this` within
-   *    calls to the iterator.
-   *
-   *  Determines whether all elements are truthy (boolean-equivalent to
-   *  `true`), either directly or through computation by the provided iterator.
-   *
-   *  `Array#every` acts as an ECMAScript 5 [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/).
-   *  It is only defined if not already present in the user's browser, and it
-   *  is meant to behave like the native version as much as possible. Consult
-   *  the [ES5 specification](http://es5.github.com/#x15.4.4.16) for more
-   *  information.
-   *
-  **/
-  function every(iterator) {
-    if (this == null) throw new TypeError();
-    iterator = iterator || Prototype.K;
-    var context = arguments[1];
-
-    var object = Object(this);
-    for (var i = 0, length = object.length >>> 0; i < length; i++) {
-      if (i in object && !iterator.call(context, object[i], i, object)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  if (arrayProto.every) {
-    every = wrapNative(Array.prototype.every);
-  }
-
   // We used to define an `inject` method here that relied on ES5's
   // `Array#reduce` (if present), but using `reduce` prevents us from
   // catching a thrown `$break`. So arrays now use the standard
@@ -742,7 +460,6 @@ Array.from = $A;
     map:       map,
     collect:   map,
     select:    filter,
-    filter:    filter,
     findAll:   filter,
     some:      some,
     any:       some,
@@ -763,15 +480,4 @@ Array.from = $A;
     size:      size,
     inspect:   inspect
   });
-
-  // fix for opera
-  var CONCAT_ARGUMENTS_BUGGY = (function() {
-    return [].concat(arguments)[0][0] !== 1;
-  })(1,2);
-
-  if (CONCAT_ARGUMENTS_BUGGY) arrayProto.concat = concat;
-
-  // Use native browser JS 1.6 implementations if available.
-  if (!arrayProto.indexOf) arrayProto.indexOf = indexOf;
-  if (!arrayProto.lastIndexOf) arrayProto.lastIndexOf = lastIndexOf;
 })();

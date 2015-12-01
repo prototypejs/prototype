@@ -1,7 +1,7 @@
 var documentLoaded = document.loaded;
 
 function uidForElement(elem) {
-  return elem.uniqueID ? elem.uniqueID : elem._prototypeUID;
+  return elem._prototypeUID;
 }
 
 suite('Event', function () {
@@ -166,7 +166,7 @@ suite('Event', function () {
     span.observe("test:somethingHappened", function() {});
 
     function uidForElement(elem) {
-      return elem.uniqueID ? elem.uniqueID : elem._prototypeUID;
+      return elem._prototypeUID;
     }
 
     var registry = Event.cache[uidForElement(span)];
@@ -213,11 +213,11 @@ suite('Event', function () {
     assert(!Event.cache[uidForElement(span)], 'registry should be clear after 2 stopObserving');
 
     span.stopObserving("test:somethingHappened");
-    
+
     assert(!Event.cache[uidForElement(span)], 'registry should be clear after stopObserving with no handler');
-    
+
     span.stopObserving();
-    
+
     assert(!Event.cache[uidForElement(span)], 'registry should be clear after stopObserving with no eventName');
   });
 
