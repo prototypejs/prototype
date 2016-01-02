@@ -79,31 +79,11 @@
 
     if (Object.isString(element))
       element = document.getElementById(element);
-    return Element.extend(element);
+    return element;
   }
 
   GLOBAL.$ = $;
 
-
-  // Define the DOM Level 2 node type constants if they're missing.
-  if (!GLOBAL.Node) GLOBAL.Node = {};
-
-  if (!GLOBAL.Node.ELEMENT_NODE) {
-    Object.extend(GLOBAL.Node, {
-      ELEMENT_NODE:                1,
-      ATTRIBUTE_NODE:              2,
-      TEXT_NODE:                   3,
-      CDATA_SECTION_NODE:          4,
-      ENTITY_REFERENCE_NODE:       5,
-      ENTITY_NODE:                 6,
-      PROCESSING_INSTRUCTION_NODE: 7,
-      COMMENT_NODE:                8,
-      DOCUMENT_NODE:               9,
-      DOCUMENT_TYPE_NODE:         10,
-      DOCUMENT_FRAGMENT_NODE:     11,
-      NOTATION_NODE:              12
-    });
-  }
 
   // The cache for all our created elements.
   var ELEMENT_CACHE = {};
@@ -119,17 +99,6 @@
     if ('type' in attributes) return false;
     return true;
   }
-
-  // IE requires that `name` and `type` attributes be set this way.
-  var HAS_EXTENDED_CREATE_ELEMENT_SYNTAX = (function(){
-    try {
-      var el = document.createElement('<input name="x">');
-      return el.tagName.toLowerCase() === 'input' && el.name === 'x';
-    }
-    catch(err) {
-      return false;
-    }
-  })();
 
 
   /**
@@ -159,14 +128,8 @@
     attributes = attributes || {};
     tagName = tagName.toLowerCase();
 
-    if (HAS_EXTENDED_CREATE_ELEMENT_SYNTAX && attributes.name) {
-      tagName = '<' + tagName + ' name="' + attributes.name + '">';
-      delete attributes.name;
-      return Element.writeAttribute(document.createElement(tagName), attributes);
-    }
-
     if (!ELEMENT_CACHE[tagName])
-      ELEMENT_CACHE[tagName] = Element.extend(document.createElement(tagName));
+      ELEMENT_CACHE[tagName] = document.createElement(tagName);
 
     var node = shouldUseCreationCache(tagName, attributes) ?
      ELEMENT_CACHE[tagName].cloneNode(false) : document.createElement(tagName);
@@ -176,8 +139,8 @@
 
   GLOBAL.Element = Element;
 
-  Object.extend(GLOBAL.Element, oldElement || {});
-  if (oldElement) GLOBAL.Element.prototype = oldElement.prototype;
+  Object.extend(GLOBAL.Element, oldElement);
+  GLOBAL.Element.prototype = oldElement.prototype;
 
   /**
    *  mixin Element.Methods
@@ -515,34 +478,8 @@
     }
   })();
 
-  var LINK_ELEMENT_INNERHTML_BUGGY = (function() {
-    try {
-      var el = document.createElement('div');
-      el.innerHTML = "<link />";
-      var isBuggy = (el.childNodes.length === 0);
-      el = null;
-      return isBuggy;
-    } catch(e) {
-      return true;
-    }
-  })();
-
   var ANY_INNERHTML_BUGGY = SELECT_ELEMENT_INNERHTML_BUGGY ||
-   TABLE_ELEMENT_INNERHTML_BUGGY || LINK_ELEMENT_INNERHTML_BUGGY;
-
-  var SCRIPT_ELEMENT_REJECTS_TEXTNODE_APPENDING = (function () {
-    var s = document.createElement("script"),
-        isBuggy = false;
-    try {
-      s.appendChild(document.createTextNode(""));
-      isBuggy = !s.firstChild ||
-        s.firstChild && s.firstChild.nodeType !== 3;
-    } catch (e) {
-      isBuggy = true;
-    }
-    s = null;
-    return isBuggy;
-  })();
+   TABLE_ELEMENT_INNERHTML_BUGGY;
 
   /**
    *  Element.update(@element[, newContent]) -> Element
@@ -569,7 +506,7 @@
    *  See [[String#evalScripts]] for details.
    *
    *  Note that this method allows seamless content update of table related
-   *  elements in Internet Explorer 6 and beyond.
+   *  elements in Internet Explorer and beyond.
    *
    *  Any nodes replaced with `Element.update` will first have event
    *  listeners unregistered and storage keys removed. This frees up memory
@@ -653,12 +590,6 @@
     content = Object.toHTML(content);
     var tagName = element.tagName.toUpperCase();
 
-    if (tagName === 'SCRIPT' && SCRIPT_ELEMENT_REJECTS_TEXTNODE_APPENDING) {
-      // Scripts are not evaluated when updating a SCRIPT element.
-      element.text = content;
-      return element;
-    }
-
     if (ANY_INNERHTML_BUGGY) {
       if (tagName in INSERTION_TRANSLATIONS.tags) {
         while (element.firstChild)
@@ -668,19 +599,6 @@
         for (var i = 0, node; node = nodes[i]; i++)
           element.appendChild(node);
 
-      } else if (LINK_ELEMENT_INNERHTML_BUGGY && Object.isString(content) && content.indexOf('<link') > -1) {
-        // IE barfs when inserting a string that beings with a LINK
-        // element. The workaround is to add any content to the beginning
-        // of the string; we'll be inserting a text node (see
-        // getContentFromAnonymousElement below).
-        while (element.firstChild)
-          element.removeChild(element.firstChild);
-
-        var nodes = getContentFromAnonymousElement(tagName,
-         content.stripScripts(), true);
-
-        for (var i = 0, node; node = nodes[i]; i++)
-          element.appendChild(node);
       } else {
         element.innerHTML = content.stripScripts();
       }
@@ -1131,7 +1049,6 @@
     }
 
     return $A(div.childNodes);
-    //return SLICE.call(div.childNodes, 0);
   }
 
   /**
@@ -1164,16 +1081,14 @@
   function clone(element, deep) {
     if (!(element = $(element))) return;
     var clone = element.cloneNode(deep);
-    if (!HAS_UNIQUE_ID_PROPERTY) {
-      clone._prototypeUID = UNDEFINED;
-      if (deep) {
-        var descendants = Element.select(clone, '*'),
-         i = descendants.length;
-        while (i--)
-          descendants[i]._prototypeUID = UNDEFINED;
-      }
+    clone._prototypeUID = UNDEFINED;
+    if (deep) {
+      var descendants = Element.select(clone, '*'),
+       i = descendants.length;
+      while (i--)
+        descendants[i]._prototypeUID = UNDEFINED;
     }
-    return Element.extend(clone);
+    return clone;
   }
 
   // Performs cleanup on a single element before it is removed from the page.
@@ -1181,30 +1096,9 @@
     var uid = getUniqueElementID(element);
     if (uid) {
       Element.stopObserving(element);
-      if (!HAS_UNIQUE_ID_PROPERTY)
-        element._prototypeUID = UNDEFINED;
+      element._prototypeUID = UNDEFINED;
       delete Element.Storage[uid];
     }
-  }
-
-  function purgeCollection(elements) {
-    var i = elements.length;
-    while (i--)
-      purgeElement(elements[i]);
-  }
-
-  function purgeCollection_IE(elements) {
-    var i = elements.length, element, uid;
-    while (i--) {
-      element = elements[i];
-      uid = getUniqueElementID(element);
-      delete Element.Storage[uid];
-      delete Event.cache[uid];
-    }
-  }
-
-  if (HAS_UNIQUE_ID_PROPERTY) {
-    purgeCollection = purgeCollection_IE;
   }
 
 
@@ -1288,7 +1182,7 @@
 
     while (element = element[property]) {
       if (element.nodeType === Node.ELEMENT_NODE)
-        elements.push(Element.extend(element));
+        elements.push(element);
 
       if (elements.length === maximumLength) break;
     }
@@ -1394,7 +1288,7 @@
 
     while (child) {
       if (child.nodeType === Node.ELEMENT_NODE)
-        results.push(Element.extend(child));
+        results.push(child);
 
       child = child.nextSibling;
     }
@@ -1580,7 +1474,7 @@
       // Skip the first `index` matches we find.
       if (--index >= 0) continue;
 
-      return Element.extend(element);
+      return element;
     }
   }
 
@@ -1689,7 +1583,7 @@
   function up(element, expression, index) {
     element = $(element);
 
-    if (arguments.length === 1) return $(element.parentNode);
+    if (arguments.length === 1) return element.parentNode;
     return _recursivelyFind(element, 'parentNode', expression, index);
   }
 
@@ -1797,8 +1691,7 @@
     if (Object.isNumber(expression))
       index = expression, expression = '*';
 
-    var node = Prototype.Selector.select(expression, element)[index];
-    return Element.extend(node);
+    return Prototype.Selector.select(expression, element)[index];
   }
 
   /**
@@ -2135,37 +2028,11 @@
    *      $('homo-erectus').descendantOf('homo-sapiens');
    *      // -> false
   **/
-  function descendantOf_DOM(element, ancestor) {
-    element = $(element), ancestor = $(ancestor);
-    if (!element || !ancestor) return false;
-    while (element = element.parentNode)
-      if (element === ancestor) return true;
-    return false;
-  }
-
-  function descendantOf_contains(element, ancestor) {
-    element = $(element), ancestor = $(ancestor);
-    if (!element || !ancestor) return false;
-    // Some nodes, like `document`, don't have the "contains" method.
-    if (!ancestor.contains) return descendantOf_DOM(element, ancestor);
-    return ancestor.contains(element) && ancestor !== element;
-  }
-
-  function descendantOf_compareDocumentPosition(element, ancestor) {
+  function descendantOf(element, ancestor) {
     element = $(element), ancestor = $(ancestor);
     if (!element || !ancestor) return false;
     return (element.compareDocumentPosition(ancestor) & 8) === 8;
   }
-
-  var descendantOf;
-  if (DIV.compareDocumentPosition) {
-    descendantOf = descendantOf_compareDocumentPosition;
-  } else if (DIV.contains) {
-    descendantOf = descendantOf_contains;
-  } else {
-    descendantOf = descendantOf_DOM;
-  }
-
 
   Object.extend(methods, {
     recursivelyCollect:   recursivelyCollect,
@@ -2282,11 +2149,7 @@
    *  Returns the value of `element`'s `attribute` or `null` if `attribute` has
    *  not been specified.
    *
-   *  This method serves two purposes. First it acts as a simple wrapper around
-   *  `getAttribute` which isn't a "real" function in Safari and Internet
-   *  Explorer (it doesn't have `.apply` or `.call` for instance). Secondly, it
-   *  cleans up the horrible mess Internet Explorer makes when handling
-   *  attributes.
+   *  This method acts as a simple wrapper around `getAttribute`.
    *
    *  ##### Examples
    *
@@ -2307,51 +2170,6 @@
   function readAttribute(element, name) {
     return $(element).getAttribute(name);
   }
-
-  function readAttribute_IE(element, name) {
-    element = $(element);
-
-    // If the attribute name exists in the value translation table, it means
-    // we should use a custom method for retrieving that attribute's value.
-    var table = ATTRIBUTE_TRANSLATIONS.read;
-    if (table.values[name])
-      return table.values[name](element, name);
-
-    // If it exists in the name translation table, it means the attribute has
-    // an alias.
-    if (table.names[name]) name = table.names[name];
-
-    // Special-case namespaced attributes.
-    if (name.include(':')) {
-      if (!element.attributes || !element.attributes[name]) return null;
-      return element.attributes[name].value;
-    }
-
-    return element.getAttribute(name);
-  }
-
-  function readAttribute_Opera(element, name) {
-    if (name === 'title') return element.title;
-    return element.getAttribute(name);
-  }
-
-  var PROBLEMATIC_ATTRIBUTE_READING = (function() {
-    // This test used to set 'onclick' to `Prototype.emptyFunction`, but that
-    // caused an (uncatchable) error in IE 10. For some reason, switching to
-    // an empty array prevents this issue.
-    DIV.setAttribute('onclick', []);
-    var value = DIV.getAttribute('onclick');
-    var isFunction = Object.isArray(value);
-    DIV.removeAttribute('onclick');
-    return isFunction;
-  })();
-
-  if (PROBLEMATIC_ATTRIBUTE_READING) {
-    readAttribute = readAttribute_IE;
-  } else if (Prototype.Browser.Opera) {
-    readAttribute = readAttribute_Opera;
-  }
-
 
   /**
    *  Element.writeAttribute(@element, attribute[, value = true]) -> Element
@@ -2392,35 +2210,13 @@
     return element;
   }
 
-  // Test whether checkboxes work properly with `hasAttribute`.
-  var PROBLEMATIC_HAS_ATTRIBUTE_WITH_CHECKBOXES = (function () {
-    if (!HAS_EXTENDED_CREATE_ELEMENT_SYNTAX) {
-      // Only IE browsers are known to exhibit this one, so we'll take a
-      // shortcut.
-      return false;
-    }
-    var checkbox = document.createElement('<input type="checkbox">');
-    checkbox.checked = true;
-    var node = checkbox.getAttributeNode('checked');
-    return !node || !node.specified;
-  })();
-
   function hasAttribute(element, attribute) {
     attribute = ATTRIBUTE_TRANSLATIONS.has[attribute] || attribute;
     var node = $(element).getAttributeNode(attribute);
     return !!(node && node.specified);
   }
 
-  function hasAttribute_IE(element, attribute) {
-    if (attribute === 'checked') {
-      return element.checked;
-    }
-    return hasAttribute(element, attribute);
-  }
-
-  GLOBAL.Element.Methods.Simulated.hasAttribute =
-   PROBLEMATIC_HAS_ATTRIBUTE_WITH_CHECKBOXES ?
-   hasAttribute_IE : hasAttribute;
+  GLOBAL.Element.Methods.Simulated.hasAttribute = hasAttribute;
 
   /** deprecated
    *  Element.classNames(@element) -> [String...]
@@ -2576,16 +2372,7 @@
   var ATTRIBUTE_TRANSLATIONS = {};
 
   // Test attributes.
-  var classProp = 'className', forProp = 'for';
-
-  // Try "className" first (IE <8)
-  DIV.setAttribute(classProp, 'x');
-  if (DIV.className !== 'x') {
-    // Try "class" (IE >=8)
-    DIV.setAttribute('class', 'x');
-    if (DIV.className === 'x')
-      classProp = 'class';
-  }
+  var classProp = 'class', forProp = 'for';
 
   var LABEL = document.createElement('label');
   LABEL.setAttribute(forProp, 'x');
@@ -2619,20 +2406,8 @@
 
   var _getEv;
 
-  // IE <8
-  if (String(onclickValue).indexOf('{') > -1) {
-    // intrinsic event attributes are serialized as `function { ... }`
-    _getEv = function(element, attribute) {
-      var value = element.getAttribute(attribute);
-      if (!value) return null;
-      value = value.toString();
-      value = value.split('{')[1];
-      value = value.split('}')[0];
-      return value.strip();
-    };
-  }
   // IE >=8
-  else if (onclickValue === '') {
+  if (onclickValue === '') {
     // only function body is serialized
     _getEv = function(element, attribute) {
       var value = element.getAttribute(attribute);
@@ -2747,12 +2522,6 @@
     return style.camelize();
   }
 
-  function normalizeStyleName_IE(style) {
-    if (style === 'float' || style === 'cssFloat')
-      return 'styleFloat';
-    return style.camelize();
-  }
-
   /**
    *  Element.setStyle(@element, styles) -> Element
    *
@@ -2794,7 +2563,7 @@
   **/
   function setStyle(element, styles) {
     element = $(element);
-    var elementStyle = element.style, match;
+    var elementStyle = element.style;
 
     if (Object.isString(styles)) {
       // Set the element's CSS text directly.
@@ -2858,9 +2627,6 @@
    *  properties described in the
    *  [Document Object Model (DOM) Level 2 Style Specification](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle).
    *
-   *  Old versions of Internet Explorer return _literal_ values; other browsers
-   *  return _computed_ values.
-   *
    *  Consider the following HTML snippet:
    *
    *      language: html
@@ -2875,35 +2641,7 @@
    *  Then:
    *
    *      $('test').getStyle('margin-left');
-   *      // -> '1em' in Internet Explorer,
-   *      // -> '12px' elsewhere.
-   *
-   *
-   *  Safari returns `null` for *any* non-inline property if the element is
-   *  hidden (has `display` set to `'none'`).
-   *
-   *  ##### Caveats
-   *
-   *  Early versions of Prototype attempted to "fix" this behavior for
-   *  certain properties. A few examples:
-   *
-   *  1. Reading and writing the CSS `opacity` property works exactly like
-   *     calling [[Element.getOpacity]] and [[Element.setOpacity]]
-   *     respectively. This lets us pretend that IE didn't have a
-   *     proprietary way to set opacity in versions 6-7.
-   *  2. Browsers disagree on how to report certain properties of hidden
-   *     elements (i.e., `display: none`). Opera, for instance, says that a
-   *     hidden element has a `width` of `0px`. It's an arguable point, but
-   *     we return `null` in those cases instead (so as to agree with the
-   *     majority behavior). **In short: if an element is hidden,
-   *     `getStyle('width')` and `getStyle('height')` will return `null`.**
-   *  3. In older versions of Internet Explorer, Prototype will return a
-   *     pixel value for `width` and `height`, even if the literal value is
-   *     a different unit. It does this by treating `width` like `offsetWidth`
-   *     and `height` like `offsetHeight`. This is often the incorrect
-   *     measurement, but it's a mistake we're stuck with for
-   *     backward-compatibility. **If you're trying to measure an element's
-   *     dimensions, don't use `getStyle`; use [[Element.measure]] instead.**
+   *      // -> '12px'
    *
   **/
   function getStyle(element, style) {
@@ -2921,70 +2659,6 @@
     if (style === 'opacity') return value ? parseFloat(value) : 1.0;
     return value === 'auto' ? null : value;
   }
-
-  function getStyle_Opera(element, style) {
-    switch (style) {
-      case 'height': case 'width':
-        // returns '0px' for hidden elements; we want it to return null
-        if (!Element.visible(element)) return null;
-
-        // Certain versions of Opera return border-box dimensions instead of
-        // content-box dimensions, so we need to determine if we should
-        // subtract padding and borders from the value.
-        var dim = parseInt(getStyle(element, style), 10);
-
-        if (dim !== element['offset' + style.capitalize()])
-          return dim + 'px';
-
-        return Element.measure(element, style);
-
-      default: return getStyle(element, style);
-    }
-  }
-
-  function getStyle_IE(element, style) {
-    element = $(element);
-    style = normalizeStyleName_IE(style);
-
-    // Try inline styles first.
-    var value = element.style[style];
-    if (!value && element.currentStyle) {
-      // Reluctantly retrieve the current style.
-      value = element.currentStyle[style];
-    }
-
-    if (style === 'opacity') {
-      if (!STANDARD_CSS_OPACITY_SUPPORTED)
-        return getOpacity_IE(element);
-      else return value ? parseFloat(value) : 1.0;
-    }
-
-    if (value === 'auto') {
-      // If we need a dimension, return null for hidden elements, but return
-      // pixel values for visible elements.
-      if ((style === 'width' || style === 'height') && Element.visible(element))
-        return Element.measure(element, style) + 'px';
-      return null;
-    }
-
-    return value;
-  }
-
-  function stripAlphaFromFilter_IE(filter) {
-    return (filter || '').replace(/alpha\([^\)]*\)/gi, '');
-  }
-
-  function hasLayout_IE(element) {
-    if (!element.currentStyle || !element.currentStyle.hasLayout)
-      element.style.zoom = 1;
-    return element;
-  }
-
-  // Opacity feature test borrowed from Modernizr.
-  var STANDARD_CSS_OPACITY_SUPPORTED = (function() {
-    DIV.style.cssText = "opacity:.55";
-    return /^0.55/.test(DIV.style.opacity);
-  })();
 
   /**
    *  Element.setOpacity(@element, opacity) -> [Element...]
@@ -3014,37 +2688,6 @@
     return element;
   }
 
-  // The IE versions of `setOpacity` and `getOpacity` are aware of both
-  // the standard approach (an `opacity` property in CSS) and the old-style
-  // IE approach (a proprietary `filter` property). They are written to
-  // prefer the standard approach unless it isn't supported.
-  function setOpacity_IE(element, value) {
-    // Prefer the standard CSS approach unless it's not supported.
-    if (STANDARD_CSS_OPACITY_SUPPORTED)
-      return setOpacity(element, value);
-
-    element = hasLayout_IE($(element));
-    var filter = Element.getStyle(element, 'filter'),
-     style = element.style;
-
-    if (value == 1 || value === '') {
-      // Remove the `alpha` filter from IE's `filter` CSS property. If there
-      // is anything left after removal, put it back where it was; otherwise
-      // remove the property.
-      filter = stripAlphaFromFilter_IE(filter);
-      if (filter) style.filter = filter;
-      else style.removeAttribute('filter');
-      return element;
-    }
-
-    if (value < 0.00001) value = 0;
-
-    style.filter = stripAlphaFromFilter_IE(filter) +
-     ' alpha(opacity=' + (value * 100) + ')';
-
-    return element;
-  }
-
 
   /**
    *  Element.getOpacity(@element) -> Number | null
@@ -3055,18 +2698,6 @@
     return Element.getStyle(element, 'opacity');
   }
 
-  function getOpacity_IE(element) {
-    // Prefer the standard CSS approach unless it's not supported.
-    if (STANDARD_CSS_OPACITY_SUPPORTED)
-      return getOpacity(element);
-
-    var filter = Element.getStyle(element, 'filter');
-    if (filter.length === 0) return 1.0;
-    var match = (filter || '').match(/alpha\(opacity=(.*)\)/i);
-    if (match && match[1]) return parseFloat(match[1]) / 100;
-    return 1.0;
-  }
-
 
   Object.extend(methods, {
     setStyle:   setStyle,
@@ -3075,15 +2706,7 @@
     getOpacity: getOpacity
   });
 
-  if ('styleFloat' in DIV.style) {
-    methods.getStyle = getStyle_IE;
-    methods.setOpacity = setOpacity_IE;
-    methods.getOpacity = getOpacity_IE;
-  }
-
   // STORAGE
-  var UID = 0;
-
   GLOBAL.Element.Storage = { UID: 1 };
 
   function getUniqueElementID(element) {
@@ -3095,19 +2718,6 @@
       element._prototypeUID = Element.Storage.UID++;
     return element._prototypeUID;
   }
-
-  // In Internet Explorer, DOM nodes have a `uniqueID` property. Saves us
-  // from inventing our own.
-  function getUniqueElementID_IE(element) {
-    if (element === window) return 0;
-    // The document object's `uniqueID` property changes each time you read it.
-    if (element == document) return 1;
-    return element.uniqueID;
-  }
-
-  var HAS_UNIQUE_ID_PROPERTY = ('uniqueID' in DIV);
-  if (HAS_UNIQUE_ID_PROPERTY)
-    getUniqueElementID = getUniqueElementID_IE;
 
   /**
    *  Element.getStorage(@element) -> Hash
@@ -3167,7 +2777,6 @@
     return value;
   }
 
-
   Object.extend(methods, {
     getStorage: getStorage,
     store:      store,
@@ -3176,54 +2785,7 @@
 
 
   // ELEMENT EXTENSION
-  var Methods = {}, ByTag = Element.Methods.ByTag,
-   F = Prototype.BrowserFeatures;
-
-  // Handle environments which support extending element prototypes
-  // but don't expose the standard class name.
-  if (!F.ElementExtensions && ('__proto__' in DIV)) {
-    GLOBAL.HTMLElement = {};
-    GLOBAL.HTMLElement.prototype = DIV['__proto__'];
-    F.ElementExtensions = true;
-  }
-
-  // Certain oddball element types can't be extended in IE8.
-  function checkElementPrototypeDeficiency(tagName) {
-    if (typeof window.Element === 'undefined') return false;
-    // Skip newer IEs because creating an OBJECT tag pops up an annoying
-    // "this page uses Java" warning.
-    if (!HAS_EXTENDED_CREATE_ELEMENT_SYNTAX) return false;
-    var proto = window.Element.prototype;
-    if (proto) {
-      var id = '_' + (Math.random() + '').slice(2),
-       el = document.createElement(tagName);
-      proto[id] = 'x';
-      var isBuggy = (el[id] !== 'x');
-      delete proto[id];
-      el = null;
-      return isBuggy;
-    }
-
-    return false;
-  }
-
-  var HTMLOBJECTELEMENT_PROTOTYPE_BUGGY =
-   checkElementPrototypeDeficiency('object');
-
-  function extendElementWith(element, methods) {
-    for (var property in methods) {
-      var value = methods[property];
-      if (Object.isFunction(value) && !(property in element))
-        element[property] = value.methodize();
-    }
-  }
-
-  // Keeps track of the UIDs of extended elements.
-  var EXTENDED = {};
-  function elementIsExtended(element) {
-    var uid = getUniqueElementID(element);
-    return (uid in EXTENDED);
-  }
+  var ByTag = Element.Methods.ByTag;
 
   /**
    *  Element.extend(element) -> Element
@@ -3249,43 +2811,7 @@
    *  with the methods from `Form.Element.Methods`. If it is a `form` element, it
    *  will also be extended with the methods from `Form.Methods`.
   **/
-  function extend(element) {
-    if (!element || elementIsExtended(element)) return element;
-    if (element.nodeType !== Node.ELEMENT_NODE || element == window)
-      return element;
-
-    var methods = Object.clone(Methods),
-     tagName = element.tagName.toUpperCase();
-
-    // Add methods for specific tags.
-    if (ByTag[tagName]) Object.extend(methods, ByTag[tagName]);
-
-    extendElementWith(element, methods);
-    EXTENDED[getUniqueElementID(element)] = true;
-    return element;
-  }
-
-  // Because of the deficiency mentioned above, IE8 needs a very thin version
-  // of Element.extend that acts like Prototype.K _except_ when the element
-  // is one of the problematic types.
-  function extend_IE8(element) {
-    if (!element || elementIsExtended(element)) return element;
-
-    var t = element.tagName;
-    if (t && (/^(?:object|applet|embed)$/i.test(t))) {
-      extendElementWith(element, Element.Methods);
-      extendElementWith(element, Element.Methods.Simulated);
-      extendElementWith(element, Element.Methods.ByTag[t.toUpperCase()]);
-    }
-
-    return element;
-  }
-
-  // If the browser lets us extend specific elements, we can replace `extend`
-  // with a thinner version (or, ideally, an empty version).
-  if (F.SpecificElementExtensions) {
-    extend = HTMLOBJECTELEMENT_PROTOTYPE_BUGGY ? extend_IE8 : Prototype.K;
-  }
+  var extend = Prototype.K;
 
   function addMethodsToTagName(tagName, methods) {
     tagName = tagName.toUpperCase();
@@ -3474,28 +3000,19 @@
       }
     }
 
-    var ELEMENT_PROTOTYPE = window.HTMLElement ? HTMLElement.prototype :
-     Element.prototype;
+    mergeMethods(HTMLElement.prototype, Element.Methods);
+    mergeMethods(HTMLElement.prototype, Element.Methods.Simulated, true);
 
-    if (F.ElementExtensions) {
-      mergeMethods(ELEMENT_PROTOTYPE, Element.Methods);
-      mergeMethods(ELEMENT_PROTOTYPE, Element.Methods.Simulated, true);
-    }
-
-    if (F.SpecificElementExtensions) {
-      for (var tag in Element.Methods.ByTag) {
-        var klass = findDOMClass(tag);
-        if (Object.isUndefined(klass)) continue;
-        mergeMethods(klass.prototype, ByTag[tag]);
-      }
+    for (var tag in Element.Methods.ByTag) {
+      var klass = findDOMClass(tag);
+      if (Object.isUndefined(klass)) continue;
+      mergeMethods(klass.prototype, ByTag[tag]);
     }
 
     Object.extend(Element, Element.Methods);
     Object.extend(Element, Element.Methods.Simulated);
     delete Element.ByTag;
     delete Element.Simulated;
-
-    Element.extend.refresh();
 
     // We need to replace the element creation cache because the nodes in the
     // cache now have stale versions of the element methods.
@@ -3507,18 +3024,7 @@
     addMethods: addMethods
   });
 
-  if (extend === Prototype.K) {
-    GLOBAL.Element.extend.refresh = Prototype.emptyFunction;
-  } else {
-    GLOBAL.Element.extend.refresh = function() {
-      if (Prototype.BrowserFeatures.ElementExtensions) return;
-      Object.extend(Methods, Element.Methods);
-      Object.extend(Methods, Element.Methods.Simulated);
-
-      // All existing extended elements are stale and need to be refreshed.
-      EXTENDED = {};
-    };
-  }
+  GLOBAL.Element.extend.refresh = Prototype.emptyFunction;
 
   function addFormMethods() {
     // Add relevant element methods from the forms API.
@@ -3534,14 +3040,5 @@
   }
 
   Element.addMethods(methods);
-
-  // Prevent IE leaks on DIV and ELEMENT_CACHE
-  function destroyCache_IE() {
-    DIV = null;
-    ELEMENT_CACHE = null;
-  }
-
-  if (window.attachEvent)
-    window.attachEvent('onunload', destroyCache_IE);
 
 })(this);

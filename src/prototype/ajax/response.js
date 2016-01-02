@@ -161,13 +161,13 @@ Ajax.Response = Class.create({
       // Except Chrome doesn't seem to need this, and calling
       // `decodeURIComponent` on text that's already in the proper encoding
       // will throw a `URIError`. The ugly solution is to assume that a
-      // `URIError` raised here signifies that the text is, in fact, already 
+      // `URIError` raised here signifies that the text is, in fact, already
       // in the correct encoding, and treat the failure as a good sign.
       //
       // This is ugly, but so too is sending extended characters in an HTTP
       // header with no spec to back you up.
     }
-    
+
     try {
       return json.evalJSON(this.request.options.sanitizeJSON ||
         !this.request.isSameOrigin());

@@ -118,7 +118,7 @@
 
   <script type="text/javascript">
     $('hijack').observe('click', function(e){
-      el = $(this.parentNode);
+      el = this.parentNode;
       log(e); // this makes it fail?!?
 
       e.preventDefault();
@@ -252,7 +252,7 @@
         $('mouseenter').stopObserving();
       });
       $('mouseenter').observe('mouseleave', function(event) {
-        if ($(event.relatedTarget).descendantOf($('mouseenter'))) {
+        if (event.relatedTarget.descendantOf($('mouseenter'))) {
           $('mouseenter').failed();
         } else $('mouseenter').passed();
 
@@ -316,7 +316,7 @@
         });
       });
 
-      var observer2 = $(document).on('mouseover', '.delegation-child-2', function() {
+      var observer2 = document.on('mouseover', '.delegation-child-2', function() {
         var result = $('delegation_results').down('li', 1);
         result.passed(msg + " (" + ((new Date).toString())) + ")";
         result.observe('click', function() {
@@ -333,44 +333,6 @@
           observer3.stop();
         });
       });
-  </script>
-
-
-  <p id="ie_legacy_event_support" style="display: none">
-    Extending event objects (click to test)
-  </p>
-
-  <script type="text/javascript">
-    Event.observe(window, 'load', function() {
-      // Ensures we can manually extend events in IE's legacy event system.
-      // IE9 supports both the legacy system and DOM L2 events, so we have to
-      // inspect an event object at runtime to determine if it needs to be
-      // extended.
-      if (!window.attachEvent) return;
-
-      function mouseButton(event) {
-        if (event.isLeftClick())   return 'left';
-        if (event.isRightClick())  return 'right';
-        if (event.isMiddleClick()) return 'middle';
-        return null;
-      }
-
-      var container = $('ie_legacy_event_support');
-      container.show();
-
-      container.attachEvent('onmouseup', function(event) {
-        if ('stop' in event) container.failed('Custom property already on event! Something weird happened!');
-        Event.extend(event);
-        log(event);
-        if (!('stop' in event)) {
-          container.failed('Event not extended!')
-        } else {
-          // Ensure mouse buttons are recognized properly, since legacy event
-          // objects report them in a different way.
-          container.passed('button pressed: ' + mouseButton(event));
-        }
-      });
-    });
   </script>
 
 

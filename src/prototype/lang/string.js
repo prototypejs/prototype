@@ -29,9 +29,6 @@ Object.extend(String, {
 });
 
 Object.extend(String.prototype, (function() {
-  var NATIVE_JSON_PARSE_SUPPORT = window.JSON &&
-    typeof JSON.parse === 'function' &&
-    JSON.parse('{"test": true}').test;
 
   function prepareReplacement(replacement) {
     if (Object.isFunction(replacement)) return replacement;
@@ -744,22 +741,7 @@ Object.extend(String.prototype, (function() {
    *  security comment delimiters (defined in [[Prototype.JSONFilter]]) are
    *  automatically removed.
   **/
-  function evalJSON(sanitize) {
-    var json = this.unfilterJSON(),
-        cx = /[\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff\u0000]/g;
-    if (cx.test(json)) {
-      json = json.replace(cx, function (a) {
-        return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-      });
-    }
-    try {
-      if (!sanitize || json.isJSON()) return eval('(' + json + ')');
-    } catch (e) { }
-    // If we get this far, the string is not valid JSON.
-    throw new SyntaxError('Badly formed JSON string: ' + this.inspect());
-  }
-
-  function parseJSON() {
+  function evalJSON() {
     var json = this.unfilterJSON();
     return JSON.parse(json);
   }
@@ -917,7 +899,7 @@ Object.extend(String.prototype, (function() {
     inspect:        inspect,
     unfilterJSON:   unfilterJSON,
     isJSON:         isJSON,
-    evalJSON:       NATIVE_JSON_PARSE_SUPPORT ? parseJSON : evalJSON,
+    evalJSON:       evalJSON,
     include:        include,
     // Firefox 18+ supports String.prototype.startsWith, String.prototype.endsWith
     startsWith:     String.prototype.startsWith || startsWith,
@@ -927,4 +909,3 @@ Object.extend(String.prototype, (function() {
     interpolate:    interpolate
   };
 })());
-

@@ -5,7 +5,7 @@ Prototype._original_property = window.Sizzle;
     Prototype._actual_sizzle = fn();
   }
   fakeDefine.amd = true;
-  
+
   if (typeof define !== 'undefined' && define.amd) {
     // RequireJS is loaded. We need to pretend to be `define` while Sizzle
     // runs.
@@ -22,7 +22,7 @@ Prototype._original_property = window.Sizzle;
     // Sizzle was properly defined.
     return;
   }
-  
+
   if (typeof define !== 'undefined' && define.amd) {
     // RequireJS.
     // We should find Sizzle where we put it. And we need to restore the original `define`.
@@ -41,10 +41,8 @@ Prototype._original_property = window.Sizzle;
 })();
 
 ;(function(engine) {
-  var extendElements = Prototype.Selector.extendElements;
-
   function select(selector, scope) {
-    return extendElements(engine(selector, scope || document));
+    return engine(selector, scope || document);
   }
 
   function match(element, selector) {

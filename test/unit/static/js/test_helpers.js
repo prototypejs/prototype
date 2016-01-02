@@ -14,7 +14,7 @@
    console.groupEnd;
   var CONSOLE_LOG_APPLY = true;
 
-  // TODO: Find a different way to log info in IE6.
+  // TODO: Find a different way to log info in IE9.
   function info() {
     if (CONSOLE_LOG_APPLY) {
       console.log.apply(console, arguments);
@@ -23,7 +23,7 @@
     }
   }
 
-  function info_IE6() {
+  function info_IE9() {
     var log = $('log');
     log.show();
     var results = [];
@@ -40,7 +40,7 @@
   }
 
   if (!CONSOLE_LOG_SUPPORTED) {
-    info = info_IE6;
+    info = info_IE9;
   } else {
     try {
       console.log.apply(console, [""]);
@@ -242,7 +242,7 @@
   //
   window.Test = {
     setup: function () {
-      var body = $(document.body);
+      var body = document.body;
       this.suites = body.getAttribute('data-suites').split(',');
 
       this.fixtures = {};
@@ -359,5 +359,3 @@
   };
 
 })();
-
-

@@ -108,7 +108,7 @@ var Prototype = {
      *  Used internally to detect if the browser supports the
      *  [NodeSelector API](http://www.w3.org/TR/selectors-api/#nodeselector).
     **/
-    SelectorsAPI: !!document.querySelector,
+    SelectorsAPI: true,
 
     /**
      *  Prototype.BrowserFeatures.ElementExtensions -> Boolean
@@ -116,27 +116,8 @@ var Prototype = {
      *  Used internally to detect if the browser supports extending html element
      *  prototypes.
     **/
-    ElementExtensions: (function() {
-      var constructor = window.Element || window.HTMLElement;
-      return !!(constructor && constructor.prototype);
-    })(),
-    SpecificElementExtensions: (function() {
-      // First, try the named class
-      if (typeof window.HTMLDivElement !== 'undefined')
-        return true;
-
-      var div = document.createElement('div'),
-          form = document.createElement('form'),
-          isSupported = false;
-
-      if (div['__proto__'] && (div['__proto__'] !== form['__proto__'])) {
-        isSupported = true;
-      }
-
-      div = form = null;
-
-      return isSupported;
-    })()
+    ElementExtensions: true,
+    SpecificElementExtensions: true
   },
 
   ScriptFragment: '<script[^>]*>([\\S\\s]*?)<\/script\\s*>',
@@ -178,6 +159,3 @@ var Prototype = {
   **/
   K: function(x) { return x }
 };
-
-if (Prototype.Browser.MobileSafari)
-  Prototype.BrowserFeatures.SpecificElementExtensions = false;

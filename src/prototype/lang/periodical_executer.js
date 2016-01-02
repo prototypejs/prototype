@@ -48,11 +48,11 @@ var PeriodicalExecuter = Class.create({
    *  PeriodicalExecuter#stop() -> undefined
    *
    *  Stops the periodical executer (there will be no further triggers).
-   *  
+   *
    *  Once a [[PeriodicalExecuter]] is created, it constitues an infinite loop,
    *  triggering at the given interval until the page unloads. This method lets
    *  you stop it any time you want.
-   *  
+   *
    *  ##### Example
    *
    *  This will only alert 1, 2 and 3, then the [[PeriodicalExecuter]] stops.
@@ -74,18 +74,11 @@ var PeriodicalExecuter = Class.create({
 
   onTimerEvent: function() {
     if (!this.currentlyExecuting) {
-      // IE doesn't support `finally` statements unless all errors are caught.
-      // We mimic the behaviour of `finally` statements by duplicating code
-      // that would belong in it. First at the bottom of the `try` statement
-      // (for errorless cases). Secondly, inside a `catch` statement which
-      // rethrows any caught errors.
       try {
         this.currentlyExecuting = true;
         this.execute();
+      } finally {
         this.currentlyExecuting = false;
-      } catch(e) {
-        this.currentlyExecuting = false;
-        throw e;
       }
     }
   }

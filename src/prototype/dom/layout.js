@@ -28,16 +28,6 @@
     return value === 'auto' ? null : value;
   }
 
-  function getRawStyle_IE(element, style) {
-    // Try inline styles first.
-    var value = element.style[style];
-    if (!value && element.currentStyle) {
-      // Reluctantly retrieve the current style.
-      value = element.currentStyle[style];
-    }
-    return value;
-  }
-
   // Quickly figures out the content width of an element. Used instead of
   // `element.measure('width')` in several places below; we don't want to
   // call back into layout code recursively if we don't have to.
@@ -54,11 +44,6 @@
 
     return boxWidth - bl - br - pl - pr;
   }
-
-  if (!Object.isUndefined(document.documentElement.currentStyle) && !Prototype.Browser.Opera) {
-    getRawStyle = getRawStyle_IE;
-  }
-
 
   // Can be called like this:
   //   getPixelValue("11px");
@@ -82,23 +67,7 @@
       return window.parseFloat(value);
     }
 
-    var isPercentage = value.include('%'), isViewport = (context === document.viewport);
-
-    // When IE gives us something other than a pixel value, this technique
-    // (invented by Dean Edwards) will convert it to pixels.
-    //
-    // (This doesn't work for percentage values on elements with `position: fixed`
-    // because those percentages are relative to the viewport.)
-    if (/\d/.test(value) && element && element.runtimeStyle && !(isPercentage && isViewport)) {
-      var style = element.style.left, rStyle = element.runtimeStyle.left;
-      element.runtimeStyle.left = element.currentStyle.left;
-      element.style.left = value || 0;
-      value = element.style.pixelLeft;
-      element.style.left = style;
-      element.runtimeStyle.left = rStyle;
-
-      return value;
-    }
+    var isPercentage = value.include('%');
 
     // For other browsers, we have to do a bit of work.
     // (At this point, only percentages should be left; all other CSS units
@@ -139,13 +108,6 @@
     return 0;
   }
 
-  // Turns plain numbers into pixel measurements.
-  function toCSSPixels(number) {
-    if (Object.isString(number) && number.endsWith('px'))
-      return number;
-    return number + 'px';
-  }
-
   // Shortcut for figuring out if an element is `display: none` or not.
   function isDisplayed(element) {
     while (element && element.parentNode) {
@@ -153,21 +115,9 @@
       if (display === 'none') {
         return false;
       }
-      element = $(element.parentNode);
+      element = element.parentNode;
     }
     return true;
-  }
-
-  // In IE6-7, positioned elements often need hasLayout triggered before they
-  // report accurate measurements.
-  var hasLayout = Prototype.K;
-  if ('currentStyle' in document.documentElement) {
-    hasLayout = function(element) {
-      if (!element.currentStyle.hasLayout) {
-        element.style.zoom = 1;
-      }
-      return element;
-    };
   }
 
   // Converts the layout hash property names back to the CSS equivalents.
@@ -417,7 +367,7 @@
       } else {
         // Otherwise, the element's width depends upon the width of its
         // parent.
-        var parent = element.parentNode, pLayout = $(parent).getLayout();
+        var parent = element.parentNode, pLayout = parent.getLayout();
 
         newWidth = pLayout.get('width') -
          this.get('margin-left') -
@@ -660,15 +610,11 @@
       },
 
       'bottom': function(element) {
-        var offset = element.positionedOffset(),
-         parent = element.getOffsetParent(),
-         pHeight = parent.measure('height');
+        var parent = element.getOffsetParent();
+        var rect = element.getBoundingClientRect(),
+         pRect = parent.getBoundingClientRect();
 
-        var mHeight = this.get('border-box-height');
-
-        return pHeight - mHeight - offset.top;
-        //
-        // return getPixelValue(element, 'bottom');
+        return (pRect.bottom - rect.bottom).round();
       },
 
       'left': function(element) {
@@ -677,15 +623,11 @@
       },
 
       'right': function(element) {
-        var offset = element.positionedOffset(),
-         parent = element.getOffsetParent(),
-         pWidth = parent.measure('width');
+        var parent = element.getOffsetParent();
+        var rect = element.getBoundingClientRect(),
+         pRect = parent.getBoundingClientRect();
 
-        var mWidth = this.get('border-box-width');
-
-        return pWidth - mWidth - offset.left;
-        //
-        // return getPixelValue(element, 'right');
+        return (pRect.right - rect.right).round();
       },
 
       'padding-top': function(element) {
@@ -737,27 +679,6 @@
       }
     }
   });
-
-  // An easier way to compute right and bottom offsets.
-  if ('getBoundingClientRect' in document.documentElement) {
-    Object.extend(Element.Layout.COMPUTATIONS, {
-      'right': function(element) {
-        var parent = hasLayout(element.getOffsetParent());
-        var rect = element.getBoundingClientRect(),
-         pRect = parent.getBoundingClientRect();
-
-        return (pRect.right - rect.right).round();
-      },
-
-      'bottom': function(element) {
-        var parent = hasLayout(element.getOffsetParent());
-        var rect = element.getBoundingClientRect(),
-         pRect = parent.getBoundingClientRect();
-
-        return (pRect.bottom - rect.bottom).round();
-      }
-    });
-  }
 
   /**
    *  class Element.Offset
@@ -1054,13 +975,13 @@
 
     // Ensure we never return the root HTML tag.
     function selfOrBody(element) {
-      return isHtml(element) ? $(document.body) : $(element);
+      return isHtml(element) ? document.body : $(element);
     }
 
     // For unusual cases like these, we standardize on returning the BODY
     // element as the offset parent.
     if (isDocument(element) || isDetached(element) || isBody(element) || isHtml(element))
-      return $(document.body);
+      return document.body;
 
     // IE reports offset parent incorrectly for inline elements.
     var isInline = (Element.getStyle(element, 'display') === 'inline');
@@ -1072,7 +993,7 @@
       }
     }
 
-    return $(document.body);
+    return document.body;
   }
 
 
@@ -1153,30 +1074,12 @@
    *
    *  Returns the X/Y coordinates of element relative to the viewport.
   **/
-  function viewportOffset(forElement) {
-    var valueT = 0, valueL = 0, docBody = document.body;
+  function viewportOffset(element) {
+    element = $(element);
+    if (isDetached(element)) return new Element.Offset(0, 0);
 
-    forElement = $(forElement);
-    var element = forElement;
-    do {
-      valueT += element.offsetTop  || 0;
-      valueL += element.offsetLeft || 0;
-      // Safari fix
-      if (element.offsetParent == docBody &&
-        Element.getStyle(element, 'position') == 'absolute') break;
-    } while (element = element.offsetParent);
-
-    element = forElement;
-    do {
-      // Opera < 9.5 sets scrollTop/Left on both HTML and BODY elements.
-      // Other browsers set it only on the HTML element. The BODY element
-      // can be skipped since its scrollTop/Left should always be 0.
-      if (element != docBody) {
-        valueT -= element.scrollTop  || 0;
-        valueL -= element.scrollLeft || 0;
-      }
-    } while (element = element.parentNode);
-    return new Element.Offset(valueL, valueT);
+    var rect = element.getBoundingClientRect();
+    return new Element.Offset(rect.left, rect.top);
   }
 
   /**
@@ -1278,12 +1181,6 @@
     var position = Element.getStyle(element, 'position'), styles = {};
     if (position === 'static' || !position) {
       styles.position = 'relative';
-      // When an element is `position: relative` with an undefined `top` and
-      // `left`, Opera returns the offset relative to positioning context.
-      if (Prototype.Browser.Opera) {
-        styles.top  = 0;
-        styles.left = 0;
-      }
       Element.setStyle(element, styles);
       Element.store(element, 'prototype_made_positioned', true);
     }
@@ -1514,8 +1411,6 @@
       offsetLeft: 0
     }, options || {});
 
-    var docEl = document.documentElement;
-
     // Find page position of source.
     source  = $(source);
     element = $(element);
@@ -1541,10 +1436,6 @@
       } else if (document.body && (document.body.scrollLeft || document.body.scrollTop)) {
         x = document.body.scrollLeft;
         y = document.body.scrollTop;
-      } else if (docEl && (docEl.scrollLeft || docEl.scrollTop)) {
-        // IE6
-        x = docEl.scrollLeft;
-        y = docEl.scrollTop;
       }
       return { x: x, y: y };
     }
@@ -1562,8 +1453,6 @@
     if (options.setTop)
       styles.top  = (p[1] + pageXY.y - delta[1] + options.offsetTop)  + 'px';
 
-    var currentLayout = element.getLayout();
-
     // Use content box when setting width/height. If padding/border are
     // different between source and target, that's for the user to fix;
     // there's no good option for us.
@@ -1575,67 +1464,6 @@
     }
 
     return Element.setStyle(element, styles);
-  }
-
-
-  if (Prototype.Browser.IE) {
-    // IE doesn't report offsets correctly for static elements, so we change them
-    // to "relative" to get the values, then change them back.
-    getOffsetParent = getOffsetParent.wrap(
-      function(proceed, element) {
-        element = $(element);
-
-        // For unusual cases like these, we standardize on returning the BODY
-        // element as the offset parent.
-        if (isDocument(element) || isDetached(element) || isBody(element) || isHtml(element))
-          return $(document.body);
-
-        var position = element.getStyle('position');
-        if (position !== 'static') return proceed(element);
-
-        element.setStyle({ position: 'relative' });
-        var value = proceed(element);
-        element.setStyle({ position: position });
-        return value;
-      }
-    );
-
-    positionedOffset = positionedOffset.wrap(function(proceed, element) {
-      element = $(element);
-      if (!element.parentNode) return new Element.Offset(0, 0);
-      var position = element.getStyle('position');
-      if (position !== 'static') return proceed(element);
-
-      // Trigger hasLayout on the offset parent so that IE6 reports
-      // accurate offsetTop and offsetLeft values for position: fixed.
-      var offsetParent = element.getOffsetParent();
-      if (offsetParent && offsetParent.getStyle('position') === 'fixed')
-        hasLayout(offsetParent);
-
-      element.setStyle({ position: 'relative' });
-      var value = proceed(element);
-      element.setStyle({ position: position });
-      return value;
-    });
-  } else if (Prototype.Browser.Webkit) {
-    // Safari returns margins on body which is incorrect if the child is absolutely
-    // positioned.  For performance reasons, redefine Element#cumulativeOffset for
-    // KHTML/WebKit only.
-    cumulativeOffset = function(element) {
-      element = $(element);
-      var valueT = 0, valueL = 0;
-      do {
-        valueT += element.offsetTop  || 0;
-        valueL += element.offsetLeft || 0;
-        if (element.offsetParent == document.body) {
-          if (Element.getStyle(element, 'position') == 'absolute') break;
-        }
-
-        element = element.offsetParent;
-      } while (element);
-
-      return new Element.Offset(valueL, valueT);
-    };
   }
 
 
@@ -1677,27 +1505,6 @@
      !Element.descendantOf(element, document.body);
   }
 
-  // If the browser supports the nonstandard `getBoundingClientRect`
-  // (currently only IE and Firefox), it becomes far easier to obtain
-  // true offsets.
-  if ('getBoundingClientRect' in document.documentElement) {
-    Element.addMethods({
-      viewportOffset: function(element) {
-        element = $(element);
-        if (isDetached(element)) return new Element.Offset(0, 0);
-
-        var rect = element.getBoundingClientRect(),
-         docEl = document.documentElement;
-        // The HTML element on IE < 8 has a 2px border by default, giving
-        // an incorrect offset. We correct this by subtracting clientTop
-        // and clientLeft.
-        return new Element.Offset(rect.left - docEl.clientLeft,
-         rect.top - docEl.clientTop);
-      }
-    });
-  }
-
-
 })();
 
 (function() {
@@ -1709,12 +1516,10 @@
    *  page within view. In other words, it's the browser window minus all chrome.
   **/
 
-  var IS_OLD_OPERA = Prototype.Browser.Opera &&
-   (window.parseFloat(window.opera.version()) < 9.5);
   var ROOT = null;
   function getRootElement() {
     if (ROOT) return ROOT;
-    ROOT = IS_OLD_OPERA ? document.body : document.documentElement;
+    ROOT = document.documentElement;
     return ROOT;
   }
 
