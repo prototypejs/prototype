@@ -394,6 +394,43 @@ suite("Layout", function(){
       assert.equal(before, after);
     });
 
+    test('#clonePosition (when element is absolutely positioned and has a non-body offset parent)', function () {
+      var opts = { offsetTop: 20, offsetLeft: 0, setWidth: false, setHeight: false };
+
+      var subMenu = $('sub_menu_2');
+      var mainMenu = $('main_menu_2');
+
+      subMenu.clonePosition(mainMenu, opts);
+      var offset = subMenu.viewportOffset().top - mainMenu.viewportOffset().top;
+
+      assert.equal(offset, 20);
+
+      scrollTo(0, 300);
+
+      subMenu.clonePosition(mainMenu, opts);
+      offset = subMenu.viewportOffset().top - mainMenu.viewportOffset().top;
+      assert.equal(offset, 20);
+    });
+
+    test('#clonePosition (when element has fixed position)', function () {
+      var opts = { offsetTop: 20, offsetLeft: 0, setWidth: false, setHeight: false };
+
+      var subMenu = $('sub_menu_3');
+      var mainMenu = $('main_menu_3');
+
+      subMenu.clonePosition(mainMenu, opts);
+      var offset = subMenu.viewportOffset().top - mainMenu.viewportOffset().top;
+
+      assert.equal(offset, 20);
+
+      scrollTo(0, 300);
+
+      subMenu.clonePosition(mainMenu, opts);
+      offset = subMenu.viewportOffset().top - mainMenu.viewportOffset().top;
+      assert.equal(offset, 20);
+
+    });
+
     test('#clonePosition (when elements have the same size)', function() {
       var source = $('clone_position_source');
       var target = $('clone_position_target');

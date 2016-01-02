@@ -1357,6 +1357,9 @@
    *  not it is part of the same [CSS containing
    *  block](http://www.w3.org/TR/CSS21/visudet.html#containing-block-details).
    *
+   *  Also note that `element` must already be `position: absolute` or
+   *  `position: fixed`. This method will not apply a `position` style.
+   *
    *  ##### Options
    *
    *  <table class='options'>
@@ -1416,14 +1419,23 @@
     element = $(element);
     var p, delta, layout, styles = {};
 
+    var isAbsolute = Element.getStyle(element, 'position') === 'absolute';
+    var parent = Element.getOffsetParent(element);
+
     if (options.setLeft || options.setTop) {
+      // We start by measuring the source's viewport offset.
       p = Element.viewportOffset(source);
+
+      // If the element we're altering is `position: fixed`, that's all the
+      // information we need: later we'll apply that offset to the `top` and
+      // `left` properties directly.
       delta = [0, 0];
-      // A delta of 0/0 will work for `positioned: fixed` elements, but
-      // for `position: absolute` we need to get the parent's offset.
-      if (Element.getStyle(element, 'position') === 'absolute') {
-        var parent = Element.getOffsetParent(element);
-        if (parent !== document.body) delta = Element.viewportOffset(parent);
+
+      // But if it's `position: absolute`, we have to know where its offset
+      // parent is positioned and take those measurements into account as
+      // well.
+      if (isAbsolute && parent !== document.body) {
+        delta = Element.viewportOffset(parent);
       }
     }
 
@@ -1440,12 +1452,11 @@
       return { x: x, y: y };
     }
 
-    var pageXY = pageScrollXY();
-
-
-    if (options.setWidth || options.setHeight) {
-      layout = Element.getLayout(source);
-    }
+    // When the offset parent is the document body, we need to account for
+    // scroll offsets when we set `top` and `left`. (Unless the element is
+    // `position: fixed`; in that case we should always ignore scroll
+    // position.)
+    var pageXY = (isAbsolute && parent === document.body) ? pageScrollXY() : { x: 0, y: 0 };
 
     // Set position.
     if (options.setLeft)
@@ -1453,14 +1464,18 @@
     if (options.setTop)
       styles.top  = (p[1] + pageXY.y - delta[1] + options.offsetTop)  + 'px';
 
-    // Use content box when setting width/height. If padding/border are
-    // different between source and target, that's for the user to fix;
-    // there's no good option for us.
-    if (options.setWidth) {
-      styles.width = layout.get('width')  + 'px';
-    }
-    if (options.setHeight) {
-      styles.height = layout.get('height') + 'px';
+    if (options.setWidth || options.setHeight) {
+      layout = Element.getLayout(source);
+
+      // Use content box when setting width/height. If padding/border are
+      // different between source and target, that's for the user to fix;
+      // there's no good option for us.
+      if (options.setWidth) {
+        styles.width = layout.get('width')  + 'px';
+      }
+      if (options.setHeight) {
+        styles.height = layout.get('height') + 'px';
+      }
     }
 
     return Element.setStyle(element, styles);
