@@ -53,6 +53,9 @@
  *    conventions, Prototype also reacts to other HTTP verbs (such as `put` and
  *    `delete`) by submitting via `post` and adding a extra `_method` parameter
  *    with the originally-requested method.
+ *    To support other HTTP methods, you can set `Ajax.Request.supportedHTTPMethods`
+ *    to an array including the allowed methods, e.g.:
+ *    `Ajax.Request.supportedHTTPMethods = ['get','post','put','delete'];`
  *  * `parameters` ([[String]]): The parameters for the request, which will be
  *    encoded into the URL for a `get` method, or into the request body for the
  *    other methods. This can be provided either as a URL-encoded string, a
