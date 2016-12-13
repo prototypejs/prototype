@@ -13,6 +13,9 @@
   **/
 
   /** section: DOM, related to: Element
+   * class Element
+  **/
+  /** section: DOM, related to: Element
    *  $(id) -> Element
    *  $(id...) -> [Element...]
    *    - id (String | Element): A DOM node or a string that references a node's
