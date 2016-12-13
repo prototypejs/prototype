@@ -301,7 +301,7 @@ Object.extend(String.prototype, (function() {
    *  not sufficiently robust to prevent hack attacks.
   **/
   function stripScripts() {
-    return this.replace(new RegExp(Prototype.ScriptFragment, 'img'), '');
+    return this.replace(Prototype.ScriptFragmentAll, '');
   }
 
   /**
@@ -335,10 +335,8 @@ Object.extend(String.prototype, (function() {
    *      // -> [4, undefined] (and displays 'hello world!' in the alert dialog)
   **/
   function extractScripts() {
-    var matchAll = new RegExp(Prototype.ScriptFragment, 'img'),
-        matchOne = new RegExp(Prototype.ScriptFragment, 'im');
-    return (this.match(matchAll) || []).map(function(scriptTag) {
-      return (scriptTag.match(matchOne) || ['', ''])[1];
+    return (this.match(Prototype.ScriptFragmentAll) || []).map(function(scriptTag) {
+      return (scriptTag.match(Prototype.ScriptFragmentOne) || ['', ''])[1];
     });
   }
 
