@@ -83,7 +83,7 @@
  *      $$('div:empty');
  *      // -> all DIVs without content (i.e., whitespace-only)
 **/
-window.$$ = function() {
+function $$() {
   var expression = $A(arguments).join(', ');
   return Prototype.Selector.select(expression, document);
 };
