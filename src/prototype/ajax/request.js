@@ -236,8 +236,11 @@ Ajax.Request = Class.create(Ajax.Base, {
     };
 
     if (this.method == 'post') {
-      headers['Content-type'] = this.options.contentType +
-        (this.options.encoding ? '; charset=' + this.options.encoding : '');
+      if (this.options.contentType)
+      {
+        headers['Content-type'] = this.options.contentType +
+          (this.options.encoding ? '; charset=' + this.options.encoding : '');
+      }
 
       /* Force "Connection: close" for older Mozilla browsers to work
        * around a bug where XMLHttpRequest sends an incorrect
