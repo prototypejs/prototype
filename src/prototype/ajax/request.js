@@ -183,12 +183,6 @@ Ajax.Request = Class.create(Ajax.Base, {
           this.options.parameters :
           Object.toQueryString(this.options.parameters);
 
-    if (!['get', 'post'].include(this.method)) {
-      // simulate other verbs over post
-      params += (params ? '&' : '') + "_method=" + this.method;
-      this.method = 'post';
-    }
-
     if (params && this.method === 'get') {
       // when GET, append parameters to URL
       this.url += (this.url.include('?') ? '&' : '?') + params;
@@ -209,7 +203,12 @@ Ajax.Request = Class.create(Ajax.Base, {
       this.transport.onreadystatechange = this.onStateChange.bind(this);
       this.setRequestHeaders();
 
-      this.body = this.method == 'post' ? (this.options.postBody || params) : null;
+      if (this.method !== 'get') {
+        this.body = this.options.body || this.options.postBody || params;
+      } else {
+        this.body = null;
+      }
+
       this.transport.send(this.body);
 
       /* Force Firefox to handle ready state 4 for synchronous requests */
@@ -235,7 +234,7 @@ Ajax.Request = Class.create(Ajax.Base, {
       'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'
     };
 
-    if (this.method == 'post') {
+    if (this.method !== 'get') {
       // Don't set the `Content-Type` header if the user has explicitly set
       // `contentType` to anything falsy.
       if (this.options.contentType) {

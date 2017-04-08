@@ -269,7 +269,7 @@ suite("Ajax", function () {
     assert.equal('Hello world!', h2.innerHTML);
   });
 
-  test('Content-Type set for simulated verbs', function () {
+  test('Content-Type set for obscure verbs', function () {
     new Ajax.Request('/inspect', extendDefault({
       method: 'put',
       contentType: 'application/bogus',
@@ -280,6 +280,39 @@ suite("Ajax", function () {
         );
       }
     }));
+  });
+
+  test('verbs with bodies', function () {
+    var verbs = $w('post put patch');
+    verbs.each(function (verb) {
+      new Ajax.Request('/inspect', extendDefault({
+        method: verb,
+        body: 'foo=foo&bar=bar',
+        onSuccess: function (response) {
+          var body = response.responseJSON.body;
+          assert.equal('foo=foo&bar=bar', body, verb + ' should send body');
+        },
+        onFailure: function () {
+          assert(false, verb + ' should send body');
+        }
+      }));
+    });
+  });
+
+  test('verbs without bodies', function () {
+    var verbs = $w('get head options delete');
+
+    verbs.each(function (verb) {
+      new Ajax.Request('/inspect', extendDefault({
+        method: verb,
+        onSuccess: function () {
+          assert(true, verb + ' method should work');
+        },
+        onFailure: function () {
+          assert(false, verb + ' method should work');
+        }
+      }));
+    });
   });
 
   test('onCreate callback', function () {

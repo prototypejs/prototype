@@ -42,6 +42,9 @@
  *    `XMLHttpRequest` is used asynchronously or not. Synchronous usage is
  *    **strongly discouraged** &mdash; it halts all script execution for the
  *    duration of the request _and_ blocks the browser UI.
+ *  * `body` ([[String]]): Specific contents for the request body on a
+ *    method that sends a payload (like `post` or `put`). If it is not
+ *    provided, the contents of the `parameters` option will be used instead.
  *  * `contentType` ([[String]]; default `application/x-www-form-urlencoded`):
  *    The `Content-type` header for your request. Change this header if you
  *    want to send data in another format (like XML).
@@ -57,9 +60,8 @@
  *    encoded into the URL for a `get` method, or into the request body for the
  *    other methods. This can be provided either as a URL-encoded string, a
  *    [[Hash]], or a plain [[Object]].
- *  * `postBody` ([[String]]): Specific contents for the request body on a
- *    `post` method. If it is not provided, the contents of the `parameters`
- *    option will be used instead.
+ *  * `postBody` ([[String]]): An alias for `body` that is provided for
+ *     backward-compatibility. Its use is discouraged.
  *  * `requestHeaders` ([[Object]]): A set of key-value pairs, with properties
  *    representing header names.
  *  * `evalJS` ([[Boolean]] | [[String]]; default `true`): Automatically `eval`s

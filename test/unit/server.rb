@@ -54,6 +54,12 @@ class UnitTests < Sinatra::Application
     })
   end
 
+  # The '/inspect' endpoint should be available regardless of HTTP method.
+  def self.handle_inspect(url, &block)
+    %w{get post put delete patch options head}.each do |verb|
+      self.send(verb, url, &block)
+    end
+  end
 
   def self.get_or_post(url, &block)
     get(url, &block)
@@ -108,7 +114,7 @@ class UnitTests < Sinatra::Application
 
   # Routes for Ajax tests
 
-  get_or_post '/inspect' do
+  handle_inspect '/inspect' do
     response = {
       :headers => request_headers(request.env),
       :method  => request.request_method,
