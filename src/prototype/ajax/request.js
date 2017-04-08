@@ -188,6 +188,16 @@ Ajax.Request = Class.create(Ajax.Base, {
       params += (params ? '&' : '') + "_method=" + this.method;
       this.method = 'post';
     }
+    if (this.options.jsonpparametername) {
+      this.method = 'get';
+      var currentfunctioncount = Ajax._jsonpfunctions.length;
+      Ajax._jsonpfunctions.push(function(data){
+        (this.options.onComplete || Prototype.emptyFunction)({'responseJSONP':data});
+        (this.options.onSuccess || Prototype.emptyFunction)({'responseJSONP':data});
+        $('AJAXJSONP_'+currentfunctioncount) ? $('AJAXJSONP_'+currentfunctioncount).remove() : '';
+      }.bind(this));
+      params += (params ? '&' : '') + this.options.jsonpparametername+'=Ajax._jsonpfunctions['+currentfunctioncount+']';
+    }
 
     if (params && this.method === 'get') {
       // when GET, append parameters to URL
@@ -195,6 +205,12 @@ Ajax.Request = Class.create(Ajax.Base, {
     }
 
     this.parameters = params.toQueryParams();
+
+    if (this.options.jsonpparametername) {
+      document.body.insert(new Element('script',{'type':'text/javascript','src':this.url,'id':'AJAXJSONP_'+(Ajax._jsonpfunctions.length-1)}));
+      Ajax.Responders.dispatch('onCreate', this, response);
+      return;
+    }
 
     try {
       var response = new Ajax.Response(this);
