@@ -104,6 +104,23 @@ suite("Ajax", function () {
     }, 1000);
   });
 
+  test("activeRequestCount decrements when an exception occurs in a handler", function (done) {
+
+    new Ajax.Request('/fixtures/hello.js', {
+      method: 'GET',
+      onComplete: function () {
+        assert.equal(1, Ajax.activeRequestCount);
+        throw new Error('test');
+      }
+    });
+
+    setTimeout(function () {
+      assert.equal(0, Ajax.activeRequestCount);
+      done();
+    }, 1000);
+
+  });
+
   suite('Updater', function () {
 
     setup(function () {
