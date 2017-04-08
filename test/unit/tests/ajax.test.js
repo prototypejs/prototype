@@ -495,5 +495,17 @@ suite("Ajax", function () {
     Ajax.Request.prototype.isSameOrigin = isSameOrigin;
   });
 
+  test('can omit content-type', function () {
+    new Ajax.Request('/inspect', extendDefault({
+      method: 'post',
+      contentType: false,
+      onSuccess: function (response) {
+        // If we omit Content-Type, the browser will provide its own.
+        var contentType = response.responseJSON.headers['content-type'];
+        assert(contentType.indexOf('text/plain') > -1);
+      }
+    }));
+  });
+
 });
 
