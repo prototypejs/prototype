@@ -158,8 +158,8 @@ Object.extend(Element.ClassNames.prototype, Enumerable);
  *  A class that queries the document for elements that match a given CSS
  *  selector.
 **/
-(function() {
-  window.Selector = Class.create({
+var Selector = (function() {
+  var Selector = Class.create({
     /** deprecated
      *  new Selector(expression)
      *  - expression (String): A CSS selector.
@@ -253,4 +253,5 @@ Object.extend(Element.ClassNames.prototype, Enumerable);
       return Prototype.Selector.select(selector, element || document);
     }
   });
+  return Selector;
 })();
