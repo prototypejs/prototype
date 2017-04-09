@@ -232,7 +232,7 @@
    *      // -> false
   **/
   function visible(element) {
-    return $(element).getStyle('display') !== 'none';
+    return Element.getStyle(element, 'display') !== 'none';
   }
 
   /**
@@ -2647,12 +2647,13 @@
   function getStyle(element, style) {
     element = $(element);
     style = normalizeStyleName(style);
+    var doc = element.ownerDocument;
 
     // Try inline styles first.
     var value = element.style[style];
     if (!value || value === 'auto') {
       // Reluctantly retrieve the computed style.
-      var css = document.defaultView.getComputedStyle(element, null);
+      var css = doc.defaultView.getComputedStyle(element, null);
       value = css ? css[style] : null;
     }
 

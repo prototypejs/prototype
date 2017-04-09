@@ -338,11 +338,20 @@ suite('DOM', function () {
     assert.equal(element.up(), wrapper);
   });
 
-  test('#visible', function () {
+  test('#visible', function (done) {
     assert.notEqual('none', $('test-visible').style.display);
     assert($('test-visible').visible());
     assert.equal('none', $('test-hidden').style.display);
     assert(!$('test-hidden').visible());
+    assert(!$('test-hidden-by-stylesheet').visible());
+    var iframe = $('iframe');
+    // Wait to make sure the IFRAME has loaded.
+    setTimeout(function () {
+      var paragraphs = iframe.contentWindow.document.querySelectorAll('p');
+      assert(Element.visible(paragraphs[0]));
+      assert(!Element.visible(paragraphs[1]));
+      done();
+    }, 500);
   });
 
   test('#toggle', function () {

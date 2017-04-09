@@ -83,14 +83,26 @@ div.style-test { margin-left: 1px }
 body {
   height: 40000px;
 }
+
+#test-hidden-by-stylesheet {
+  display: none;
+}
+
+#iframe {
+  width: 1px;
+  height: 1px;
+}
 </style>
 
 <div id="scroll_test_1">
   <p id="scroll_test_2">Scroll test</p>
 </div>
 
+<iframe src="/fixtures/iframe.html" id="iframe"></iframe>
+
 <div id="test-visible">visible</div>
 <div id="test-hidden" style="display:none;">hidden</div>
+<div id="test-hidden-by-stylesheet">hidden</div>
 <div id="test-toggle-visible">visible</div>
 <div id="test-toggle-hidden" style="display:none;">hidden</div>
 <div id="test-hide-visible">visible</div>
