@@ -338,7 +338,9 @@ Object.extend(String.prototype, (function() {
     var matchAll = new RegExp(Prototype.ScriptFragment, 'img'),
         matchOne = new RegExp(Prototype.ScriptFragment, 'im');
     return (this.match(matchAll) || []).map(function(scriptTag) {
-      return (scriptTag.match(matchOne) || ['', ''])[1];
+      var v = scriptTag.match(matchOne);
+      var a = new Element('div').update('<span ' + (v[1] || '') + "></span>").down().readAttribute('type');
+      return (!Object.isUndefined(v) && (!a || Prototype.ExecutableScript.test(a))) ? v[2] : '';
     });
   }
 
