@@ -52,7 +52,7 @@ Prototype._original_property = window.Sizzle;
   Prototype.Selector.engine = engine;
   Prototype.Selector.select = select;
   Prototype.Selector.match = match;
-})(Sizzle);
+})(window.Sizzle);
 
 // Restore globals.
 window.Sizzle = Prototype._original_property;
