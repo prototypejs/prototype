@@ -337,9 +337,25 @@ Object.extend(String.prototype, (function() {
   function extractScripts() {
     var matchAll = new RegExp(Prototype.ScriptFragment, 'img'),
         matchOne = new RegExp(Prototype.ScriptFragment, 'im');
-    return (this.match(matchAll) || []).map(function(scriptTag) {
-      return (scriptTag.match(matchOne) || ['', ''])[1];
+    var matchMimeType = new RegExp(Prototype.ExecutableScriptFragment, 'im');
+    var matchTypeAttribute = /type=/i;
+
+    var results = [];
+    (this.match(matchAll) || []).each(function(scriptTag) {
+      var match = scriptTag.match(matchOne);
+      var attributes = match[1];
+      if (attributes !== '') {
+        // If the script has a `type` attribute, make sure it has a
+        // JavaScript MIME-type. If not, ignore it.
+        attributes = attributes.strip();
+        var hasTypeAttribute = (matchTypeAttribute).test(attributes);
+        var hasMimeType = (matchMimeType).test(attributes);
+        if (hasTypeAttribute && !hasMimeType) return;
+      }
+      results.push(match ? match[2] : '');
     });
+
+    return results;
   }
 
   /**

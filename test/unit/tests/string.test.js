@@ -238,6 +238,9 @@ suite('String', function () {
       ('foo <script>boo();<'+'/script><script type="text/javascript">boo();\nmoo();<'+'/script>bar').extractScripts());
     assert.enumEqual(['boo();','boo();\nmoo();'],
       ('foo <script>boo();<'+'/script>blub\nblub<script type="text/javascript">boo();\nmoo();<'+'/script>bar').extractScripts());
+
+    assert.enumEqual([], ('<' + 'script type="x-something">wat();<' + '/script>').extractScripts());
+    assert.enumEqual(['wat();'], ('<' + 'script type="text/javascript">wat();<' + '/script>').extractScripts());
   });
 
   test('#evalScripts', function () {
@@ -250,6 +253,27 @@ suite('String', function () {
     (3).times(function(){ stringWithScripts += 'foo <script>evalScriptsCounter++<'+'/script>bar' });
     stringWithScripts.evalScripts();
     assert.equal(4, evalScriptsCounter);
+
+   // Other executable MIME-types.
+    ('foo <script type="text/javascript">evalScriptsCounter++<'+'/script>bar')
+      .evalScripts();
+    ('foo <script type="application/javascript">evalScriptsCounter++<'+'/script>bar')
+      .evalScripts();
+    ('foo <script type="application/x-javascript">evalScriptsCounter++<'+'/script>bar')
+      .evalScripts();
+    ('foo <script type="text/x-javascript">evalScriptsCounter++<'+'/script>bar')
+      .evalScripts();
+    ('foo <script type="application/ecmascript">evalScriptsCounter++<'+'/script>bar')
+      .evalScripts();
+    ('foo <script type="text/ecmascript">evalScriptsCounter++<'+'/script>bar')
+      .evalScripts();
+
+    assert.equal(10, evalScriptsCounter);
+
+    // a wrong one
+    ('foo <script type="text/x-dot-template">evalScriptsCounter++<'+'/script>bar').evalScripts();
+
+    assert.equal(10, evalScriptsCounter);
   });
 
   test('#escapeHTML', function () {
