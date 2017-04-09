@@ -57,8 +57,7 @@ function assertContent(id, content, message) {
 var extendDefault = function(options) {
   return Object.extend({
     asynchronous: false,
-    method: 'get',
-    onException: function(r, e) { throw e; }
+    method: 'get'
   }, options);
 };
 
@@ -110,14 +109,17 @@ suite("Ajax", function () {
       method: 'GET',
       onComplete: function () {
         assert.equal(1, Ajax.activeRequestCount);
+        setTimeout(function () {
+          assert.equal(0, Ajax.activeRequestCount);
+          done();
+        }, 250);
         throw new Error('test');
+      },
+
+      onException: function () {
+        // Empty function to prevent the error from being rethrown
       }
     });
-
-    setTimeout(function () {
-      assert.equal(0, Ajax.activeRequestCount);
-      done();
-    }, 1000);
 
   });
 
@@ -536,6 +538,19 @@ suite("Ajax", function () {
         // If we omit Content-Type, the browser will provide its own.
         var contentType = response.responseJSON.headers['content-type'];
         assert(contentType.indexOf('text/plain') > -1);
+      }
+    }));
+  });
+
+  test('no exception handler', function (done) {
+    new Ajax.Request('/inspect', extendDefault({
+      onSuccess: function () {
+        try {
+          throw new Error("foo");
+          assert(true);
+        } finally {
+          done();
+        }
       }
     }));
   });

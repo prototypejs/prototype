@@ -8,7 +8,10 @@ Ajax.Base = Class.create({
       encoding:     'UTF-8',
       parameters:   '',
       evalJSON:     true,
-      evalJS:       true
+      evalJS:       true,
+      onException: function (request, error) {
+        throw error;
+      }
     };
     Object.extend(this.options, options || { });
 

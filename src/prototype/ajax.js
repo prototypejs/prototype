@@ -117,7 +117,10 @@
  *    `onFailure`. Happens _before_ `onComplete`.
  *  * `onException`: Triggered whenever an XHR error arises. Has a custom
  *    signature: the first argument is the requester (i.e. an [[Ajax.Request]]
- *    instance), and the second is the exception object.
+ *    instance), and the second is the exception object. The default
+ *    `onException` handler simply re-throws the caught exception. (If you
+ *    want exceptions to be silently ignored, pass in an empty function to
+ *    `onException`.)
  *  * `onComplete`: Triggered at the _very end_ of a request's life-cycle, after
  *    the request completes, status-specific callbacks are called, and possible
  *    automatic behaviors are processed. Guaranteed to run regardless of what
