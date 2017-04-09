@@ -541,19 +541,5 @@ suite("Ajax", function () {
       }
     }));
   });
-
-  test('no exception handler', function (done) {
-    new Ajax.Request('/inspect', extendDefault({
-      onSuccess: function () {
-        try {
-          throw new Error("foo");
-          assert(true);
-        } finally {
-          done();
-        }
-      }
-    }));
-  });
-
 });
 
