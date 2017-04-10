@@ -184,7 +184,7 @@ Array.from = $A;
 (function() {
   var arrayProto = Array.prototype,
       slice = arrayProto.slice,
-      _each = arrayProto.forEach; // use native browser JS 1.6 implementation if available
+      _each = Prototype.Browser.IE ? null : arrayProto.forEach; // use native browser JS 1.6 implementation if available
 
   // Note that #map, #filter, #some, and #every take some extra steps for
   // ES5 compliance: the context in which they're called is coerced to an
