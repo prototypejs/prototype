@@ -603,7 +603,15 @@ Form.Element.Methods = {
    *        }
   **/
   clear: function(element) {
-    $(element).value = '';
+    var elementType = $(element).type;
+
+    if(elementType === "checkbox" || elementType === "radio")
+        element.checked = false;
+    else if(elementType === "select-one" || elementType === "select-multiple")
+        element.setValue(0);
+    else
+        $(element).value = '';
+
     return element;
   },
 
