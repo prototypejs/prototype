@@ -1,0 +1,22 @@
+{
+  "name": "prototypejs",
+  "version": "1.7.3",
+  "description": "Prototype JavaScript framework http://prototypejs.org/",
+  "main": "dist/prototype.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sstephenson/prototype.git"
+  },
+  "author": "Sam Stephenson <sstephenson@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sstephenson/prototype/issues"
+  },
+  "homepage": "https://github.com/sstephenson/prototype#readme"
+}
