@@ -95,11 +95,6 @@ function $w(string) {
   return string ? string.split(/\s+/) : [];
 }
 
-/** alias of: $A
- *  Array.from(iterable) -> Array
-**/
-Array.from = $A;
-
 /** section: Language
  * class Array
  *  includes Enumerable
