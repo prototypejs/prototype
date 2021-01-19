@@ -280,7 +280,7 @@ Object.extend(String.prototype, (function() {
    *      // -> 'a link'
   **/
   function stripTags() {
-    return this.replace(/<\w+(?:\s+(?:"[^"]*"|'[^']*'|[^>])+)?(?:\/)?>|<\/\w+>/gi, '');
+    return this.replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>'"])+)?\s*("[^">]*|'[^'>])?(\/)?>|<\/\w+>/gi, '');
   }
 
   /**
